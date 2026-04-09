@@ -34,9 +34,8 @@
         .stat-value { color: #fff; font-size: 14px; font-weight: bold; }
 
         .progress-bar-outer { background: #222; border-radius: 999px; height: 10px; margin-top: 8px; }
-        .progress-bar-inner { background: #FFD700; height: 10px; border-radius: 999px; width: 12%; }
+        .progress-bar-inner { background: #FFD700; height: 10px; border-radius: 999px; width: 0%; }
 
-        /* BUTTONS */
         .btn {
             background: #FFD700;
             color: #000;
@@ -61,7 +60,6 @@
             margin-bottom: 10px;
         }
 
-        /* MUSCLE GROUP GRID */
         .muscle-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -78,13 +76,9 @@
             color: #fff;
             font-size: 13px;
         }
-        .muscle-btn.selected {
-            border-color: #FFD700;
-            color: #FFD700;
-        }
+        .muscle-btn.selected { border-color: #FFD700; color: #FFD700; }
         .muscle-btn .icon { font-size: 24px; display: block; margin-bottom: 6px; }
 
-        /* EXERCISE LOG */
         .exercise-block {
             background: #111;
             border: 1px solid #222;
@@ -92,12 +86,7 @@
             padding: 16px;
             margin-bottom: 12px;
         }
-        .exercise-name {
-            color: #FFD700;
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
+        .exercise-name { color: #FFD700; font-size: 14px; font-weight: bold; margin-bottom: 10px; }
         .set-row {
             display: grid;
             grid-template-columns: 40px 1fr 1fr 40px;
@@ -126,7 +115,6 @@
         }
         .set-header { color: #555; font-size: 11px; text-align: center; }
 
-        /* NAV */
         .nav {
             position: fixed;
             bottom: 0;
@@ -137,8 +125,9 @@
             display: flex;
             justify-content: space-around;
             padding: 12px 0;
+            z-index: 9999;
         }
-        .nav-item { color: #aaa; font-size: 11px; text-align: center; cursor: pointer; }
+        .nav-item { color: #aaa; font-size: 11px; text-align: center; cursor: pointer; flex: 1; }
         .nav-item.active { color: #FFD700; }
         .nav-icon { font-size: 20px; display: block; margin-bottom: 2px; }
 
@@ -146,6 +135,7 @@
         .tag.selected { background: #000; color: #FFD700; border: 1px solid #FFD700; }
 
         input[type="text"], input[type="number"] { background: #222; border: 1px solid #333; border-radius: 8px; color: #fff; padding: 12px; font-size: 14px; width: 100%; margin-bottom: 10px; }
+        label { color: #aaa; font-size: 13px; display: block; margin-bottom: 4px; }
     </style>
 </head>
 <body>
@@ -162,7 +152,7 @@
         <div class="stat-row"><span class="stat-label">Programme</span><span class="stat-value">Beginner</span></div>
         <div class="stat-row"><span class="stat-label">Current Week</span><span class="stat-value">Week 1</span></div>
         <div class="stat-row"><span class="stat-label">Start Date</span><span class="stat-value">08 Apr 2026</span></div>
-        <div class="progress-bar-outer"><div class="progress-bar-inner"></div></div>
+        <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:12%"></div></div>
         <p style="color:#aaa; font-size:12px; margin-top:6px;">12% complete</p>
     </div>
     <div class="card">
@@ -192,18 +182,57 @@
             <div class="muscle-btn" onclick="selectMuscle(this, 'Core')"><span class="icon">⚡</span>CORE</div>
         </div>
     </div>
-
     <div class="card" id="exercise-picker" style="display:none;">
         <h2>ADD EXERCISE</h2>
         <div id="exercise-tags"></div>
         <input type="text" id="custom-exercise" placeholder="Or type your own exercise...">
         <button class="btn" onclick="addExercise()">+ ADD EXERCISE</button>
     </div>
-
     <div id="exercise-log"></div>
-
     <button class="btn" onclick="saveWorkout()" style="display:none;" id="save-btn">✅ SAVE WORKOUT</button>
     <button class="btn-outline" onclick="showScreen('screen-home')">← BACK</button>
+</div>
+
+<!-- CALORIES SCREEN -->
+<div class="screen" id="screen-calories">
+    <div class="card">
+        <h2>TODAY'S NUTRITION</h2>
+        <div class="stat-row">
+            <span class="stat-label">Date</span>
+            <span class="stat-value" id="cal-date"></span>
+        </div>
+    </div>
+    <div class="card">
+        <h2>LOG YOUR INTAKE</h2>
+        <label>Calories</label>
+        <input type="number" id="input-calories" placeholder="e.g. 2400">
+        <label>Protein (g)</label>
+        <input type="number" id="input-protein" placeholder="e.g. 180">
+        <label>Steps</label>
+        <input type="number" id="input-steps" placeholder="e.g. 5000">
+        <label>Water (litres)</label>
+        <input type="number" id="input-water" placeholder="e.g. 2.5">
+        <button class="btn" onclick="saveNutrition()">✅ SAVE TODAY'S LOG</button>
+    </div>
+    <div class="card" id="nutrition-summary" style="display:none;">
+        <h2>TODAY'S PROGRESS</h2>
+        <div style="margin-bottom:12px;">
+            <div class="stat-row"><span class="stat-label">Calories</span><span class="stat-value" id="show-calories">—</span></div>
+            <div class="progress-bar-outer"><div class="progress-bar-inner" id="bar-calories"></div></div>
+        </div>
+        <div style="margin-bottom:12px;">
+            <div class="stat-row"><span class="stat-label">Protein</span><span class="stat-value" id="show-protein">—</span></div>
+            <div class="progress-bar-outer"><div class="progress-bar-inner" id="bar-protein"></div></div>
+        </div>
+        <div style="margin-bottom:12px;">
+            <div class="stat-row"><span class="stat-label">Steps</span><span class="stat-value" id="show-steps">—</span></div>
+            <div class="progress-bar-outer"><div class="progress-bar-inner" id="bar-steps"></div></div>
+        </div>
+        <div>
+            <div class="stat-row"><span class="stat-label">Water</span><span class="stat-value" id="show-water">—</span></div>
+            <div class="progress-bar-outer"><div class="progress-bar-inner" id="bar-water"></div></div>
+        </div>
+    </div>
 </div>
 
 <!-- PROGRESS SCREEN -->
@@ -221,6 +250,9 @@
     </div>
     <div class="nav-item" onclick="showScreen('screen-train')" id="nav-train">
         <span class="nav-icon">💪</span>Train
+    </div>
+    <div class="nav-item" onclick="showScreen('screen-calories')" id="nav-calories">
+        <span class="nav-icon">🍎</span>Calories
     </div>
     <div class="nav-item" onclick="showScreen('screen-progress')" id="nav-progress">
         <span class="nav-icon">📈</span>Progress
@@ -245,7 +277,9 @@
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         if (id === 'screen-home') document.getElementById('nav-home').classList.add('active');
         if (id === 'screen-train') document.getElementById('nav-train').classList.add('active');
+        if (id === 'screen-calories') document.getElementById('nav-calories').classList.add('active');
         if (id === 'screen-progress') document.getElementById('nav-progress').classList.add('active');
+        if (id === 'screen-calories') loadNutrition();
     }
 
     function selectMuscle(el, muscle) {
@@ -269,13 +303,11 @@
         const custom = document.getElementById('custom-exercise').value.trim();
         if (custom) selected.push(custom);
         if (selected.length === 0) return;
-
         selected.forEach(name => {
             if (!exercises.find(e => e.name === name)) {
                 exercises.push({ name, sets: [{ reps: '', weight: '' }] });
             }
         });
-
         document.getElementById('custom-exercise').value = '';
         document.querySelectorAll('.tag').forEach(t => t.classList.remove('selected'));
         document.getElementById('save-btn').style.display = 'block';
@@ -288,15 +320,12 @@
         exercises.forEach((ex, ei) => {
             const block = document.createElement('div');
             block.className = 'exercise-block';
-
-            // Find last session for this exercise
             const lastSession = workoutHistory.find(w => w.exercises.find(e => e.name === ex.name));
             const lastEx = lastSession ? lastSession.exercises.find(e => e.name === ex.name) : null;
             const lastPerformance = lastEx ? `<div style="background:#1a1a00; border:1px solid #333; border-radius:6px; padding:8px; margin-bottom:10px;">
                 <div style="color:#FFD700; font-size:11px; margin-bottom:4px;">⚡ LAST SESSION</div>
                 ${lastEx.sets.map((s, i) => `<div style="color:#aaa; font-size:12px;">Set ${i+1}: ${s.reps} reps @ ${s.weight}kg</div>`).join('')}
             </div>` : '<div style="color:#555; font-size:12px; margin-bottom:10px;">No previous data</div>';
-
             let setsHTML = `<div class="set-headers"><div class="set-header">SET</div><div class="set-header">REPS</div><div class="set-header">KG</div><div class="set-header"></div></div>`;
             ex.sets.forEach((set, si) => {
                 setsHTML += `<div class="set-row">
@@ -325,8 +354,8 @@
         document.getElementById('save-btn').style.display = 'none';
         document.querySelectorAll('.muscle-btn').forEach(b => b.classList.remove('selected'));
         renderHistory();
-    saveToStorage();
-    showScreen('screen-progress');
+        saveToStorage();
+        showScreen('screen-progress');
     }
 
     function renderHistory() {
@@ -339,7 +368,41 @@
             </div>`).join('');
     }
 
-    // LOCAL STORAGE
+    function saveNutrition() {
+        const today = new Date().toLocaleDateString('en-GB');
+        const entry = {
+            date: today,
+            calories: document.getElementById('input-calories').value,
+            protein: document.getElementById('input-protein').value,
+            steps: document.getElementById('input-steps').value,
+            water: document.getElementById('input-water').value
+        };
+        localStorage.setItem('nutrition-' + today, JSON.stringify(entry));
+        loadNutrition();
+    }
+
+    function loadNutrition() {
+        const today = new Date().toLocaleDateString('en-GB');
+        document.getElementById('cal-date').textContent = today;
+        const saved = localStorage.getItem('nutrition-' + today);
+        if (saved) {
+            const d = JSON.parse(saved);
+            document.getElementById('input-calories').value = d.calories;
+            document.getElementById('input-protein').value = d.protein;
+            document.getElementById('input-steps').value = d.steps;
+            document.getElementById('input-water').value = d.water;
+            document.getElementById('show-calories').textContent = d.calories + ' kcal';
+            document.getElementById('show-protein').textContent = d.protein + 'g';
+            document.getElementById('show-steps').textContent = d.steps;
+            document.getElementById('show-water').textContent = d.water + 'L';
+            document.getElementById('bar-calories').style.width = Math.min((d.calories/2400)*100, 100) + '%';
+            document.getElementById('bar-protein').style.width = Math.min((d.protein/180)*100, 100) + '%';
+            document.getElementById('bar-steps').style.width = Math.min((d.steps/5000)*100, 100) + '%';
+            document.getElementById('bar-water').style.width = Math.min((d.water/2.5)*100, 100) + '%';
+            document.getElementById('nutrition-summary').style.display = 'block';
+        }
+    }
+
     function saveToStorage() {
         localStorage.setItem('workoutHistory', JSON.stringify(workoutHistory));
     }
