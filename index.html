@@ -8,167 +8,147 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #000; color: #fff; font-family: Arial, sans-serif; padding-bottom: 80px; }
         
-        .header {
-            background: #000;
-            padding: 20px;
-            text-align: center;
-            border-bottom: 2px solid #FFD700;
-        }
+        .header { background: #000; padding: 20px; text-align: center; border-bottom: 2px solid #FFD700; }
         .header h1 { color: #FFD700; font-size: 24px; letter-spacing: 2px; }
         .header p { color: #aaa; font-size: 12px; margin-top: 4px; }
 
         .screen { display: none; padding: 20px; }
         .screen.active { display: block; }
 
-        .card {
-            background: #111;
-            border: 1px solid #222;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 16px;
-        }
+        .card { background: #111; border: 1px solid #222; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
         .card h2 { color: #FFD700; font-size: 14px; letter-spacing: 1px; margin-bottom: 12px; }
 
-        .stat-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .stat-row { display: flex; justify-content: space-between; margin-bottom: 8px; align-items: center; }
         .stat-label { color: #aaa; font-size: 14px; }
         .stat-value { color: #fff; font-size: 14px; font-weight: bold; }
 
         .progress-bar-outer { background: #222; border-radius: 999px; height: 10px; margin-top: 8px; }
-        .progress-bar-inner { background: #FFD700; height: 10px; border-radius: 999px; width: 0%; }
+        .progress-bar-inner { background: #FFD700; height: 10px; border-radius: 999px; width: 0%; transition: width 0.3s; }
 
-        .btn {
-            background: #FFD700;
-            color: #000;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 20px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            margin-bottom: 10px;
-        }
-        .btn-outline {
-            background: transparent;
-            color: #FFD700;
-            border: 1px solid #FFD700;
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-size: 14px;
-            cursor: pointer;
-            width: 100%;
-            margin-bottom: 10px;
-        }
+        .btn { background: #FFD700; color: #000; border: none; border-radius: 8px; padding: 12px 20px; font-size: 14px; font-weight: bold; cursor: pointer; width: 100%; margin-bottom: 10px; }
+        .btn-outline { background: transparent; color: #FFD700; border: 1px solid #FFD700; border-radius: 8px; padding: 10px 20px; font-size: 14px; cursor: pointer; width: 100%; margin-bottom: 10px; }
+        .btn-small { background: #222; color: #FFD700; border: 1px solid #333; border-radius: 6px; padding: 8px 12px; font-size: 12px; cursor: pointer; margin-right: 6px; margin-bottom: 6px; }
 
-        .muscle-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .muscle-btn {
-            background: #111;
-            border: 1px solid #333;
-            border-radius: 10px;
-            padding: 16px;
-            text-align: center;
-            cursor: pointer;
-            color: #fff;
-            font-size: 13px;
-        }
+        .score-circle { width: 120px; height: 120px; border-radius: 50%; border: 4px solid #FFD700; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 16px; }
+        .score-number { color: #FFD700; font-size: 36px; font-weight: bold; }
+        .score-label { color: #aaa; font-size: 11px; }
+
+        .coach-prompt { background: #1a1a00; border: 1px solid #FFD700; border-radius: 8px; padding: 12px; margin-bottom: 8px; color: #fff; font-size: 13px; }
+        .coach-prompt span { color: #FFD700; font-weight: bold; }
+
+        .streak-bar { display: flex; gap: 6px; margin-top: 8px; }
+        .streak-day { width: 32px; height: 32px; border-radius: 6px; background: #222; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #555; }
+        .streak-day.done { background: #FFD700; color: #000; font-weight: bold; }
+        .streak-day.today { border: 2px solid #FFD700; }
+
+        .muscle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .muscle-btn { background: #111; border: 1px solid #333; border-radius: 10px; padding: 16px; text-align: center; cursor: pointer; color: #fff; font-size: 13px; }
         .muscle-btn.selected { border-color: #FFD700; color: #FFD700; }
         .muscle-btn .icon { font-size: 24px; display: block; margin-bottom: 6px; }
 
-        .exercise-block {
-            background: #111;
-            border: 1px solid #222;
-            border-radius: 10px;
-            padding: 16px;
-            margin-bottom: 12px;
-        }
+        .exercise-block { background: #111; border: 1px solid #222; border-radius: 10px; padding: 16px; margin-bottom: 12px; }
         .exercise-name { color: #FFD700; font-size: 14px; font-weight: bold; margin-bottom: 10px; }
-        .set-row {
-            display: grid;
-            grid-template-columns: 40px 1fr 1fr 40px;
-            gap: 8px;
-            align-items: center;
-            margin-bottom: 8px;
-        }
+        .set-row { display: grid; grid-template-columns: 40px 1fr 1fr 40px; gap: 8px; align-items: center; margin-bottom: 8px; }
         .set-num { color: #aaa; font-size: 13px; text-align: center; }
-        .set-input {
-            background: #222;
-            border: 1px solid #333;
-            border-radius: 6px;
-            color: #fff;
-            padding: 8px;
-            font-size: 13px;
-            text-align: center;
-            width: 100%;
-        }
+        .set-input { background: #222; border: 1px solid #333; border-radius: 6px; color: #fff; padding: 8px; font-size: 13px; text-align: center; width: 100%; }
         .set-input::placeholder { color: #555; }
         .remove-set { color: #555; cursor: pointer; text-align: center; font-size: 18px; }
-        .set-headers {
-            display: grid;
-            grid-template-columns: 40px 1fr 1fr 40px;
-            gap: 8px;
-            margin-bottom: 6px;
-        }
+        .set-headers { display: grid; grid-template-columns: 40px 1fr 1fr 40px; gap: 8px; margin-bottom: 6px; }
         .set-header { color: #555; font-size: 11px; text-align: center; }
+        .pr-badge { background: #FFD700; color: #000; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-left: 8px; }
 
-        .nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #111;
-            border-top: 2px solid #FFD700;
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            z-index: 9999;
-        }
-        .nav-item { color: #aaa; font-size: 11px; text-align: center; cursor: pointer; flex: 1; }
+        .rest-timer { background: #1a1a00; border: 1px solid #FFD700; border-radius: 8px; padding: 12px; text-align: center; margin-bottom: 12px; display: none; }
+        .rest-timer-count { color: #FFD700; font-size: 32px; font-weight: bold; }
+
+        .food-entry { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #222; }
+        .food-entry-name { color: #fff; font-size: 13px; }
+        .food-entry-cals { color: #FFD700; font-size: 13px; font-weight: bold; }
+        .food-entry-delete { color: #555; cursor: pointer; font-size: 16px; padding: 4px; }
+
+        .quick-add-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+
+        .pb-item { background: #1a1a00; border: 1px solid #333; border-radius: 8px; padding: 12px; margin-bottom: 8px; }
+        .pb-exercise { color: #FFD700; font-size: 13px; font-weight: bold; }
+        .pb-value { color: #fff; font-size: 18px; font-weight: bold; margin-top: 4px; }
+
+        .checkin-item { border-bottom: 1px solid #222; padding: 12px 0; }
+        .checkin-date { color: #FFD700; font-size: 13px; font-weight: bold; }
+        .checkin-detail { color: #aaa; font-size: 12px; margin-top: 4px; }
+
+        select { background: #222; border: 1px solid #333; border-radius: 8px; color: #fff; padding: 12px; font-size: 14px; width: 100%; margin-bottom: 10px; }
+
+        .nav { position: fixed; bottom: 0; left: 0; right: 0; background: #111; border-top: 2px solid #FFD700; display: flex; justify-content: space-around; padding: 12px 0; z-index: 9999; }
+        .nav-item { color: #aaa; font-size: 10px; text-align: center; cursor: pointer; flex: 1; }
         .nav-item.active { color: #FFD700; }
-        .nav-icon { font-size: 20px; display: block; margin-bottom: 2px; }
+        .nav-icon { font-size: 18px; display: block; margin-bottom: 2px; }
 
         .tag { background: #FFD700; color: #000; border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: bold; margin-right: 6px; margin-bottom: 6px; display: inline-block; cursor: pointer; }
         .tag.selected { background: #000; color: #FFD700; border: 1px solid #FFD700; }
 
         input[type="text"], input[type="number"] { background: #222; border: 1px solid #333; border-radius: 8px; color: #fff; padding: 12px; font-size: 14px; width: 100%; margin-bottom: 10px; }
         label { color: #aaa; font-size: 13px; display: block; margin-bottom: 4px; }
+
+        .on-track { color: #4CAF50; font-weight: bold; }
+        .off-track { color: #f44336; font-weight: bold; }
+        .warning { color: #FF9800; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="header">
     <h1>POCKETGYMS</h1>
-    <p>REAL PROGRESS. NO GUESSWORK.</p>
+    <p id="header-sub">REAL PROGRESS. NO GUESSWORK.</p>
 </div>
 
 <!-- HOME SCREEN -->
 <div class="screen active" id="screen-home">
+    <div class="card" style="text-align:center;">
+        <h2>TODAY'S SCORE</h2>
+        <div class="score-circle">
+            <div class="score-number" id="today-score">0</div>
+            <div class="score-label">/ 100</div>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">Weekly Streak</span>
+            <span class="stat-value" id="streak-count">0/7 days</span>
+        </div>
+        <div class="streak-bar" id="streak-bar"></div>
+    </div>
+
+    <div class="card" id="coach-card">
+        <h2>🔥 WHAT TO DO NEXT</h2>
+        <div id="coach-prompts"></div>
+    </div>
+
+    <div class="card">
+        <h2>TODAY'S PROGRESS</h2>
+        <div class="stat-row"><span class="stat-label">Calories</span><span class="stat-value" id="home-calories">—</span></div>
+        <div class="progress-bar-outer"><div class="progress-bar-inner" id="home-bar-calories"></div></div>
+        <div class="stat-row" style="margin-top:12px;"><span class="stat-label">Protein</span><span class="stat-value" id="home-protein">—</span></div>
+        <div class="progress-bar-outer"><div class="progress-bar-inner" id="home-bar-protein"></div></div>
+        <div class="stat-row" style="margin-top:12px;"><span class="stat-label">Steps</span><span class="stat-value" id="home-steps">—</span></div>
+        <div class="progress-bar-outer"><div class="progress-bar-inner" id="home-bar-steps"></div></div>
+        <div class="stat-row" style="margin-top:12px;"><span class="stat-label">Water</span><span class="stat-value" id="home-water">—</span></div>
+        <div class="progress-bar-outer"><div class="progress-bar-inner" id="home-bar-water"></div></div>
+    </div>
+
     <div class="card">
         <h2>MY PROGRAMME</h2>
-        <div class="stat-row"><span class="stat-label">Programme</span><span class="stat-value">Beginner</span></div>
-        <div class="stat-row"><span class="stat-label">Current Week</span><span class="stat-value">Week 1</span></div>
-        <div class="stat-row"><span class="stat-label">Start Date</span><span class="stat-value">08 Apr 2026</span></div>
-        <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:12%"></div></div>
-        <p style="color:#aaa; font-size:12px; margin-top:6px;">12% complete</p>
+        <div class="stat-row"><span class="stat-label">Programme</span><span class="stat-value" id="home-programme">—</span></div>
+        <div class="stat-row"><span class="stat-label">Current Week</span><span class="stat-value" id="home-week">—</span></div>
+        <div class="stat-row"><span class="stat-label">Start Date</span><span class="stat-value" id="home-startdate">—</span></div>
+        <div class="progress-bar-outer"><div class="progress-bar-inner" id="home-prog-bar"></div></div>
+        <p style="color:#aaa; font-size:12px; margin-top:6px;" id="home-prog-pct"></p>
     </div>
+
     <div class="card">
-        <h2>MY TARGETS</h2>
-        <div class="stat-row"><span class="stat-label">Calories</span><span class="stat-value">2,400 kcal</span></div>
-        <div class="stat-row"><span class="stat-label">Protein</span><span class="stat-value">180g</span></div>
-        <div class="stat-row"><span class="stat-label">Steps</span><span class="stat-value">5,000</span></div>
-        <div class="stat-row"><span class="stat-label">Training Days</span><span class="stat-value">4 days/week</span></div>
+        <h2>WEIGHT</h2>
+        <div class="stat-row"><span class="stat-label">Current</span><span class="stat-value" id="home-current-weight">—</span></div>
+        <div class="stat-row"><span class="stat-label">Target</span><span class="stat-value" id="home-target-weight">—</span></div>
+        <div class="stat-row"><span class="stat-label">Change</span><span class="stat-value" id="home-weight-change">—</span></div>
     </div>
-    <div class="card">
-        <h2>WEIGHT PROGRESS</h2>
-        <div class="stat-row"><span class="stat-label">Current Weight</span><span class="stat-value">—</span></div>
-        <div class="stat-row"><span class="stat-label">Target Weight</span><span class="stat-value">—</span></div>
-        <div class="stat-row"><span class="stat-label">Change</span><span class="stat-value">0 lbs</span></div>
-    </div>
-    <button class="btn" onclick="showScreen('screen-train')">+ LOG A WORKOUT</button>
+
+    <button class="btn" onclick="showScreen('screen-train')">💪 LOG A WORKOUT</button>
 </div>
 
 <!-- TRAIN SCREEN -->
@@ -182,13 +162,22 @@
             <div class="muscle-btn" onclick="selectMuscle(this, 'Core')"><span class="icon">⚡</span>CORE</div>
         </div>
     </div>
+
+    <div class="rest-timer" id="rest-timer">
+        <div style="color:#aaa; font-size:12px; margin-bottom:4px;">REST TIMER</div>
+        <div class="rest-timer-count" id="rest-count">60</div>
+        <button class="btn-small" onclick="stopTimer()" style="margin-top:8px;">Stop</button>
+    </div>
+
     <div class="card" id="exercise-picker" style="display:none;">
         <h2>ADD EXERCISE</h2>
         <div id="exercise-tags"></div>
         <input type="text" id="custom-exercise" placeholder="Or type your own exercise...">
         <button class="btn" onclick="addExercise()">+ ADD EXERCISE</button>
     </div>
+
     <div id="exercise-log"></div>
+
     <button class="btn" onclick="saveWorkout()" style="display:none;" id="save-btn">✅ SAVE WORKOUT</button>
     <button class="btn-outline" onclick="showScreen('screen-home')">← BACK</button>
 </div>
@@ -197,13 +186,30 @@
 <div class="screen" id="screen-calories">
     <div class="card">
         <h2>TODAY'S NUTRITION</h2>
-        <div class="stat-row">
-            <span class="stat-label">Date</span>
-            <span class="stat-value" id="cal-date"></span>
+        <div class="stat-row"><span class="stat-label">Date</span><span class="stat-value" id="cal-date"></span></div>
+        <div class="stat-row" style="margin-top:8px;"><span class="stat-label">Status</span><span id="cal-status" class="stat-value">—</span></div>
+    </div>
+
+    <div class="card">
+        <h2>QUICK ADD</h2>
+        <div style="margin-bottom:8px;"><span style="color:#aaa; font-size:12px;">CALORIES</span></div>
+        <div class="quick-add-grid">
+            <button class="btn-small" onclick="quickAdd('calories', 200)">+200 kcal</button>
+            <button class="btn-small" onclick="quickAdd('calories', 500)">+500 kcal</button>
+            <button class="btn-small" onclick="quickAdd('calories', 750)">+750 kcal</button>
+            <button class="btn-small" onclick="quickAdd('calories', 1000)">+1000 kcal</button>
+        </div>
+        <div style="margin-bottom:8px;"><span style="color:#aaa; font-size:12px;">PROTEIN</span></div>
+        <div class="quick-add-grid">
+            <button class="btn-small" onclick="quickAdd('protein', 20)">+20g</button>
+            <button class="btn-small" onclick="quickAdd('protein', 30)">+30g</button>
+            <button class="btn-small" onclick="quickAdd('protein', 40)">+40g</button>
+            <button class="btn-small" onclick="quickAdd('protein', 50)">+50g</button>
         </div>
     </div>
+
     <div class="card">
-        <h2>LOG YOUR INTAKE</h2>
+        <h2>LOG MANUALLY</h2>
         <label>Calories</label>
         <input type="number" id="input-calories" placeholder="e.g. 2400">
         <label>Protein (g)</label>
@@ -212,10 +218,11 @@
         <input type="number" id="input-steps" placeholder="e.g. 5000">
         <label>Water (litres)</label>
         <input type="number" id="input-water" placeholder="e.g. 2.5">
-        <button class="btn" onclick="saveNutrition()">✅ SAVE TODAY'S LOG</button>
+        <button class="btn" onclick="saveNutrition()">✅ SAVE LOG</button>
     </div>
+
     <div class="card" id="nutrition-summary" style="display:none;">
-        <h2>TODAY'S PROGRESS</h2>
+        <h2>TODAY'S TOTALS</h2>
         <div style="margin-bottom:12px;">
             <div class="stat-row"><span class="stat-label">Calories</span><span class="stat-value" id="show-calories">—</span></div>
             <div class="progress-bar-outer"><div class="progress-bar-inner" id="bar-calories"></div></div>
@@ -238,9 +245,88 @@
 <!-- PROGRESS SCREEN -->
 <div class="screen" id="screen-progress">
     <div class="card">
+        <h2>8 WEEK TRANSFORMATION</h2>
+        <div class="stat-row"><span class="stat-label">Week</span><span class="stat-value" id="prog-week">—</span></div>
+        <div class="progress-bar-outer"><div class="progress-bar-inner" id="prog-bar"></div></div>
+        <p style="color:#aaa; font-size:12px; margin-top:6px;" id="prog-pct"></p>
+    </div>
+
+    <div class="card">
+        <h2>CONSISTENCY SCORE</h2>
+        <div class="stat-row"><span class="stat-label">Days targets hit</span><span class="stat-value" id="consistency-score">—</span></div>
+        <div class="stat-row"><span class="stat-label">Workouts completed</span><span class="stat-value" id="workouts-count">—</span></div>
+    </div>
+
+    <div class="card">
+        <h2>🏆 PERSONAL BESTS</h2>
+        <div id="pb-list"><p style="color:#aaa;">Log workouts to track personal bests.</p></div>
+    </div>
+
+    <div class="card">
+        <h2>WEEKLY CHECK-IN</h2>
+        <label>This week's weight (kg)</label>
+        <input type="number" id="checkin-weight" placeholder="e.g. 80">
+        <label>Energy levels (1-10)</label>
+        <input type="number" id="checkin-energy" placeholder="e.g. 7" min="1" max="10">
+        <label>Notes</label>
+        <input type="text" id="checkin-notes" placeholder="How did this week go?">
+        <button class="btn" onclick="saveCheckin()">✅ SAVE CHECK-IN</button>
+        <div id="checkin-history"></div>
+    </div>
+
+    <div class="card">
         <h2>WORKOUT HISTORY</h2>
         <div id="history-list"><p style="color:#aaa;">No workouts logged yet.</p></div>
     </div>
+</div>
+
+<!-- SETTINGS SCREEN -->
+<div class="screen" id="screen-settings">
+    <div class="card">
+        <h2>YOUR DETAILS</h2>
+        <label>Name</label>
+        <input type="text" id="set-name" placeholder="Your name">
+        <label>Age</label>
+        <input type="number" id="set-age" placeholder="e.g. 25">
+        <label>Gender</label>
+        <select id="set-gender">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
+        <label>Height (cm)</label>
+        <input type="number" id="set-height" placeholder="e.g. 175">
+        <label>Current Weight (kg)</label>
+        <input type="number" id="set-weight" placeholder="e.g. 80">
+        <label>Target Weight (kg)</label>
+        <input type="number" id="set-target-weight" placeholder="e.g. 75">
+        <label>Activity Level</label>
+        <select id="set-activity">
+            <option value="1.2">Sedentary (little/no exercise)</option>
+            <option value="1.375">Lightly active (1-3 days/week)</option>
+            <option value="1.55">Moderately active (3-5 days/week)</option>
+            <option value="1.725">Very active (6-7 days/week)</option>
+        </select>
+        <label>Goal</label>
+        <select id="set-goal">
+            <option value="beginner">Beginner</option>
+            <option value="fatloss">Fat Loss</option>
+            <option value="muscle">Muscle Building</option>
+        </select>
+        <label>Programme Start Date</label>
+        <input type="text" id="set-startdate" placeholder="e.g. 08/04/2026">
+        <label>Training Days Per Week</label>
+        <input type="number" id="set-training-days" placeholder="e.g. 4" min="1" max="7">
+    </div>
+
+    <div class="card" id="tdee-result" style="display:none;">
+        <h2>🧠 YOUR CALCULATED TARGETS</h2>
+        <div class="stat-row"><span class="stat-label">TDEE</span><span class="stat-value" id="tdee-value">—</span></div>
+        <div class="stat-row"><span class="stat-label">Calorie Target</span><span class="stat-value" id="cal-target-value">—</span></div>
+        <div class="stat-row"><span class="stat-label">Protein Target</span><span class="stat-value" id="protein-target-value">—</span></div>
+        <div class="stat-row"><span class="stat-label">Steps Target</span><span class="stat-value" id="steps-target-value">—</span></div>
+    </div>
+
+    <button class="btn" onclick="saveSettings()">✅ SAVE & CALCULATE</button>
 </div>
 
 <!-- NAV -->
@@ -257,6 +343,9 @@
     <div class="nav-item" onclick="showScreen('screen-progress')" id="nav-progress">
         <span class="nav-icon">📈</span>Progress
     </div>
+    <div class="nav-item" onclick="showScreen('screen-settings')" id="nav-settings">
+        <span class="nav-icon">⚙️</span>Settings
+    </div>
 </div>
 
 <script>
@@ -270,18 +359,196 @@
     let selectedMuscle = '';
     let exercises = [];
     let workoutHistory = [];
+    let checkinHistory = [];
+    let personalBests = {};
+    let settings = {};
+    let timerInterval = null;
 
     function showScreen(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        if (id === 'screen-home') document.getElementById('nav-home').classList.add('active');
+        if (id === 'screen-home') { document.getElementById('nav-home').classList.add('active'); updateHome(); }
         if (id === 'screen-train') document.getElementById('nav-train').classList.add('active');
-        if (id === 'screen-calories') document.getElementById('nav-calories').classList.add('active');
-        if (id === 'screen-progress') document.getElementById('nav-progress').classList.add('active');
-        if (id === 'screen-calories') loadNutrition();
+        if (id === 'screen-calories') { document.getElementById('nav-calories').classList.add('active'); loadNutrition(); }
+        if (id === 'screen-progress') { document.getElementById('nav-progress').classList.add('active'); updateProgress(); }
+        if (id === 'screen-settings') { document.getElementById('nav-settings').classList.add('active'); loadSettings(); }
     }
 
+    // SETTINGS & TDEE
+    function saveSettings() {
+        const age = parseInt(document.getElementById('set-age').value);
+        const weight = parseFloat(document.getElementById('set-weight').value);
+        const height = parseFloat(document.getElementById('set-height').value);
+        const gender = document.getElementById('set-gender').value;
+        const activity = parseFloat(document.getElementById('set-activity').value);
+        const goal = document.getElementById('set-goal').value;
+
+        // Mifflin-St Jeor BMR
+        let bmr;
+        if (gender === 'male') {
+            bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+        } else {
+            bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+        }
+        const tdee = Math.round(bmr * activity);
+
+        let calTarget, proteinTarget;
+        if (goal === 'fatloss') {
+            calTarget = tdee - 500;
+            proteinTarget = Math.round(weight * 2.2);
+        } else if (goal === 'muscle') {
+            calTarget = tdee + 300;
+            proteinTarget = Math.round(weight * 2.4);
+        } else {
+            calTarget = tdee;
+            proteinTarget = Math.round(weight * 2.0);
+        }
+
+        settings = {
+            name: document.getElementById('set-name').value,
+            age, weight, height, gender, activity, goal,
+            targetWeight: parseFloat(document.getElementById('set-target-weight').value),
+            startDate: document.getElementById('set-startdate').value,
+            trainingDays: parseInt(document.getElementById('set-training-days').value),
+            tdee, calTarget, proteinTarget,
+            stepsTarget: 8000
+        };
+
+        localStorage.setItem('settings', JSON.stringify(settings));
+
+        document.getElementById('tdee-value').textContent = tdee + ' kcal';
+        document.getElementById('cal-target-value').textContent = calTarget + ' kcal';
+        document.getElementById('protein-target-value').textContent = proteinTarget + 'g';
+        document.getElementById('steps-target-value').textContent = '8,000 steps';
+        document.getElementById('tdee-result').style.display = 'block';
+
+        updateHome();
+    }
+
+    function loadSettings() {
+        const saved = localStorage.getItem('settings');
+        if (saved) {
+            settings = JSON.parse(saved);
+            document.getElementById('set-name').value = settings.name || '';
+            document.getElementById('set-age').value = settings.age || '';
+            document.getElementById('set-gender').value = settings.gender || 'male';
+            document.getElementById('set-height').value = settings.height || '';
+            document.getElementById('set-weight').value = settings.weight || '';
+            document.getElementById('set-target-weight').value = settings.targetWeight || '';
+            document.getElementById('set-activity').value = settings.activity || '1.55';
+            document.getElementById('set-goal').value = settings.goal || 'beginner';
+            document.getElementById('set-startdate').value = settings.startDate || '';
+            document.getElementById('set-training-days').value = settings.trainingDays || '';
+            if (settings.tdee) {
+                document.getElementById('tdee-value').textContent = settings.tdee + ' kcal';
+                document.getElementById('cal-target-value').textContent = settings.calTarget + ' kcal';
+                document.getElementById('protein-target-value').textContent = settings.proteinTarget + 'g';
+                document.getElementById('steps-target-value').textContent = '8,000 steps';
+                document.getElementById('tdee-result').style.display = 'block';
+            }
+        }
+    }
+
+    // HOME
+    function updateHome() {
+        const s = settings;
+        const calTarget = s.calTarget || 2400;
+        const proteinTarget = s.proteinTarget || 180;
+        const stepsTarget = s.stepsTarget || 8000;
+
+        // Programme info
+        if (s.startDate) {
+            const parts = s.startDate.split('/');
+            const start = new Date(parts[2], parts[1]-1, parts[0]);
+            const now = new Date();
+            const daysDiff = Math.floor((now - start) / (1000*60*60*24));
+            const week = Math.min(Math.floor(daysDiff / 7) + 1, 8);
+            const pct = Math.min(Math.round((daysDiff / 56) * 100), 100);
+            document.getElementById('home-programme').textContent = s.goal ? s.goal.charAt(0).toUpperCase() + s.goal.slice(1) : '—';
+            document.getElementById('home-week').textContent = 'Week ' + week;
+            document.getElementById('home-startdate').textContent = s.startDate;
+            document.getElementById('home-prog-bar').style.width = pct + '%';
+            document.getElementById('home-prog-pct').textContent = pct + '% complete';
+        }
+
+        // Weight
+        if (s.weight) {
+            document.getElementById('home-current-weight').textContent = s.weight + 'kg';
+            document.getElementById('home-target-weight').textContent = (s.targetWeight || '—') + 'kg';
+            const change = s.weight - (s.targetWeight || s.weight);
+            document.getElementById('home-weight-change').textContent = change > 0 ? '+' + change + 'kg' : change + 'kg';
+        }
+
+        // Today's nutrition
+        const today = new Date().toLocaleDateString('en-GB');
+        const nutrition = localStorage.getItem('nutrition-' + today);
+        let cals = 0, protein = 0, steps = 0, water = 0;
+        if (nutrition) {
+            const d = JSON.parse(nutrition);
+            cals = parseInt(d.calories) || 0;
+            protein = parseInt(d.protein) || 0;
+            steps = parseInt(d.steps) || 0;
+            water = parseFloat(d.water) || 0;
+        }
+
+        document.getElementById('home-calories').textContent = cals + ' / ' + calTarget + ' kcal';
+        document.getElementById('home-protein').textContent = protein + ' / ' + proteinTarget + 'g';
+        document.getElementById('home-steps').textContent = steps + ' / ' + stepsTarget;
+        document.getElementById('home-water').textContent = water + ' / 2.5L';
+
+        document.getElementById('home-bar-calories').style.width = Math.min((cals/calTarget)*100, 100) + '%';
+        document.getElementById('home-bar-protein').style.width = Math.min((protein/proteinTarget)*100, 100) + '%';
+        document.getElementById('home-bar-steps').style.width = Math.min((steps/stepsTarget)*100, 100) + '%';
+        document.getElementById('home-bar-water').style.width = Math.min((water/2.5)*100, 100) + '%';
+
+        // Today's score
+        const todayWorkout = workoutHistory.find(w => w.date === today);
+        const calScore = Math.min((cals/calTarget)*25, 25);
+        const proteinScore = Math.min((protein/proteinTarget)*25, 25);
+        const stepsScore = Math.min((steps/stepsTarget)*25, 25);
+        const workoutScore = todayWorkout ? 25 : 0;
+        const totalScore = Math.round(calScore + proteinScore + stepsScore + workoutScore);
+        document.getElementById('today-score').textContent = totalScore;
+
+        // Weekly streak
+        const streakBar = document.getElementById('streak-bar');
+        streakBar.innerHTML = '';
+        let streakCount = 0;
+        const days = ['M','T','W','T','F','S','S'];
+        const now = new Date();
+        const dayOfWeek = now.getDay();
+        for (let i = 0; i < 7; i++) {
+            const d = document.createElement('div');
+            d.className = 'streak-day';
+            const dayDate = new Date(now);
+            dayDate.setDate(now.getDate() - ((dayOfWeek + 6 - i) % 7));
+            const dateStr = dayDate.toLocaleDateString('en-GB');
+            const hasNutrition = localStorage.getItem('nutrition-' + dateStr);
+            const hasWorkout = workoutHistory.find(w => w.date === dateStr);
+            if (hasNutrition || hasWorkout) { d.classList.add('done'); streakCount++; }
+            if (i === (dayOfWeek === 0 ? 6 : dayOfWeek - 1)) d.classList.add('today');
+            d.textContent = days[i];
+            streakBar.appendChild(d);
+        }
+        document.getElementById('streak-count').textContent = streakCount + '/7 days';
+
+        // Coach prompts
+        const prompts = [];
+        const calRemaining = calTarget - cals;
+        const proteinRemaining = proteinTarget - protein;
+        const stepsRemaining = stepsTarget - steps;
+
+        if (!todayWorkout) prompts.push("💪 You haven't trained today — get it done");
+        if (proteinRemaining > 0) prompts.push(`🥩 You need <span>${proteinRemaining}g protein</span> to hit your target`);
+        if (calRemaining > 200) prompts.push(`🍽 <span>${calRemaining} calories</span> remaining today`);
+        if (stepsRemaining > 0) prompts.push(`👟 <span>${stepsRemaining} steps</span> remaining`);
+        if (prompts.length === 0) prompts.push('🎯 You\'re smashing it today — keep going!');
+
+        document.getElementById('coach-prompts').innerHTML = prompts.map(p => `<div class="coach-prompt">${p}</div>`).join('');
+    }
+
+    // TRAIN
     function selectMuscle(el, muscle) {
         document.querySelectorAll('.muscle-btn').forEach(b => b.classList.remove('selected'));
         el.classList.add('selected');
@@ -322,10 +589,25 @@
             block.className = 'exercise-block';
             const lastSession = workoutHistory.find(w => w.exercises.find(e => e.name === ex.name));
             const lastEx = lastSession ? lastSession.exercises.find(e => e.name === ex.name) : null;
+            const pb = personalBests[ex.name];
+
+            let suggestion = '';
+            if (lastEx && lastEx.sets.length > 0) {
+                const lastWeight = parseFloat(lastEx.sets[0].weight) || 0;
+                const suggestedWeight = lastWeight > 0 ? (lastWeight + 2.5).toFixed(1) : lastWeight;
+                suggestion = `<div style="background:#001a00; border:1px solid #4CAF50; border-radius:6px; padding:8px; margin-bottom:8px;">
+                    <div style="color:#4CAF50; font-size:11px; margin-bottom:2px;">🎯 AUTO PROGRESSION</div>
+                    <div style="color:#fff; font-size:12px;">Try <strong>${suggestedWeight}kg</strong> today (last: ${lastWeight}kg)</div>
+                </div>`;
+            }
+
             const lastPerformance = lastEx ? `<div style="background:#1a1a00; border:1px solid #333; border-radius:6px; padding:8px; margin-bottom:10px;">
                 <div style="color:#FFD700; font-size:11px; margin-bottom:4px;">⚡ LAST SESSION</div>
                 ${lastEx.sets.map((s, i) => `<div style="color:#aaa; font-size:12px;">Set ${i+1}: ${s.reps} reps @ ${s.weight}kg</div>`).join('')}
             </div>` : '<div style="color:#555; font-size:12px; margin-bottom:10px;">No previous data</div>';
+
+            const pbBadge = pb ? `<span class="pr-badge">🏆 PB: ${pb.weight}kg x ${pb.reps}</span>` : '';
+
             let setsHTML = `<div class="set-headers"><div class="set-header">SET</div><div class="set-header">REPS</div><div class="set-header">KG</div><div class="set-header"></div></div>`;
             ex.sets.forEach((set, si) => {
                 setsHTML += `<div class="set-row">
@@ -335,7 +617,13 @@
                     <div class="remove-set" onclick="removeSet(${ei},${si})">✕</div>
                 </div>`;
             });
-            block.innerHTML = `<div class="exercise-name">${ex.name}</div>${lastPerformance}${setsHTML}<button class="btn-outline" onclick="addSet(${ei})" style="margin-top:8px;">+ ADD SET</button>`;
+
+            block.innerHTML = `<div class="exercise-name">${ex.name} ${pbBadge}</div>${suggestion}${lastPerformance}${setsHTML}
+                <div style="display:flex; gap:8px; margin-top:8px;">
+                    <button class="btn-outline" onclick="addSet(${ei})" style="flex:1;">+ SET</button>
+                    <button class="btn-small" onclick="startTimer(60)">⏱ 60s</button>
+                    <button class="btn-small" onclick="startTimer(90)">⏱ 90s</button>
+                </div>`;
             log.appendChild(block);
         });
     }
@@ -344,8 +632,34 @@
     function addSet(ei) { exercises[ei].sets.push({ reps: '', weight: '' }); renderExercises(); }
     function removeSet(ei, si) { if (exercises[ei].sets.length > 1) { exercises[ei].sets.splice(si, 1); renderExercises(); } }
 
+    function startTimer(seconds) {
+        if (timerInterval) clearInterval(timerInterval);
+        let remaining = seconds;
+        document.getElementById('rest-timer').style.display = 'block';
+        document.getElementById('rest-count').textContent = remaining;
+        timerInterval = setInterval(() => {
+            remaining--;
+            document.getElementById('rest-count').textContent = remaining;
+            if (remaining <= 0) { clearInterval(timerInterval); document.getElementById('rest-timer').style.display = 'none'; }
+        }, 1000);
+    }
+
+    function stopTimer() { clearInterval(timerInterval); document.getElementById('rest-timer').style.display = 'none'; }
+
     function saveWorkout() {
         const date = new Date().toLocaleDateString('en-GB');
+        // Check personal bests
+        exercises.forEach(ex => {
+            ex.sets.forEach(set => {
+                const w = parseFloat(set.weight) || 0;
+                const r = parseInt(set.reps) || 0;
+                if (w > 0 && r > 0) {
+                    if (!personalBests[ex.name] || w > personalBests[ex.name].weight) {
+                        personalBests[ex.name] = { weight: w, reps: r, date };
+                    }
+                }
+            });
+        });
         workoutHistory.unshift({ muscle: selectedMuscle, exercises: JSON.parse(JSON.stringify(exercises)), date });
         exercises = [];
         selectedMuscle = '';
@@ -353,8 +667,8 @@
         document.getElementById('exercise-picker').style.display = 'none';
         document.getElementById('save-btn').style.display = 'none';
         document.querySelectorAll('.muscle-btn').forEach(b => b.classList.remove('selected'));
-        renderHistory();
         saveToStorage();
+        renderHistory();
         showScreen('screen-progress');
     }
 
@@ -368,21 +682,38 @@
             </div>`).join('');
     }
 
+    // CALORIES
+    function quickAdd(field, amount) {
+        const today = new Date().toLocaleDateString('en-GB');
+        const saved = localStorage.getItem('nutrition-' + today);
+        let data = saved ? JSON.parse(saved) : { calories: 0, protein: 0, steps: 0, water: 0 };
+        data[field] = (parseInt(data[field]) || 0) + amount;
+        data.date = today;
+        localStorage.setItem('nutrition-' + today, JSON.stringify(data));
+        document.getElementById('input-calories').value = data.calories;
+        document.getElementById('input-protein').value = data.protein;
+        loadNutrition();
+    }
+
     function saveNutrition() {
         const today = new Date().toLocaleDateString('en-GB');
         const entry = {
             date: today,
-            calories: document.getElementById('input-calories').value,
-            protein: document.getElementById('input-protein').value,
-            steps: document.getElementById('input-steps').value,
-            water: document.getElementById('input-water').value
+            calories: document.getElementById('input-calories').value || 0,
+            protein: document.getElementById('input-protein').value || 0,
+            steps: document.getElementById('input-steps').value || 0,
+            water: document.getElementById('input-water').value || 0
         };
         localStorage.setItem('nutrition-' + today, JSON.stringify(entry));
         loadNutrition();
+        updateHome();
     }
 
     function loadNutrition() {
         const today = new Date().toLocaleDateString('en-GB');
+        const calTarget = settings.calTarget || 2400;
+        const proteinTarget = settings.proteinTarget || 180;
+        const stepsTarget = settings.stepsTarget || 8000;
         document.getElementById('cal-date').textContent = today;
         const saved = localStorage.getItem('nutrition-' + today);
         if (saved) {
@@ -391,28 +722,120 @@
             document.getElementById('input-protein').value = d.protein;
             document.getElementById('input-steps').value = d.steps;
             document.getElementById('input-water').value = d.water;
-            document.getElementById('show-calories').textContent = d.calories + ' kcal';
-            document.getElementById('show-protein').textContent = d.protein + 'g';
-            document.getElementById('show-steps').textContent = d.steps;
-            document.getElementById('show-water').textContent = d.water + 'L';
-            document.getElementById('bar-calories').style.width = Math.min((d.calories/2400)*100, 100) + '%';
-            document.getElementById('bar-protein').style.width = Math.min((d.protein/180)*100, 100) + '%';
-            document.getElementById('bar-steps').style.width = Math.min((d.steps/5000)*100, 100) + '%';
+            document.getElementById('show-calories').textContent = d.calories + ' / ' + calTarget + ' kcal';
+            document.getElementById('show-protein').textContent = d.protein + ' / ' + proteinTarget + 'g';
+            document.getElementById('show-steps').textContent = d.steps + ' / ' + stepsTarget;
+            document.getElementById('show-water').textContent = d.water + 'L / 2.5L';
+            document.getElementById('bar-calories').style.width = Math.min((d.calories/calTarget)*100, 100) + '%';
+            document.getElementById('bar-protein').style.width = Math.min((d.protein/proteinTarget)*100, 100) + '%';
+            document.getElementById('bar-steps').style.width = Math.min((d.steps/stepsTarget)*100, 100) + '%';
             document.getElementById('bar-water').style.width = Math.min((d.water/2.5)*100, 100) + '%';
             document.getElementById('nutrition-summary').style.display = 'block';
+
+            // On track status
+            const hour = new Date().getHours();
+            const expectedCals = Math.round((hour / 24) * calTarget);
+            const calStatus = document.getElementById('cal-status');
+            if (parseInt(d.calories) >= expectedCals) {
+                calStatus.textContent = '✅ On Track';
+                calStatus.className = 'stat-value on-track';
+            } else {
+                calStatus.textContent = '⚠️ Behind — eat more';
+                calStatus.className = 'stat-value warning';
+            }
         }
     }
 
+    // PROGRESS
+    function updateProgress() {
+        const s = settings;
+        if (s.startDate) {
+            const parts = s.startDate.split('/');
+            const start = new Date(parts[2], parts[1]-1, parts[0]);
+            const now = new Date();
+            const daysDiff = Math.floor((now - start) / (1000*60*60*24));
+            const week = Math.min(Math.floor(daysDiff / 7) + 1, 8);
+            const pct = Math.min(Math.round((daysDiff / 56) * 100), 100);
+            document.getElementById('prog-week').textContent = 'Week ' + week + ' of 8';
+            document.getElementById('prog-bar').style.width = pct + '%';
+            document.getElementById('prog-pct').textContent = pct + '% through your transformation';
+        }
+
+        document.getElementById('workouts-count').textContent = workoutHistory.length + ' total';
+
+        // Consistency
+        let daysHit = 0;
+        for (let i = 0; i < 30; i++) {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            const dateStr = d.toLocaleDateString('en-GB');
+            if (localStorage.getItem('nutrition-' + dateStr)) daysHit++;
+        }
+        document.getElementById('consistency-score').textContent = daysHit + '/30 days';
+
+        // Personal bests
+        const pbList = document.getElementById('pb-list');
+        const pbs = Object.entries(personalBests);
+        if (pbs.length === 0) {
+            pbList.innerHTML = '<p style="color:#aaa;">Log workouts to track personal bests.</p>';
+        } else {
+            pbList.innerHTML = pbs.map(([name, pb]) => `
+                <div class="pb-item">
+                    <div class="pb-exercise">🏆 ${name}</div>
+                    <div class="pb-value">${pb.weight}kg × ${pb.reps} reps</div>
+                    <div style="color:#555; font-size:11px; margin-top:4px;">${pb.date}</div>
+                </div>`).join('');
+        }
+
+        // Check-in history
+        const checkinDiv = document.getElementById('checkin-history');
+        if (checkinHistory.length > 0) {
+            checkinDiv.innerHTML = '<div style="margin-top:16px; border-top:1px solid #222; padding-top:12px;"><div style="color:#FFD700; font-size:13px; margin-bottom:8px;">CHECK-IN HISTORY</div>' +
+                checkinHistory.map(c => `<div class="checkin-item">
+                    <div class="checkin-date">${c.date}</div>
+                    <div class="checkin-detail">Weight: ${c.weight}kg | Energy: ${c.energy}/10</div>
+                    <div class="checkin-detail">${c.notes}</div>
+                </div>`).join('') + '</div>';
+        }
+
+        renderHistory();
+    }
+
+    function saveCheckin() {
+        const entry = {
+            date: new Date().toLocaleDateString('en-GB'),
+            weight: document.getElementById('checkin-weight').value,
+            energy: document.getElementById('checkin-energy').value,
+            notes: document.getElementById('checkin-notes').value
+        };
+        checkinHistory.unshift(entry);
+        // Update current weight in settings
+        if (entry.weight) { settings.weight = parseFloat(entry.weight); localStorage.setItem('settings', JSON.stringify(settings)); }
+        saveToStorage();
+        document.getElementById('checkin-weight').value = '';
+        document.getElementById('checkin-energy').value = '';
+        document.getElementById('checkin-notes').value = '';
+        updateProgress();
+    }
+
+    // STORAGE
     function saveToStorage() {
         localStorage.setItem('workoutHistory', JSON.stringify(workoutHistory));
+        localStorage.setItem('checkinHistory', JSON.stringify(checkinHistory));
+        localStorage.setItem('personalBests', JSON.stringify(personalBests));
     }
 
     function loadFromStorage() {
-        const saved = localStorage.getItem('workoutHistory');
-        if (saved) {
-            workoutHistory = JSON.parse(saved);
-            renderHistory();
-        }
+        const wh = localStorage.getItem('workoutHistory');
+        if (wh) workoutHistory = JSON.parse(wh);
+        const ch = localStorage.getItem('checkinHistory');
+        if (ch) checkinHistory = JSON.parse(ch);
+        const pb = localStorage.getItem('personalBests');
+        if (pb) personalBests = JSON.parse(pb);
+        const s = localStorage.getItem('settings');
+        if (s) settings = JSON.parse(s);
+        renderHistory();
+        updateHome();
     }
 
     loadFromStorage();
