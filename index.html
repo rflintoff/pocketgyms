@@ -757,6 +757,7 @@
 // ===================== TRANSLATIONS =====================
 const translations = {
     en: {
+        // Onboarding
         langTitle:'Choose Language', langSub:'Select your preferred language', langBtn:'Continue',
         pathTitle:'Welcome to PocketGyms', pathSub:'How do you want to get started?',
         setupTitle:'Set Up My Goals', setupSub:'Personalise your targets and get a custom plan',
@@ -764,40 +765,104 @@ const translations = {
         detailsTitle:'About You', detailsSub:'Tell us a bit about yourself',
         statsTitle:'Your Stats', statsSub:"We'll calculate your perfect targets",
         letsGo:"Let's Go 🚀", next:'Next',
+        // Nav
         home:'Home', train:'Train', nutrition:'Nutrition', progress:'Progress', settings:'Settings',
+        // Home
         coach:'COACH', todayScore:"TODAY'S SCORE", outOf:'OUT OF 100', weeklyStreak:'Weekly Streak',
         todayProgress:"TODAY'S PROGRESS", myPhase:'MY PHASE', daysTraining:'Days Training',
         weight:'WEIGHT', current:'Current', target:'Target', toGo:'To Go', badges:'BADGES',
-        logWorkout:'LOG A WORKOUT', howTrain:'HOW DO YOU WANT TO TRAIN?',
+        logWorkout:'LOG A WORKOUT',
+        // Coach prompts
+        coachNoTrain:"You haven't trained today — get it done",
+        coachProtein:'Need <strong>{x}g more protein</strong> today',
+        coachCalories:'Only {x} calories logged — you need more fuel',
+        coachSteps:'<strong>{x} steps</strong> remaining today',
+        coachWater:'Drink more water — only {x}L logged',
+        coachPerfect:"You're absolutely smashing it today!",
+        // Train
+        howTrain:'HOW DO YOU WANT TO TRAIN?',
         myRoutines:'My Routines', myRoutinesSub:'Start a saved workout',
         quickWorkout:'Quick Workout', quickWorkoutSub:'Pick a category and go',
         createRoutine:'Create Routine', createRoutineSub:'Build and save a new routine',
-        cardio:'Cardio', cardioSub:'Running, cycling, walking and more',
+        cardio:'Cardiovascular', cardioSub:'Running, cycling, walking and more',
         selectCategory:'SELECT CATEGORY', addExercise:'ADD EXERCISE', addExBtn:'+ Add Exercise',
-        saveWorkout:'Save Workout', saveCardio:'Save Cardio', workoutTime:'WORKOUT TIME',
-        restTimer:'REST TIMER', stop:'Stop', sessionTime:'SESSION TIME',
-        todaysNutrition:"TODAY'S NUTRITION", dailyTotals:'DAILY TOTALS', status:'Status',
-        addMeal:'+ Add Meal', stepsWater:'STEPS & WATER', supplements:'SUPPLEMENTS',
-        currentPhase:'CURRENT PHASE', phaseHistory:'PHASE HISTORY', consistency:'CONSISTENCY',
-        daysLogged:'Days logged (last 30)', workoutsCompleted:'Workouts completed',
-        cardioSessions:'Cardio sessions', personalBests:'PERSONAL BESTS',
-        bodyMeasurements:'BODY MEASUREMENTS', weeklyCheckin:'WEEKLY CHECK-IN',
+        saveWorkout:'Save Workout', saveCardio:'Save Cardio',
+        workoutTime:'WORKOUT TIME', restTimer:'REST TIMER', stop:'Stop', sessionTime:'SESSION TIME',
+        autoProgression:'AUTO PROGRESSION', lastSession:'LAST SESSION', noPrevData:'No previous data',
+        tryToday:'Try {x}kg today (last: {y}kg)',
+        // Cardio types
+        running:'Running', cycling:'Cycling', walking:'Walking', rowing:'Rowing',
+        fixedBike:'Fixed Bike', hiit:'HIIT', swimming:'Swimming', other:'Other',
+        // Intensity
+        easy:'Easy', moderate:'Moderate', hard:'Hard',
+        duration:'Duration (minutes)', distance:'Distance (km)', intensity:'Intensity', notes:'Notes',
+        // Nutrition
+        todaysNutrition:"TODAY'S NUTRITION", dailyTotals:'DAILY TOTALS',
+        date:'Date', status:'Status', onTrack:'On Track', behindEat:'Behind — eat more',
+        calories:'Calories', protein:'Protein', carbs:'Carbs', fat:'Fat',
+        steps:'Steps', water:'Water',
+        addMeal:'+ Add Meal', mealName:'Meal name:',
+        stepsWater:'STEPS & WATER', stepsToday:'Steps Today', waterLitres:'Water (litres)',
+        save:'Save', supplements:'SUPPLEMENTS',
+        addFood:'+ Add Food', portion:'Portion (g or ml)', addToMeal:'Add to Meal',
+        allFoods:'All', noFoodsFound:'No foods found',
+        // Supplement names
+        supp_creatine:'Creatine', supp_whey:'Whey Protein', supp_vitd:'Vitamin D',
+        supp_omega:'Omega 3', supp_multi:'Multivitamin', supp_pre:'Pre-Workout', supp_mag:'Magnesium',
+        // Progress
+        currentPhase:'CURRENT PHASE', phaseHistory:'PHASE HISTORY',
+        consistency:'CONSISTENCY', daysLogged:'Days logged (last 30)',
+        workoutsCompleted:'Workouts completed', cardioSessions:'Cardio sessions',
+        personalBests:'PERSONAL BESTS', bodyMeasurements:'BODY MEASUREMENTS',
+        chest:'Chest (cm)', waist:'Waist (cm)', hips:'Hips (cm)', arms:'Arms (cm)', legs:'Legs (cm)',
+        saveMeasurements:'Save Measurements',
+        weeklyCheckin:'WEEKLY CHECK-IN', checkinWeight:'Weight this week (kg)',
+        checkinEnergy:'Energy levels (1-10)', checkinNotes:'Notes',
         saveCheckin:'Save Check-In', workoutHistory:'WORKOUT HISTORY',
-        yourDetails:'YOUR DETAILS', appearance:'APPEARANCE', darkMode:'Dark Mode',
-        yourTargets:'YOUR CALCULATED TARGETS', platesCalc:'PLATES CALCULATOR',
-        calcPlates:'Calculate Plates', saveSettings:'Save & Calculate Targets',
+        weightToGoal:'Weight to Goal', daysTrainingLabel:'Days Training',
+        completePhase:'Complete Phase & Start New', noSessions:'No sessions logged yet.',
+        noPBs:'Log workouts to track PBs.',
+        // Badges
+        badge_first_workout:'First Workout', badge_five_workouts:'5 Workouts',
+        badge_ten_workouts:'10 Workouts', badge_first_pb:'Personal Best',
+        badge_first_cardio:'First Cardio', badge_week_streak:'7 Day Streak',
+        // Settings
+        yourDetails:'YOUR DETAILS', name:'Name', age:'Age', gender:'Gender',
+        male:'Male', female:'Female',
+        height:'Height (cm)', currentWeight:'Current Weight (kg)', targetWeight:'Target Weight (kg)',
+        activityLevel:'Activity Level',
+        sedentary:'Sedentary — Little/no exercise',
+        lightlyActive:'Lightly Active — 1-3 days/week',
+        moderatelyActive:'Moderately Active — 3-5 days/week',
+        veryActive:'Very Active — 6-7 days/week',
+        goal:'Goal', beginner:'Beginner', fatLoss:'Fat Loss',
+        muscleBuilding:'Muscle Building', generalFitness:'General Fitness',
+        trainingEnv:'Training Environment', gym:'Gym', homeEnv:'Home', both:'Both',
+        dietaryPref:'Dietary Preference', standard:'Standard', vegan:'Vegan', halal:'Halal',
+        units:'Units', kgKm:'kg / km', lbsMiles:'lbs / miles', language:'Language',
         myTransformation:'MY TRANSFORMATION PHASE',
         phaseDesc:'Optional: Set a goal phase to track your transformation progress.',
-        completePhase:'Complete Phase & Start New', weightToGoal:'Weight to Goal',
-        saveMeasurements:'Save Measurements', back:'← Back', addToMeal:'Add to Meal',
-        portion:'Portion (g or ml)', noSessions:'No sessions logged yet.',
-        noPBs:'Log workouts to track PBs.'
+        phaseName:'Phase Name', phaseDuration:'Duration',
+        w4:'4 Weeks', w6:'6 Weeks', w8:'8 Weeks', w10:'10 Weeks', w12:'12 Weeks', custom:'Custom',
+        trainingDays:'Training Days Per Week',
+        appearance:'APPEARANCE', darkMode:'Dark Mode',
+        yourTargets:'YOUR CALCULATED TARGETS', tdee:'TDEE',
+        calTarget:'Calorie Target', proteinTarget:'Protein Target', stepsTarget:'Steps Target',
+        platesCalc:'PLATES CALCULATOR', targetWeightPlates:'Target Weight (kg)',
+        barWeight:'Bar Weight', standard20:'20kg Standard', womens15:'15kg Women\'s', short10:'10kg Short',
+        calcPlates:'Calculate Plates', eachSide:'Each side', barOnly:'Bar only',
+        saveSettings:'Save & Calculate Targets',
+        back:'← Back', delete:'Delete', setName:'Set', reps:'Reps', kg:'KG',
+        noRoutinesYet:'No routines yet. Create one first.',
+        routineName:'Routine Name', selectCategory2:'Select Category',
+        addCustomEx:'Add Custom Exercise', typeExercise:'Type exercise name...',
+        saveRoutine:'Save Routine', addCustomExercise:'Add custom exercise...',
     },
     pt: {
         langTitle:'Escolha o Idioma', langSub:'Selecione seu idioma preferido', langBtn:'Continuar',
         pathTitle:'Bem-vindo ao PocketGyms', pathSub:'Como quer começar?',
-        setupTitle:'Configurar Meus Objetivos', setupSub:'Personalize seus alvos e obtenha um plano',
-        fastTitle:'Entrar Direto', fastSub:'Pule a configuração e comece a rastrear agora',
+        setupTitle:'Configurar Meus Objetivos', setupSub:'Personalize seus alvos',
+        fastTitle:'Entrar Direto', fastSub:'Pule a configuração e comece agora',
         detailsTitle:'Sobre Você', detailsSub:'Conte-nos um pouco sobre você',
         statsTitle:'Suas Estatísticas', statsSub:'Calcularemos seus alvos perfeitos',
         letsGo:'Vamos lá 🚀', next:'Próximo',
@@ -805,30 +870,83 @@ const translations = {
         coach:'COACH', todayScore:'PONTUAÇÃO DE HOJE', outOf:'DE 100', weeklyStreak:'Sequência Semanal',
         todayProgress:'PROGRESSO DE HOJE', myPhase:'MINHA FASE', daysTraining:'Dias Treinando',
         weight:'PESO', current:'Atual', target:'Meta', toGo:'Faltam', badges:'CONQUISTAS',
-        logWorkout:'REGISTRAR TREINO', howTrain:'COMO QUER TREINAR?',
+        logWorkout:'REGISTRAR TREINO',
+        coachNoTrain:'Você não treinou hoje — vamos lá',
+        coachProtein:'Precisa de <strong>mais {x}g de proteína</strong> hoje',
+        coachCalories:'Apenas {x} calorias registradas — você precisa comer mais',
+        coachSteps:'<strong>{x} passos</strong> restantes hoje',
+        coachWater:'Beba mais água — apenas {x}L registrado',
+        coachPerfect:'Você está arrasando hoje!',
+        howTrain:'COMO QUER TREINAR?',
         myRoutines:'Meus Treinos', myRoutinesSub:'Iniciar um treino salvo',
         quickWorkout:'Treino Rápido', quickWorkoutSub:'Escolha uma categoria e comece',
         createRoutine:'Criar Rotina', createRoutineSub:'Construa e salve uma nova rotina',
-        cardio:'Cardio', cardioSub:'Corrida, ciclismo, caminhada e mais',
+        cardio:'Cardiovascular', cardioSub:'Corrida, ciclismo, caminhada e mais',
         selectCategory:'SELECIONAR CATEGORIA', addExercise:'ADICIONAR EXERCÍCIO', addExBtn:'+ Adicionar Exercício',
-        saveWorkout:'Salvar Treino', saveCardio:'Salvar Cardio', workoutTime:'TEMPO DE TREINO',
-        restTimer:'TIMER DE DESCANSO', stop:'Parar', sessionTime:'TEMPO DE SESSÃO',
-        todaysNutrition:'NUTRIÇÃO DE HOJE', dailyTotals:'TOTAIS DO DIA', status:'Status',
-        addMeal:'+ Adicionar Refeição', stepsWater:'PASSOS E ÁGUA', supplements:'SUPLEMENTOS',
-        currentPhase:'FASE ATUAL', phaseHistory:'HISTÓRICO DE FASES', consistency:'CONSISTÊNCIA',
-        daysLogged:'Dias registrados (últimos 30)', workoutsCompleted:'Treinos completos',
-        cardioSessions:'Sessões de cardio', personalBests:'RECORDES PESSOAIS',
-        bodyMeasurements:'MEDIDAS CORPORAIS', weeklyCheckin:'CHECK-IN SEMANAL',
+        saveWorkout:'Salvar Treino', saveCardio:'Salvar Cardio',
+        workoutTime:'TEMPO DE TREINO', restTimer:'TIMER DE DESCANSO', stop:'Parar', sessionTime:'TEMPO DE SESSÃO',
+        autoProgression:'PROGRESSÃO AUTOMÁTICA', lastSession:'ÚLTIMA SESSÃO', noPrevData:'Sem dados anteriores',
+        tryToday:'Tente {x}kg hoje (último: {y}kg)',
+        running:'Corrida', cycling:'Ciclismo', walking:'Caminhada', rowing:'Remo',
+        fixedBike:'Bicicleta Fixa', hiit:'HIIT', swimming:'Natação', other:'Outro',
+        easy:'Fácil', moderate:'Moderado', hard:'Difícil',
+        duration:'Duração (minutos)', distance:'Distância (km)', intensity:'Intensidade', notes:'Notas',
+        todaysNutrition:'NUTRIÇÃO DE HOJE', dailyTotals:'TOTAIS DO DIA',
+        date:'Data', status:'Status', onTrack:'No Caminho Certo', behindEat:'Atrasado — coma mais',
+        calories:'Calorias', protein:'Proteína', carbs:'Carboidratos', fat:'Gordura',
+        steps:'Passos', water:'Água',
+        addMeal:'+ Adicionar Refeição', mealName:'Nome da refeição:',
+        stepsWater:'PASSOS E ÁGUA', stepsToday:'Passos Hoje', waterLitres:'Água (litros)',
+        save:'Salvar', supplements:'SUPLEMENTOS',
+        addFood:'+ Adicionar Alimento', portion:'Porção (g ou ml)', addToMeal:'Adicionar à Refeição',
+        allFoods:'Todos', noFoodsFound:'Nenhum alimento encontrado',
+        supp_creatine:'Creatina', supp_whey:'Proteína Whey', supp_vitd:'Vitamina D',
+        supp_omega:'Ômega 3', supp_multi:'Multivitamínico', supp_pre:'Pré-Treino', supp_mag:'Magnésio',
+        currentPhase:'FASE ATUAL', phaseHistory:'HISTÓRICO DE FASES',
+        consistency:'CONSISTÊNCIA', daysLogged:'Dias registrados (últimos 30)',
+        workoutsCompleted:'Treinos completos', cardioSessions:'Sessões cardiovasculares',
+        personalBests:'RECORDES PESSOAIS', bodyMeasurements:'MEDIDAS CORPORAIS',
+        chest:'Peito (cm)', waist:'Cintura (cm)', hips:'Quadril (cm)', arms:'Braços (cm)', legs:'Pernas (cm)',
+        saveMeasurements:'Salvar Medidas',
+        weeklyCheckin:'CHECK-IN SEMANAL', checkinWeight:'Peso desta semana (kg)',
+        checkinEnergy:'Nível de energia (1-10)', checkinNotes:'Notas',
         saveCheckin:'Salvar Check-In', workoutHistory:'HISTÓRICO DE TREINOS',
-        yourDetails:'SEUS DADOS', appearance:'APARÊNCIA', darkMode:'Modo Escuro',
-        yourTargets:'SEUS ALVOS CALCULADOS', platesCalc:'CALCULADORA DE ANILHAS',
-        calcPlates:'Calcular Anilhas', saveSettings:'Salvar e Calcular Alvos',
+        weightToGoal:'Peso até a Meta', daysTrainingLabel:'Dias Treinando',
+        completePhase:'Completar Fase e Começar Nova', noSessions:'Nenhuma sessão registrada.',
+        noPBs:'Registre treinos para acompanhar recordes.',
+        badge_first_workout:'Primeiro Treino', badge_five_workouts:'5 Treinos',
+        badge_ten_workouts:'10 Treinos', badge_first_pb:'Recorde Pessoal',
+        badge_first_cardio:'Primeiro Cardio', badge_week_streak:'Sequência de 7 Dias',
+        yourDetails:'SEUS DADOS', name:'Nome', age:'Idade', gender:'Gênero',
+        male:'Masculino', female:'Feminino',
+        height:'Altura (cm)', currentWeight:'Peso Atual (kg)', targetWeight:'Peso Alvo (kg)',
+        activityLevel:'Nível de Atividade',
+        sedentary:'Sedentário — Pouco/nenhum exercício',
+        lightlyActive:'Levemente Ativo — 1-3 dias/semana',
+        moderatelyActive:'Moderadamente Ativo — 3-5 dias/semana',
+        veryActive:'Muito Ativo — 6-7 dias/semana',
+        goal:'Objetivo', beginner:'Iniciante', fatLoss:'Perda de Gordura',
+        muscleBuilding:'Ganho de Músculo', generalFitness:'Condicionamento Geral',
+        trainingEnv:'Ambiente de Treino', gym:'Academia', homeEnv:'Casa', both:'Ambos',
+        dietaryPref:'Preferência Alimentar', standard:'Padrão', vegan:'Vegano', halal:'Halal',
+        units:'Unidades', kgKm:'kg / km', lbsMiles:'lbs / milhas', language:'Idioma',
         myTransformation:'MINHA FASE DE TRANSFORMAÇÃO',
         phaseDesc:'Opcional: Defina uma fase objetivo para rastrear seu progresso.',
-        completePhase:'Completar Fase e Começar Nova', weightToGoal:'Peso até a Meta',
-        saveMeasurements:'Salvar Medidas', back:'← Voltar', addToMeal:'Adicionar à Refeição',
-        portion:'Porção (g ou ml)', noSessions:'Nenhuma sessão registrada ainda.',
-        noPBs:'Registre treinos para rastrear recordes.'
+        phaseName:'Nome da Fase', phaseDuration:'Duração',
+        w4:'4 Semanas', w6:'6 Semanas', w8:'8 Semanas', w10:'10 Semanas', w12:'12 Semanas', custom:'Personalizado',
+        trainingDays:'Dias de Treino por Semana',
+        appearance:'APARÊNCIA', darkMode:'Modo Escuro',
+        yourTargets:'SEUS ALVOS CALCULADOS', tdee:'TDEE',
+        calTarget:'Alvo de Calorias', proteinTarget:'Alvo de Proteína', stepsTarget:'Alvo de Passos',
+        platesCalc:'CALCULADORA DE ANILHAS', targetWeightPlates:'Peso Alvo (kg)',
+        barWeight:'Peso da Barra', standard20:'20kg Padrão', womens15:'15kg Feminina', short10:'10kg Curta',
+        calcPlates:'Calcular Anilhas', eachSide:'Cada lado', barOnly:'Apenas barra',
+        saveSettings:'Salvar e Calcular Alvos',
+        back:'← Voltar', delete:'Excluir', setName:'Série', reps:'Reps', kg:'KG',
+        noRoutinesYet:'Nenhuma rotina ainda. Crie uma primeiro.',
+        routineName:'Nome da Rotina', selectCategory2:'Selecionar Categoria',
+        addCustomEx:'Adicionar Exercício Personalizado', typeExercise:'Digite o nome do exercício...',
+        saveRoutine:'Salvar Rotina', addCustomExercise:'Adicionar exercício personalizado...',
     },
     es: {
         langTitle:'Elegir Idioma', langSub:'Selecciona tu idioma preferido', langBtn:'Continuar',
@@ -842,30 +960,83 @@ const translations = {
         coach:'COACH', todayScore:'PUNTUACIÓN DE HOY', outOf:'DE 100', weeklyStreak:'Racha Semanal',
         todayProgress:'PROGRESO DE HOY', myPhase:'MI FASE', daysTraining:'Días Entrenando',
         weight:'PESO', current:'Actual', target:'Meta', toGo:'Faltan', badges:'LOGROS',
-        logWorkout:'REGISTRAR ENTRENAMIENTO', howTrain:'¿CÓMO QUIERES ENTRENAR?',
+        logWorkout:'REGISTRAR ENTRENAMIENTO',
+        coachNoTrain:'No has entrenado hoy — ¡a por ello!',
+        coachProtein:'Necesitas <strong>{x}g más de proteína</strong> hoy',
+        coachCalories:'Solo {x} calorías registradas — necesitas comer más',
+        coachSteps:'<strong>{x} pasos</strong> restantes hoy',
+        coachWater:'Bebe más agua — solo {x}L registrado',
+        coachPerfect:'¡Lo estás haciendo genial hoy!',
+        howTrain:'¿CÓMO QUIERES ENTRENAR?',
         myRoutines:'Mis Rutinas', myRoutinesSub:'Iniciar un entrenamiento guardado',
         quickWorkout:'Entrenamiento Rápido', quickWorkoutSub:'Elige una categoría y empieza',
         createRoutine:'Crear Rutina', createRoutineSub:'Construye y guarda una nueva rutina',
-        cardio:'Cardio', cardioSub:'Correr, ciclismo, caminar y más',
+        cardio:'Cardiovascular', cardioSub:'Correr, ciclismo, caminar y más',
         selectCategory:'SELECCIONAR CATEGORÍA', addExercise:'AÑADIR EJERCICIO', addExBtn:'+ Añadir Ejercicio',
-        saveWorkout:'Guardar Entrenamiento', saveCardio:'Guardar Cardio', workoutTime:'TIEMPO DE ENTRENAMIENTO',
-        restTimer:'TEMPORIZADOR DE DESCANSO', stop:'Parar', sessionTime:'TIEMPO DE SESIÓN',
-        todaysNutrition:'NUTRICIÓN DE HOY', dailyTotals:'TOTALES DEL DÍA', status:'Estado',
-        addMeal:'+ Añadir Comida', stepsWater:'PASOS Y AGUA', supplements:'SUPLEMENTOS',
-        currentPhase:'FASE ACTUAL', phaseHistory:'HISTORIAL DE FASES', consistency:'CONSISTENCIA',
-        daysLogged:'Días registrados (últimos 30)', workoutsCompleted:'Entrenamientos completados',
-        cardioSessions:'Sesiones de cardio', personalBests:'RÉCORDS PERSONALES',
-        bodyMeasurements:'MEDIDAS CORPORALES', weeklyCheckin:'CHECK-IN SEMANAL',
+        saveWorkout:'Guardar Entrenamiento', saveCardio:'Guardar Cardio',
+        workoutTime:'TIEMPO DE ENTRENAMIENTO', restTimer:'TEMPORIZADOR DE DESCANSO', stop:'Parar', sessionTime:'TIEMPO DE SESIÓN',
+        autoProgression:'PROGRESIÓN AUTOMÁTICA', lastSession:'ÚLTIMA SESIÓN', noPrevData:'Sin datos anteriores',
+        tryToday:'Intenta {x}kg hoy (último: {y}kg)',
+        running:'Correr', cycling:'Ciclismo', walking:'Caminar', rowing:'Remo',
+        fixedBike:'Bicicleta Fija', hiit:'HIIT', swimming:'Natación', other:'Otro',
+        easy:'Fácil', moderate:'Moderado', hard:'Difícil',
+        duration:'Duración (minutos)', distance:'Distancia (km)', intensity:'Intensidad', notes:'Notas',
+        todaysNutrition:'NUTRICIÓN DE HOY', dailyTotals:'TOTALES DEL DÍA',
+        date:'Fecha', status:'Estado', onTrack:'En Camino', behindEat:'Atrasado — come más',
+        calories:'Calorías', protein:'Proteína', carbs:'Carbohidratos', fat:'Grasa',
+        steps:'Pasos', water:'Agua',
+        addMeal:'+ Añadir Comida', mealName:'Nombre de la comida:',
+        stepsWater:'PASOS Y AGUA', stepsToday:'Pasos Hoy', waterLitres:'Agua (litros)',
+        save:'Guardar', supplements:'SUPLEMENTOS',
+        addFood:'+ Añadir Alimento', portion:'Porción (g o ml)', addToMeal:'Añadir a Comida',
+        allFoods:'Todo', noFoodsFound:'No se encontraron alimentos',
+        supp_creatine:'Creatina', supp_whey:'Proteína Whey', supp_vitd:'Vitamina D',
+        supp_omega:'Omega 3', supp_multi:'Multivitamínico', supp_pre:'Pre-Entreno', supp_mag:'Magnesio',
+        currentPhase:'FASE ACTUAL', phaseHistory:'HISTORIAL DE FASES',
+        consistency:'CONSISTENCIA', daysLogged:'Días registrados (últimos 30)',
+        workoutsCompleted:'Entrenamientos completados', cardioSessions:'Sesiones cardiovasculares',
+        personalBests:'RÉCORDS PERSONALES', bodyMeasurements:'MEDIDAS CORPORALES',
+        chest:'Pecho (cm)', waist:'Cintura (cm)', hips:'Caderas (cm)', arms:'Brazos (cm)', legs:'Piernas (cm)',
+        saveMeasurements:'Guardar Medidas',
+        weeklyCheckin:'CHECK-IN SEMANAL', checkinWeight:'Peso esta semana (kg)',
+        checkinEnergy:'Nivel de energía (1-10)', checkinNotes:'Notas',
         saveCheckin:'Guardar Check-In', workoutHistory:'HISTORIAL DE ENTRENAMIENTOS',
-        yourDetails:'TUS DATOS', appearance:'APARIENCIA', darkMode:'Modo Oscuro',
-        yourTargets:'TUS OBJETIVOS CALCULADOS', platesCalc:'CALCULADORA DE DISCOS',
-        calcPlates:'Calcular Discos', saveSettings:'Guardar y Calcular Objetivos',
+        weightToGoal:'Peso hasta el Objetivo', daysTrainingLabel:'Días Entrenando',
+        completePhase:'Completar Fase e Iniciar Nueva', noSessions:'No hay sesiones registradas.',
+        noPBs:'Registra entrenamientos para rastrear récords.',
+        badge_first_workout:'Primer Entrenamiento', badge_five_workouts:'5 Entrenamientos',
+        badge_ten_workouts:'10 Entrenamientos', badge_first_pb:'Récord Personal',
+        badge_first_cardio:'Primer Cardio', badge_week_streak:'Racha de 7 Días',
+        yourDetails:'TUS DATOS', name:'Nombre', age:'Edad', gender:'Género',
+        male:'Masculino', female:'Femenino',
+        height:'Altura (cm)', currentWeight:'Peso Actual (kg)', targetWeight:'Peso Objetivo (kg)',
+        activityLevel:'Nivel de Actividad',
+        sedentary:'Sedentario — Poco/ningún ejercicio',
+        lightlyActive:'Levemente Activo — 1-3 días/semana',
+        moderatelyActive:'Moderadamente Activo — 3-5 días/semana',
+        veryActive:'Muy Activo — 6-7 días/semana',
+        goal:'Objetivo', beginner:'Principiante', fatLoss:'Pérdida de Grasa',
+        muscleBuilding:'Ganancia Muscular', generalFitness:'Fitness General',
+        trainingEnv:'Entorno de Entrenamiento', gym:'Gimnasio', homeEnv:'Casa', both:'Ambos',
+        dietaryPref:'Preferencia Alimentaria', standard:'Estándar', vegan:'Vegano', halal:'Halal',
+        units:'Unidades', kgKm:'kg / km', lbsMiles:'lbs / millas', language:'Idioma',
         myTransformation:'MI FASE DE TRANSFORMACIÓN',
         phaseDesc:'Opcional: Establece una fase objetivo para seguir tu progreso.',
-        completePhase:'Completar Fase e Iniciar Nueva', weightToGoal:'Peso hasta el Objetivo',
-        saveMeasurements:'Guardar Medidas', back:'← Atrás', addToMeal:'Añadir a Comida',
-        portion:'Porción (g o ml)', noSessions:'No hay sesiones registradas aún.',
-        noPBs:'Registra entrenamientos para rastrear récords.'
+        phaseName:'Nombre de Fase', phaseDuration:'Duración',
+        w4:'4 Semanas', w6:'6 Semanas', w8:'8 Semanas', w10:'10 Semanas', w12:'12 Semanas', custom:'Personalizado',
+        trainingDays:'Días de Entrenamiento por Semana',
+        appearance:'APARIENCIA', darkMode:'Modo Oscuro',
+        yourTargets:'TUS OBJETIVOS CALCULADOS', tdee:'TDEE',
+        calTarget:'Objetivo de Calorías', proteinTarget:'Objetivo de Proteína', stepsTarget:'Objetivo de Pasos',
+        platesCalc:'CALCULADORA DE DISCOS', targetWeightPlates:'Peso Objetivo (kg)',
+        barWeight:'Peso de la Barra', standard20:'20kg Estándar', womens15:'15kg Femenina', short10:'10kg Corta',
+        calcPlates:'Calcular Discos', eachSide:'Cada lado', barOnly:'Solo barra',
+        saveSettings:'Guardar y Calcular Objetivos',
+        back:'← Atrás', delete:'Eliminar', setName:'Serie', reps:'Reps', kg:'KG',
+        noRoutinesYet:'Sin rutinas aún. Crea una primero.',
+        routineName:'Nombre de Rutina', selectCategory2:'Seleccionar Categoría',
+        addCustomEx:'Añadir Ejercicio Personalizado', typeExercise:'Escribe el nombre del ejercicio...',
+        saveRoutine:'Guardar Rutina', addCustomExercise:'Añadir ejercicio personalizado...',
     },
     fr: {
         langTitle:'Choisir la Langue', langSub:'Sélectionnez votre langue préférée', langBtn:'Continuer',
@@ -879,30 +1050,83 @@ const translations = {
         coach:'COACH', todayScore:"SCORE D'AUJOURD'HUI", outOf:'SUR 100', weeklyStreak:'Série Hebdomadaire',
         todayProgress:"PROGRÈS D'AUJOURD'HUI", myPhase:'MA PHASE', daysTraining:"Jours d'Entraînement",
         weight:'POIDS', current:'Actuel', target:'Objectif', toGo:'Restant', badges:'BADGES',
-        logWorkout:"ENREGISTRER L'ENTRAÎNEMENT", howTrain:'COMMENT VOULEZ-VOUS VOUS ENTRAÎNER?',
+        logWorkout:"ENREGISTRER L'ENTRAÎNEMENT",
+        coachNoTrain:"Vous n'avez pas encore entraîné aujourd'hui — allez-y!",
+        coachProtein:'Besoin de <strong>{x}g de protéines supplémentaires</strong> aujourd\'hui',
+        coachCalories:'Seulement {x} calories enregistrées — mangez plus',
+        coachSteps:'<strong>{x} pas</strong> restants aujourd\'hui',
+        coachWater:"Buvez plus d'eau — seulement {x}L enregistré",
+        coachPerfect:"Vous êtes absolument au top aujourd'hui!",
+        howTrain:'COMMENT VOULEZ-VOUS VOUS ENTRAÎNER?',
         myRoutines:'Mes Routines', myRoutinesSub:'Démarrer un entraînement sauvegardé',
         quickWorkout:'Entraînement Rapide', quickWorkoutSub:'Choisissez une catégorie et commencez',
         createRoutine:'Créer une Routine', createRoutineSub:'Construisez et sauvegardez une nouvelle routine',
-        cardio:'Cardio', cardioSub:'Course, cyclisme, marche et plus',
+        cardio:'Cardiovasculaire', cardioSub:'Course, cyclisme, marche et plus',
         selectCategory:'SÉLECTIONNER CATÉGORIE', addExercise:'AJOUTER EXERCICE', addExBtn:'+ Ajouter Exercice',
-        saveWorkout:"Sauvegarder l'Entraînement", saveCardio:'Sauvegarder Cardio', workoutTime:"TEMPS D'ENTRAÎNEMENT",
-        restTimer:'MINUTEUR DE REPOS', stop:'Arrêter', sessionTime:'TEMPS DE SESSION',
-        todaysNutrition:"NUTRITION D'AUJOURD'HUI", dailyTotals:'TOTAUX QUOTIDIENS', status:'Statut',
-        addMeal:'+ Ajouter Repas', stepsWater:'PAS ET EAU', supplements:'SUPPLÉMENTS',
-        currentPhase:'PHASE ACTUELLE', phaseHistory:'HISTORIQUE DES PHASES', consistency:'COHÉRENCE',
-        daysLogged:'Jours enregistrés (30 derniers)', workoutsCompleted:'Entraînements complétés',
-        cardioSessions:'Sessions de cardio', personalBests:'RECORDS PERSONNELS',
-        bodyMeasurements:'MESURES CORPORELLES', weeklyCheckin:'CHECK-IN HEBDOMADAIRE',
+        saveWorkout:"Sauvegarder l'Entraînement", saveCardio:'Sauvegarder Cardio',
+        workoutTime:"TEMPS D'ENTRAÎNEMENT", restTimer:'MINUTEUR DE REPOS', stop:'Arrêter', sessionTime:'TEMPS DE SESSION',
+        autoProgression:'PROGRESSION AUTOMATIQUE', lastSession:'DERNIÈRE SÉANCE', noPrevData:'Aucune donnée précédente',
+        tryToday:'Essayez {x}kg aujourd\'hui (dernier: {y}kg)',
+        running:'Course', cycling:'Cyclisme', walking:'Marche', rowing:'Aviron',
+        fixedBike:'Vélo Fixe', hiit:'HIIT', swimming:'Natation', other:'Autre',
+        easy:'Facile', moderate:'Modéré', hard:'Difficile',
+        duration:'Durée (minutes)', distance:'Distance (km)', intensity:'Intensité', notes:'Notes',
+        todaysNutrition:"NUTRITION D'AUJOURD'HUI", dailyTotals:'TOTAUX QUOTIDIENS',
+        date:'Date', status:'Statut', onTrack:'En Bonne Voie', behindEat:'En retard — mangez plus',
+        calories:'Calories', protein:'Protéines', carbs:'Glucides', fat:'Lipides',
+        steps:'Pas', water:'Eau',
+        addMeal:'+ Ajouter Repas', mealName:'Nom du repas:',
+        stepsWater:'PAS ET EAU', stepsToday:"Pas Aujourd'hui", waterLitres:'Eau (litres)',
+        save:'Sauvegarder', supplements:'SUPPLÉMENTS',
+        addFood:'+ Ajouter Aliment', portion:'Portion (g ou ml)', addToMeal:'Ajouter au Repas',
+        allFoods:'Tout', noFoodsFound:'Aucun aliment trouvé',
+        supp_creatine:'Créatine', supp_whey:'Protéine Whey', supp_vitd:'Vitamine D',
+        supp_omega:'Oméga 3', supp_multi:'Multivitamine', supp_pre:'Pré-Entraînement', supp_mag:'Magnésium',
+        currentPhase:'PHASE ACTUELLE', phaseHistory:'HISTORIQUE DES PHASES',
+        consistency:'COHÉRENCE', daysLogged:'Jours enregistrés (30 derniers)',
+        workoutsCompleted:'Entraînements complétés', cardioSessions:'Séances cardiovasculaires',
+        personalBests:'RECORDS PERSONNELS', bodyMeasurements:'MESURES CORPORELLES',
+        chest:'Poitrine (cm)', waist:'Taille (cm)', hips:'Hanches (cm)', arms:'Bras (cm)', legs:'Jambes (cm)',
+        saveMeasurements:'Sauvegarder Mesures',
+        weeklyCheckin:'CHECK-IN HEBDOMADAIRE', checkinWeight:'Poids cette semaine (kg)',
+        checkinEnergy:'Niveaux d\'énergie (1-10)', checkinNotes:'Notes',
         saveCheckin:'Sauvegarder Check-In', workoutHistory:"HISTORIQUE D'ENTRAÎNEMENTS",
-        yourDetails:'VOS DONNÉES', appearance:'APPARENCE', darkMode:'Mode Sombre',
-        yourTargets:'VOS OBJECTIFS CALCULÉS', platesCalc:'CALCULATEUR DE DISQUES',
-        calcPlates:'Calculer Disques', saveSettings:'Sauvegarder et Calculer',
+        weightToGoal:"Poids jusqu'à l'Objectif", daysTrainingLabel:"Jours d'Entraînement",
+        completePhase:'Terminer Phase et Commencer Nouvelle', noSessions:'Aucune session enregistrée.',
+        noPBs:'Enregistrez des entraînements pour suivre les records.',
+        badge_first_workout:'Premier Entraînement', badge_five_workouts:'5 Entraînements',
+        badge_ten_workouts:'10 Entraînements', badge_first_pb:'Record Personnel',
+        badge_first_cardio:'Premier Cardio', badge_week_streak:'Série de 7 Jours',
+        yourDetails:'VOS DONNÉES', name:'Nom', age:'Âge', gender:'Genre',
+        male:'Masculin', female:'Féminin',
+        height:'Taille (cm)', currentWeight:'Poids Actuel (kg)', targetWeight:'Poids Cible (kg)',
+        activityLevel:"Niveau d'Activité",
+        sedentary:'Sédentaire — Peu/aucun exercice',
+        lightlyActive:'Légèrement Actif — 1-3 jours/semaine',
+        moderatelyActive:'Modérément Actif — 3-5 jours/semaine',
+        veryActive:'Très Actif — 6-7 jours/semaine',
+        goal:'Objectif', beginner:'Débutant', fatLoss:'Perte de Graisse',
+        muscleBuilding:'Prise de Muscle', generalFitness:'Forme Générale',
+        trainingEnv:"Environnement d'Entraînement", gym:'Salle de Sport', homeEnv:'Maison', both:'Les Deux',
+        dietaryPref:'Préférence Alimentaire', standard:'Standard', vegan:'Végétalien', halal:'Halal',
+        units:'Unités', kgKm:'kg / km', lbsMiles:'lbs / miles', language:'Langue',
         myTransformation:'MA PHASE DE TRANSFORMATION',
         phaseDesc:'Optionnel: Définissez une phase objectif pour suivre votre progression.',
-        completePhase:'Terminer Phase et Commencer Nouvelle', weightToGoal:"Poids jusqu'à l'Objectif",
-        saveMeasurements:'Sauvegarder Mesures', back:'← Retour', addToMeal:'Ajouter au Repas',
-        portion:'Portion (g ou ml)', noSessions:'Aucune session enregistrée encore.',
-        noPBs:'Enregistrez des entraînements pour suivre les records.'
+        phaseName:'Nom de Phase', phaseDuration:'Durée',
+        w4:'4 Semaines', w6:'6 Semaines', w8:'8 Semaines', w10:'10 Semaines', w12:'12 Semaines', custom:'Personnalisé',
+        trainingDays:"Jours d'Entraînement par Semaine",
+        appearance:'APPARENCE', darkMode:'Mode Sombre',
+        yourTargets:'VOS OBJECTIFS CALCULÉS', tdee:'TDEE',
+        calTarget:'Objectif Calorique', proteinTarget:'Objectif Protéique', stepsTarget:'Objectif de Pas',
+        platesCalc:'CALCULATEUR DE DISQUES', targetWeightPlates:'Poids Cible (kg)',
+        barWeight:'Poids de la Barre', standard20:'20kg Standard', womens15:'15kg Femmes', short10:'10kg Courte',
+        calcPlates:'Calculer Disques', eachSide:'Chaque côté', barOnly:'Barre seule',
+        saveSettings:'Sauvegarder et Calculer',
+        back:'← Retour', delete:'Supprimer', setName:'Série', reps:'Reps', kg:'KG',
+        noRoutinesYet:'Pas de routines encore. Créez-en une.',
+        routineName:'Nom de Routine', selectCategory2:'Sélectionner Catégorie',
+        addCustomEx:'Ajouter Exercice Personnalisé', typeExercise:"Tapez le nom de l'exercice...",
+        saveRoutine:'Sauvegarder Routine', addCustomExercise:'Ajouter exercice personnalisé...',
     },
     de: {
         langTitle:'Sprache Wählen', langSub:'Wählen Sie Ihre bevorzugte Sprache', langBtn:'Weiter',
@@ -916,67 +1140,83 @@ const translations = {
         coach:'COACH', todayScore:'HEUTIGER SCORE', outOf:'VON 100', weeklyStreak:'Wöchentliche Serie',
         todayProgress:'HEUTIGER FORTSCHRITT', myPhase:'MEINE PHASE', daysTraining:'Trainingstage',
         weight:'GEWICHT', current:'Aktuell', target:'Ziel', toGo:'Noch', badges:'ABZEICHEN',
-        logWorkout:'TRAINING STARTEN', howTrain:'WIE MÖCHTEN SIE TRAINIEREN?',
+        logWorkout:'TRAINING STARTEN',
+        coachNoTrain:'Sie haben heute noch nicht trainiert — auf geht\'s!',
+        coachProtein:'Benötigen <strong>{x}g mehr Protein</strong> heute',
+        coachCalories:'Nur {x} Kalorien erfasst — essen Sie mehr',
+        coachSteps:'<strong>{x} Schritte</strong> verbleibend heute',
+        coachWater:'Trinken Sie mehr Wasser — nur {x}L erfasst',
+        coachPerfect:'Sie machen das heute absolut großartig!',
+        howTrain:'WIE MÖCHTEN SIE TRAINIEREN?',
         myRoutines:'Meine Routinen', myRoutinesSub:'Gespeichertes Training starten',
         quickWorkout:'Schnelles Training', quickWorkoutSub:'Kategorie wählen und loslegen',
         createRoutine:'Routine Erstellen', createRoutineSub:'Neue Routine erstellen und speichern',
-        cardio:'Cardio', cardioSub:'Laufen, Radfahren, Gehen und mehr',
+        cardio:'Kardiovaskulär', cardioSub:'Laufen, Radfahren, Gehen und mehr',
         selectCategory:'KATEGORIE WÄHLEN', addExercise:'ÜBUNG HINZUFÜGEN', addExBtn:'+ Übung Hinzufügen',
-        saveWorkout:'Training Speichern', saveCardio:'Cardio Speichern', workoutTime:'TRAININGSZEIT',
-        restTimer:'RUHETIMER', stop:'Stopp', sessionTime:'SITZUNGSZEIT',
-        todaysNutrition:'HEUTIGE ERNÄHRUNG', dailyTotals:'TÄGLICHE SUMMEN', status:'Status',
-        addMeal:'+ Mahlzeit Hinzufügen', stepsWater:'SCHRITTE & WASSER', supplements:'NAHRUNGSERGÄNZUNG',
-        currentPhase:'AKTUELLE PHASE', phaseHistory:'PHASENHISTORIE', consistency:'KONSISTENZ',
-        daysLogged:'Protokollierte Tage (letzte 30)', workoutsCompleted:'Abgeschlossene Trainings',
-        cardioSessions:'Cardio-Einheiten', personalBests:'PERSÖNLICHE BESTLEISTUNGEN',
-        bodyMeasurements:'KÖRPERMASSE', weeklyCheckin:'WÖCHENTLICHES CHECK-IN',
+        saveWorkout:'Training Speichern', saveCardio:'Kardio Speichern',
+        workoutTime:'TRAININGSZEIT', restTimer:'RUHETIMER', stop:'Stopp', sessionTime:'SITZUNGSZEIT',
+        autoProgression:'AUTOMATISCHE PROGRESSION', lastSession:'LETZTE EINHEIT', noPrevData:'Keine vorherigen Daten',
+        tryToday:'Versuchen Sie {x}kg heute (letztes: {y}kg)',
+        running:'Laufen', cycling:'Radfahren', walking:'Gehen', rowing:'Rudern',
+        fixedBike:'Heimtrainer', hiit:'HIIT', swimming:'Schwimmen', other:'Sonstiges',
+        easy:'Leicht', moderate:'Moderat', hard:'Schwer',
+        duration:'Dauer (Minuten)', distance:'Distanz (km)', intensity:'Intensität', notes:'Notizen',
+        todaysNutrition:'HEUTIGE ERNÄHRUNG', dailyTotals:'TÄGLICHE SUMMEN',
+        date:'Datum', status:'Status', onTrack:'Auf Kurs', behindEat:'Rückstand — mehr essen',
+        calories:'Kalorien', protein:'Protein', carbs:'Kohlenhydrate', fat:'Fett',
+        steps:'Schritte', water:'Wasser',
+        addMeal:'+ Mahlzeit Hinzufügen', mealName:'Mahlzeit Name:',
+        stepsWater:'SCHRITTE & WASSER', stepsToday:'Schritte Heute', waterLitres:'Wasser (Liter)',
+        save:'Speichern', supplements:'NAHRUNGSERGÄNZUNG',
+        addFood:'+ Lebensmittel Hinzufügen', portion:'Portion (g oder ml)', addToMeal:'Zur Mahlzeit Hinzufügen',
+        allFoods:'Alle', noFoodsFound:'Keine Lebensmittel gefunden',
+        supp_creatine:'Kreatin', supp_whey:'Whey Protein', supp_vitd:'Vitamin D',
+        supp_omega:'Omega 3', supp_multi:'Multivitamin', supp_pre:'Pre-Workout', supp_mag:'Magnesium',
+        currentPhase:'AKTUELLE PHASE', phaseHistory:'PHASENHISTORIE',
+        consistency:'KONSISTENZ', daysLogged:'Protokollierte Tage (letzte 30)',
+        workoutsCompleted:'Abgeschlossene Trainings', cardioSessions:'Kardio-Einheiten',
+        personalBests:'PERSÖNLICHE BESTLEISTUNGEN', bodyMeasurements:'KÖRPERMASSE',
+        chest:'Brust (cm)', waist:'Taille (cm)', hips:'Hüfte (cm)', arms:'Arme (cm)', legs:'Beine (cm)',
+        saveMeasurements:'Maße Speichern',
+        weeklyCheckin:'WÖCHENTLICHES CHECK-IN', checkinWeight:'Gewicht diese Woche (kg)',
+        checkinEnergy:'Energielevel (1-10)', checkinNotes:'Notizen',
         saveCheckin:'Check-In Speichern', workoutHistory:'TRAININGSHISTORIE',
-        yourDetails:'IHRE DATEN', appearance:'ERSCHEINUNGSBILD', darkMode:'Dunkelmodus',
-        yourTargets:'IHRE BERECHNETEN ZIELE', platesCalc:'SCHEIBENKALKULATOR',
-        calcPlates:'Scheiben Berechnen', saveSettings:'Speichern und Ziele Berechnen',
+        weightToGoal:'Gewicht bis zum Ziel', daysTrainingLabel:'Trainingstage',
+        completePhase:'Phase Abschließen und Neue Beginnen', noSessions:'Noch keine Einheiten aufgezeichnet.',
+        noPBs:'Trainings aufzeichnen, um Bestleistungen zu verfolgen.',
+        badge_first_workout:'Erstes Training', badge_five_workouts:'5 Trainings',
+        badge_ten_workouts:'10 Trainings', badge_first_pb:'Persönliche Bestleistung',
+        badge_first_cardio:'Erstes Kardio', badge_week_streak:'7-Tage-Serie',
+        yourDetails:'IHRE DATEN', name:'Name', age:'Alter', gender:'Geschlecht',
+        male:'Männlich', female:'Weiblich',
+        height:'Größe (cm)', currentWeight:'Aktuelles Gewicht (kg)', targetWeight:'Zielgewicht (kg)',
+        activityLevel:'Aktivitätsniveau',
+        sedentary:'Sitzend — Wenig/kein Sport',
+        lightlyActive:'Leicht Aktiv — 1-3 Tage/Woche',
+        moderatelyActive:'Mäßig Aktiv — 3-5 Tage/Woche',
+        veryActive:'Sehr Aktiv — 6-7 Tage/Woche',
+        goal:'Ziel', beginner:'Anfänger', fatLoss:'Fettabbau',
+        muscleBuilding:'Muskelaufbau', generalFitness:'Allgemeine Fitness',
+        trainingEnv:'Trainingsumgebung', gym:'Fitnessstudio', homeEnv:'Zuhause', both:'Beides',
+        dietaryPref:'Ernährungspräferenz', standard:'Standard', vegan:'Vegan', halal:'Halal',
+        units:'Einheiten', kgKm:'kg / km', lbsMiles:'lbs / Meilen', language:'Sprache',
         myTransformation:'MEINE TRANSFORMATIONSPHASE',
         phaseDesc:'Optional: Legen Sie eine Zielphase fest, um Ihren Fortschritt zu verfolgen.',
-        completePhase:'Phase Abschließen und Neue Beginnen', weightToGoal:'Gewicht bis zum Ziel',
-        saveMeasurements:'Maße Speichern', back:'← Zurück', addToMeal:'Zur Mahlzeit Hinzufügen',
-        portion:'Portion (g oder ml)', noSessions:'Noch keine Einheiten aufgezeichnet.',
-        noPBs:'Trainings aufzeichnen, um Bestleistungen zu verfolgen.'
-    },
-    ar: {
-        langTitle:'اختر اللغة', langSub:'اختر لغتك المفضلة', langBtn:'استمر',
-        pathTitle:'مرحباً بك في PocketGyms', pathSub:'كيف تريد البدء؟',
-        setupTitle:'إعداد أهدافي', setupSub:'خصص أهدافك واحصل على خطة مخصصة',
-        fastTitle:'ابدأ مباشرة', fastSub:'تخطى الإعداد وابدأ التتبع الآن',
-        detailsTitle:'عنك', detailsSub:'أخبرنا قليلاً عن نفسك',
-        statsTitle:'إحصائياتك', statsSub:'سنحسب أهدافك المثالية',
-        letsGo:'هيا نبدأ 🚀', next:'التالي',
-        home:'الرئيسية', train:'تدريب', nutrition:'تغذية', progress:'التقدم', settings:'الإعدادات',
-        coach:'المدرب', todayScore:'نقاط اليوم', outOf:'من 100', weeklyStreak:'التسلسل الأسبوعي',
-        todayProgress:'تقدم اليوم', myPhase:'مرحلتي', daysTraining:'أيام التدريب',
-        weight:'الوزن', current:'الحالي', target:'الهدف', toGo:'المتبقي', badges:'الشارات',
-        logWorkout:'تسجيل تمرين', howTrain:'كيف تريد التدريب؟',
-        myRoutines:'روتيني', myRoutinesSub:'ابدأ تمريناً محفوظاً',
-        quickWorkout:'تمرين سريع', quickWorkoutSub:'اختر فئة وابدأ',
-        createRoutine:'إنشاء روتين', createRoutineSub:'أنشئ واحفظ روتيناً جديداً',
-        cardio:'كارديو', cardioSub:'جري، ركوب دراجة، مشي والمزيد',
-        selectCategory:'اختر الفئة', addExercise:'أضف تمريناً', addExBtn:'+ إضافة تمرين',
-        saveWorkout:'حفظ التمرين', saveCardio:'حفظ الكارديو', workoutTime:'وقت التمرين',
-        restTimer:'مؤقت الراحة', stop:'إيقاف', sessionTime:'وقت الجلسة',
-        todaysNutrition:'تغذية اليوم', dailyTotals:'إجماليات اليوم', status:'الحالة',
-        addMeal:'+ إضافة وجبة', stepsWater:'الخطوات والماء', supplements:'المكملات',
-        currentPhase:'المرحلة الحالية', phaseHistory:'سجل المراحل', consistency:'الاتساق',
-        daysLogged:'أيام مسجلة (آخر 30)', workoutsCompleted:'تمارين مكتملة',
-        cardioSessions:'جلسات كارديو', personalBests:'الأرقام القياسية الشخصية',
-        bodyMeasurements:'قياسات الجسم', weeklyCheckin:'تسجيل الدخول الأسبوعي',
-        saveCheckin:'حفظ تسجيل الدخول', workoutHistory:'سجل التمارين',
-        yourDetails:'بياناتك', appearance:'المظهر', darkMode:'الوضع الداكن',
-        yourTargets:'أهدافك المحسوبة', platesCalc:'حاسبة الأوزان',
-        calcPlates:'حساب الأوزان', saveSettings:'حفظ وحساب الأهداف',
-        myTransformation:'مرحلة تحولي',
-        phaseDesc:'اختياري: حدد مرحلة هدف لتتبع تقدمك.',
-        completePhase:'إكمال المرحلة وبدء مرحلة جديدة', weightToGoal:'الوزن حتى الهدف',
-        saveMeasurements:'حفظ القياسات', back:'→ رجوع', addToMeal:'إضافة للوجبة',
-        portion:'الكمية (جم أو مل)', noSessions:'لا توجد جلسات مسجلة بعد.',
-        noPBs:'سجل تمارين لتتبع الأرقام القياسية.'
+        phaseName:'Phasenname', phaseDuration:'Dauer',
+        w4:'4 Wochen', w6:'6 Wochen', w8:'8 Wochen', w10:'10 Wochen', w12:'12 Wochen', custom:'Benutzerdefiniert',
+        trainingDays:'Trainingstage pro Woche',
+        appearance:'ERSCHEINUNGSBILD', darkMode:'Dunkelmodus',
+        yourTargets:'IHRE BERECHNETEN ZIELE', tdee:'TDEE',
+        calTarget:'Kalorienziel', proteinTarget:'Proteinziel', stepsTarget:'Schrittziel',
+        platesCalc:'SCHEIBENKALKULATOR', targetWeightPlates:'Zielgewicht (kg)',
+        barWeight:'Stangengewicht', standard20:'20kg Standard', womens15:'15kg Damen', short10:'10kg Kurz',
+        calcPlates:'Scheiben Berechnen', eachSide:'Jede Seite', barOnly:'Nur Stange',
+        saveSettings:'Speichern und Ziele Berechnen',
+        back:'← Zurück', delete:'Löschen', setName:'Satz', reps:'Wdh', kg:'KG',
+        noRoutinesYet:'Noch keine Routinen. Erstellen Sie eine.',
+        routineName:'Routinenname', selectCategory2:'Kategorie Wählen',
+        addCustomEx:'Benutzerdefinierte Übung Hinzufügen', typeExercise:'Übungsname eingeben...',
+        saveRoutine:'Routine Speichern', addCustomExercise:'Benutzerdefinierte Übung hinzufügen...',
     }
 };
 
@@ -1136,46 +1376,124 @@ function t(key) { return (translations[selectedLang]&&translations[selectedLang]
 
 function applyTranslations() {
     const set = (id, key) => { const el=document.getElementById(id); if(el&&key) el.textContent=t(key); };
+    const setHTML = (id, key) => { const el=document.getElementById(id); if(el&&key) el.innerHTML=t(key); };
+    const setPlaceholder = (id, key) => { const el=document.getElementById(id); if(el&&key) el.placeholder=t(key); };
+
     // Nav
     set('nav-txt-home','home'); set('nav-txt-train','train'); set('nav-txt-nutrition','nutrition');
     set('nav-txt-progress','progress'); set('nav-txt-settings','settings');
+
     // Home
     set('txt-today-score','todayScore'); set('txt-out-of','outOf'); set('txt-weekly-streak','weeklyStreak');
     set('txt-coach','coach'); set('txt-today-progress','todayProgress'); set('txt-my-phase','myPhase');
-    set('txt-days-training','daysTraining'); set('txt-weight','weight'); set('txt-current','current');
-    set('txt-target','target'); set('txt-to-go','toGo'); set('txt-badges','badges');
-    set('txt-log-workout','logWorkout');
+    set('txt-days-training','daysTraining'); set('txt-weight','weight');
+    set('txt-current','current'); set('txt-target','target'); set('txt-to-go','toGo');
+    set('txt-badges','badges'); set('txt-log-workout','logWorkout');
+
     // Train
-    set('txt-how-train','howTrain'); set('txt-my-routines','myRoutines'); set('txt-my-routines-sub','myRoutinesSub');
+    set('txt-how-train','howTrain');
+    set('txt-my-routines','myRoutines'); set('txt-my-routines-sub','myRoutinesSub');
     set('txt-quick-workout','quickWorkout'); set('txt-quick-workout-sub','quickWorkoutSub');
     set('txt-create-routine','createRoutine'); set('txt-create-routine-sub','createRoutineSub');
     set('txt-cardio','cardio'); set('txt-cardio-sub','cardioSub');
     set('txt-select-category','selectCategory'); set('txt-add-exercise','addExercise');
     set('txt-add-ex-btn','addExBtn'); set('save-btn','saveWorkout');
-    set('txt-workout-time','workoutTime'); set('txt-rest-timer','restTimer'); set('txt-stop','stop');
-    set('txt-save-cardio','saveCardio'); set('txt-session-time','sessionTime');
+    set('txt-workout-time','workoutTime'); set('txt-rest-timer','restTimer');
+    set('txt-stop','stop'); set('txt-save-cardio','saveCardio');
+    set('txt-session-time','sessionTime');
+    set('lbl-duration','duration'); set('lbl-distance','distance');
+    set('lbl-intensity','intensity'); set('lbl-notes','notes');
+    set('txt-create-routine-title','createRoutine');
+    set('txt-cardio-title','cardio');
+    set('txt-my-routines-title','myRoutines');
+    set('txt-select-category','selectCategory');
+    set('no-routines-msg','noRoutinesYet');
+    set('lbl-routine-name','routineName');
+    set('lbl-select-category','selectCategory2');
+    set('lbl-custom-ex','addCustomEx');
+    set('txt-save-routine','saveRoutine');
+    setPlaceholder('routine-name', 'routineName');
+    setPlaceholder('create-custom-ex', 'typeExercise');
+    setPlaceholder('custom-exercise', 'addCustomExercise');
+
+    // Cardio options
+    set('opt-easy','easy'); set('opt-moderate','moderate'); set('opt-hard','hard');
+
+    // Back buttons
+    ['txt-back-1','txt-back-2','txt-back-3','txt-back-4','txt-back-5','txt-back-6'].forEach(id=>set(id,'back'));
+
     // Nutrition
     set('txt-todays-nutrition','todaysNutrition'); set('txt-daily-totals','dailyTotals');
-    set('txt-status','status'); set('txt-add-meal','addMeal'); set('txt-steps-water','stepsWater');
-    set('txt-supplements','supplements'); set('txt-save-sw','saveWorkout');
+    set('txt-date-label','date'); set('txt-status','status');
+    set('txt-cal-label','calories'); set('txt-prot-label','protein');
+    set('txt-carbs-label','carbs'); set('txt-fat-label','fat');
+    set('txt-steps-label','steps'); set('txt-water-label','water');
+    set('txt-add-meal','addMeal');
+    set('txt-steps-water','stepsWater');
+    set('lbl-steps-today','stepsToday'); set('lbl-water','waterLitres');
+    set('txt-save-sw','save'); set('txt-supplements','supplements');
+    set('filter-all','allFoods');
+    set('txt-add-to-meal','addToMeal'); set('lbl-portion','portion');
+
+    // Supplement names
+    const suppNames = [t('supp_creatine'),t('supp_whey'),t('supp_vitd'),t('supp_omega'),t('supp_multi'),t('supp_pre'),t('supp_mag')];
+    supplementsList.forEach((s,i) => { supplementsList[i] = suppNames[i]; });
+    renderSupplements();
+
     // Progress
     set('txt-current-phase','currentPhase'); set('txt-phase-history','phaseHistory');
     set('txt-consistency','consistency'); set('txt-days-logged','daysLogged');
     set('txt-workouts-completed','workoutsCompleted'); set('txt-cardio-sessions','cardioSessions');
     set('txt-personal-bests','personalBests'); set('txt-body-measurements','bodyMeasurements');
-    set('txt-weekly-checkin','weeklyCheckin'); set('txt-save-checkin','saveCheckin');
-    set('txt-workout-history','workoutHistory'); set('txt-complete-phase','completePhase');
-    set('txt-weight-to-go','weightToGoal'); set('txt-save-measurements','saveMeasurements');
+    set('lbl-chest','chest'); set('lbl-waist','waist'); set('lbl-hips','hips');
+    set('lbl-arms','arms'); set('lbl-legs','legs');
+    set('txt-save-measurements','saveMeasurements');
+    set('txt-weekly-checkin','weeklyCheckin');
+    set('lbl-checkin-weight','checkinWeight'); set('lbl-checkin-energy','checkinEnergy');
+    set('lbl-checkin-notes','checkinNotes');
+    set('txt-save-checkin','saveCheckin'); set('txt-workout-history','workoutHistory');
+    set('txt-weight-to-go','weightToGoal'); set('txt-days-training-prog','daysTrainingLabel');
+    set('txt-complete-phase','completePhase');
+
     // Settings
-    set('txt-your-details','yourDetails'); set('txt-appearance','appearance');
-    set('txt-dark-mode','darkMode'); set('txt-your-targets','yourTargets');
-    set('txt-plates-calc','platesCalc'); set('txt-calc-plates','calcPlates');
-    set('txt-save-settings','saveSettings'); set('txt-my-transformation','myTransformation');
-    set('txt-phase-desc','phaseDesc');
-    // Back buttons
-    ['txt-back-1','txt-back-2','txt-back-3','txt-back-4','txt-back-5','txt-back-6'].forEach(id=>set(id,'back'));
-    // Food modal
-    set('txt-add-to-meal','addToMeal'); set('lbl-portion','portion');
+    set('txt-your-details','yourDetails');
+    set('lbl-set-name','name'); set('lbl-set-age','age'); set('lbl-set-gender','gender');
+    set('lbl-set-height','height'); set('lbl-set-weight','currentWeight');
+    set('lbl-set-target','targetWeight'); set('lbl-set-activity','activityLevel');
+    set('lbl-set-goal','goal'); set('lbl-set-env','trainingEnv');
+    set('lbl-set-diet','dietaryPref'); set('lbl-set-units','units');
+    set('lbl-set-lang','language');
+    set('txt-my-transformation','myTransformation'); set('txt-phase-desc','phaseDesc');
+    set('lbl-phase-name','phaseName'); set('lbl-phase-duration','phaseDuration');
+    set('lbl-training-days','trainingDays');
+    set('txt-appearance','appearance'); set('txt-dark-mode','darkMode');
+    set('txt-your-targets','yourTargets');
+    set('txt-cal-target','calTarget'); set('txt-protein-target','proteinTarget');
+    set('txt-steps-target','stepsTarget');
+    set('txt-plates-calc','platesCalc');
+    set('lbl-plates-weight','targetWeightPlates'); set('lbl-plates-bar','barWeight');
+    set('txt-calc-plates','calcPlates'); set('txt-save-settings','saveSettings');
+
+    // Settings select options
+    const genderEl = document.getElementById('set-gender');
+    if(genderEl){ genderEl.options[0].text=t('male'); genderEl.options[1].text=t('female'); }
+    const actEl = document.getElementById('set-activity');
+    if(actEl){ actEl.options[0].text=t('sedentary'); actEl.options[1].text=t('lightlyActive'); actEl.options[2].text=t('moderatelyActive'); actEl.options[3].text=t('veryActive'); }
+    const goalEl = document.getElementById('set-goal');
+    if(goalEl){ goalEl.options[0].text=t('beginner'); goalEl.options[1].text=t('fatLoss'); goalEl.options[2].text=t('muscleBuilding'); goalEl.options[3].text=t('generalFitness'); }
+    const envEl = document.getElementById('set-environment');
+    if(envEl){ envEl.options[0].text=t('gym'); envEl.options[1].text=t('homeEnv'); envEl.options[2].text=t('both'); }
+    const dietEl = document.getElementById('set-diet');
+    if(dietEl){ dietEl.options[0].text=t('standard'); dietEl.options[1].text=t('vegan'); dietEl.options[2].text=t('halal'); }
+    const unitsEl = document.getElementById('set-units');
+    if(unitsEl){ unitsEl.options[0].text=t('kgKm'); unitsEl.options[1].text=t('lbsMiles'); }
+    const durEl = document.getElementById('set-phase-duration');
+    if(durEl){ durEl.options[0].text=t('w4'); durEl.options[1].text=t('w6'); durEl.options[2].text=t('w8'); durEl.options[3].text=t('w10'); durEl.options[4].text=t('w12'); durEl.options[5].text=t('custom'); }
+    const barEl = document.getElementById('plates-bar');
+    if(barEl){ barEl.options[0].text=t('standard20'); barEl.options[1].text=t('womens15'); barEl.options[2].text=t('short10'); }
+    const intensityEl = document.getElementById('cardio-intensity');
+    if(intensityEl){ intensityEl.options[0].text=t('easy'); intensityEl.options[1].text=t('moderate'); intensityEl.options[2].text=t('hard'); }
+
     // Onboarding
     set('ob-title-lang','langTitle'); set('ob-sub-lang','langSub'); set('ob-btn-lang','langBtn');
     set('ob-title-path','pathTitle'); set('ob-sub-path','pathSub');
@@ -1185,6 +1503,12 @@ function applyTranslations() {
     set('ob-btn-details','next');
     set('ob-title-stats','statsTitle'); set('ob-sub-stats','statsSub');
     set('ob-btn-stats','letsGo');
+
+    // Badges - re-render with translated names
+    renderBadges();
+
+    // Update coach prompts
+    updateHome();
 }
 
 // ===================== ONBOARDING =====================
@@ -1730,14 +2054,12 @@ function updateHome() {
     }
 
     const prompts=[];
-    if(!todayWorkout) prompts.push({text:t('coach')==='COACH'?"You haven't trained today — get it done":"Você não treinou hoje — vamos lá",type:''});
-    if(protein<proteinTarget) prompts.push({text:`Need <strong>${Math.round(proteinTarget-protein)}g more protein</strong> today`,type:''});
-    if(cals<calTarget*0.5&&new Date().getHours()>14) prompts.push({text:`Only ${cals} calories logged — you need more fuel`,type:''});
-    if(steps<stepsTarget) prompts.push({text:`<strong>${stepsTarget-steps} steps</strong> remaining today`,type:''});
-    if(water<2) prompts.push({text:`Drink more water — only ${water.toFixed(1)}L logged`,type:''});
-    if(prompts.length===0) prompts.push({text:"You're absolutely smashing it today!",type:'success'});
-    const coachEl=document.getElementById('coach-prompts');
-    if(coachEl)coachEl.innerHTML=prompts.map(p=>`<div class="coach-prompt ${p.type}">${p.text}</div>`).join('');
+    if(!todayWorkout) prompts.push({text:t('coachNoTrain'),type:''});
+    if(protein<proteinTarget) prompts.push({text:t('coachProtein').replace('{x}',Math.round(proteinTarget-protein)),type:''});
+    if(cals<calTarget*0.5&&new Date().getHours()>14) prompts.push({text:t('coachCalories').replace('{x}',cals),type:''});
+    if(steps<stepsTarget) prompts.push({text:t('coachSteps').replace('{x}',stepsTarget-steps),type:''});
+    if(water<2) prompts.push({text:t('coachWater').replace('{x}',water.toFixed(1)),type:''});
+    if(prompts.length===0) prompts.push({text:t('coachPerfect'),type:'success'});
     renderBadges();
 }
 
@@ -1901,17 +2223,20 @@ function calculatePlates() {
 
 // ===================== BADGES =====================
 const badgeDefinitions=[
-    {id:'first_workout',name:'First Workout',icon:'🎉',check:()=>workoutHistory.length>=1},
-    {id:'five_workouts',name:'5 Workouts',icon:'💪',check:()=>workoutHistory.length>=5},
-    {id:'ten_workouts',name:'10 Workouts',icon:'🔥',check:()=>workoutHistory.length>=10},
-    {id:'first_pb',name:'First PB',icon:'🏆',check:()=>Object.keys(personalBests).length>=1},
-    {id:'first_cardio',name:'First Cardio',icon:'🏃',check:()=>cardioHistory.length>=1},
-    {id:'week_streak',name:'7 Day Streak',icon:'⚡',check:()=>{let s=0;for(let i=0;i<7;i++){const d=new Date();d.setDate(d.getDate()-i);if(localStorage.getItem('nutrition-'+d.toLocaleDateString('en-GB'))||workoutHistory.find(w=>w.date===d.toLocaleDateString('en-GB')))s++;}return s>=7;}}
+    {id:'first_workout',nameKey:'badge_first_workout',icon:'🎉',check:()=>workoutHistory.length>=1},
+    {id:'five_workouts',nameKey:'badge_five_workouts',icon:'💪',check:()=>workoutHistory.length>=5},
+    {id:'ten_workouts',nameKey:'badge_ten_workouts',icon:'🔥',check:()=>workoutHistory.length>=10},
+    {id:'first_pb',nameKey:'badge_first_pb',icon:'🏆',check:()=>Object.keys(personalBests).length>=1},
+    {id:'first_cardio',nameKey:'badge_first_cardio',icon:'🏃',check:()=>cardioHistory.length>=1},
+    {id:'week_streak',nameKey:'badge_week_streak',icon:'⚡',check:()=>{let s=0;for(let i=0;i<7;i++){const d=new Date();d.setDate(d.getDate()-i);if(localStorage.getItem('nutrition-'+d.toLocaleDateString('en-GB'))||workoutHistory.find(w=>w.date===d.toLocaleDateString('en-GB')))s++;}return s>=7;}}
 ];
 
 function checkBadges(){const earned=JSON.parse(localStorage.getItem('badges')||'[]');badgeDefinitions.forEach(b=>{if(!earned.includes(b.id)&&b.check())earned.push(b.id);});localStorage.setItem('badges',JSON.stringify(earned));}
-function renderBadges(){const earned=JSON.parse(localStorage.getItem('badges')||'[]');const el=document.getElementById('badges-display');if(el)el.innerHTML=badgeDefinitions.map(b=>`<span class="badge ${earned.includes(b.id)?'earned':''}">${b.icon} ${b.name}</span>`).join('');}
-
+function renderBadges(){
+    const earned=JSON.parse(localStorage.getItem('badges')||'[]');
+    const el=document.getElementById('badges-display');
+    if(el) el.innerHTML=badgeDefinitions.map(b=>`<span class="badge ${earned.includes(b.id)?'earned':''}">${b.icon} ${t(b.nameKey)}</span>`).join('');
+}
 // ===================== STORAGE =====================
 function saveToStorage() {
     localStorage.setItem('workoutHistory',JSON.stringify(workoutHistory));
