@@ -1374,5 +1374,219 @@ function loadFromStorage() {
     if(onboarded)document.getElementById('onboarding').style.display='none';
     applyTranslations();checkBadges();updateHome();
 }
+// ===================== PROGRAMME TEMPLATES =====================
+const programmeTemplates = {
+    PGBEGIN: {
+        name: "Beginner's Guide to the Gym",
+        code: 'PGBEGIN',
+        routines: [
+            {
+                name: "Beginner — Push Day",
+                exercises: [
+                    {name:'Dumbbell Bench Press', sets:3, reps:'10-12'},
+                    {name:'Incline Dumbbell Bench Press', sets:3, reps:'10-12'},
+                    {name:'Dumbbell Shoulder Press', sets:3, reps:'10-12'},
+                    {name:'Dumbbell Lateral Raise', sets:3, reps:'12-15'},
+                    {name:'Cable Tricep Pushdown', sets:3, reps:'10-12'}
+                ]
+            },
+            {
+                name: "Beginner — Pull Day",
+                exercises: [
+                    {name:'Lat Pulldown', sets:3, reps:'10-12'},
+                    {name:'Seated Cable Row', sets:3, reps:'10-12'},
+                    {name:'Face Pull', sets:3, reps:'12-15'},
+                    {name:'Dumbbell Bicep Curl', sets:3, reps:'10-12'},
+                    {name:'Dumbbell Hammer Curl', sets:3, reps:'10-12'}
+                ]
+            },
+            {
+                name: "Beginner — Legs Day",
+                exercises: [
+                    {name:'Squat or Leg Press', sets:3, reps:'10-12'},
+                    {name:'Romanian Deadlift', sets:3, reps:'10-12'},
+                    {name:'Walking Lunges', sets:3, reps:'10-12'},
+                    {name:'Hamstring Curl', sets:3, reps:'10-12'},
+                    {name:'Standing Calf Raise', sets:3, reps:'12-15'},
+                    {name:'Glute Bridge', sets:3, reps:'10-12'}
+                ]
+            },
+            {
+                name: "Beginner — Core Day",
+                exercises: [
+                    {name:'Crunches or Sit Ups', sets:3, reps:'15-20'},
+                    {name:'Plank', sets:3, reps:'45-60 seconds'},
+                    {name:'Cable Crunch', sets:3, reps:'15-20'},
+                    {name:'Farmer Carry', sets:3, reps:'30-40 seconds'}
+                ]
+            }
+        ]
+    },
+    PGFATLOSS: {
+        name: "Fat Loss Programme",
+        code: 'PGFATLOSS',
+        routines: [
+            {
+                name: "Fat Loss — Push Day",
+                gym: [
+                    {name:'Dumbbell Bench Press', sets:3, reps:'10-15'},
+                    {name:'Incline Dumbbell Bench Press', sets:3, reps:'10-15'},
+                    {name:'Dumbbell Shoulder Press', sets:3, reps:'10-15'},
+                    {name:'Dumbbell Lateral Raise', sets:3, reps:'10-15'},
+                    {name:'Cable Tricep Pushdown', sets:3, reps:'10-15'}
+                ],
+                home: [
+                    {name:'Push Ups', sets:3, reps:'10-15'},
+                    {name:'Incline Push Ups', sets:3, reps:'10-15'},
+                    {name:'Pike Push Ups', sets:3, reps:'10-15'},
+                    {name:'Resistance Band Raise', sets:3, reps:'10-15'},
+                    {name:'Chair Dips', sets:3, reps:'10-15'}
+                ]
+            },
+            {
+                name: "Fat Loss — Pull Day",
+                gym: [
+                    {name:'Lat Pulldown', sets:3, reps:'10-15'},
+                    {name:'Cable Row', sets:3, reps:'10-15'},
+                    {name:'Face Pull', sets:3, reps:'10-15'},
+                    {name:'Dumbbell Bicep Curl', sets:3, reps:'10-15'},
+                    {name:'Dumbbell Hammer Curl', sets:3, reps:'10-15'}
+                ],
+                home: [
+                    {name:'Resistance Band Pull Down', sets:3, reps:'10-15'},
+                    {name:'Resistance Band Row', sets:3, reps:'10-15'},
+                    {name:'Resistance Band Face Pull', sets:3, reps:'10-15'},
+                    {name:'Resistance Band Curl', sets:3, reps:'10-15'},
+                    {name:'Resistance Band Hammer Curl', sets:3, reps:'10-15'}
+                ]
+            },
+            {
+                name: "Fat Loss — Legs Day",
+                gym: [
+                    {name:'Squat or Leg Press', sets:3, reps:'10-15'},
+                    {name:'Romanian Deadlift', sets:3, reps:'10-15'},
+                    {name:'Dumbbell Walking Lunges', sets:3, reps:'10-15'},
+                    {name:'Hamstring Curl', sets:3, reps:'10-15'},
+                    {name:'Standing Calf Raise', sets:3, reps:'10-15'},
+                    {name:'Glute Bridges', sets:3, reps:'10-15'}
+                ],
+                home: [
+                    {name:'Bodyweight Squats', sets:3, reps:'10-15'},
+                    {name:'Hip Hinge / Banded Romanian Deadlifts', sets:3, reps:'10-15'},
+                    {name:'Walking Lunges', sets:3, reps:'10-15'},
+                    {name:'Standing Hamstring Curl', sets:3, reps:'10-15'},
+                    {name:'Standing Calf Raise', sets:3, reps:'10-15'},
+                    {name:'Bodyweight Glute Bridges', sets:3, reps:'15-20'}
+                ]
+            },
+            {
+                name: "Fat Loss — Core Day",
+                gym: [
+                    {name:'Sit Ups / Crunches', sets:3, reps:'15-20'},
+                    {name:'Plank', sets:3, reps:'45-60 seconds'},
+                    {name:'Cable Crunches', sets:3, reps:'15-20'},
+                    {name:'Hanging Knee Raise', sets:3, reps:'15-20'},
+                    {name:'Farmer Carry', sets:3, reps:'30-40 seconds'}
+                ],
+                home: [
+                    {name:'Sit Ups / Crunches', sets:3, reps:'10-15'},
+                    {name:'Plank', sets:3, reps:'45-60 seconds'},
+                    {name:'Resistance Band Crunches', sets:3, reps:'15-20'},
+                    {name:'Lying Leg Raise', sets:3, reps:'15-20'},
+                    {name:'Suitcase / Bag Carry', sets:3, reps:'30-40 seconds'}
+                ]
+            }
+        ]
+    },
+    PGMUSCLE: {
+        name: "Muscle Building Programme",
+        code: 'PGMUSCLE',
+        routines: [
+            {
+                name: "Muscle Building — Push Day",
+                exercises: [
+                    {name:'Barbell or Dumbbell Bench Press', sets:3, reps:'6-8'},
+                    {name:'Incline Dumbbell Bench Press', sets:3, reps:'8-10'},
+                    {name:'Dumbbell Fly or Pec Dec', sets:3, reps:'10-12'},
+                    {name:'Dumbbell Shoulder Press', sets:3, reps:'8-10'},
+                    {name:'Dumbbell Lateral Raise', sets:3, reps:'12-15'},
+                    {name:'Cable Tricep Pushdown', sets:3, reps:'10-12'},
+                    {name:'Single Arm Overhead Extensions', sets:3, reps:'10-12'}
+                ]
+            },
+            {
+                name: "Muscle Building — Pull Day",
+                exercises: [
+                    {name:'Lat Pulldown or Pull Ups', sets:3, reps:'8-10'},
+                    {name:'Barbell or Cable Row', sets:3, reps:'8-10'},
+                    {name:'Standing 45 Degree Cable Row', sets:3, reps:'8-10'},
+                    {name:'Face Pull', sets:3, reps:'12-15'},
+                    {name:'Dumbbell Bicep Curl', sets:3, reps:'10-12'},
+                    {name:'Dumbbell Hammer Curl', sets:3, reps:'12-15'}
+                ]
+            },
+            {
+                name: "Muscle Building — Legs Day",
+                exercises: [
+                    {name:'Squat or Leg Press', sets:3, reps:'6-10'},
+                    {name:'Romanian Deadlift', sets:3, reps:'8-10'},
+                    {name:'Dumbbell Walking Lunges', sets:3, reps:'10-12'},
+                    {name:'Hamstring Curl', sets:3, reps:'10-12'},
+                    {name:'Standing Calf Raise', sets:3, reps:'12-15'},
+                    {name:'Glute Bridges', sets:3, reps:'10-12'}
+                ]
+            },
+            {
+                name: "Muscle Building — Core Day",
+                exercises: [
+                    {name:'Sit Ups / Crunches', sets:3, reps:'15-20'},
+                    {name:'Plank', sets:3, reps:'45-60 seconds'},
+                    {name:'Cable Crunch', sets:3, reps:'15-20'},
+                    {name:'Hanging Knee Raise', sets:3, reps:'10-15'},
+                    {name:'Farmer Carry', sets:3, reps:'30-40 seconds'}
+                ]
+            }
+        ]
+    }
+};
 
+// ===================== CODE UNLOCK =====================
+function unlockProgramme() {
+    const code = document.getElementById('programme-code').value.trim().toUpperCase();
+    const programme = programmeTemplates[code];
+    if (!programme) {
+        alert('Invalid code. Please check your code and try again.');
+        return;
+    }
+    const unlockedCodes = JSON.parse(localStorage.getItem('unlockedCodes') || '[]');
+    if (unlockedCodes.includes(code)) {
+        alert('This programme is already unlocked!');
+        return;
+    }
+    const env = settings.environment || 'gym';
+    programme.routines.forEach(routine => {
+        let exercises;
+        if (routine.exercises) {
+            exercises = routine.exercises;
+        } else {
+            exercises = env === 'home' ? routine.home : routine.gym;
+        }
+        const routineEntry = {
+            name: routine.name,
+            exercises: exercises.map(ex => ex.name),
+            created: new Date().toLocaleDateString('en-GB'),
+            programmeData: exercises,
+            locked: false
+        };
+        if (!savedRoutines.find(r => r.name === routine.name)) {
+            savedRoutines.push(routineEntry);
+        }
+    });
+    unlockedCodes.push(code);
+    localStorage.setItem('unlockedCodes', JSON.stringify(unlockedCodes));
+    saveToStorage();
+    document.getElementById('programme-code').value = '';
+    alert('🎉 ' + programme.name + ' unlocked! Check My Routines.');
+    renderRoutinesList();
+}
 loadFromStorage();
