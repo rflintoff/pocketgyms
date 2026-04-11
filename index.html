@@ -54,6 +54,7 @@
         .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); border-radius: 12px; padding: 12px 20px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; margin-bottom: 10px; }
         .btn-small { background: var(--primary-light); color: var(--primary); border: none; border-radius: 8px; padding: 8px 12px; font-size: 12px; font-weight: 600; cursor: pointer; margin-right: 6px; margin-bottom: 6px; }
         .btn-danger { background: #FEF2F2; color: var(--danger); border: none; border-radius: 8px; padding: 8px 12px; font-size: 12px; cursor: pointer; }
+        .btn-success { background: #ECFDF5; color: var(--success); border: none; border-radius: 12px; padding: 14px 20px; font-size: 15px; font-weight: 700; cursor: pointer; width: 100%; margin-bottom: 10px; }
 
         .score-circle { width: 110px; height: 110px; border-radius: 50%; border: 5px solid var(--primary); display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 16px; background: var(--primary-light); }
         .score-number { color: var(--primary); font-size: 34px; font-weight: 800; }
@@ -90,7 +91,7 @@
         .meal-block { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
         .meal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .meal-name { color: var(--text); font-size: 15px; font-weight: 700; }
-        .meal-totals { color: var(--text-muted); font-size: 12px; }
+        .meal-totals { color: var(--text-muted); font-size: 12px; margin-top: 2px; }
         .food-entry { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
         .food-entry-info { flex: 1; }
         .food-entry-name { color: var(--text); font-size: 13px; font-weight: 600; }
@@ -102,8 +103,8 @@
         .pb-exercise { color: var(--text); font-size: 13px; font-weight: 600; }
         .pb-value { color: var(--primary); font-size: 16px; font-weight: 800; }
 
-        .badge { display: inline-flex; align-items: center; gap: 6px; background: var(--primary-light); color: var(--primary); border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: 600; margin: 4px; }
-        .badge.earned { background: var(--gold); color: #fff; }
+        .badge { display: inline-flex; align-items: center; gap: 6px; background: var(--primary-light); color: var(--primary); border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: 600; margin: 4px; opacity: 0.5; }
+        .badge.earned { background: var(--gold); color: #fff; opacity: 1; }
 
         .tag { background: var(--primary-light); color: var(--primary); border-radius: 8px; padding: 6px 10px; font-size: 12px; font-weight: 600; margin-right: 6px; margin-bottom: 6px; display: inline-block; cursor: pointer; border: 1.5px solid transparent; }
         .tag.selected { border-color: var(--primary); background: var(--primary); color: #fff; }
@@ -125,6 +126,7 @@
         .onboarding input::placeholder { color: rgba(255,255,255,0.6); }
         .onboarding label { color: rgba(255,255,255,0.8); text-align: left; text-transform: uppercase; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 4px; display: block; }
         .onboarding .btn { background: #fff; color: var(--primary); font-size: 16px; padding: 16px; border-radius: 14px; margin-top: 8px; }
+        .onboarding .btn-success { background: rgba(255,255,255,0.2); color: #fff; border: 2px solid rgba(255,255,255,0.5); font-size: 16px; padding: 16px; border-radius: 14px; margin-top: 8px; }
         .onboarding select option { background: #2563EB; color: #fff; }
         .onboarding-step { display: none; width: 100%; max-width: 400px; }
         .onboarding-step.active { display: block; }
@@ -135,6 +137,13 @@
         .lang-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
         .lang-btn { background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3); border-radius: 12px; padding: 14px; text-align: center; cursor: pointer; color: #fff; font-size: 14px; font-weight: 600; transition: all 0.2s; }
         .lang-btn.selected { background: rgba(255,255,255,0.3); border-color: #fff; }
+
+        .path-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 16px; }
+        .path-btn { background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3); border-radius: 16px; padding: 20px; text-align: left; cursor: pointer; color: #fff; transition: all 0.2s; }
+        .path-btn:active { transform: scale(0.98); }
+        .path-btn.primary-path { background: rgba(255,255,255,0.25); border-color: #fff; }
+        .path-btn-title { font-size: 16px; font-weight: 800; margin-bottom: 4px; }
+        .path-btn-sub { font-size: 13px; opacity: 0.8; }
 
         .unit-toggle { display: flex; gap: 8px; margin-bottom: 12px; }
         .unit-btn { flex: 1; background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3); border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; color: #fff; font-size: 13px; font-weight: 600; }
@@ -156,8 +165,6 @@
 
         .plates-result { background: var(--primary-light); border-radius: 10px; padding: 12px; margin-top: 8px; color: var(--primary); font-weight: 600; font-size: 14px; }
 
-        .phase-card { background: var(--primary-light); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
-        .phase-title { color: var(--primary); font-size: 14px; font-weight: 700; margin-bottom: 8px; }
         .phase-history-item { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 8px; }
 
         .checkin-item { border-bottom: 1px solid var(--border); padding: 12px 0; }
@@ -180,7 +187,7 @@
         .toggle-label { color: var(--text); font-size: 14px; font-weight: 600; }
         .toggle-switch { width: 44px; height: 24px; background: var(--border); border-radius: 12px; cursor: pointer; position: relative; transition: background 0.2s; }
         .toggle-switch.on { background: var(--primary); }
-        .toggle-knob { width: 20px; height: 20px; background: #fff; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: left 0.2s; }
+        .toggle-knob { width: 20px; height: 20px; background: #fff; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: left 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
         .toggle-switch.on .toggle-knob { left: 22px; }
     </style>
 </head>
@@ -198,8 +205,8 @@
     <!-- STEP 0: LANGUAGE -->
     <div class="onboarding-step active" id="ob-step-0">
         <div style="font-size:56px; margin-bottom:16px;">🌍</div>
-        <h1 id="ob-lang-title">Choose Language</h1>
-        <p id="ob-lang-sub">Select your preferred language</p>
+        <h1 id="ob-title-lang">Choose Language</h1>
+        <p id="ob-sub-lang">Select your preferred language</p>
         <div class="lang-grid">
             <div class="lang-btn selected" onclick="selectLang('en', this)">🇬🇧 English</div>
             <div class="lang-btn" onclick="selectLang('pt', this)">🇧🇷 Português</div>
@@ -208,50 +215,67 @@
             <div class="lang-btn" onclick="selectLang('de', this)">🇩🇪 Deutsch</div>
             <div class="lang-btn" onclick="selectLang('ar', this)">🇸🇦 العربية</div>
         </div>
-        <button class="btn" onclick="obNext(1)">Continue</button>
+        <button class="btn" onclick="obNext(1)" id="ob-btn-lang">Continue</button>
     </div>
 
-    <!-- STEP 1: NAME & GOAL -->
+    <!-- STEP 1: PATH SELECTION -->
     <div class="onboarding-step" id="ob-step-1">
+        <div style="font-size:56px; margin-bottom:16px;">💪</div>
+        <h1 id="ob-title-path">Welcome to PocketGyms</h1>
+        <p id="ob-sub-path">How do you want to get started?</p>
+        <div class="path-grid">
+            <div class="path-btn primary-path" onclick="obNext(2)">
+                <div class="path-btn-title" id="ob-path-setup-title">Set Up My Goals</div>
+                <div class="path-btn-sub" id="ob-path-setup-sub">Personalise your targets and get a custom plan</div>
+            </div>
+            <div class="path-btn" onclick="fastTrack()">
+                <div class="path-btn-title" id="ob-path-fast-title">Jump Straight In</div>
+                <div class="path-btn-sub" id="ob-path-fast-sub">Skip setup and start tracking now</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 2: PERSONAL DETAILS -->
+    <div class="onboarding-step" id="ob-step-2">
         <div style="font-size:56px; margin-bottom:16px;">👋</div>
-        <h1 id="ob-welcome-title">Welcome</h1>
-        <p id="ob-welcome-sub">Let's get you set up</p>
+        <h1 id="ob-title-details">About You</h1>
+        <p id="ob-sub-details">Tell us a bit about yourself</p>
         <label id="lbl-name">Your First Name</label>
         <input type="text" id="ob-name" placeholder="e.g. Ryan">
         <label id="lbl-goal">Your Goal</label>
         <select id="ob-goal">
-            <option value="beginner">Beginner — Learn the basics</option>
-            <option value="fatloss">Fat Loss — Lose weight</option>
-            <option value="muscle">Muscle Building — Get bigger</option>
-            <option value="fitness">General Fitness — Stay active</option>
+            <option value="beginner" id="ob-goal-beginner">Beginner — Learn the basics</option>
+            <option value="fatloss" id="ob-goal-fatloss">Fat Loss — Lose weight</option>
+            <option value="muscle" id="ob-goal-muscle">Muscle Building — Get bigger</option>
+            <option value="fitness" id="ob-goal-fitness">General Fitness — Stay active</option>
         </select>
         <label id="lbl-env">Training Environment</label>
         <select id="ob-environment">
-            <option value="gym">Gym</option>
-            <option value="home">Home</option>
-            <option value="both">Both</option>
+            <option value="gym" id="ob-env-gym">Gym</option>
+            <option value="home" id="ob-env-home">Home</option>
+            <option value="both" id="ob-env-both">Both</option>
         </select>
         <label id="lbl-diet">Dietary Preference</label>
         <select id="ob-diet">
-            <option value="standard">Standard</option>
-            <option value="vegan">Vegan</option>
-            <option value="halal">Halal</option>
+            <option value="standard" id="ob-diet-standard">Standard</option>
+            <option value="vegan" id="ob-diet-vegan">Vegan</option>
+            <option value="halal" id="ob-diet-halal">Halal</option>
         </select>
-        <button class="btn" onclick="obNext(2)">Next</button>
+        <button class="btn" onclick="obNext(3)" id="ob-btn-details">Next</button>
     </div>
 
-    <!-- STEP 2: UNITS & STATS -->
-    <div class="onboarding-step" id="ob-step-2">
+    <!-- STEP 3: STATS -->
+    <div class="onboarding-step" id="ob-step-3">
         <div style="font-size:56px; margin-bottom:16px;">📊</div>
-        <h1>Your Stats</h1>
-        <p>We'll calculate your targets automatically</p>
-        <label>Height Units</label>
+        <h1 id="ob-title-stats">Your Stats</h1>
+        <p id="ob-sub-stats">We'll calculate your perfect targets</p>
+        <label id="lbl-height-unit">Height Units</label>
         <div class="unit-toggle">
             <div class="unit-btn selected" id="height-unit-cm" onclick="selectHeightUnit('cm')">cm</div>
             <div class="unit-btn" id="height-unit-ft" onclick="selectHeightUnit('ft')">ft / in</div>
         </div>
         <div id="height-cm-input">
-            <label>Height (cm)</label>
+            <label id="lbl-height-cm">Height (cm)</label>
             <input type="number" id="ob-height-cm" placeholder="e.g. 175">
         </div>
         <div id="height-ft-input" style="display:none;">
@@ -260,45 +284,31 @@
                 <div><label>Inches</label><input type="number" id="ob-height-in" placeholder="9"></div>
             </div>
         </div>
-        <label>Weight Units</label>
+        <label id="lbl-weight-unit">Weight Units</label>
         <div class="unit-toggle">
             <div class="unit-btn selected" id="weight-unit-kg" onclick="selectWeightUnit('kg')">kg</div>
             <div class="unit-btn" id="weight-unit-lbs" onclick="selectWeightUnit('lbs')">lbs</div>
             <div class="unit-btn" id="weight-unit-st" onclick="selectWeightUnit('st')">stone</div>
         </div>
-        <label id="lbl-weight">Current Weight</label>
+        <label id="lbl-current-weight">Current Weight</label>
         <input type="number" id="ob-weight" placeholder="e.g. 80">
-        <label id="lbl-target">Target Weight</label>
+        <label id="lbl-target-weight">Target Weight</label>
         <input type="number" id="ob-target" placeholder="e.g. 75">
-        <label>Age</label>
+        <label id="lbl-age">Age</label>
         <input type="number" id="ob-age" placeholder="e.g. 25">
-        <label>Gender</label>
+        <label id="lbl-gender">Gender</label>
         <select id="ob-gender">
-            <option value="male">Male</option>
-            <option value="female">Female</option>
+            <option value="male" id="ob-gender-male">Male</option>
+            <option value="female" id="ob-gender-female">Female</option>
         </select>
-        <button class="btn" onclick="obNext(3)">Next</button>
-    </div>
-
-    <!-- STEP 3: FIRST PHASE -->
-    <div class="onboarding-step" id="ob-step-3">
-        <div style="font-size:56px; margin-bottom:16px;">🎯</div>
-        <h1>Set Your Goal</h1>
-        <p>Define your first transformation phase</p>
-        <label>Phase Name</label>
-        <input type="text" id="ob-phase-name" placeholder="e.g. Summer Cut, Bulk 2026">
-        <label>Start Date</label>
-        <input type="text" id="ob-start-date" placeholder="DD/MM/YYYY">
-        <label>End Date</label>
-        <input type="text" id="ob-end-date" placeholder="DD/MM/YYYY">
-        <label>Activity Level</label>
+        <label id="lbl-activity">Activity Level</label>
         <select id="ob-activity">
             <option value="1.2">Sedentary — Little/no exercise</option>
             <option value="1.375">Lightly Active — 1-3 days/week</option>
             <option value="1.55" selected>Moderately Active — 3-5 days/week</option>
             <option value="1.725">Very Active — 6-7 days/week</option>
         </select>
-        <button class="btn" onclick="completeOnboarding()">Let's Go 🚀</button>
+        <button class="btn" onclick="completeOnboarding()" id="ob-btn-stats">Let's Go 🚀</button>
     </div>
 </div>
 
@@ -311,90 +321,90 @@
 <!-- HOME SCREEN -->
 <div class="screen active" id="screen-home">
     <div class="card" style="text-align:center;">
-        <h2>TODAY'S SCORE</h2>
+        <h2 id="txt-today-score">TODAY'S SCORE</h2>
         <div class="score-circle">
             <div class="score-number" id="today-score">0</div>
-            <div class="score-label">OUT OF 100</div>
+            <div class="score-label" id="txt-out-of">OUT OF 100</div>
         </div>
         <div class="stat-row">
-            <span class="stat-label">Weekly Streak</span>
+            <span class="stat-label" id="txt-weekly-streak">Weekly Streak</span>
             <span class="stat-value" id="streak-count">0/7</span>
         </div>
         <div class="streak-bar" id="streak-bar"></div>
     </div>
 
     <div class="card">
-        <h2>COACH</h2>
+        <h2 id="txt-coach">COACH</h2>
         <div id="coach-prompts"></div>
     </div>
 
     <div class="card">
-        <h2>TODAY'S PROGRESS</h2>
-        <div class="stat-row"><span class="stat-label">Calories</span><span class="stat-value" id="home-calories">—</span></div>
+        <h2 id="txt-today-progress">TODAY'S PROGRESS</h2>
+        <div class="stat-row"><span class="stat-label" id="txt-calories">Calories</span><span class="stat-value" id="home-calories">—</span></div>
         <div class="progress-bar-outer"><div class="progress-bar-inner" id="home-bar-calories"></div></div>
-        <div class="stat-row" style="margin-top:10px;"><span class="stat-label">Protein</span><span class="stat-value" id="home-protein">—</span></div>
+        <div class="stat-row" style="margin-top:10px;"><span class="stat-label" id="txt-protein">Protein</span><span class="stat-value" id="home-protein">—</span></div>
         <div class="progress-bar-outer"><div class="progress-bar-inner" id="home-bar-protein"></div></div>
-        <div class="stat-row" style="margin-top:10px;"><span class="stat-label">Steps</span><span class="stat-value" id="home-steps">—</span></div>
+        <div class="stat-row" style="margin-top:10px;"><span class="stat-label" id="txt-steps">Steps</span><span class="stat-value" id="home-steps">—</span></div>
         <div class="progress-bar-outer"><div class="progress-bar-inner" id="home-bar-steps"></div></div>
-        <div class="stat-row" style="margin-top:10px;"><span class="stat-label">Water</span><span class="stat-value" id="home-water">—</span></div>
+        <div class="stat-row" style="margin-top:10px;"><span class="stat-label" id="txt-water">Water</span><span class="stat-value" id="home-water">—</span></div>
         <div class="progress-bar-outer"><div class="progress-bar-inner" id="home-bar-water"></div></div>
     </div>
 
     <div class="card">
-        <h2>MY PHASE</h2>
-        <div class="stat-row"><span class="stat-label">Phase</span><span class="stat-value" id="home-phase-name">—</span></div>
-        <div class="stat-row"><span class="stat-label">Days Remaining</span><span class="stat-value" id="home-days-remaining">—</span></div>
+        <h2 id="txt-my-phase">MY PHASE</h2>
+        <div class="stat-row"><span class="stat-label" id="txt-phase-label">Phase</span><span class="stat-value" id="home-phase-name">—</span></div>
+        <div class="stat-row"><span class="stat-label" id="txt-days-training">Days Training</span><span class="stat-value" id="home-days-training">—</span></div>
         <div class="progress-bar-outer"><div class="progress-bar-inner gold" id="home-prog-bar"></div></div>
         <p style="color:var(--text-muted); font-size:12px; margin-top:6px;" id="home-prog-pct"></p>
     </div>
 
     <div class="card">
-        <h2>WEIGHT</h2>
-        <div class="stat-row"><span class="stat-label">Current</span><span class="stat-value" id="home-current-weight">—</span></div>
-        <div class="stat-row"><span class="stat-label">Target</span><span class="stat-value" id="home-target-weight">—</span></div>
-        <div class="stat-row"><span class="stat-label">To Go</span><span class="stat-value" id="home-weight-change">—</span></div>
+        <h2 id="txt-weight">WEIGHT</h2>
+        <div class="stat-row"><span class="stat-label" id="txt-current">Current</span><span class="stat-value" id="home-current-weight">—</span></div>
+        <div class="stat-row"><span class="stat-label" id="txt-target">Target</span><span class="stat-value" id="home-target-weight">—</span></div>
+        <div class="stat-row"><span class="stat-label" id="txt-to-go">To Go</span><span class="stat-value" id="home-weight-change">—</span></div>
     </div>
 
     <div class="card">
-        <h2>BADGES</h2>
+        <h2 id="txt-badges">BADGES</h2>
         <div id="badges-display"></div>
     </div>
 
-    <button class="btn" onclick="showScreen('screen-train')">LOG A WORKOUT</button>
+    <button class="btn" onclick="showScreen('screen-train')" id="txt-log-workout">LOG A WORKOUT</button>
 </div>
 
 <!-- TRAIN SCREEN -->
 <div class="screen" id="screen-train">
     <div id="train-menu">
-        <div class="section-title">HOW DO YOU WANT TO TRAIN?</div>
+        <div class="section-title" id="txt-how-train">HOW DO YOU WANT TO TRAIN?</div>
         <div class="routine-item" onclick="showTrainSection('routines')">
-            <div><div class="routine-name">My Routines</div><div class="routine-meta">Start a saved workout</div></div>
+            <div><div class="routine-name" id="txt-my-routines">My Routines</div><div class="routine-meta" id="txt-my-routines-sub">Start a saved workout</div></div>
             <div class="routine-arrow">›</div>
         </div>
         <div class="routine-item" onclick="showTrainSection('quick')">
-            <div><div class="routine-name">Quick Workout</div><div class="routine-meta">Pick a category and go</div></div>
+            <div><div class="routine-name" id="txt-quick-workout">Quick Workout</div><div class="routine-meta" id="txt-quick-workout-sub">Pick a category and go</div></div>
             <div class="routine-arrow">›</div>
         </div>
         <div class="routine-item" onclick="showTrainSection('create')">
-            <div><div class="routine-name">Create Routine</div><div class="routine-meta">Build and save a new routine</div></div>
+            <div><div class="routine-name" id="txt-create-routine">Create Routine</div><div class="routine-meta" id="txt-create-routine-sub">Build and save a new routine</div></div>
             <div class="routine-arrow">›</div>
         </div>
         <div class="routine-item" onclick="showTrainSection('cardio')">
-            <div><div class="routine-name">Cardio</div><div class="routine-meta">Running, cycling, walking and more</div></div>
+            <div><div class="routine-name" id="txt-cardio">Cardio</div><div class="routine-meta" id="txt-cardio-sub">Running, cycling, walking and more</div></div>
             <div class="routine-arrow">›</div>
         </div>
     </div>
 
     <div id="train-routines" style="display:none;">
-        <button class="btn-outline" onclick="showTrainSection('menu')">← Back</button>
-        <div class="section-title">MY ROUTINES</div>
+        <button class="btn-outline" onclick="showTrainSection('menu')" id="txt-back-1">← Back</button>
+        <div class="section-title" id="txt-my-routines-title">MY ROUTINES</div>
         <div id="routines-list"></div>
-        <p style="color:var(--text-muted); font-size:13px;" id="no-routines-msg">No routines yet. Create one first.</p>
+        <p style="color:var(--text-muted); font-size:13px; display:none;" id="no-routines-msg">No routines yet. Create one first.</p>
     </div>
 
     <div id="train-quick" style="display:none;">
-        <button class="btn-outline" onclick="showTrainSection('menu')">← Back</button>
-        <div class="section-title">SELECT CATEGORY</div>
+        <button class="btn-outline" onclick="showTrainSection('menu')" id="txt-back-2">← Back</button>
+        <div class="section-title" id="txt-select-category">SELECT CATEGORY</div>
         <div class="section-subtitle">PrivateGyms Method</div>
         <div class="category-grid">
             <div class="category-btn" onclick="startQuickWorkout('Push')">PUSH</div>
@@ -418,23 +428,23 @@
     </div>
 
     <div id="train-create" style="display:none;">
-        <button class="btn-outline" onclick="showTrainSection('menu')">← Back</button>
-        <div class="section-title">CREATE ROUTINE</div>
+        <button class="btn-outline" onclick="showTrainSection('menu')" id="txt-back-3">← Back</button>
+        <div class="section-title" id="txt-create-routine-title">CREATE ROUTINE</div>
         <div class="card">
-            <label>Routine Name</label>
+            <label id="lbl-routine-name">Routine Name</label>
             <input type="text" id="routine-name" placeholder="e.g. Chest & Biceps">
-            <label>Select Category</label>
+            <label id="lbl-select-category">Select Category</label>
             <div class="filter-bar" id="create-category-filter"></div>
             <div id="create-exercise-tags"></div>
-            <label style="margin-top:8px;">Add Custom Exercise</label>
+            <label id="lbl-custom-ex" style="margin-top:8px;">Add Custom Exercise</label>
             <input type="text" id="create-custom-ex" placeholder="Type exercise name...">
-            <button class="btn" onclick="saveRoutine()">Save Routine</button>
+            <button class="btn" onclick="saveRoutine()" id="txt-save-routine">Save Routine</button>
         </div>
     </div>
 
     <div id="train-cardio" style="display:none;">
-        <button class="btn-outline" onclick="showTrainSection('menu')">← Back</button>
-        <div class="section-title">CARDIO</div>
+        <button class="btn-outline" onclick="showTrainSection('menu')" id="txt-back-4">← Back</button>
+        <div class="section-title" id="txt-cardio-title">CARDIO</div>
         <div class="category-grid">
             <div class="category-btn" onclick="startCardio('Running')">RUNNING</div>
             <div class="category-btn" onclick="startCardio('Cycling')">CYCLING</div>
@@ -448,48 +458,48 @@
     </div>
 
     <div id="train-active" style="display:none;">
-        <button class="btn-outline" onclick="showTrainSection('menu')">← Back</button>
-        <div class="workout-timer-bar">
-            <span class="workout-timer-label">WORKOUT TIME</span>
+        <button class="btn-outline" onclick="showTrainSection('menu')" id="txt-back-5">← Back</button>
+        <div class="workout-timer-bar" id="workout-timer-bar" style="display:none;">
+            <span class="workout-timer-label" id="txt-workout-time">WORKOUT TIME</span>
             <span class="workout-timer-value" id="workout-timer">00:00</span>
         </div>
         <div class="rest-timer" id="rest-timer">
-            <div style="color:var(--text-muted); font-size:11px; font-weight:700; margin-bottom:4px;">REST TIMER</div>
+            <div style="color:var(--text-muted); font-size:11px; font-weight:700; margin-bottom:4px;" id="txt-rest-timer">REST TIMER</div>
             <div class="rest-timer-count" id="rest-count">60</div>
-            <button class="btn-small" onclick="stopTimer()" style="margin-top:8px;">Stop</button>
+            <button class="btn-small" onclick="stopTimer()" id="txt-stop">Stop</button>
         </div>
         <div class="card" id="exercise-picker">
-            <h2>ADD EXERCISE</h2>
+            <h2 id="txt-add-exercise">ADD EXERCISE</h2>
             <div class="filter-bar" id="active-category-filter"></div>
             <div id="exercise-tags"></div>
             <input type="text" id="custom-exercise" placeholder="Add custom exercise...">
-            <button class="btn" onclick="addExercise()">+ Add Exercise</button>
+            <button class="btn" onclick="addExercise()" id="txt-add-ex-btn">+ Add Exercise</button>
         </div>
         <div id="exercise-log"></div>
         <button class="btn" onclick="saveWorkout()" style="display:none;" id="save-btn">Save Workout</button>
     </div>
 
     <div id="train-cardio-active" style="display:none;">
-        <button class="btn-outline" onclick="showTrainSection('menu')">← Back</button>
+        <button class="btn-outline" onclick="showTrainSection('menu')" id="txt-back-6">← Back</button>
         <div class="card">
             <h2 id="cardio-type-title">CARDIO LOG</h2>
             <div class="workout-timer-bar">
-                <span class="workout-timer-label">SESSION TIME</span>
+                <span class="workout-timer-label" id="txt-session-time">SESSION TIME</span>
                 <span class="workout-timer-value" id="cardio-timer">00:00</span>
             </div>
-            <label>Duration (minutes)</label>
+            <label id="lbl-duration">Duration (minutes)</label>
             <input type="number" id="cardio-duration" placeholder="e.g. 30">
-            <label>Distance (km)</label>
+            <label id="lbl-distance">Distance (km)</label>
             <input type="number" id="cardio-distance" placeholder="e.g. 5">
-            <label>Intensity</label>
+            <label id="lbl-intensity">Intensity</label>
             <select id="cardio-intensity">
-                <option value="easy">Easy</option>
-                <option value="moderate">Moderate</option>
-                <option value="hard">Hard</option>
+                <option value="easy" id="opt-easy">Easy</option>
+                <option value="moderate" id="opt-moderate">Moderate</option>
+                <option value="hard" id="opt-hard">Hard</option>
             </select>
-            <label>Notes</label>
+            <label id="lbl-notes">Notes</label>
             <input type="text" id="cardio-notes" placeholder="How did it feel?">
-            <button class="btn" onclick="saveCardio()">Save Cardio</button>
+            <button class="btn" onclick="saveCardio()" id="txt-save-cardio">Save Cardio</button>
         </div>
     </div>
 </div>
@@ -497,138 +507,137 @@
 <!-- NUTRITION SCREEN -->
 <div class="screen" id="screen-calories">
     <div class="card">
-        <h2>TODAY'S NUTRITION</h2>
-        <div class="stat-row"><span class="stat-label">Date</span><span class="stat-value" id="cal-date"></span></div>
-        <div class="stat-row" style="margin-top:4px;"><span class="stat-label">Status</span><span id="cal-status" class="stat-value">—</span></div>
+        <h2 id="txt-todays-nutrition">TODAY'S NUTRITION</h2>
+        <div class="stat-row"><span class="stat-label" id="txt-date-label">Date</span><span class="stat-value" id="cal-date"></span></div>
+        <div class="stat-row" style="margin-top:4px;"><span class="stat-label" id="txt-status">Status</span><span id="cal-status" class="stat-value">—</span></div>
     </div>
 
-    <div class="card" id="nutrition-summary">
-        <h2>DAILY TOTALS</h2>
+    <div class="card">
+        <h2 id="txt-daily-totals">DAILY TOTALS</h2>
         <div style="margin-bottom:10px;">
-            <div class="stat-row"><span class="stat-label">Calories</span><span class="stat-value" id="show-calories">0 / — kcal</span></div>
+            <div class="stat-row"><span class="stat-label" id="txt-cal-label">Calories</span><span class="stat-value" id="show-calories">0 / — kcal</span></div>
             <div class="progress-bar-outer"><div class="progress-bar-inner" id="bar-calories"></div></div>
         </div>
         <div style="margin-bottom:10px;">
-            <div class="stat-row"><span class="stat-label">Protein</span><span class="stat-value" id="show-protein">0 / —g</span></div>
+            <div class="stat-row"><span class="stat-label" id="txt-prot-label">Protein</span><span class="stat-value" id="show-protein">0 / —g</span></div>
             <div class="progress-bar-outer"><div class="progress-bar-inner" id="bar-protein"></div></div>
         </div>
         <div style="margin-bottom:10px;">
-            <div class="stat-row"><span class="stat-label">Carbs</span><span class="stat-value" id="show-carbs">0g</span></div>
+            <div class="stat-row"><span class="stat-label" id="txt-carbs-label">Carbs</span><span class="stat-value" id="show-carbs">0g</span></div>
         </div>
         <div style="margin-bottom:10px;">
-            <div class="stat-row"><span class="stat-label">Fat</span><span class="stat-value" id="show-fat">0g</span></div>
+            <div class="stat-row"><span class="stat-label" id="txt-fat-label">Fat</span><span class="stat-value" id="show-fat">0g</span></div>
         </div>
         <div style="margin-bottom:10px;">
-            <div class="stat-row"><span class="stat-label">Steps</span><span class="stat-value" id="show-steps">0 / —</span></div>
+            <div class="stat-row"><span class="stat-label" id="txt-steps-label">Steps</span><span class="stat-value" id="show-steps">0 / —</span></div>
             <div class="progress-bar-outer"><div class="progress-bar-inner" id="bar-steps"></div></div>
         </div>
         <div>
-            <div class="stat-row"><span class="stat-label">Water</span><span class="stat-value" id="show-water">0 / 2.5L</span></div>
+            <div class="stat-row"><span class="stat-label" id="txt-water-label">Water</span><span class="stat-value" id="show-water">0 / 2.5L</span></div>
             <div class="progress-bar-outer"><div class="progress-bar-inner" id="bar-water"></div></div>
         </div>
     </div>
 
     <div id="meals-container"></div>
-
-    <button class="btn" onclick="addMeal()">+ Add Meal</button>
+    <button class="btn" onclick="addMeal()" id="txt-add-meal">+ Add Meal</button>
 
     <div class="card">
-        <h2>STEPS & WATER</h2>
-        <label>Steps Today</label>
+        <h2 id="txt-steps-water">STEPS & WATER</h2>
+        <label id="lbl-steps-today">Steps Today</label>
         <input type="number" id="input-steps" placeholder="e.g. 5000">
-        <label>Water (litres)</label>
+        <label id="lbl-water">Water (litres)</label>
         <input type="number" id="input-water" placeholder="e.g. 2.5" step="0.25">
-        <button class="btn" onclick="saveStepsWater()">Save</button>
+        <button class="btn" onclick="saveStepsWater()" id="txt-save-sw">Save</button>
     </div>
 
     <div class="card">
-        <h2>SUPPLEMENTS</h2>
+        <h2 id="txt-supplements">SUPPLEMENTS</h2>
         <div id="supplement-list"></div>
     </div>
 </div>
 
 <!-- FOOD SEARCH MODAL -->
-<div id="food-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:var(--bg); z-index:9998; padding:20px; overflow-y:auto;">
+<div id="food-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:var(--bg); z-index:9998; padding:20px; overflow-y:auto; padding-bottom:80px;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
         <h2 style="color:var(--text); font-size:18px; font-weight:800;" id="food-modal-title">Add Food</h2>
         <button onclick="closeFoodModal()" style="background:none; border:none; color:var(--text); font-size:24px; cursor:pointer;">✕</button>
     </div>
     <div class="filter-bar" id="food-filter-bar">
-        <button class="filter-btn active" onclick="setFoodFilter('all', this)">All</button>
-        <button class="filter-btn" onclick="setFoodFilter('protein', this)">Protein</button>
-        <button class="filter-btn" onclick="setFoodFilter('carbs', this)">Carbs</button>
-        <button class="filter-btn" onclick="setFoodFilter('fats', this)">Fats</button>
-        <button class="filter-btn" onclick="setFoodFilter('veg', this)">Veg</button>
-        <button class="filter-btn" onclick="setFoodFilter('dairy', this)">Dairy</button>
-        <button class="filter-btn" onclick="setFoodFilter('snacks', this)">Snacks</button>
+        <button class="filter-btn active" onclick="setFoodFilter('all', this)" id="filter-all">All</button>
+        <button class="filter-btn" onclick="setFoodFilter('protein', this)" id="filter-protein">Protein</button>
+        <button class="filter-btn" onclick="setFoodFilter('carbs', this)" id="filter-carbs">Carbs</button>
+        <button class="filter-btn" onclick="setFoodFilter('fats', this)" id="filter-fats">Fats</button>
+        <button class="filter-btn" onclick="setFoodFilter('veg', this)" id="filter-veg">Veg</button>
+        <button class="filter-btn" onclick="setFoodFilter('dairy', this)" id="filter-dairy">Dairy</button>
+        <button class="filter-btn" onclick="setFoodFilter('snacks', this)" id="filter-snacks">Snacks</button>
+        <button class="filter-btn" onclick="setFoodFilter('drinks', this)" id="filter-drinks">Drinks</button>
     </div>
-    <input type="text" id="food-search" placeholder="Search foods..." oninput="filterFoods()" style="margin-bottom:12px;">
+    <input type="text" id="food-search" placeholder="Search..." oninput="filterFoods()" style="margin-bottom:12px;">
     <div id="food-list"></div>
-    <div id="food-portion" style="display:none; background:var(--card); border-radius:14px; padding:16px; margin-top:12px;">
-        <div style="font-weight:700; color:var(--text); margin-bottom:8px;" id="food-portion-label"></div>
-        <label>Portion (g)</label>
-        <input type="number" id="food-portion-amount" placeholder="e.g. 150" value="100">
-        <div id="food-portion-preview" style="color:var(--text-muted); font-size:13px; margin-bottom:12px;"></div>
-        <button class="btn" onclick="addFoodEntry()">Add to Meal</button>
+    <div id="food-portion" style="display:none; background:var(--card); border-radius:14px; padding:16px; margin-top:12px; border:1px solid var(--border);">
+        <div style="font-weight:700; color:var(--text); margin-bottom:8px; font-size:15px;" id="food-portion-label"></div>
+        <label id="lbl-portion">Portion (g or ml)</label>
+        <input type="number" id="food-portion-amount" placeholder="e.g. 150" value="100" oninput="updatePortionPreview()">
+        <div id="food-portion-preview" style="color:var(--text-muted); font-size:13px; margin-bottom:12px; background:var(--primary-light); padding:8px; border-radius:8px;"></div>
+        <button class="btn" onclick="addFoodEntry()" id="txt-add-to-meal">Add to Meal</button>
     </div>
 </div>
 
 <!-- PROGRESS SCREEN -->
 <div class="screen" id="screen-progress">
-
     <div class="card" id="phase-current-card">
-        <h2>CURRENT PHASE</h2>
-        <div class="stat-row"><span class="stat-label">Phase</span><span class="stat-value" id="prog-phase-name">—</span></div>
-        <div class="stat-row"><span class="stat-label">Days Remaining</span><span class="stat-value" id="prog-days-remaining">—</span></div>
-        <div class="stat-row"><span class="stat-label">Weight to Goal</span><span class="stat-value" id="prog-weight-to-go">—</span></div>
+        <h2 id="txt-current-phase">CURRENT PHASE</h2>
+        <div class="stat-row"><span class="stat-label" id="txt-phase-name-label">Phase</span><span class="stat-value" id="prog-phase-name">—</span></div>
+        <div class="stat-row"><span class="stat-label" id="txt-days-training-prog">Days Training</span><span class="stat-value" id="prog-days-training">—</span></div>
+        <div class="stat-row"><span class="stat-label" id="txt-weight-to-go">Weight to Goal</span><span class="stat-value" id="prog-weight-to-go">—</span></div>
         <div class="progress-bar-outer"><div class="progress-bar-inner gold" id="prog-bar"></div></div>
         <p style="color:var(--text-muted); font-size:12px; margin-top:6px;" id="prog-pct"></p>
-        <button class="btn-outline" style="margin-top:12px;" onclick="completePhase()">Complete Phase & Start New</button>
+        <button class="btn-outline" style="margin-top:12px;" onclick="completePhase()" id="txt-complete-phase">Complete Phase & Start New</button>
     </div>
 
     <div class="card" id="phase-history-card" style="display:none;">
-        <h2>PHASE HISTORY</h2>
+        <h2 id="txt-phase-history">PHASE HISTORY</h2>
         <div id="phase-history-list"></div>
     </div>
 
     <div class="card">
-        <h2>CONSISTENCY</h2>
-        <div class="stat-row"><span class="stat-label">Days logged (last 30)</span><span class="stat-value" id="consistency-score">—</span></div>
-        <div class="stat-row"><span class="stat-label">Workouts completed</span><span class="stat-value" id="workouts-count">—</span></div>
-        <div class="stat-row"><span class="stat-label">Cardio sessions</span><span class="stat-value" id="cardio-count">—</span></div>
+        <h2 id="txt-consistency">CONSISTENCY</h2>
+        <div class="stat-row"><span class="stat-label" id="txt-days-logged">Days logged (last 30)</span><span class="stat-value" id="consistency-score">—</span></div>
+        <div class="stat-row"><span class="stat-label" id="txt-workouts-completed">Workouts completed</span><span class="stat-value" id="workouts-count">—</span></div>
+        <div class="stat-row"><span class="stat-label" id="txt-cardio-sessions">Cardio sessions</span><span class="stat-value" id="cardio-count">—</span></div>
     </div>
 
     <div class="card">
-        <h2>PERSONAL BESTS</h2>
+        <h2 id="txt-personal-bests">PERSONAL BESTS</h2>
         <div id="pb-list"><p style="color:var(--text-muted);">Log workouts to track PBs.</p></div>
     </div>
 
     <div class="card">
-        <h2>BODY MEASUREMENTS</h2>
+        <h2 id="txt-body-measurements">BODY MEASUREMENTS</h2>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
-            <div><label>Chest (cm)</label><input type="number" id="meas-chest" placeholder="—"></div>
-            <div><label>Waist (cm)</label><input type="number" id="meas-waist" placeholder="—"></div>
-            <div><label>Hips (cm)</label><input type="number" id="meas-hips" placeholder="—"></div>
-            <div><label>Arms (cm)</label><input type="number" id="meas-arms" placeholder="—"></div>
-            <div><label>Legs (cm)</label><input type="number" id="meas-legs" placeholder="—"></div>
+            <div><label id="lbl-chest">Chest (cm)</label><input type="number" id="meas-chest" placeholder="—"></div>
+            <div><label id="lbl-waist">Waist (cm)</label><input type="number" id="meas-waist" placeholder="—"></div>
+            <div><label id="lbl-hips">Hips (cm)</label><input type="number" id="meas-hips" placeholder="—"></div>
+            <div><label id="lbl-arms">Arms (cm)</label><input type="number" id="meas-arms" placeholder="—"></div>
+            <div><label id="lbl-legs">Legs (cm)</label><input type="number" id="meas-legs" placeholder="—"></div>
         </div>
-        <button class="btn" onclick="saveMeasurements()">Save Measurements</button>
+        <button class="btn" onclick="saveMeasurements()" id="txt-save-measurements">Save Measurements</button>
     </div>
 
     <div class="card">
-        <h2>WEEKLY CHECK-IN</h2>
-        <label>Weight this week (kg)</label>
+        <h2 id="txt-weekly-checkin">WEEKLY CHECK-IN</h2>
+        <label id="lbl-checkin-weight">Weight this week (kg)</label>
         <input type="number" id="checkin-weight" placeholder="e.g. 80">
-        <label>Energy levels (1-10)</label>
+        <label id="lbl-checkin-energy">Energy levels (1-10)</label>
         <input type="number" id="checkin-energy" placeholder="e.g. 7" min="1" max="10">
-        <label>Notes</label>
+        <label id="lbl-checkin-notes">Notes</label>
         <input type="text" id="checkin-notes" placeholder="How did this week go?">
-        <button class="btn" onclick="saveCheckin()">Save Check-In</button>
+        <button class="btn" onclick="saveCheckin()" id="txt-save-checkin">Save Check-In</button>
         <div id="checkin-history"></div>
     </div>
 
     <div class="card">
-        <h2>WORKOUT HISTORY</h2>
+        <h2 id="txt-workout-history">WORKOUT HISTORY</h2>
         <div id="history-list"><p style="color:var(--text-muted);">No sessions logged yet.</p></div>
     </div>
 </div>
@@ -636,134 +645,342 @@
 <!-- SETTINGS SCREEN -->
 <div class="screen" id="screen-settings">
     <div class="card">
-        <h2>YOUR DETAILS</h2>
-        <label>Name</label><input type="text" id="set-name" placeholder="Your name">
-        <label>Age</label><input type="number" id="set-age" placeholder="e.g. 25">
-        <label>Gender</label>
+        <h2 id="txt-your-details">YOUR DETAILS</h2>
+        <label id="lbl-set-name">Name</label><input type="text" id="set-name" placeholder="Your name">
+        <label id="lbl-set-age">Age</label><input type="number" id="set-age" placeholder="e.g. 25">
+        <label id="lbl-set-gender">Gender</label>
         <select id="set-gender"><option value="male">Male</option><option value="female">Female</option></select>
-        <label>Height (cm)</label><input type="number" id="set-height" placeholder="e.g. 175">
-        <label>Current Weight (kg)</label><input type="number" id="set-weight" placeholder="e.g. 80">
-        <label>Target Weight (kg)</label><input type="number" id="set-target-weight" placeholder="e.g. 75">
-        <label>Activity Level</label>
+        <label id="lbl-set-height">Height (cm)</label><input type="number" id="set-height" placeholder="e.g. 175">
+        <label id="lbl-set-weight">Current Weight (kg)</label><input type="number" id="set-weight" placeholder="e.g. 80">
+        <label id="lbl-set-target">Target Weight (kg)</label><input type="number" id="set-target-weight" placeholder="e.g. 75">
+        <label id="lbl-set-activity">Activity Level</label>
         <select id="set-activity">
             <option value="1.2">Sedentary</option>
             <option value="1.375">Lightly Active</option>
             <option value="1.55" selected>Moderately Active</option>
             <option value="1.725">Very Active</option>
         </select>
-        <label>Goal</label>
+        <label id="lbl-set-goal">Goal</label>
         <select id="set-goal">
             <option value="beginner">Beginner</option>
             <option value="fatloss">Fat Loss</option>
             <option value="muscle">Muscle Building</option>
             <option value="fitness">General Fitness</option>
         </select>
-        <label>Training Environment</label>
+        <label id="lbl-set-env">Training Environment</label>
         <select id="set-environment"><option value="gym">Gym</option><option value="home">Home</option><option value="both">Both</option></select>
-        <label>Dietary Preference</label>
+        <label id="lbl-set-diet">Dietary Preference</label>
         <select id="set-diet"><option value="standard">Standard</option><option value="vegan">Vegan</option><option value="halal">Halal</option></select>
-        <label>Units</label>
+        <label id="lbl-set-units">Units</label>
         <select id="set-units"><option value="kg">kg / km</option><option value="lbs">lbs / miles</option></select>
-        <label>Language</label>
-        <select id="set-language">
-            <option value="en">English</option>
-            <option value="pt">Português</option>
-            <option value="es">Español</option>
-            <option value="fr">Français</option>
-            <option value="de">Deutsch</option>
-            <option value="ar">العربية</option>
+        <label id="lbl-set-lang">Language</label>
+        <select id="set-language" onchange="selectedLang=this.value; applyTranslations();">
+            <option value="en">🇬🇧 English</option>
+            <option value="pt">🇧🇷 Português</option>
+            <option value="es">🇪🇸 Español</option>
+            <option value="fr">🇫🇷 Français</option>
+            <option value="de">🇩🇪 Deutsch</option>
+            <option value="ar">🇸🇦 العربية</option>
         </select>
     </div>
 
     <div class="card">
-        <h2>CURRENT PHASE</h2>
-        <label>Phase Name</label><input type="text" id="set-phase-name" placeholder="e.g. Summer Cut">
-        <label>Start Date (DD/MM/YYYY)</label><input type="text" id="set-start-date" placeholder="01/01/2026">
-        <label>End Date (DD/MM/YYYY)</label><input type="text" id="set-end-date" placeholder="01/03/2026">
-        <label>Training Days Per Week</label><input type="number" id="set-training-days" placeholder="e.g. 4" min="1" max="7">
+        <h2 id="txt-my-transformation">MY TRANSFORMATION PHASE</h2>
+        <p style="color:var(--text-muted); font-size:13px; margin-bottom:12px;" id="txt-phase-desc">Optional: Set a goal phase to track your transformation progress.</p>
+        <label id="lbl-phase-name">Phase Name</label><input type="text" id="set-phase-name" placeholder="e.g. Summer Cut, Bulk 2026">
+        <label id="lbl-phase-duration">Duration</label>
+        <select id="set-phase-duration">
+            <option value="28">4 Weeks</option>
+            <option value="42">6 Weeks</option>
+            <option value="56" selected>8 Weeks</option>
+            <option value="70">10 Weeks</option>
+            <option value="84">12 Weeks</option>
+            <option value="0">Custom</option>
+        </select>
+        <label id="lbl-training-days">Training Days Per Week</label>
+        <input type="number" id="set-training-days" placeholder="e.g. 4" min="1" max="7">
     </div>
 
     <div class="card">
-        <h2>APPEARANCE</h2>
+        <h2 id="txt-appearance">APPEARANCE</h2>
         <div class="toggle-row">
-            <span class="toggle-label">Dark Mode</span>
+            <span class="toggle-label" id="txt-dark-mode">Dark Mode</span>
             <div class="toggle-switch" id="dark-toggle" onclick="toggleTheme()"><div class="toggle-knob"></div></div>
         </div>
     </div>
 
     <div class="card" id="tdee-result" style="display:none;">
-        <h2>YOUR CALCULATED TARGETS</h2>
+        <h2 id="txt-your-targets">YOUR CALCULATED TARGETS</h2>
         <div class="stat-row"><span class="stat-label">TDEE</span><span class="stat-value" id="tdee-value">—</span></div>
-        <div class="stat-row"><span class="stat-label">Calorie Target</span><span class="stat-value" id="cal-target-value">—</span></div>
-        <div class="stat-row"><span class="stat-label">Protein Target</span><span class="stat-value" id="protein-target-value">—</span></div>
-        <div class="stat-row"><span class="stat-label">Steps Target</span><span class="stat-value">8,000 steps</span></div>
+        <div class="stat-row"><span class="stat-label" id="txt-cal-target">Calorie Target</span><span class="stat-value" id="cal-target-value">—</span></div>
+        <div class="stat-row"><span class="stat-label" id="txt-protein-target">Protein Target</span><span class="stat-value" id="protein-target-value">—</span></div>
+        <div class="stat-row"><span class="stat-label" id="txt-steps-target">Steps Target</span><span class="stat-value">8,000 steps</span></div>
     </div>
 
     <div class="card">
-        <h2>PLATES CALCULATOR</h2>
-        <label>Target Weight (kg)</label><input type="number" id="plates-weight" placeholder="e.g. 100">
-        <label>Bar Weight</label>
+        <h2 id="txt-plates-calc">PLATES CALCULATOR</h2>
+        <label id="lbl-plates-weight">Target Weight (kg)</label><input type="number" id="plates-weight" placeholder="e.g. 100">
+        <label id="lbl-plates-bar">Bar Weight</label>
         <select id="plates-bar"><option value="20">20kg Standard</option><option value="15">15kg Women's</option><option value="10">10kg Short</option></select>
-        <button class="btn-outline" onclick="calculatePlates()">Calculate Plates</button>
+        <button class="btn-outline" onclick="calculatePlates()" id="txt-calc-plates">Calculate Plates</button>
         <div class="plates-result" id="plates-result" style="display:none;"></div>
     </div>
 
-    <button class="btn" onclick="saveSettings()">Save & Calculate Targets</button>
+    <button class="btn" onclick="saveSettings()" id="txt-save-settings">Save & Calculate Targets</button>
 </div>
 
 <!-- NAV -->
 <div class="nav">
     <div class="nav-item active" onclick="showScreen('screen-home')" id="nav-home">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        Home
+        <span id="nav-txt-home">Home</span>
     </div>
     <div class="nav-item" onclick="showScreen('screen-train')" id="nav-train">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M2 12h3M19 12h3M12 2v3M12 19v3"/><path d="M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12"/></svg>
-        Train
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5h11M6.5 17.5h11M4 12h16"/></svg>
+        <span id="nav-txt-train">Train</span>
     </div>
     <div class="nav-item" onclick="showScreen('screen-calories')" id="nav-calories">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
-        Nutrition
+        <span id="nav-txt-nutrition">Nutrition</span>
     </div>
     <div class="nav-item" onclick="showScreen('screen-progress')" id="nav-progress">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-        Progress
+        <span id="nav-txt-progress">Progress</span>
     </div>
     <div class="nav-item" onclick="showScreen('screen-settings')" id="nav-settings">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        Settings
+        <span id="nav-txt-settings">Settings</span>
     </div>
 </div>
 
 <script>
 // ===================== TRANSLATIONS =====================
 const translations = {
-    en: { home:'Home', train:'Train', nutrition:'Nutrition', progress:'Progress', settings:'Settings', coach:'COACH', todayScore:'TODAY\'S SCORE', todayProgress:'TODAY\'S PROGRESS', myPhase:'MY PHASE', weight:'WEIGHT', badges:'BADGES', logWorkout:'LOG A WORKOUT', saveWorkout:'Save Workout', addExercise:'+ Add Exercise', addMeal:'+ Add Meal', saveMeal:'Save', checkIn:'Save Check-In', saveSettings:'Save & Calculate Targets', daysRemaining:'Days Remaining', weightToGo:'To Go' },
-    pt: { home:'Início', train:'Treino', nutrition:'Nutrição', progress:'Progresso', settings:'Configurações', coach:'COACH', todayScore:'PONTUAÇÃO DE HOJE', todayProgress:'PROGRESSO DE HOJE', myPhase:'MINHA FASE', weight:'PESO', badges:'CONQUISTAS', logWorkout:'REGISTRAR TREINO', saveWorkout:'Salvar Treino', addExercise:'+ Adicionar Exercício', addMeal:'+ Adicionar Refeição', saveMeal:'Salvar', checkIn:'Salvar Check-In', saveSettings:'Salvar e Calcular', daysRemaining:'Dias Restantes', weightToGo:'Para Meta' },
-    es: { home:'Inicio', train:'Entrenar', nutrition:'Nutrición', progress:'Progreso', settings:'Ajustes', coach:'COACH', todayScore:'PUNTUACIÓN DE HOY', todayProgress:'PROGRESO DE HOY', myPhase:'MI FASE', weight:'PESO', badges:'LOGROS', logWorkout:'REGISTRAR ENTRENAMIENTO', saveWorkout:'Guardar Entrenamiento', addExercise:'+ Añadir Ejercicio', addMeal:'+ Añadir Comida', saveMeal:'Guardar', checkIn:'Guardar Check-In', saveSettings:'Guardar y Calcular', daysRemaining:'Días Restantes', weightToGo:'Para Meta' },
-    fr: { home:'Accueil', train:'Entraîner', nutrition:'Nutrition', progress:'Progrès', settings:'Paramètres', coach:'COACH', todayScore:'SCORE DU JOUR', todayProgress:'PROGRÈS DU JOUR', myPhase:'MA PHASE', weight:'POIDS', badges:'BADGES', logWorkout:'ENREGISTRER', saveWorkout:'Sauvegarder', addExercise:'+ Ajouter Exercice', addMeal:'+ Ajouter Repas', saveMeal:'Sauvegarder', checkIn:'Sauvegarder', saveSettings:'Sauvegarder', daysRemaining:'Jours Restants', weightToGo:'Reste' },
-    de: { home:'Start', train:'Training', nutrition:'Ernährung', progress:'Fortschritt', settings:'Einstellungen', coach:'COACH', todayScore:'HEUTIGER SCORE', todayProgress:'HEUTIGER FORTSCHRITT', myPhase:'MEINE PHASE', weight:'GEWICHT', badges:'ABZEICHEN', logWorkout:'TRAINING STARTEN', saveWorkout:'Training Speichern', addExercise:'+ Übung Hinzufügen', addMeal:'+ Mahlzeit Hinzufügen', saveMeal:'Speichern', checkIn:'Check-In Speichern', saveSettings:'Speichern', daysRemaining:'Verbleibende Tage', weightToGo:'Noch' },
-    ar: { home:'الرئيسية', train:'تدريب', nutrition:'تغذية', progress:'التقدم', settings:'الإعدادات', coach:'المدرب', todayScore:'نقاط اليوم', todayProgress:'تقدم اليوم', myPhase:'مرحلتي', weight:'الوزن', badges:'الشارات', logWorkout:'تسجيل تمرين', saveWorkout:'حفظ', addExercise:'+ إضافة تمرين', addMeal:'+ إضافة وجبة', saveMeal:'حفظ', checkIn:'حفظ', saveSettings:'حفظ', daysRemaining:'أيام متبقية', weightToGo:'للهدف' }
+    en: {
+        langTitle:'Choose Language', langSub:'Select your preferred language', langBtn:'Continue',
+        pathTitle:'Welcome to PocketGyms', pathSub:'How do you want to get started?',
+        setupTitle:'Set Up My Goals', setupSub:'Personalise your targets and get a custom plan',
+        fastTitle:'Jump Straight In', fastSub:'Skip setup and start tracking now',
+        detailsTitle:'About You', detailsSub:'Tell us a bit about yourself',
+        statsTitle:'Your Stats', statsSub:"We'll calculate your perfect targets",
+        letsGo:"Let's Go 🚀", next:'Next',
+        home:'Home', train:'Train', nutrition:'Nutrition', progress:'Progress', settings:'Settings',
+        coach:'COACH', todayScore:"TODAY'S SCORE", outOf:'OUT OF 100', weeklyStreak:'Weekly Streak',
+        todayProgress:"TODAY'S PROGRESS", myPhase:'MY PHASE', daysTraining:'Days Training',
+        weight:'WEIGHT', current:'Current', target:'Target', toGo:'To Go', badges:'BADGES',
+        logWorkout:'LOG A WORKOUT', howTrain:'HOW DO YOU WANT TO TRAIN?',
+        myRoutines:'My Routines', myRoutinesSub:'Start a saved workout',
+        quickWorkout:'Quick Workout', quickWorkoutSub:'Pick a category and go',
+        createRoutine:'Create Routine', createRoutineSub:'Build and save a new routine',
+        cardio:'Cardio', cardioSub:'Running, cycling, walking and more',
+        selectCategory:'SELECT CATEGORY', addExercise:'ADD EXERCISE', addExBtn:'+ Add Exercise',
+        saveWorkout:'Save Workout', saveCardio:'Save Cardio', workoutTime:'WORKOUT TIME',
+        restTimer:'REST TIMER', stop:'Stop', sessionTime:'SESSION TIME',
+        todaysNutrition:"TODAY'S NUTRITION", dailyTotals:'DAILY TOTALS', status:'Status',
+        addMeal:'+ Add Meal', stepsWater:'STEPS & WATER', supplements:'SUPPLEMENTS',
+        currentPhase:'CURRENT PHASE', phaseHistory:'PHASE HISTORY', consistency:'CONSISTENCY',
+        daysLogged:'Days logged (last 30)', workoutsCompleted:'Workouts completed',
+        cardioSessions:'Cardio sessions', personalBests:'PERSONAL BESTS',
+        bodyMeasurements:'BODY MEASUREMENTS', weeklyCheckin:'WEEKLY CHECK-IN',
+        saveCheckin:'Save Check-In', workoutHistory:'WORKOUT HISTORY',
+        yourDetails:'YOUR DETAILS', appearance:'APPEARANCE', darkMode:'Dark Mode',
+        yourTargets:'YOUR CALCULATED TARGETS', platesCalc:'PLATES CALCULATOR',
+        calcPlates:'Calculate Plates', saveSettings:'Save & Calculate Targets',
+        myTransformation:'MY TRANSFORMATION PHASE',
+        phaseDesc:'Optional: Set a goal phase to track your transformation progress.',
+        completePhase:'Complete Phase & Start New', weightToGoal:'Weight to Goal',
+        saveMeasurements:'Save Measurements', back:'← Back', addToMeal:'Add to Meal',
+        portion:'Portion (g or ml)', noSessions:'No sessions logged yet.',
+        noPBs:'Log workouts to track PBs.'
+    },
+    pt: {
+        langTitle:'Escolha o Idioma', langSub:'Selecione seu idioma preferido', langBtn:'Continuar',
+        pathTitle:'Bem-vindo ao PocketGyms', pathSub:'Como quer começar?',
+        setupTitle:'Configurar Meus Objetivos', setupSub:'Personalize seus alvos e obtenha um plano',
+        fastTitle:'Entrar Direto', fastSub:'Pule a configuração e comece a rastrear agora',
+        detailsTitle:'Sobre Você', detailsSub:'Conte-nos um pouco sobre você',
+        statsTitle:'Suas Estatísticas', statsSub:'Calcularemos seus alvos perfeitos',
+        letsGo:'Vamos lá 🚀', next:'Próximo',
+        home:'Início', train:'Treino', nutrition:'Nutrição', progress:'Progresso', settings:'Configurações',
+        coach:'COACH', todayScore:'PONTUAÇÃO DE HOJE', outOf:'DE 100', weeklyStreak:'Sequência Semanal',
+        todayProgress:'PROGRESSO DE HOJE', myPhase:'MINHA FASE', daysTraining:'Dias Treinando',
+        weight:'PESO', current:'Atual', target:'Meta', toGo:'Faltam', badges:'CONQUISTAS',
+        logWorkout:'REGISTRAR TREINO', howTrain:'COMO QUER TREINAR?',
+        myRoutines:'Meus Treinos', myRoutinesSub:'Iniciar um treino salvo',
+        quickWorkout:'Treino Rápido', quickWorkoutSub:'Escolha uma categoria e comece',
+        createRoutine:'Criar Rotina', createRoutineSub:'Construa e salve uma nova rotina',
+        cardio:'Cardio', cardioSub:'Corrida, ciclismo, caminhada e mais',
+        selectCategory:'SELECIONAR CATEGORIA', addExercise:'ADICIONAR EXERCÍCIO', addExBtn:'+ Adicionar Exercício',
+        saveWorkout:'Salvar Treino', saveCardio:'Salvar Cardio', workoutTime:'TEMPO DE TREINO',
+        restTimer:'TIMER DE DESCANSO', stop:'Parar', sessionTime:'TEMPO DE SESSÃO',
+        todaysNutrition:'NUTRIÇÃO DE HOJE', dailyTotals:'TOTAIS DO DIA', status:'Status',
+        addMeal:'+ Adicionar Refeição', stepsWater:'PASSOS E ÁGUA', supplements:'SUPLEMENTOS',
+        currentPhase:'FASE ATUAL', phaseHistory:'HISTÓRICO DE FASES', consistency:'CONSISTÊNCIA',
+        daysLogged:'Dias registrados (últimos 30)', workoutsCompleted:'Treinos completos',
+        cardioSessions:'Sessões de cardio', personalBests:'RECORDES PESSOAIS',
+        bodyMeasurements:'MEDIDAS CORPORAIS', weeklyCheckin:'CHECK-IN SEMANAL',
+        saveCheckin:'Salvar Check-In', workoutHistory:'HISTÓRICO DE TREINOS',
+        yourDetails:'SEUS DADOS', appearance:'APARÊNCIA', darkMode:'Modo Escuro',
+        yourTargets:'SEUS ALVOS CALCULADOS', platesCalc:'CALCULADORA DE ANILHAS',
+        calcPlates:'Calcular Anilhas', saveSettings:'Salvar e Calcular Alvos',
+        myTransformation:'MINHA FASE DE TRANSFORMAÇÃO',
+        phaseDesc:'Opcional: Defina uma fase objetivo para rastrear seu progresso.',
+        completePhase:'Completar Fase e Começar Nova', weightToGoal:'Peso até a Meta',
+        saveMeasurements:'Salvar Medidas', back:'← Voltar', addToMeal:'Adicionar à Refeição',
+        portion:'Porção (g ou ml)', noSessions:'Nenhuma sessão registrada ainda.',
+        noPBs:'Registre treinos para rastrear recordes.'
+    },
+    es: {
+        langTitle:'Elegir Idioma', langSub:'Selecciona tu idioma preferido', langBtn:'Continuar',
+        pathTitle:'Bienvenido a PocketGyms', pathSub:'¿Cómo quieres empezar?',
+        setupTitle:'Configurar Mis Objetivos', setupSub:'Personaliza tus objetivos',
+        fastTitle:'Entrar Directamente', fastSub:'Salta la configuración y empieza ahora',
+        detailsTitle:'Sobre Ti', detailsSub:'Cuéntanos un poco sobre ti',
+        statsTitle:'Tus Estadísticas', statsSub:'Calcularemos tus objetivos perfectos',
+        letsGo:'¡Vamos! 🚀', next:'Siguiente',
+        home:'Inicio', train:'Entrenar', nutrition:'Nutrición', progress:'Progreso', settings:'Ajustes',
+        coach:'COACH', todayScore:'PUNTUACIÓN DE HOY', outOf:'DE 100', weeklyStreak:'Racha Semanal',
+        todayProgress:'PROGRESO DE HOY', myPhase:'MI FASE', daysTraining:'Días Entrenando',
+        weight:'PESO', current:'Actual', target:'Meta', toGo:'Faltan', badges:'LOGROS',
+        logWorkout:'REGISTRAR ENTRENAMIENTO', howTrain:'¿CÓMO QUIERES ENTRENAR?',
+        myRoutines:'Mis Rutinas', myRoutinesSub:'Iniciar un entrenamiento guardado',
+        quickWorkout:'Entrenamiento Rápido', quickWorkoutSub:'Elige una categoría y empieza',
+        createRoutine:'Crear Rutina', createRoutineSub:'Construye y guarda una nueva rutina',
+        cardio:'Cardio', cardioSub:'Correr, ciclismo, caminar y más',
+        selectCategory:'SELECCIONAR CATEGORÍA', addExercise:'AÑADIR EJERCICIO', addExBtn:'+ Añadir Ejercicio',
+        saveWorkout:'Guardar Entrenamiento', saveCardio:'Guardar Cardio', workoutTime:'TIEMPO DE ENTRENAMIENTO',
+        restTimer:'TEMPORIZADOR DE DESCANSO', stop:'Parar', sessionTime:'TIEMPO DE SESIÓN',
+        todaysNutrition:'NUTRICIÓN DE HOY', dailyTotals:'TOTALES DEL DÍA', status:'Estado',
+        addMeal:'+ Añadir Comida', stepsWater:'PASOS Y AGUA', supplements:'SUPLEMENTOS',
+        currentPhase:'FASE ACTUAL', phaseHistory:'HISTORIAL DE FASES', consistency:'CONSISTENCIA',
+        daysLogged:'Días registrados (últimos 30)', workoutsCompleted:'Entrenamientos completados',
+        cardioSessions:'Sesiones de cardio', personalBests:'RÉCORDS PERSONALES',
+        bodyMeasurements:'MEDIDAS CORPORALES', weeklyCheckin:'CHECK-IN SEMANAL',
+        saveCheckin:'Guardar Check-In', workoutHistory:'HISTORIAL DE ENTRENAMIENTOS',
+        yourDetails:'TUS DATOS', appearance:'APARIENCIA', darkMode:'Modo Oscuro',
+        yourTargets:'TUS OBJETIVOS CALCULADOS', platesCalc:'CALCULADORA DE DISCOS',
+        calcPlates:'Calcular Discos', saveSettings:'Guardar y Calcular Objetivos',
+        myTransformation:'MI FASE DE TRANSFORMACIÓN',
+        phaseDesc:'Opcional: Establece una fase objetivo para seguir tu progreso.',
+        completePhase:'Completar Fase e Iniciar Nueva', weightToGoal:'Peso hasta el Objetivo',
+        saveMeasurements:'Guardar Medidas', back:'← Atrás', addToMeal:'Añadir a Comida',
+        portion:'Porción (g o ml)', noSessions:'No hay sesiones registradas aún.',
+        noPBs:'Registra entrenamientos para rastrear récords.'
+    },
+    fr: {
+        langTitle:'Choisir la Langue', langSub:'Sélectionnez votre langue préférée', langBtn:'Continuer',
+        pathTitle:'Bienvenue sur PocketGyms', pathSub:'Comment voulez-vous commencer?',
+        setupTitle:'Configurer Mes Objectifs', setupSub:'Personnalisez vos objectifs',
+        fastTitle:'Commencer Directement', fastSub:'Sautez la configuration et commencez maintenant',
+        detailsTitle:'À Propos de Vous', detailsSub:'Parlez-nous un peu de vous',
+        statsTitle:'Vos Statistiques', statsSub:'Nous calculerons vos objectifs parfaits',
+        letsGo:'Allons-y 🚀', next:'Suivant',
+        home:'Accueil', train:'Entraîner', nutrition:'Nutrition', progress:'Progrès', settings:'Paramètres',
+        coach:'COACH', todayScore:"SCORE D'AUJOURD'HUI", outOf:'SUR 100', weeklyStreak:'Série Hebdomadaire',
+        todayProgress:"PROGRÈS D'AUJOURD'HUI", myPhase:'MA PHASE', daysTraining:"Jours d'Entraînement",
+        weight:'POIDS', current:'Actuel', target:'Objectif', toGo:'Restant', badges:'BADGES',
+        logWorkout:"ENREGISTRER L'ENTRAÎNEMENT", howTrain:'COMMENT VOULEZ-VOUS VOUS ENTRAÎNER?',
+        myRoutines:'Mes Routines', myRoutinesSub:'Démarrer un entraînement sauvegardé',
+        quickWorkout:'Entraînement Rapide', quickWorkoutSub:'Choisissez une catégorie et commencez',
+        createRoutine:'Créer une Routine', createRoutineSub:'Construisez et sauvegardez une nouvelle routine',
+        cardio:'Cardio', cardioSub:'Course, cyclisme, marche et plus',
+        selectCategory:'SÉLECTIONNER CATÉGORIE', addExercise:'AJOUTER EXERCICE', addExBtn:'+ Ajouter Exercice',
+        saveWorkout:"Sauvegarder l'Entraînement", saveCardio:'Sauvegarder Cardio', workoutTime:"TEMPS D'ENTRAÎNEMENT",
+        restTimer:'MINUTEUR DE REPOS', stop:'Arrêter', sessionTime:'TEMPS DE SESSION',
+        todaysNutrition:"NUTRITION D'AUJOURD'HUI", dailyTotals:'TOTAUX QUOTIDIENS', status:'Statut',
+        addMeal:'+ Ajouter Repas', stepsWater:'PAS ET EAU', supplements:'SUPPLÉMENTS',
+        currentPhase:'PHASE ACTUELLE', phaseHistory:'HISTORIQUE DES PHASES', consistency:'COHÉRENCE',
+        daysLogged:'Jours enregistrés (30 derniers)', workoutsCompleted:'Entraînements complétés',
+        cardioSessions:'Sessions de cardio', personalBests:'RECORDS PERSONNELS',
+        bodyMeasurements:'MESURES CORPORELLES', weeklyCheckin:'CHECK-IN HEBDOMADAIRE',
+        saveCheckin:'Sauvegarder Check-In', workoutHistory:"HISTORIQUE D'ENTRAÎNEMENTS",
+        yourDetails:'VOS DONNÉES', appearance:'APPARENCE', darkMode:'Mode Sombre',
+        yourTargets:'VOS OBJECTIFS CALCULÉS', platesCalc:'CALCULATEUR DE DISQUES',
+        calcPlates:'Calculer Disques', saveSettings:'Sauvegarder et Calculer',
+        myTransformation:'MA PHASE DE TRANSFORMATION',
+        phaseDesc:'Optionnel: Définissez une phase objectif pour suivre votre progression.',
+        completePhase:'Terminer Phase et Commencer Nouvelle', weightToGoal:"Poids jusqu'à l'Objectif",
+        saveMeasurements:'Sauvegarder Mesures', back:'← Retour', addToMeal:'Ajouter au Repas',
+        portion:'Portion (g ou ml)', noSessions:'Aucune session enregistrée encore.',
+        noPBs:'Enregistrez des entraînements pour suivre les records.'
+    },
+    de: {
+        langTitle:'Sprache Wählen', langSub:'Wählen Sie Ihre bevorzugte Sprache', langBtn:'Weiter',
+        pathTitle:'Willkommen bei PocketGyms', pathSub:'Wie möchten Sie beginnen?',
+        setupTitle:'Meine Ziele Einrichten', setupSub:'Personalisieren Sie Ihre Ziele',
+        fastTitle:'Direkt Einsteigen', fastSub:'Überspringen Sie die Einrichtung und beginnen Sie jetzt',
+        detailsTitle:'Über Sie', detailsSub:'Erzählen Sie uns ein bisschen über sich',
+        statsTitle:'Ihre Statistiken', statsSub:'Wir berechnen Ihre perfekten Ziele',
+        letsGo:'Los geht\'s 🚀', next:'Weiter',
+        home:'Start', train:'Training', nutrition:'Ernährung', progress:'Fortschritt', settings:'Einstellungen',
+        coach:'COACH', todayScore:'HEUTIGER SCORE', outOf:'VON 100', weeklyStreak:'Wöchentliche Serie',
+        todayProgress:'HEUTIGER FORTSCHRITT', myPhase:'MEINE PHASE', daysTraining:'Trainingstage',
+        weight:'GEWICHT', current:'Aktuell', target:'Ziel', toGo:'Noch', badges:'ABZEICHEN',
+        logWorkout:'TRAINING STARTEN', howTrain:'WIE MÖCHTEN SIE TRAINIEREN?',
+        myRoutines:'Meine Routinen', myRoutinesSub:'Gespeichertes Training starten',
+        quickWorkout:'Schnelles Training', quickWorkoutSub:'Kategorie wählen und loslegen',
+        createRoutine:'Routine Erstellen', createRoutineSub:'Neue Routine erstellen und speichern',
+        cardio:'Cardio', cardioSub:'Laufen, Radfahren, Gehen und mehr',
+        selectCategory:'KATEGORIE WÄHLEN', addExercise:'ÜBUNG HINZUFÜGEN', addExBtn:'+ Übung Hinzufügen',
+        saveWorkout:'Training Speichern', saveCardio:'Cardio Speichern', workoutTime:'TRAININGSZEIT',
+        restTimer:'RUHETIMER', stop:'Stopp', sessionTime:'SITZUNGSZEIT',
+        todaysNutrition:'HEUTIGE ERNÄHRUNG', dailyTotals:'TÄGLICHE SUMMEN', status:'Status',
+        addMeal:'+ Mahlzeit Hinzufügen', stepsWater:'SCHRITTE & WASSER', supplements:'NAHRUNGSERGÄNZUNG',
+        currentPhase:'AKTUELLE PHASE', phaseHistory:'PHASENHISTORIE', consistency:'KONSISTENZ',
+        daysLogged:'Protokollierte Tage (letzte 30)', workoutsCompleted:'Abgeschlossene Trainings',
+        cardioSessions:'Cardio-Einheiten', personalBests:'PERSÖNLICHE BESTLEISTUNGEN',
+        bodyMeasurements:'KÖRPERMASSE', weeklyCheckin:'WÖCHENTLICHES CHECK-IN',
+        saveCheckin:'Check-In Speichern', workoutHistory:'TRAININGSHISTORIE',
+        yourDetails:'IHRE DATEN', appearance:'ERSCHEINUNGSBILD', darkMode:'Dunkelmodus',
+        yourTargets:'IHRE BERECHNETEN ZIELE', platesCalc:'SCHEIBENKALKULATOR',
+        calcPlates:'Scheiben Berechnen', saveSettings:'Speichern und Ziele Berechnen',
+        myTransformation:'MEINE TRANSFORMATIONSPHASE',
+        phaseDesc:'Optional: Legen Sie eine Zielphase fest, um Ihren Fortschritt zu verfolgen.',
+        completePhase:'Phase Abschließen und Neue Beginnen', weightToGoal:'Gewicht bis zum Ziel',
+        saveMeasurements:'Maße Speichern', back:'← Zurück', addToMeal:'Zur Mahlzeit Hinzufügen',
+        portion:'Portion (g oder ml)', noSessions:'Noch keine Einheiten aufgezeichnet.',
+        noPBs:'Trainings aufzeichnen, um Bestleistungen zu verfolgen.'
+    },
+    ar: {
+        langTitle:'اختر اللغة', langSub:'اختر لغتك المفضلة', langBtn:'استمر',
+        pathTitle:'مرحباً بك في PocketGyms', pathSub:'كيف تريد البدء؟',
+        setupTitle:'إعداد أهدافي', setupSub:'خصص أهدافك واحصل على خطة مخصصة',
+        fastTitle:'ابدأ مباشرة', fastSub:'تخطى الإعداد وابدأ التتبع الآن',
+        detailsTitle:'عنك', detailsSub:'أخبرنا قليلاً عن نفسك',
+        statsTitle:'إحصائياتك', statsSub:'سنحسب أهدافك المثالية',
+        letsGo:'هيا نبدأ 🚀', next:'التالي',
+        home:'الرئيسية', train:'تدريب', nutrition:'تغذية', progress:'التقدم', settings:'الإعدادات',
+        coach:'المدرب', todayScore:'نقاط اليوم', outOf:'من 100', weeklyStreak:'التسلسل الأسبوعي',
+        todayProgress:'تقدم اليوم', myPhase:'مرحلتي', daysTraining:'أيام التدريب',
+        weight:'الوزن', current:'الحالي', target:'الهدف', toGo:'المتبقي', badges:'الشارات',
+        logWorkout:'تسجيل تمرين', howTrain:'كيف تريد التدريب؟',
+        myRoutines:'روتيني', myRoutinesSub:'ابدأ تمريناً محفوظاً',
+        quickWorkout:'تمرين سريع', quickWorkoutSub:'اختر فئة وابدأ',
+        createRoutine:'إنشاء روتين', createRoutineSub:'أنشئ واحفظ روتيناً جديداً',
+        cardio:'كارديو', cardioSub:'جري، ركوب دراجة، مشي والمزيد',
+        selectCategory:'اختر الفئة', addExercise:'أضف تمريناً', addExBtn:'+ إضافة تمرين',
+        saveWorkout:'حفظ التمرين', saveCardio:'حفظ الكارديو', workoutTime:'وقت التمرين',
+        restTimer:'مؤقت الراحة', stop:'إيقاف', sessionTime:'وقت الجلسة',
+        todaysNutrition:'تغذية اليوم', dailyTotals:'إجماليات اليوم', status:'الحالة',
+        addMeal:'+ إضافة وجبة', stepsWater:'الخطوات والماء', supplements:'المكملات',
+        currentPhase:'المرحلة الحالية', phaseHistory:'سجل المراحل', consistency:'الاتساق',
+        daysLogged:'أيام مسجلة (آخر 30)', workoutsCompleted:'تمارين مكتملة',
+        cardioSessions:'جلسات كارديو', personalBests:'الأرقام القياسية الشخصية',
+        bodyMeasurements:'قياسات الجسم', weeklyCheckin:'تسجيل الدخول الأسبوعي',
+        saveCheckin:'حفظ تسجيل الدخول', workoutHistory:'سجل التمارين',
+        yourDetails:'بياناتك', appearance:'المظهر', darkMode:'الوضع الداكن',
+        yourTargets:'أهدافك المحسوبة', platesCalc:'حاسبة الأوزان',
+        calcPlates:'حساب الأوزان', saveSettings:'حفظ وحساب الأهداف',
+        myTransformation:'مرحلة تحولي',
+        phaseDesc:'اختياري: حدد مرحلة هدف لتتبع تقدمك.',
+        completePhase:'إكمال المرحلة وبدء مرحلة جديدة', weightToGoal:'الوزن حتى الهدف',
+        saveMeasurements:'حفظ القياسات', back:'→ رجوع', addToMeal:'إضافة للوجبة',
+        portion:'الكمية (جم أو مل)', noSessions:'لا توجد جلسات مسجلة بعد.',
+        noPBs:'سجل تمارين لتتبع الأرقام القياسية.'
+    }
 };
 
-// ===================== DATA =====================
-const exerciseDB = {
-    Push: ['Bench Press','Shoulder Press','Incline Press','Tricep Dips','Lateral Raises','Push Ups','Cable Fly','Arnold Press'],
-    Pull: ['Deadlift','Pull Ups','Bent Over Row','Lat Pulldown','Bicep Curl','Face Pulls','Cable Row','Chin Up'],
-    Legs: ['Squat','Leg Press','Romanian Deadlift','Leg Curl','Leg Extension','Calf Raises','Bulgarian Split Squat','Hip Thrust'],
-    Core: ['Plank','Crunches','Hanging Leg Raise','Cable Crunch','Ab Wheel','Russian Twist','Leg Raise','Mountain Climber'],
-    Chest: { gym:['Barbell Bench Press','Dumbbell Bench Press','Incline Barbell Press','Incline Dumbbell Press','Decline Bench Press','Cable Fly','Dumbbell Fly','Pec Deck Machine','Machine Chest Press','Chest Dip'], home:['Push Up','Wide Push Up','Decline Push Up','Diamond Push Up','Pike Push Up','Archer Push Up','Chair Dip'] },
-    Back: { gym:['Deadlift','Barbell Row','Dumbbell Row','Lat Pulldown','Pull Up','Chin Up','Seated Cable Row','T-Bar Row','Face Pull','Machine Row','Rack Pull'], home:['Pull Up','Chin Up','Resistance Band Row','Towel Row','Superman','Reverse Snow Angel','Doorframe Row'] },
-    Shoulders: { gym:['Barbell Overhead Press','Dumbbell Shoulder Press','Arnold Press','Lateral Raise','Front Raise','Reverse Fly','Face Pull','Cable Lateral Raise','Machine Shoulder Press','Upright Row','Shrugs'], home:['Pike Push Up','Handstand Push Up','Lateral Raise (Bottles)','Front Raise (Bottles)','Band Pull Apart'] },
-    Biceps: { gym:['Barbell Curl','Dumbbell Curl','Hammer Curl','Incline Dumbbell Curl','Cable Curl','Preacher Curl','Concentration Curl','Machine Curl','EZ Bar Curl','Spider Curl'], home:['Resistance Band Curl','Chin Up','Towel Curl','Backpack Curl','Isometric Curl'] },
-    Triceps: { gym:['Close Grip Bench Press','Skull Crusher','Tricep Dip','Cable Pushdown','Rope Pushdown','Overhead Tricep Extension','Kickback','Machine Tricep Press'], home:['Diamond Push Up','Chair Dip','Tricep Extension (Bottle)','Resistance Band Pushdown','Close Grip Push Up'] },
-    Quads: { gym:['Barbell Squat','Front Squat','Hack Squat','Leg Press','Leg Extension','Bulgarian Split Squat','Lunge','Step Up','Smith Machine Squat','Goblet Squat'], home:['Bodyweight Squat','Jump Squat','Lunge','Reverse Lunge','Step Up','Wall Sit','Pistol Squat'] },
-    Hamstrings: { gym:['Romanian Deadlift','Lying Leg Curl','Seated Leg Curl','Nordic Curl','Good Morning','Stiff Leg Deadlift','Cable Pull Through'], home:['Glute Bridge','Single Leg Glute Bridge','Nordic Curl','Good Morning (Bodyweight)','Resistance Band Curl'] },
-    Glutes: { gym:['Hip Thrust','Glute Bridge','Cable Kickback','Abductor Machine','Romanian Deadlift','Sumo Squat','Step Up'], home:['Glute Bridge','Hip Thrust (Sofa)','Donkey Kick','Fire Hydrant','Resistance Band Walk','Sumo Squat','Reverse Lunge'] },
-    Calves: { gym:['Standing Calf Raise','Seated Calf Raise','Leg Press Calf Raise','Donkey Calf Raise','Single Leg Calf Raise','Smith Machine Calf Raise'], home:['Standing Calf Raise','Single Leg Calf Raise','Jump Rope','Stair Calf Raise'] },
-    Abs: { gym:['Plank','Crunch','Bicycle Crunch','Leg Raise','Hanging Leg Raise','Cable Crunch','Ab Wheel','Russian Twist','Cable Woodchop'], home:['Plank','Crunch','Bicycle Crunch','Leg Raise','Mountain Climber','Ab Wheel','Hollow Hold','V-Up','Flutter Kick','Reverse Crunch'] }
-};
-
+// ===================== FOOD DATABASE =====================
 const foodDB = {
     protein: [
         {name:'Chicken Breast',cal:165,protein:31,carbs:0,fat:3.6,tags:['standard','halal']},
@@ -836,845 +1053,854 @@ const foodDB = {
         {name:'Rice Cake (1)',cal:35,protein:0.7,carbs:7.5,fat:0.3,tags:['standard','vegan','halal']},
         {name:'Mixed Nuts (30g)',cal:185,protein:5,carbs:7,fat:16,tags:['standard','vegan','halal']},
         {name:'Nakd Bar',cal:140,protein:4,carbs:22,fat:5,tags:['vegan','halal']}
+    ],
+    drinks: [
+        {name:'Water (250ml)',cal:0,protein:0,carbs:0,fat:0,water:0.25,tags:['standard','vegan','halal']},
+        {name:'Water (500ml)',cal:0,protein:0,carbs:0,fat:0,water:0.5,tags:['standard','vegan','halal']},
+        {name:'Water (1L)',cal:0,protein:0,carbs:0,fat:0,water:1,tags:['standard','vegan','halal']},
+        {name:'Black Coffee',cal:2,protein:0.3,carbs:0,fat:0,tags:['standard','vegan','halal']},
+        {name:'Coffee with Milk',cal:30,protein:1.5,carbs:2.5,fat:1.2,tags:['standard','halal']},
+        {name:'Latte (medium)',cal:120,protein:6,carbs:10,fat:5,tags:['standard','halal']},
+        {name:'Cappuccino',cal:80,protein:4,carbs:7,fat:3,tags:['standard','halal']},
+        {name:'Flat White',cal:100,protein:5,carbs:8,fat:4,tags:['standard','halal']},
+        {name:'Espresso',cal:5,protein:0.1,carbs:0.5,fat:0,tags:['standard','vegan','halal']},
+        {name:'Black Tea',cal:2,protein:0,carbs:0.5,fat:0,tags:['standard','vegan','halal']},
+        {name:'Tea with Milk',cal:20,protein:0.8,carbs:2,fat:0.5,tags:['standard','halal']},
+        {name:'Green Tea',cal:2,protein:0,carbs:0.5,fat:0,tags:['standard','vegan','halal']},
+        {name:'Orange Juice (200ml)',cal:88,protein:1.4,carbs:20,fat:0.2,tags:['standard','vegan','halal']},
+        {name:'Apple Juice (200ml)',cal:96,protein:0.2,carbs:24,fat:0.2,tags:['standard','vegan','halal']},
+        {name:'Coconut Water (330ml)',cal:62,protein:0.6,carbs:15,fat:0.2,tags:['standard','vegan','halal']},
+        {name:'Protein Shake (mixed)',cal:150,protein:30,carbs:5,fat:2,tags:['standard']},
+        {name:'Lucozade Sport (500ml)',cal:140,protein:0,carbs:35,fat:0,tags:['standard','vegan','halal']},
+        {name:'Gatorade (500ml)',cal:130,protein:0,carbs:34,fat:0,tags:['standard','vegan','halal']},
+        {name:'Powerade (500ml)',cal:125,protein:0,carbs:33,fat:0,tags:['standard','vegan','halal']},
+        {name:'Monster Energy (500ml)',cal:95,protein:0,carbs:23,fat:0,tags:['standard','vegan']},
+        {name:'Red Bull (250ml)',cal:110,protein:1,carbs:28,fat:0,tags:['standard','vegan']},
+        {name:'Reign (500ml)',cal:10,protein:0,carbs:3,fat:0,tags:['standard','vegan']},
+        {name:'Ghost Energy (500ml)',cal:5,protein:0,carbs:1,fat:0,tags:['standard','vegan']},
+        {name:'Prime Energy (500ml)',cal:25,protein:0,carbs:6,fat:0,tags:['standard','vegan']},
+        {name:'Celsius (355ml)',cal:10,protein:0,carbs:2,fat:0,tags:['standard','vegan']},
+        {name:'Rockstar (500ml)',cal:130,protein:0,carbs:31,fat:0,tags:['standard','vegan']},
+        {name:'Coca Cola (330ml)',cal:139,protein:0,carbs:35,fat:0,tags:['standard','vegan','halal']},
+        {name:'Diet Coke (330ml)',cal:1,protein:0,carbs:0,fat:0,tags:['standard','vegan','halal']},
+        {name:'Pepsi (330ml)',cal:138,protein:0,carbs:35,fat:0,tags:['standard','vegan','halal']},
+        {name:'Fanta Orange (330ml)',cal:139,protein:0,carbs:34,fat:0,tags:['standard','vegan','halal']},
+        {name:'Fanta Lemon (330ml)',cal:117,protein:0,carbs:29,fat:0,tags:['standard','vegan','halal']},
+        {name:'Sprite (330ml)',cal:138,protein:0,carbs:35,fat:0,tags:['standard','vegan','halal']},
+        {name:'7UP (330ml)',cal:135,protein:0,carbs:34,fat:0,tags:['standard','vegan','halal']},
+        {name:'Dr Pepper (330ml)',cal:133,protein:0,carbs:33,fat:0,tags:['standard','vegan','halal']},
+        {name:'Guaraná Antarctica (350ml)',cal:140,protein:0,carbs:35,fat:0,tags:['standard','vegan','halal']},
+        {name:'Guaraná Zero (350ml)',cal:2,protein:0,carbs:0.5,fat:0,tags:['standard','vegan','halal']},
+        {name:'Açaí Juice (200ml)',cal:60,protein:1,carbs:12,fat:1,tags:['standard','vegan','halal']},
+        {name:'Maracujá Juice (200ml)',cal:52,protein:0.4,carbs:13,fat:0.1,tags:['standard','vegan','halal']},
+        {name:'Limonada (200ml)',cal:40,protein:0,carbs:10,fat:0,tags:['standard','vegan','halal']},
+        {name:'Beer (330ml)',cal:143,protein:1,carbs:13,fat:0,tags:['standard','vegan']},
+        {name:'Lager (330ml)',cal:130,protein:1,carbs:11,fat:0,tags:['standard','vegan']},
+        {name:'Wine, Red (175ml)',cal:149,protein:0.1,carbs:4,fat:0,tags:['standard','vegan']},
+        {name:'Wine, White (175ml)',cal:130,protein:0.1,carbs:4,fat:0,tags:['standard','vegan']},
+        {name:'Spirits (25ml)',cal:56,protein:0,carbs:0,fat:0,tags:['standard']}
     ]
+};
+
+// ===================== EXERCISE DATABASE =====================
+const exerciseDB = {
+    Push: ['Bench Press','Shoulder Press','Incline Press','Tricep Dips','Lateral Raises','Push Ups','Cable Fly','Arnold Press'],
+    Pull: ['Deadlift','Pull Ups','Bent Over Row','Lat Pulldown','Bicep Curl','Face Pulls','Cable Row','Chin Up'],
+    Legs: ['Squat','Leg Press','Romanian Deadlift','Leg Curl','Leg Extension','Calf Raises','Bulgarian Split Squat','Hip Thrust'],
+    Core: ['Plank','Crunches','Hanging Leg Raise','Cable Crunch','Ab Wheel','Russian Twist','Leg Raise','Mountain Climber'],
+    Chest: {gym:['Barbell Bench Press','Dumbbell Bench Press','Incline Barbell Press','Incline Dumbbell Press','Decline Bench Press','Cable Fly','Dumbbell Fly','Pec Deck Machine','Machine Chest Press','Chest Dip'],home:['Push Up','Wide Push Up','Decline Push Up','Diamond Push Up','Pike Push Up','Archer Push Up','Chair Dip']},
+    Back: {gym:['Deadlift','Barbell Row','Dumbbell Row','Lat Pulldown','Pull Up','Chin Up','Seated Cable Row','T-Bar Row','Face Pull','Machine Row','Rack Pull'],home:['Pull Up','Chin Up','Resistance Band Row','Towel Row','Superman','Reverse Snow Angel','Doorframe Row']},
+    Shoulders: {gym:['Barbell Overhead Press','Dumbbell Shoulder Press','Arnold Press','Lateral Raise','Front Raise','Reverse Fly','Face Pull','Cable Lateral Raise','Machine Shoulder Press','Upright Row','Shrugs'],home:['Pike Push Up','Handstand Push Up','Lateral Raise (Bottles)','Front Raise (Bottles)','Band Pull Apart']},
+    Biceps: {gym:['Barbell Curl','Dumbbell Curl','Hammer Curl','Incline Dumbbell Curl','Cable Curl','Preacher Curl','Concentration Curl','Machine Curl','EZ Bar Curl','Spider Curl'],home:['Resistance Band Curl','Chin Up','Towel Curl','Backpack Curl','Isometric Curl']},
+    Triceps: {gym:['Close Grip Bench Press','Skull Crusher','Tricep Dip','Cable Pushdown','Rope Pushdown','Overhead Tricep Extension','Kickback','Machine Tricep Press'],home:['Diamond Push Up','Chair Dip','Tricep Extension (Bottle)','Resistance Band Pushdown','Close Grip Push Up']},
+    Quads: {gym:['Barbell Squat','Front Squat','Hack Squat','Leg Press','Leg Extension','Bulgarian Split Squat','Lunge','Step Up','Smith Machine Squat','Goblet Squat'],home:['Bodyweight Squat','Jump Squat','Lunge','Reverse Lunge','Step Up','Wall Sit','Pistol Squat']},
+    Hamstrings: {gym:['Romanian Deadlift','Lying Leg Curl','Seated Leg Curl','Nordic Curl','Good Morning','Stiff Leg Deadlift','Cable Pull Through'],home:['Glute Bridge','Single Leg Glute Bridge','Nordic Curl','Good Morning (Bodyweight)','Resistance Band Curl']},
+    Glutes: {gym:['Hip Thrust','Glute Bridge','Cable Kickback','Abductor Machine','Romanian Deadlift','Sumo Squat','Step Up'],home:['Glute Bridge','Hip Thrust (Sofa)','Donkey Kick','Fire Hydrant','Resistance Band Walk','Sumo Squat','Reverse Lunge']},
+    Calves: {gym:['Standing Calf Raise','Seated Calf Raise','Leg Press Calf Raise','Donkey Calf Raise','Single Leg Calf Raise','Smith Machine Calf Raise'],home:['Standing Calf Raise','Single Leg Calf Raise','Jump Rope','Stair Calf Raise']},
+    Abs: {gym:['Plank','Crunch','Bicycle Crunch','Leg Raise','Hanging Leg Raise','Cable Crunch','Ab Wheel','Russian Twist','Cable Woodchop'],home:['Plank','Crunch','Bicycle Crunch','Leg Raise','Mountain Climber','Ab Wheel','Hollow Hold','V-Up','Flutter Kick','Reverse Crunch']}
 };
 
 const supplementsList = ['Creatine','Whey Protein','Vitamin D','Omega 3','Multivitamin','Pre-Workout','Magnesium'];
 const mealPresets = ['Breakfast','Lunch','Dinner','Snack','Pre-Workout','Post-Workout'];
 
-let selectedMuscle = '';
-let exercises = [];
-let workoutHistory = [];
-let cardioHistory = [];
-let checkinHistory = [];
-let personalBests = {};
-let settings = {};
-let savedRoutines = [];
-let customExercises = {};
-let meals = [];
-let phaseHistory = [];
-let measurements = {};
-let timerInterval = null;
-let workoutTimerInterval = null;
-let workoutStartTime = null;
-let cardioTimerInterval = null;
-let currentCardioType = '';
-let selectedFood = null;
-let foodFilter = 'all';
-let currentMealIndex = null;
-let selectedLang = 'en';
-let selectedHeightUnit = 'cm';
-let selectedWeightUnit = 'kg';
+// ===================== STATE =====================
+let selectedMuscle='', exercises=[], workoutHistory=[], cardioHistory=[], checkinHistory=[];
+let personalBests={}, settings={}, savedRoutines=[], customExercises={}, meals=[], phaseHistory=[], measurements={};
+let timerInterval=null, workoutTimerInterval=null, workoutStartTime=null, cardioTimerInterval=null;
+let currentCardioType='', selectedFood=null, foodFilter='all', currentMealIndex=null;
+let selectedLang='en', selectedHeightUnit='cm', selectedWeightUnit='kg';
+let firstSetLogged = false;
 
-// ===================== LANGUAGE =====================
+// ===================== TRANSLATIONS =====================
+function t(key) { return (translations[selectedLang]&&translations[selectedLang][key])||translations.en[key]||key; }
+
+function applyTranslations() {
+    const set = (id, key) => { const el=document.getElementById(id); if(el&&key) el.textContent=t(key); };
+    // Nav
+    set('nav-txt-home','home'); set('nav-txt-train','train'); set('nav-txt-nutrition','nutrition');
+    set('nav-txt-progress','progress'); set('nav-txt-settings','settings');
+    // Home
+    set('txt-today-score','todayScore'); set('txt-out-of','outOf'); set('txt-weekly-streak','weeklyStreak');
+    set('txt-coach','coach'); set('txt-today-progress','todayProgress'); set('txt-my-phase','myPhase');
+    set('txt-days-training','daysTraining'); set('txt-weight','weight'); set('txt-current','current');
+    set('txt-target','target'); set('txt-to-go','toGo'); set('txt-badges','badges');
+    set('txt-log-workout','logWorkout');
+    // Train
+    set('txt-how-train','howTrain'); set('txt-my-routines','myRoutines'); set('txt-my-routines-sub','myRoutinesSub');
+    set('txt-quick-workout','quickWorkout'); set('txt-quick-workout-sub','quickWorkoutSub');
+    set('txt-create-routine','createRoutine'); set('txt-create-routine-sub','createRoutineSub');
+    set('txt-cardio','cardio'); set('txt-cardio-sub','cardioSub');
+    set('txt-select-category','selectCategory'); set('txt-add-exercise','addExercise');
+    set('txt-add-ex-btn','addExBtn'); set('save-btn','saveWorkout');
+    set('txt-workout-time','workoutTime'); set('txt-rest-timer','restTimer'); set('txt-stop','stop');
+    set('txt-save-cardio','saveCardio'); set('txt-session-time','sessionTime');
+    // Nutrition
+    set('txt-todays-nutrition','todaysNutrition'); set('txt-daily-totals','dailyTotals');
+    set('txt-status','status'); set('txt-add-meal','addMeal'); set('txt-steps-water','stepsWater');
+    set('txt-supplements','supplements'); set('txt-save-sw','saveWorkout');
+    // Progress
+    set('txt-current-phase','currentPhase'); set('txt-phase-history','phaseHistory');
+    set('txt-consistency','consistency'); set('txt-days-logged','daysLogged');
+    set('txt-workouts-completed','workoutsCompleted'); set('txt-cardio-sessions','cardioSessions');
+    set('txt-personal-bests','personalBests'); set('txt-body-measurements','bodyMeasurements');
+    set('txt-weekly-checkin','weeklyCheckin'); set('txt-save-checkin','saveCheckin');
+    set('txt-workout-history','workoutHistory'); set('txt-complete-phase','completePhase');
+    set('txt-weight-to-go','weightToGoal'); set('txt-save-measurements','saveMeasurements');
+    // Settings
+    set('txt-your-details','yourDetails'); set('txt-appearance','appearance');
+    set('txt-dark-mode','darkMode'); set('txt-your-targets','yourTargets');
+    set('txt-plates-calc','platesCalc'); set('txt-calc-plates','calcPlates');
+    set('txt-save-settings','saveSettings'); set('txt-my-transformation','myTransformation');
+    set('txt-phase-desc','phaseDesc');
+    // Back buttons
+    ['txt-back-1','txt-back-2','txt-back-3','txt-back-4','txt-back-5','txt-back-6'].forEach(id=>set(id,'back'));
+    // Food modal
+    set('txt-add-to-meal','addToMeal'); set('lbl-portion','portion');
+    // Onboarding
+    set('ob-title-lang','langTitle'); set('ob-sub-lang','langSub'); set('ob-btn-lang','langBtn');
+    set('ob-title-path','pathTitle'); set('ob-sub-path','pathSub');
+    set('ob-path-setup-title','setupTitle'); set('ob-path-setup-sub','setupSub');
+    set('ob-path-fast-title','fastTitle'); set('ob-path-fast-sub','fastSub');
+    set('ob-title-details','detailsTitle'); set('ob-sub-details','detailsSub');
+    set('ob-btn-details','next');
+    set('ob-title-stats','statsTitle'); set('ob-sub-stats','statsSub');
+    set('ob-btn-stats','letsGo');
+}
+
+// ===================== ONBOARDING =====================
 function selectLang(lang, el) {
     selectedLang = lang;
     document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('selected'));
     el.classList.add('selected');
+    applyTranslations();
 }
 
-function t(key) {
-    return (translations[selectedLang] && translations[selectedLang][key]) || translations.en[key] || key;
-}
-
-function applyTranslations() {
-    document.querySelectorAll('[data-nav-home]').forEach(el => el && (el.lastChild.textContent = t('home')));
-}
-
-// ===================== ONBOARDING =====================
 function obNext(step) {
     document.querySelectorAll('.onboarding-step').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.step-dot').forEach(d => d.classList.remove('active'));
-    document.getElementById('ob-step-' + step).classList.add('active');
-    document.getElementById('dot-' + step).classList.add('active');
+    document.getElementById('ob-step-'+step).classList.add('active');
+    document.getElementById('dot-'+step).classList.add('active');
+}
+
+function fastTrack() {
+    settings = { name:'', goal:'fitness', environment:'gym', diet:'standard', weight:0, targetWeight:0,
+        calTarget:2000, proteinTarget:150, stepsTarget:8000, language:selectedLang,
+        phaseName:'Phase 1', phaseStartDate:new Date().toLocaleDateString('en-GB'), trainingDays:4, units:'kg' };
+    localStorage.setItem('settings', JSON.stringify(settings));
+    localStorage.setItem('onboarded','true');
+    document.getElementById('onboarding').style.display='none';
+    applyTranslations();
+    updateHome();
 }
 
 function selectHeightUnit(unit) {
     selectedHeightUnit = unit;
-    document.querySelectorAll('.unit-toggle .unit-btn').forEach(b => b.classList.remove('selected'));
-    document.getElementById('height-unit-' + unit).classList.add('selected');
-    document.getElementById('height-cm-input').style.display = unit === 'cm' ? 'block' : 'none';
-    document.getElementById('height-ft-input').style.display = unit === 'ft' ? 'block' : 'none';
+    document.querySelectorAll('#ob-step-3 .unit-btn').forEach(b=>b.classList.remove('selected'));
+    document.getElementById('height-unit-'+unit).classList.add('selected');
+    document.getElementById('height-cm-input').style.display = unit==='cm'?'block':'none';
+    document.getElementById('height-ft-input').style.display = unit==='ft'?'block':'none';
 }
 
 function selectWeightUnit(unit) {
     selectedWeightUnit = unit;
-    ['kg','lbs','st'].forEach(u => document.getElementById('weight-unit-' + u) && document.getElementById('weight-unit-' + u).classList.remove('selected'));
-    document.getElementById('weight-unit-' + unit).classList.add('selected');
-    const placeholder = unit === 'kg' ? 'e.g. 80' : unit === 'lbs' ? 'e.g. 176' : 'e.g. 12.5';
-    document.getElementById('ob-weight').placeholder = placeholder;
-    document.getElementById('ob-target').placeholder = unit === 'kg' ? 'e.g. 75' : unit === 'lbs' ? 'e.g. 165' : 'e.g. 11.5';
+    ['kg','lbs','st'].forEach(u=>{const el=document.getElementById('weight-unit-'+u);if(el)el.classList.remove('selected');});
+    const sel = document.getElementById('weight-unit-'+unit);
+    if(sel) sel.classList.add('selected');
+    document.getElementById('ob-weight').placeholder = unit==='kg'?'e.g. 80':unit==='lbs'?'e.g. 176':'e.g. 12.5';
+    document.getElementById('ob-target').placeholder = unit==='kg'?'e.g. 75':unit==='lbs'?'e.g. 165':'e.g. 11.5';
 }
 
 function getHeightInCm() {
-    if (selectedHeightUnit === 'cm') return parseFloat(document.getElementById('ob-height-cm').value) || 175;
-    const ft = parseFloat(document.getElementById('ob-height-ft').value) || 5;
-    const inch = parseFloat(document.getElementById('ob-height-in').value) || 9;
-    return Math.round((ft * 30.48) + (inch * 2.54));
+    if (selectedHeightUnit==='cm') return parseFloat(document.getElementById('ob-height-cm').value)||175;
+    const ft=parseFloat(document.getElementById('ob-height-ft').value)||5;
+    const inch=parseFloat(document.getElementById('ob-height-in').value)||9;
+    return Math.round((ft*30.48)+(inch*2.54));
 }
 
 function getWeightInKg(value) {
-    if (selectedWeightUnit === 'kg') return value;
-    if (selectedWeightUnit === 'lbs') return Math.round(value * 0.453592 * 10) / 10;
-    if (selectedWeightUnit === 'st') return Math.round(value * 6.35029 * 10) / 10;
+    if (selectedWeightUnit==='kg') return value;
+    if (selectedWeightUnit==='lbs') return Math.round(value*0.453592*10)/10;
+    if (selectedWeightUnit==='st') return Math.round(value*6.35029*10)/10;
     return value;
 }
 
 function completeOnboarding() {
-    const age = parseInt(document.getElementById('ob-age').value) || 25;
-    const weightRaw = parseFloat(document.getElementById('ob-weight').value) || 80;
-    const targetRaw = parseFloat(document.getElementById('ob-target').value) || 75;
-    const weight = getWeightInKg(weightRaw);
-    const targetWeight = getWeightInKg(targetRaw);
-    const height = getHeightInCm();
-    const gender = document.getElementById('ob-gender').value;
-    const goal = document.getElementById('ob-goal').value;
-    const name = document.getElementById('ob-name').value || 'Athlete';
-    const activity = parseFloat(document.getElementById('ob-activity').value) || 1.55;
-    const phaseName = document.getElementById('ob-phase-name').value || 'Phase 1';
-    const startDate = document.getElementById('ob-start-date').value || new Date().toLocaleDateString('en-GB');
-    const endDate = document.getElementById('ob-end-date').value || '';
-
-    let bmr = gender === 'male' ? 10*weight+6.25*height-5*age+5 : 10*weight+6.25*height-5*age-161;
-    const tdee = Math.round(bmr * activity);
-    const calTarget = goal === 'fatloss' ? tdee-500 : goal === 'muscle' ? tdee+300 : tdee;
-    const proteinTarget = Math.round(weight * (goal === 'muscle' ? 2.4 : 2.0));
-
-    settings = {
-        name, age, weight, targetWeight, height, gender, goal,
-        environment: document.getElementById('ob-environment').value,
-        diet: document.getElementById('ob-diet').value,
-        activity, tdee, calTarget, proteinTarget, stepsTarget: 8000,
-        phaseName, startDate, endDate, trainingDays: 4, units: selectedWeightUnit,
-        language: selectedLang
-    };
-
-    selectedLang = settings.language;
-    localStorage.setItem('settings', JSON.stringify(settings));
-    localStorage.setItem('onboarded', 'true');
-    document.getElementById('onboarding').style.display = 'none';
-    document.getElementById('header-greeting').textContent = 'Hi ' + name + ' 👋';
+    const age=parseInt(document.getElementById('ob-age').value)||25;
+    const weightRaw=parseFloat(document.getElementById('ob-weight').value)||80;
+    const targetRaw=parseFloat(document.getElementById('ob-target').value)||75;
+    const weight=getWeightInKg(weightRaw);
+    const targetWeight=getWeightInKg(targetRaw);
+    const height=getHeightInCm();
+    const gender=document.getElementById('ob-gender').value;
+    const goal=document.getElementById('ob-goal').value;
+    const name=document.getElementById('ob-name').value||'Athlete';
+    const activity=parseFloat(document.getElementById('ob-activity').value)||1.55;
+    let bmr=gender==='male'?10*weight+6.25*height-5*age+5:10*weight+6.25*height-5*age-161;
+    const tdee=Math.round(bmr*activity);
+    const calTarget=goal==='fatloss'?tdee-500:goal==='muscle'?tdee+300:tdee;
+    const proteinTarget=Math.round(weight*(goal==='muscle'?2.4:2.0));
+    settings={name,age,weight,targetWeight,height,gender,goal,
+        environment:document.getElementById('ob-environment').value,
+        diet:document.getElementById('ob-diet').value,
+        activity,tdee,calTarget,proteinTarget,stepsTarget:8000,
+        phaseName:'Phase 1',phaseStartDate:new Date().toLocaleDateString('en-GB'),
+        trainingDays:4,units:selectedWeightUnit,language:selectedLang};
+    localStorage.setItem('settings',JSON.stringify(settings));
+    localStorage.setItem('onboarded','true');
+    document.getElementById('onboarding').style.display='none';
+    document.getElementById('header-greeting').textContent='Hi '+name+' 👋';
+    applyTranslations();
     updateHome();
 }
 
 // ===================== THEME =====================
 function toggleTheme() {
     document.body.classList.toggle('dark');
-    const toggle = document.getElementById('dark-toggle');
-    if (toggle) toggle.classList.toggle('on');
-    localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    const toggle=document.getElementById('dark-toggle');
+    if(toggle) toggle.classList.toggle('on');
+    localStorage.setItem('theme',document.body.classList.contains('dark')?'dark':'light');
 }
 
 // ===================== NAVIGATION =====================
 function showScreen(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    const navMap = {'screen-home':'nav-home','screen-train':'nav-train','screen-calories':'nav-calories','screen-progress':'nav-progress','screen-settings':'nav-settings'};
-    if (navMap[id]) document.getElementById(navMap[id]).classList.add('active');
-    if (id === 'screen-home') updateHome();
-    if (id === 'screen-calories') { loadNutrition(); renderSupplements(); renderMeals(); }
-    if (id === 'screen-progress') updateProgress();
-    if (id === 'screen-settings') loadSettings();
-    if (id === 'screen-train') { showTrainSection('menu'); renderRoutinesList(); }
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    const navMap={'screen-home':'nav-home','screen-train':'nav-train','screen-calories':'nav-calories','screen-progress':'nav-progress','screen-settings':'nav-settings'};
+    if(navMap[id]) document.getElementById(navMap[id]).classList.add('active');
+    if(id==='screen-home') updateHome();
+    if(id==='screen-calories'){loadNutrition();renderSupplements();renderMeals();}
+    if(id==='screen-progress') updateProgress();
+    if(id==='screen-settings') loadSettings();
+    if(id==='screen-train'){showTrainSection('menu');renderRoutinesList();}
 }
 
 // ===================== TRAIN =====================
 function showTrainSection(section) {
-    ['menu','routines','quick','create','cardio','active','cardio-active'].forEach(s => {
-        const el = document.getElementById('train-' + s);
-        if (el) el.style.display = 'none';
-    });
-    const target = document.getElementById('train-' + section);
-    if (target) target.style.display = 'block';
-    if (section === 'create') buildCreateExercisePicker();
-    if (section === 'active') buildActiveExercisePicker();
+    ['menu','routines','quick','create','cardio','active','cardio-active'].forEach(s=>{const el=document.getElementById('train-'+s);if(el)el.style.display='none';});
+    const target=document.getElementById('train-'+section);
+    if(target) target.style.display='block';
+    if(section==='create') buildCreateExercisePicker();
+    if(section==='active') buildActiveExercisePicker();
 }
 
 function getExercisesForCategory(cat) {
-    const env = settings.environment || 'gym';
-    if (['Push','Pull','Legs','Core'].includes(cat)) {
-        const base = exerciseDB[cat] || [];
-        const custom = customExercises[cat] || [];
-        return [...base, ...custom];
-    }
-    const catDB = exerciseDB[cat];
-    if (!catDB) return customExercises[cat] || [];
-    let list = [];
-    if (typeof catDB === 'object' && !Array.isArray(catDB)) {
-        if (env === 'both') list = [...new Set([...(catDB.gym||[]),...(catDB.home||[])])];
-        else list = catDB[env] || catDB.gym || [];
-    } else { list = catDB; }
-    return [...list, ...(customExercises[cat] || [])];
+    const env=settings.environment||'gym';
+    if(['Push','Pull','Legs','Core'].includes(cat)){return[...(exerciseDB[cat]||[]),...(customExercises[cat]||[])];}
+    const catDB=exerciseDB[cat];
+    if(!catDB) return customExercises[cat]||[];
+    let list=[];
+    if(typeof catDB==='object'&&!Array.isArray(catDB)){
+        if(env==='both') list=[...new Set([...(catDB.gym||[]),...(catDB.home||[])])];
+        else list=catDB[env]||catDB.gym||[];
+    } else {list=catDB;}
+    return [...list,...(customExercises[cat]||[])];
 }
 
 function startQuickWorkout(category) {
-    selectedMuscle = category;
-    exercises = [];
+    selectedMuscle=category; exercises=[]; firstSetLogged=false;
     showTrainSection('active');
     buildActiveExercisePicker();
-    startWorkoutTimer();
-    document.getElementById('save-btn').style.display = 'none';
-    document.getElementById('exercise-log').innerHTML = '';
+    document.getElementById('save-btn').style.display='none';
+    document.getElementById('exercise-log').innerHTML='';
+    const timerBar=document.getElementById('workout-timer-bar');
+    if(timerBar) timerBar.style.display='none';
 }
 
 function buildActiveExercisePicker() {
-    const filter = document.getElementById('active-category-filter');
-    if (!filter) return;
-    const cats = ['Push','Pull','Legs','Core','Chest','Back','Shoulders','Biceps','Triceps','Quads','Hamstrings','Glutes','Calves','Abs'];
-    filter.innerHTML = cats.map(c => `<button class="filter-btn ${c === selectedMuscle ? 'active' : ''}" onclick="switchActiveCategory('${c}', this)">${c}</button>`).join('');
+    const filter=document.getElementById('active-category-filter');
+    if(!filter) return;
+    const cats=['Push','Pull','Legs','Core','Chest','Back','Shoulders','Biceps','Triceps','Quads','Hamstrings','Glutes','Calves','Abs'];
+    filter.innerHTML=cats.map(c=>`<button class="filter-btn ${c===selectedMuscle?'active':''}" onclick="switchActiveCategory('${c}',this)">${c}</button>`).join('');
     renderActiveTags(selectedMuscle);
 }
 
-function switchActiveCategory(cat, btn) {
-    document.querySelectorAll('#active-category-filter .filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    selectedMuscle = cat;
-    renderActiveTags(cat);
+function switchActiveCategory(cat,btn) {
+    document.querySelectorAll('#active-category-filter .filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active'); selectedMuscle=cat; renderActiveTags(cat);
 }
 
 function renderActiveTags(cat) {
-    const tags = document.getElementById('exercise-tags');
-    if (!tags) return;
-    const exList = getExercisesForCategory(cat);
-    tags.innerHTML = exList.map(ex => `<span class="tag" onclick="this.classList.toggle('selected')">${ex}</span>`).join('');
+    const tags=document.getElementById('exercise-tags');
+    if(!tags) return;
+    const exList=getExercisesForCategory(cat);
+    tags.innerHTML=exList.map(ex=>`<span class="tag" onclick="this.classList.toggle('selected')">${ex}</span>`).join('');
 }
 
 function buildCreateExercisePicker() {
-    const filter = document.getElementById('create-category-filter');
-    const cats = ['Push','Pull','Legs','Core','Chest','Back','Shoulders','Biceps','Triceps','Quads','Hamstrings','Glutes','Calves','Abs'];
-    filter.innerHTML = cats.map((c,i) => `<button class="filter-btn ${i===0?'active':''}" onclick="switchCreateCategory('${c}', this)">${c}</button>`).join('');
+    const filter=document.getElementById('create-category-filter');
+    const cats=['Push','Pull','Legs','Core','Chest','Back','Shoulders','Biceps','Triceps','Quads','Hamstrings','Glutes','Calves','Abs'];
+    filter.innerHTML=cats.map((c,i)=>`<button class="filter-btn ${i===0?'active':''}" onclick="switchCreateCategory('${c}',this)">${c}</button>`).join('');
     renderCreateTags(cats[0]);
 }
 
-function switchCreateCategory(cat, btn) {
-    document.querySelectorAll('#create-category-filter .filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderCreateTags(cat);
+function switchCreateCategory(cat,btn) {
+    document.querySelectorAll('#create-category-filter .filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active'); renderCreateTags(cat);
 }
 
 function renderCreateTags(cat) {
-    const tags = document.getElementById('create-exercise-tags');
-    if (!tags) return;
-    const exList = getExercisesForCategory(cat);
-    tags.innerHTML = exList.map(ex => `<span class="tag" onclick="this.classList.toggle('selected')">${ex}</span>`).join('');
+    const tags=document.getElementById('create-exercise-tags');
+    if(!tags) return;
+    const exList=getExercisesForCategory(cat);
+    tags.innerHTML=exList.map(ex=>`<span class="tag" onclick="this.classList.toggle('selected')">${ex}</span>`).join('');
 }
 
 function saveRoutine() {
-    const name = document.getElementById('routine-name').value.trim();
-    if (!name) { alert('Please name your routine'); return; }
-    const selected = [...document.querySelectorAll('#create-exercise-tags .tag.selected')].map(t => t.textContent);
-    const customText = document.getElementById('create-custom-ex').value.trim();
-    if (customText) {
+    const name=document.getElementById('routine-name').value.trim();
+    if(!name){alert('Please name your routine');return;}
+    const selected=[...document.querySelectorAll('#create-exercise-tags .tag.selected')].map(t=>t.textContent);
+    const customText=document.getElementById('create-custom-ex').value.trim();
+    if(customText){
         selected.push(customText);
-        const activeCat = document.querySelector('#create-category-filter .filter-btn.active');
-        if (activeCat) {
-            const cat = activeCat.textContent;
-            if (!customExercises[cat]) customExercises[cat] = [];
-            if (!customExercises[cat].includes(customText)) customExercises[cat].push(customText);
-        }
+        const activeCat=document.querySelector('#create-category-filter .filter-btn.active');
+        if(activeCat){const cat=activeCat.textContent;if(!customExercises[cat])customExercises[cat]=[];if(!customExercises[cat].includes(customText))customExercises[cat].push(customText);}
     }
-    if (selected.length === 0) { alert('Please select at least one exercise'); return; }
-    savedRoutines.push({ name, exercises: selected, created: new Date().toLocaleDateString('en-GB') });
+    if(selected.length===0){alert('Please select at least one exercise');return;}
+    savedRoutines.push({name,exercises:selected,created:new Date().toLocaleDateString('en-GB')});
     saveToStorage();
-    document.getElementById('routine-name').value = '';
-    document.getElementById('create-custom-ex').value = '';
-    showTrainSection('routines');
-    renderRoutinesList();
+    document.getElementById('routine-name').value='';
+    document.getElementById('create-custom-ex').value='';
+    showTrainSection('routines'); renderRoutinesList();
 }
 
 function renderRoutinesList() {
-    const list = document.getElementById('routines-list');
-    const msg = document.getElementById('no-routines-msg');
-    if (!list) return;
-    if (savedRoutines.length === 0) { list.innerHTML = ''; if(msg) msg.style.display = 'block'; return; }
-    if(msg) msg.style.display = 'none';
-    list.innerHTML = savedRoutines.map((r,i) => `
-        <div class="routine-item" onclick="startRoutine(${i})">
-            <div><div class="routine-name">${r.name}</div><div class="routine-meta">${r.exercises.length} exercises • ${r.created}</div></div>
-            <div style="display:flex; align-items:center; gap:8px;">
-                <button class="btn-danger" onclick="event.stopPropagation(); deleteRoutine(${i})">Delete</button>
-                <div class="routine-arrow">›</div>
-            </div>
-        </div>`).join('');
+    const list=document.getElementById('routines-list');
+    const msg=document.getElementById('no-routines-msg');
+    if(!list) return;
+    if(savedRoutines.length===0){list.innerHTML='';if(msg)msg.style.display='block';return;}
+    if(msg) msg.style.display='none';
+    list.innerHTML=savedRoutines.map((r,i)=>`<div class="routine-item" onclick="startRoutine(${i})"><div><div class="routine-name">${r.name}</div><div class="routine-meta">${r.exercises.length} exercises • ${r.created}</div></div><div style="display:flex;align-items:center;gap:8px;"><button class="btn-danger" onclick="event.stopPropagation();deleteRoutine(${i})">Delete</button><div class="routine-arrow">›</div></div></div>`).join('');
 }
 
 function startRoutine(index) {
-    const routine = savedRoutines[index];
-    selectedMuscle = routine.name;
-    exercises = routine.exercises.map(name => ({ name, sets: [{ reps: '', weight: '' }] }));
-    showTrainSection('active');
-    buildActiveExercisePicker();
-    startWorkoutTimer();
-    document.getElementById('save-btn').style.display = 'block';
+    const routine=savedRoutines[index];
+    selectedMuscle=routine.name; firstSetLogged=false;
+    exercises=routine.exercises.map(name=>({name,sets:[{reps:'',weight:''}]}));
+    showTrainSection('active'); buildActiveExercisePicker();
+    const timerBar=document.getElementById('workout-timer-bar');
+    if(timerBar) timerBar.style.display='none';
+    document.getElementById('save-btn').style.display='block';
     renderExercises();
 }
 
-function deleteRoutine(index) {
-    if (confirm('Delete this routine?')) { savedRoutines.splice(index,1); saveToStorage(); renderRoutinesList(); }
-}
+function deleteRoutine(index){if(confirm('Delete this routine?')){savedRoutines.splice(index,1);saveToStorage();renderRoutinesList();}}
 
 function addExercise() {
-    const selected = [...document.querySelectorAll('#exercise-tags .tag.selected')].map(t => t.textContent);
-    const custom = document.getElementById('custom-exercise').value.trim();
-    if (custom) {
+    const selected=[...document.querySelectorAll('#exercise-tags .tag.selected')].map(t=>t.textContent);
+    const custom=document.getElementById('custom-exercise').value.trim();
+    if(custom){
         selected.push(custom);
-        if (!customExercises[selectedMuscle]) customExercises[selectedMuscle] = [];
-        if (!customExercises[selectedMuscle].includes(custom)) {
-            customExercises[selectedMuscle].push(custom);
-            saveToStorage();
-            renderActiveTags(selectedMuscle);
-        }
+        if(!customExercises[selectedMuscle])customExercises[selectedMuscle]=[];
+        if(!customExercises[selectedMuscle].includes(custom)){customExercises[selectedMuscle].push(custom);saveToStorage();renderActiveTags(selectedMuscle);}
     }
-    if (selected.length === 0) return;
-    selected.forEach(name => { if (!exercises.find(e => e.name === name)) exercises.push({ name, sets: [{ reps: '', weight: '' }] }); });
-    document.getElementById('custom-exercise').value = '';
-    document.querySelectorAll('#exercise-tags .tag').forEach(t => t.classList.remove('selected'));
-    document.getElementById('save-btn').style.display = 'block';
+    if(selected.length===0) return;
+    selected.forEach(name=>{if(!exercises.find(e=>e.name===name))exercises.push({name,sets:[{reps:'',weight:''}]});});
+    document.getElementById('custom-exercise').value='';
+    document.querySelectorAll('#exercise-tags .tag').forEach(t=>t.classList.remove('selected'));
+    document.getElementById('save-btn').style.display='block';
     renderExercises();
 }
 
 function renderExercises() {
-    const log = document.getElementById('exercise-log');
-    if (!log) return;
-    log.innerHTML = '';
-    exercises.forEach((ex, ei) => {
-        const block = document.createElement('div');
-        block.className = 'exercise-block';
-        const lastSession = workoutHistory.find(w => w.exercises && w.exercises.find(e => e.name === ex.name));
-        const lastEx = lastSession ? lastSession.exercises.find(e => e.name === ex.name) : null;
-        const pb = personalBests[ex.name];
-        let suggestion = '';
-        if (lastEx && lastEx.sets.length > 0) {
-            const lastWeight = parseFloat(lastEx.sets[0].weight) || 0;
-            const suggestedWeight = lastWeight > 0 ? (lastWeight + 2.5).toFixed(1) : '—';
-            suggestion = `<div style="background:#F0FDF4; border:1px solid #86EFAC; border-radius:8px; padding:8px; margin-bottom:8px;"><div style="color:#16A34A; font-size:11px; font-weight:700; margin-bottom:2px;">AUTO PROGRESSION</div><div style="color:#166534; font-size:12px;">Try <strong>${suggestedWeight}kg</strong> today (last: ${lastWeight}kg)</div></div>`;
+    const log=document.getElementById('exercise-log');
+    if(!log) return;
+    log.innerHTML='';
+    exercises.forEach((ex,ei)=>{
+        const block=document.createElement('div');
+        block.className='exercise-block';
+        const lastSession=workoutHistory.find(w=>w.exercises&&w.exercises.find(e=>e.name===ex.name));
+        const lastEx=lastSession?lastSession.exercises.find(e=>e.name===ex.name):null;
+        const pb=personalBests[ex.name];
+        let suggestion='';
+        if(lastEx&&lastEx.sets.length>0){
+            const lastWeight=parseFloat(lastEx.sets[0].weight)||0;
+            const suggested=lastWeight>0?(lastWeight+2.5).toFixed(1):'—';
+            suggestion=`<div style="background:#F0FDF4;border:1px solid #86EFAC;border-radius:8px;padding:8px;margin-bottom:8px;"><div style="color:#16A34A;font-size:11px;font-weight:700;margin-bottom:2px;">AUTO PROGRESSION</div><div style="color:#166534;font-size:12px;">Try <strong>${suggested}kg</strong> today (last: ${lastWeight}kg)</div></div>`;
         }
-        const lastPerf = lastEx ? `<div style="background:#FFF7ED; border:1px solid #FED7AA; border-radius:8px; padding:8px; margin-bottom:10px;"><div style="color:#EA580C; font-size:11px; font-weight:700; margin-bottom:4px;">LAST SESSION</div>${lastEx.sets.map((s,i) => `<div style="color:#9A3412; font-size:12px;">Set ${i+1}: ${s.reps} reps @ ${s.weight}kg</div>`).join('')}</div>` : '<div style="color:var(--text-muted); font-size:12px; margin-bottom:10px;">No previous data</div>';
-        const pbBadge = pb ? `<span class="pr-badge">PB: ${pb.weight}kg×${pb.reps}</span>` : '';
-        let setsHTML = `<div class="set-headers"><div class="set-header">SET</div><div class="set-header">REPS</div><div class="set-header">KG</div><div class="set-header"></div></div>`;
-        ex.sets.forEach((set, si) => { setsHTML += `<div class="set-row"><div class="set-num">${si+1}</div><input class="set-input" type="number" placeholder="Reps" value="${set.reps}" onchange="updateSet(${ei},${si},'reps',this.value)"><input class="set-input" type="number" placeholder="KG" value="${set.weight}" onchange="updateSet(${ei},${si},'weight',this.value)"><div class="remove-set" onclick="removeSet(${ei},${si})">✕</div></div>`; });
-        block.innerHTML = `<div class="exercise-name">${ex.name} ${pbBadge}</div>${suggestion}${lastPerf}${setsHTML}<div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;"><button class="btn-outline" onclick="addSet(${ei})" style="flex:1; margin-bottom:0;">+ Set</button><button class="btn-small" onclick="startTimer(60)">60s Rest</button><button class="btn-small" onclick="startTimer(90)">90s Rest</button></div>`;
+        const lastPerf=lastEx?`<div style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:8px;padding:8px;margin-bottom:10px;"><div style="color:#EA580C;font-size:11px;font-weight:700;margin-bottom:4px;">LAST SESSION</div>${lastEx.sets.map((s,i)=>`<div style="color:#9A3412;font-size:12px;">Set ${i+1}: ${s.reps} reps @ ${s.weight}kg</div>`).join('')}</div>`:'<div style="color:var(--text-muted);font-size:12px;margin-bottom:10px;">No previous data</div>';
+        const pbBadge=pb?`<span class="pr-badge">PB: ${pb.weight}kg×${pb.reps}</span>`:'';
+        let setsHTML=`<div class="set-headers"><div class="set-header">SET</div><div class="set-header">REPS</div><div class="set-header">KG</div><div class="set-header"></div></div>`;
+        ex.sets.forEach((set,si)=>{setsHTML+=`<div class="set-row"><div class="set-num">${si+1}</div><input class="set-input" type="number" placeholder="Reps" value="${set.reps}" onchange="updateSet(${ei},${si},'reps',this.value)"><input class="set-input" type="number" placeholder="KG" value="${set.weight}" onchange="updateSet(${ei},${si},'weight',this.value)"><div class="remove-set" onclick="removeSet(${ei},${si})">✕</div></div>`;});
+        block.innerHTML=`<div class="exercise-name">${ex.name} ${pbBadge}</div>${suggestion}${lastPerf}${setsHTML}<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;"><button class="btn-outline" onclick="addSet(${ei})" style="flex:1;margin-bottom:0;">+ Set</button><button class="btn-small" onclick="startTimer(60)">60s Rest</button><button class="btn-small" onclick="startTimer(90)">90s Rest</button></div>`;
         log.appendChild(block);
     });
 }
 
-function updateSet(ei, si, field, val) { exercises[ei].sets[si][field] = val; }
-function addSet(ei) { exercises[ei].sets.push({ reps: '', weight: '' }); renderExercises(); }
-function removeSet(ei, si) { if (exercises[ei].sets.length > 1) { exercises[ei].sets.splice(si, 1); renderExercises(); } }
-
-function startTimer(seconds) {
-    if (timerInterval) clearInterval(timerInterval);
-    let remaining = seconds;
-    document.getElementById('rest-timer').style.display = 'block';
-    document.getElementById('rest-count').textContent = remaining;
-    timerInterval = setInterval(() => { remaining--; document.getElementById('rest-count').textContent = remaining; if (remaining <= 0) { clearInterval(timerInterval); document.getElementById('rest-timer').style.display = 'none'; } }, 1000);
+function updateSet(ei,si,field,val) {
+    exercises[ei].sets[si][field]=val;
+    if(!firstSetLogged&&val&&parseFloat(val)>0){
+        firstSetLogged=true;
+        startWorkoutTimer();
+        const timerBar=document.getElementById('workout-timer-bar');
+        if(timerBar) timerBar.style.display='flex';
+    }
 }
 
-function stopTimer() { clearInterval(timerInterval); document.getElementById('rest-timer').style.display = 'none'; }
+function addSet(ei){exercises[ei].sets.push({reps:'',weight:''});renderExercises();}
+function removeSet(ei,si){if(exercises[ei].sets.length>1){exercises[ei].sets.splice(si,1);renderExercises();}}
+
+function startTimer(seconds) {
+    if(timerInterval) clearInterval(timerInterval);
+    let remaining=seconds;
+    document.getElementById('rest-timer').style.display='block';
+    document.getElementById('rest-count').textContent=remaining;
+    timerInterval=setInterval(()=>{remaining--;document.getElementById('rest-count').textContent=remaining;if(remaining<=0){clearInterval(timerInterval);document.getElementById('rest-timer').style.display='none';}},1000);
+}
+
+function stopTimer(){clearInterval(timerInterval);document.getElementById('rest-timer').style.display='none';}
 
 function startWorkoutTimer() {
-    workoutStartTime = Date.now();
-    if (workoutTimerInterval) clearInterval(workoutTimerInterval);
-    workoutTimerInterval = setInterval(() => {
-        const elapsed = Math.floor((Date.now() - workoutStartTime) / 1000);
-        const mins = Math.floor(elapsed/60).toString().padStart(2,'0');
-        const secs = (elapsed%60).toString().padStart(2,'0');
-        const el = document.getElementById('workout-timer');
-        if (el) el.textContent = mins + ':' + secs;
-    }, 1000);
+    workoutStartTime=Date.now();
+    if(workoutTimerInterval) clearInterval(workoutTimerInterval);
+    workoutTimerInterval=setInterval(()=>{
+        const elapsed=Math.floor((Date.now()-workoutStartTime)/1000);
+        const mins=Math.floor(elapsed/60).toString().padStart(2,'0');
+        const secs=(elapsed%60).toString().padStart(2,'0');
+        const el=document.getElementById('workout-timer');
+        if(el) el.textContent=mins+':'+secs;
+    },1000);
 }
 
 function saveWorkout() {
-    const date = new Date().toLocaleDateString('en-GB');
-    const duration = workoutStartTime ? Math.floor((Date.now()-workoutStartTime)/60000) : 0;
+    const date=new Date().toLocaleDateString('en-GB');
+    const duration=workoutStartTime?Math.floor((Date.now()-workoutStartTime)/60000):0;
     clearInterval(workoutTimerInterval);
-    exercises.forEach(ex => { ex.sets.forEach(set => { const w=parseFloat(set.weight)||0; const r=parseInt(set.reps)||0; if(w>0&&r>0&&(!personalBests[ex.name]||w>personalBests[ex.name].weight)) personalBests[ex.name]={weight:w,reps:r,date}; }); });
-    workoutHistory.unshift({ muscle: selectedMuscle, exercises: JSON.parse(JSON.stringify(exercises)), date, duration });
-    exercises = [];
-    selectedMuscle = '';
-    document.getElementById('exercise-log').innerHTML = '';
-    document.getElementById('save-btn').style.display = 'none';
-    saveToStorage();
-    checkBadges();
-    showScreen('screen-progress');
+    exercises.forEach(ex=>{ex.sets.forEach(set=>{const w=parseFloat(set.weight)||0;const r=parseInt(set.reps)||0;if(w>0&&r>0&&(!personalBests[ex.name]||w>personalBests[ex.name].weight))personalBests[ex.name]={weight:w,reps:r,date};});});
+    workoutHistory.unshift({muscle:selectedMuscle,exercises:JSON.parse(JSON.stringify(exercises)),date,duration});
+    exercises=[];selectedMuscle='';firstSetLogged=false;
+    document.getElementById('exercise-log').innerHTML='';
+    document.getElementById('save-btn').style.display='none';
+    const timerBar=document.getElementById('workout-timer-bar');
+    if(timerBar) timerBar.style.display='none';
+    saveToStorage(); checkBadges(); showScreen('screen-progress');
 }
 
 function startCardio(type) {
-    currentCardioType = type;
-    document.getElementById('cardio-type-title').textContent = type.toUpperCase();
+    currentCardioType=type;
+    document.getElementById('cardio-type-title').textContent=type.toUpperCase();
     showTrainSection('cardio-active');
-    let cardioSecs = 0;
-    if (cardioTimerInterval) clearInterval(cardioTimerInterval);
-    cardioTimerInterval = setInterval(() => { cardioSecs++; const mins=Math.floor(cardioSecs/60).toString().padStart(2,'0'); const secs=(cardioSecs%60).toString().padStart(2,'0'); const el=document.getElementById('cardio-timer'); if(el) el.textContent=mins+':'+secs; }, 1000);
+    let cardioSecs=0;
+    if(cardioTimerInterval) clearInterval(cardioTimerInterval);
+    cardioTimerInterval=setInterval(()=>{cardioSecs++;const mins=Math.floor(cardioSecs/60).toString().padStart(2,'0');const secs=(cardioSecs%60).toString().padStart(2,'0');const el=document.getElementById('cardio-timer');if(el)el.textContent=mins+':'+secs;},1000);
 }
 
 function saveCardio() {
     clearInterval(cardioTimerInterval);
-    const date = new Date().toLocaleDateString('en-GB');
-    cardioHistory.unshift({ type: currentCardioType, duration: document.getElementById('cardio-duration').value, distance: document.getElementById('cardio-distance').value, intensity: document.getElementById('cardio-intensity').value, notes: document.getElementById('cardio-notes').value, date });
-    saveToStorage();
-    showScreen('screen-progress');
+    const date=new Date().toLocaleDateString('en-GB');
+    cardioHistory.unshift({type:currentCardioType,duration:document.getElementById('cardio-duration').value,distance:document.getElementById('cardio-distance').value,intensity:document.getElementById('cardio-intensity').value,notes:document.getElementById('cardio-notes').value,date});
+    saveToStorage(); showScreen('screen-progress');
 }
 
-// ===================== NUTRITION / MEALS =====================
+// ===================== NUTRITION =====================
 function addMeal() {
-    const today = new Date().toLocaleDateString('en-GB');
-    const mealCount = meals.filter(m => m.date === today).length;
-    const presetName = mealPresets[mealCount] || 'Meal ' + (mealCount + 1);
-    const name = prompt('Meal name:', presetName) || presetName;
-    meals.push({ name, date: today, foods: [] });
-    saveToStorage();
-    renderMeals();
+    const today=new Date().toLocaleDateString('en-GB');
+    const mealCount=meals.filter(m=>m.date===today).length;
+    const presetName=mealPresets[mealCount]||'Meal '+(mealCount+1);
+    const name=prompt(t('addMeal').replace('+ ','')+':', presetName)||presetName;
+    meals.push({name,date:today,foods:[]});
+    saveToStorage(); renderMeals();
 }
 
 function renderMeals() {
-    const today = new Date().toLocaleDateString('en-GB');
-    const todayMeals = meals.filter(m => m.date === today);
-    const container = document.getElementById('meals-container');
-    if (!container) return;
-    if (todayMeals.length === 0) { container.innerHTML = '<p style="color:var(--text-muted); font-size:13px; text-align:center; padding:16px;">No meals added yet. Tap + Add Meal to start.</p>'; return; }
-    container.innerHTML = todayMeals.map((meal, mi) => {
-        const mealIndex = meals.indexOf(meal);
-        const totalCal = meal.foods.reduce((s,f) => s+f.cal, 0);
-        const totalProt = meal.foods.reduce((s,f) => s+f.protein, 0).toFixed(1);
-        return `<div class="meal-block">
-            <div class="meal-header">
-                <div><div class="meal-name">${meal.name}</div><div class="meal-totals">${totalCal} kcal • ${totalProt}g protein</div></div>
-                <button class="btn-small" onclick="openFoodModal(${mealIndex})">+ Add Food</button>
-            </div>
-            ${meal.foods.map((f,fi) => `<div class="food-entry">
-                <div class="food-entry-info"><div class="food-entry-name">${f.name} (${f.portion}g)</div><div class="food-entry-macros">P: ${f.protein}g • C: ${f.carbs}g • F: ${f.fat}g</div></div>
-                <div class="food-entry-cals">${f.cal} kcal</div>
-                <div class="food-entry-delete" onclick="deleteFoodFromMeal(${mealIndex}, ${fi})">✕</div>
-            </div>`).join('')}
-        </div>`;
+    const today=new Date().toLocaleDateString('en-GB');
+    const todayMeals=meals.filter(m=>m.date===today);
+    const container=document.getElementById('meals-container');
+    if(!container) return;
+    if(todayMeals.length===0){container.innerHTML=`<p style="color:var(--text-muted);font-size:13px;text-align:center;padding:16px;">No meals added yet. Tap + Add Meal to start.</p>`;return;}
+    container.innerHTML=todayMeals.map(meal=>{
+        const mealIndex=meals.indexOf(meal);
+        const totalCal=meal.foods.reduce((s,f)=>s+f.cal,0);
+        const totalProt=meal.foods.reduce((s,f)=>s+f.protein,0).toFixed(1);
+        const totalCarbs=meal.foods.reduce((s,f)=>s+f.carbs,0).toFixed(1);
+        const totalFat=meal.foods.reduce((s,f)=>s+f.fat,0).toFixed(1);
+        return `<div class="meal-block"><div class="meal-header"><div><div class="meal-name">${meal.name}</div><div class="meal-totals">${totalCal} kcal • P:${totalProt}g • C:${totalCarbs}g • F:${totalFat}g</div></div><button class="btn-small" onclick="openFoodModal(${mealIndex})">+ Add Food</button></div>${meal.foods.map((f,fi)=>`<div class="food-entry"><div class="food-entry-info"><div class="food-entry-name">${f.name} (${f.portion}${f.isLiquid?'ml':'g'})</div><div class="food-entry-macros">P: ${f.protein}g • C: ${f.carbs}g • F: ${f.fat}g</div></div><div class="food-entry-cals">${f.cal} kcal</div><div class="food-entry-delete" onclick="deleteFoodFromMeal(${mealIndex},${fi})">✕</div></div>`).join('')}</div>`;
     }).join('');
 }
 
 function openFoodModal(mealIndex) {
-    currentMealIndex = mealIndex;
-    document.getElementById('food-modal').style.display = 'block';
-    document.getElementById('food-modal-title').textContent = 'Add to ' + meals[mealIndex].name;
-    foodFilter = 'all';
-    document.getElementById('food-search').value = '';
+    currentMealIndex=mealIndex;
+    document.getElementById('food-modal').style.display='block';
+    document.getElementById('food-modal-title').textContent='Add to '+meals[mealIndex].name;
+    foodFilter='all';
+    document.getElementById('food-search').value='';
+    document.querySelectorAll('#food-filter-bar .filter-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById('filter-all').classList.add('active');
     filterFoods();
 }
 
-function closeFoodModal() {
-    document.getElementById('food-modal').style.display = 'none';
-    selectedFood = null;
-    document.getElementById('food-portion').style.display = 'none';
-}
+function closeFoodModal(){document.getElementById('food-modal').style.display='none';selectedFood=null;document.getElementById('food-portion').style.display='none';}
 
-function setFoodFilter(filter, btn) {
-    foodFilter = filter;
-    document.querySelectorAll('#food-filter-bar .filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    filterFoods();
-}
+function setFoodFilter(filter,btn){foodFilter=filter;document.querySelectorAll('#food-filter-bar .filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');filterFoods();}
 
 function filterFoods() {
-    const search = (document.getElementById('food-search').value || '').toLowerCase();
-    const diet = settings.diet || 'standard';
-    const list = document.getElementById('food-list');
-    if (!list) return;
-    let foods = [];
-    const categories = foodFilter === 'all' ? Object.keys(foodDB) : [foodFilter];
-    categories.forEach(cat => { if (foodDB[cat]) foodDB[cat].forEach(food => { if ((diet === 'standard' || food.tags.includes(diet)) && food.name.toLowerCase().includes(search)) foods.push({...food, category: cat}); }); });
-    list.innerHTML = foods.map((f,i) => `<div style="padding:10px 0; border-bottom:1px solid var(--border); cursor:pointer;" onclick='selectFood(${JSON.stringify(f).replace(/'/g,"&#39;")})'>
-        <div style="font-weight:600; color:var(--text); font-size:13px;">${f.name}</div>
-        <div style="margin-top:4px;"><span class="macro-pill">${f.cal} kcal</span><span class="macro-pill protein">P: ${f.protein}g</span><span class="macro-pill carbs">C: ${f.carbs}g</span><span class="macro-pill fat">F: ${f.fat}g</span></div>
-    </div>`).join('') || '<p style="color:var(--text-muted); padding:12px 0;">No foods found</p>';
+    const search=(document.getElementById('food-search').value||'').toLowerCase();
+    const diet=settings.diet||'standard';
+    const list=document.getElementById('food-list');
+    if(!list) return;
+    let foods=[];
+    const categories=foodFilter==='all'?Object.keys(foodDB):[foodFilter];
+    categories.forEach(cat=>{if(foodDB[cat])foodDB[cat].forEach(food=>{if((diet==='standard'||food.tags.includes(diet))&&food.name.toLowerCase().includes(search))foods.push({...food,category:cat});});});
+    list.innerHTML=foods.map(f=>`<div style="padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;" onclick='selectFood(${JSON.stringify(f).replace(/'/g,"&#39;")})'>
+        <div style="font-weight:600;color:var(--text);font-size:13px;">${f.name}</div>
+        <div style="margin-top:4px;"><span class="macro-pill">${f.cal} kcal</span><span class="macro-pill protein">P: ${f.protein}g</span><span class="macro-pill carbs">C: ${f.carbs}g</span><span class="macro-pill fat">F: ${f.fat}g</span>${f.water?`<span class="macro-pill" style="background:#EFF6FF;color:#2563EB;">💧 +${f.water}L</span>`:''}</div>
+    </div>`).join('')||'<p style="color:var(--text-muted);padding:12px 0;">No foods found</p>';
 }
 
 function selectFood(food) {
-    selectedFood = food;
-    document.getElementById('food-portion').style.display = 'block';
-    document.getElementById('food-portion-label').textContent = food.name;
-    document.getElementById('food-portion-amount').value = '100';
+    selectedFood=food;
+    const isLiquid=food.category==='drinks';
+    document.getElementById('food-portion').style.display='block';
+    document.getElementById('food-portion-label').textContent=food.name;
+    document.getElementById('lbl-portion').textContent=isLiquid?'Portion (ml)':'Portion (g)';
+    document.getElementById('food-portion-amount').value=isLiquid?'250':'100';
     updatePortionPreview();
 }
 
 function updatePortionPreview() {
-    if (!selectedFood) return;
-    const portion = parseFloat(document.getElementById('food-portion-amount').value) || 100;
-    const ratio = portion / 100;
-    document.getElementById('food-portion-preview').textContent = `${Math.round(selectedFood.cal*ratio)} kcal • P: ${(selectedFood.protein*ratio).toFixed(1)}g • C: ${(selectedFood.carbs*ratio).toFixed(1)}g • F: ${(selectedFood.fat*ratio).toFixed(1)}g`;
+    if(!selectedFood) return;
+    const portion=parseFloat(document.getElementById('food-portion-amount').value)||100;
+    const ratio=portion/100;
+    document.getElementById('food-portion-preview').textContent=`${Math.round(selectedFood.cal*ratio)} kcal • P: ${(selectedFood.protein*ratio).toFixed(1)}g • C: ${(selectedFood.carbs*ratio).toFixed(1)}g • F: ${(selectedFood.fat*ratio).toFixed(1)}g`;
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    const portionInput = document.getElementById('food-portion-amount');
-    if (portionInput) portionInput.addEventListener('input', updatePortionPreview);
-});
 
 function addFoodEntry() {
-    if (!selectedFood || currentMealIndex === null) return;
-    const portion = parseFloat(document.getElementById('food-portion-amount').value) || 100;
-    const ratio = portion / 100;
-    const entry = { name: selectedFood.name, portion, cal: Math.round(selectedFood.cal*ratio), protein: Math.round(selectedFood.protein*ratio*10)/10, carbs: Math.round(selectedFood.carbs*ratio*10)/10, fat: Math.round(selectedFood.fat*ratio*10)/10 };
+    if(!selectedFood||currentMealIndex===null) return;
+    const isLiquid=selectedFood.category==='drinks';
+    const portion=parseFloat(document.getElementById('food-portion-amount').value)||(isLiquid?250:100);
+    const ratio=portion/100;
+    const entry={name:selectedFood.name,portion,isLiquid,cal:Math.round(selectedFood.cal*ratio),protein:Math.round(selectedFood.protein*ratio*10)/10,carbs:Math.round(selectedFood.carbs*ratio*10)/10,fat:Math.round(selectedFood.fat*ratio*10)/10};
+    // Auto add water for drinks
+    if(selectedFood.water){
+        const today=new Date().toLocaleDateString('en-GB');
+        const saved=localStorage.getItem('nutrition-'+today);
+        let data=saved?JSON.parse(saved):{steps:0,water:0};
+        data.water=Math.round(((parseFloat(data.water)||0)+(selectedFood.water*(portion/250)))*100)/100;
+        localStorage.setItem('nutrition-'+today,JSON.stringify(data));
+    }
     meals[currentMealIndex].foods.push(entry);
-    saveToStorage();
-    closeFoodModal();
-    renderMeals();
-    loadNutrition();
+    saveToStorage(); closeFoodModal(); renderMeals(); loadNutrition();
 }
 
-function deleteFoodFromMeal(mealIndex, foodIndex) {
-    meals[mealIndex].foods.splice(foodIndex, 1);
-    saveToStorage();
-    renderMeals();
-    loadNutrition();
-}
+function deleteFoodFromMeal(mealIndex,foodIndex){meals[mealIndex].foods.splice(foodIndex,1);saveToStorage();renderMeals();loadNutrition();}
 
 function saveStepsWater() {
-    const today = new Date().toLocaleDateString('en-GB');
-    const saved = localStorage.getItem('nutrition-' + today);
-    let data = saved ? JSON.parse(saved) : { steps: 0, water: 0 };
-    data.steps = parseInt(document.getElementById('input-steps').value) || data.steps;
-    data.water = parseFloat(document.getElementById('input-water').value) || data.water;
-    localStorage.setItem('nutrition-' + today, JSON.stringify(data));
-    loadNutrition();
-    updateHome();
+    const today=new Date().toLocaleDateString('en-GB');
+    const saved=localStorage.getItem('nutrition-'+today);
+    let data=saved?JSON.parse(saved):{steps:0,water:0};
+    const steps=document.getElementById('input-steps').value;
+    const water=document.getElementById('input-water').value;
+    if(steps) data.steps=parseInt(steps);
+    if(water) data.water=parseFloat(water);
+    localStorage.setItem('nutrition-'+today,JSON.stringify(data));
+    loadNutrition(); updateHome();
 }
 
 function loadNutrition() {
-    const today = new Date().toLocaleDateString('en-GB');
-    const calTarget = settings.calTarget || 2400;
-    const proteinTarget = settings.proteinTarget || 180;
-    const stepsTarget = settings.stepsTarget || 8000;
-    const calDateEl = document.getElementById('cal-date');
-    if (calDateEl) calDateEl.textContent = today;
-
-    const todayMeals = meals.filter(m => m.date === today);
-    let totalCal = 0, totalProtein = 0, totalCarbs = 0, totalFat = 0;
-    todayMeals.forEach(meal => meal.foods.forEach(f => { totalCal += f.cal; totalProtein += f.protein; totalCarbs += f.carbs; totalFat += f.fat; }));
-
-    const saved = localStorage.getItem('nutrition-' + today);
-    let steps = 0, water = 0;
-    if (saved) { const d = JSON.parse(saved); steps = parseInt(d.steps)||0; water = parseFloat(d.water)||0; }
-
-    const setEl = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
-    const setWidth = (id, pct) => { const el = document.getElementById(id); if(el) el.style.width = pct + '%'; };
-
-    setEl('show-calories', `${totalCal} / ${calTarget} kcal`);
-    setEl('show-protein', `${totalProtein.toFixed(1)} / ${proteinTarget}g`);
-    setEl('show-carbs', `${totalCarbs.toFixed(1)}g`);
-    setEl('show-fat', `${totalFat.toFixed(1)}g`);
-    setEl('show-steps', `${steps} / ${stepsTarget}`);
-    setEl('show-water', `${water.toFixed(1)} / 2.5L`);
-    setWidth('bar-calories', Math.min((totalCal/calTarget)*100,100));
-    setWidth('bar-protein', Math.min((totalProtein/proteinTarget)*100,100));
-    setWidth('bar-steps', Math.min((steps/stepsTarget)*100,100));
-    setWidth('bar-water', Math.min((water/2.5)*100,100));
-
-    const hour = new Date().getHours();
-    const expectedCals = Math.round((hour/24)*calTarget);
-    const calStatus = document.getElementById('cal-status');
-    if (calStatus) { if(totalCal>=expectedCals){calStatus.textContent='On Track';calStatus.style.color='#10B981';}else{calStatus.textContent='Behind — eat more';calStatus.style.color='#F59E0B';} }
+    const today=new Date().toLocaleDateString('en-GB');
+    const calTarget=settings.calTarget||2000;
+    const proteinTarget=settings.proteinTarget||150;
+    const stepsTarget=settings.stepsTarget||8000;
+    const calDateEl=document.getElementById('cal-date');
+    if(calDateEl) calDateEl.textContent=today;
+    const todayMeals=meals.filter(m=>m.date===today);
+    let totalCal=0,totalProtein=0,totalCarbs=0,totalFat=0;
+    todayMeals.forEach(meal=>meal.foods.forEach(f=>{totalCal+=f.cal;totalProtein+=f.protein;totalCarbs+=f.carbs;totalFat+=f.fat;}));
+    const saved=localStorage.getItem('nutrition-'+today);
+    let steps=0,water=0;
+    if(saved){const d=JSON.parse(saved);steps=parseInt(d.steps)||0;water=parseFloat(d.water)||0;}
+    const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
+    const setWidth=(id,pct)=>{const el=document.getElementById(id);if(el)el.style.width=pct+'%';};
+    setEl('show-calories',`${totalCal} / ${calTarget} kcal`);
+    setEl('show-protein',`${totalProtein.toFixed(1)} / ${proteinTarget}g`);
+    setEl('show-carbs',`${totalCarbs.toFixed(1)}g`);
+    setEl('show-fat',`${totalFat.toFixed(1)}g`);
+    setEl('show-steps',`${steps} / ${stepsTarget}`);
+    setEl('show-water',`${water.toFixed(1)} / 2.5L`);
+    setWidth('bar-calories',Math.min((totalCal/calTarget)*100,100));
+    setWidth('bar-protein',Math.min((totalProtein/proteinTarget)*100,100));
+    setWidth('bar-steps',Math.min((steps/stepsTarget)*100,100));
+    setWidth('bar-water',Math.min((water/2.5)*100,100));
+    const hour=new Date().getHours();
+    const expectedCals=Math.round((hour/24)*calTarget);
+    const calStatus=document.getElementById('cal-status');
+    if(calStatus){if(totalCal>=expectedCals){calStatus.textContent='On Track';calStatus.style.color='#10B981';}else{calStatus.textContent='Behind — eat more';calStatus.style.color='#F59E0B';}}
 }
 
 function renderSupplements() {
-    const today = new Date().toLocaleDateString('en-GB');
-    const saved = localStorage.getItem('supplements-' + today);
-    const done = saved ? JSON.parse(saved) : [];
-    const list = document.getElementById('supplement-list');
-    if (!list) return;
-    list.innerHTML = supplementsList.map((s,i) => `<div class="supplement-item"><div class="supplement-name">${s}</div><div class="supplement-check ${done.includes(i)?'done':''}" onclick="toggleSupplement(${i})">${done.includes(i)?'✓':''}</div></div>`).join('');
+    const today=new Date().toLocaleDateString('en-GB');
+    const saved=localStorage.getItem('supplements-'+today);
+    const done=saved?JSON.parse(saved):[];
+    const list=document.getElementById('supplement-list');
+    if(!list) return;
+    list.innerHTML=supplementsList.map((s,i)=>`<div class="supplement-item"><div class="supplement-name">${s}</div><div class="supplement-check ${done.includes(i)?'done':''}" onclick="toggleSupplement(${i})">${done.includes(i)?'✓':''}</div></div>`).join('');
 }
 
-function toggleSupplement(index) {
-    const today = new Date().toLocaleDateString('en-GB');
-    const saved = localStorage.getItem('supplements-' + today);
-    let done = saved ? JSON.parse(saved) : [];
-    done.includes(index) ? done.splice(done.indexOf(index),1) : done.push(index);
-    localStorage.setItem('supplements-' + today, JSON.stringify(done));
-    renderSupplements();
-}
+function toggleSupplement(index){const today=new Date().toLocaleDateString('en-GB');const saved=localStorage.getItem('supplements-'+today);let done=saved?JSON.parse(saved):[];done.includes(index)?done.splice(done.indexOf(index),1):done.push(index);localStorage.setItem('supplements-'+today,JSON.stringify(done));renderSupplements();}
 
 // ===================== HOME =====================
 function updateHome() {
-    const s = settings;
-    const calTarget = s.calTarget || 2400;
-    const proteinTarget = s.proteinTarget || 180;
-    const stepsTarget = s.stepsTarget || 8000;
+    const s=settings;
+    const calTarget=s.calTarget||2000;
+    const proteinTarget=s.proteinTarget||150;
+    const stepsTarget=s.stepsTarget||8000;
+    if(s.name) document.getElementById('header-greeting').textContent='Hi '+s.name+' 👋';
 
-    if (s.name) document.getElementById('header-greeting').textContent = 'Hi ' + s.name + ' 👋';
-
-    // Phase progress
-    if (s.phaseName) {
-        const setEl = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
-        setEl('home-phase-name', s.phaseName);
-        if (s.endDate) {
-            const parts = s.endDate.split('/');
-            const end = new Date(parts[2], parts[1]-1, parts[0]);
-            const now = new Date();
-            const daysRemaining = Math.max(0, Math.ceil((end-now)/86400000));
-            setEl('home-days-remaining', daysRemaining + ' days');
-            const startParts = (s.startDate||'').split('/');
-            const start = new Date(startParts[2], startParts[1]-1, startParts[0]);
-            const totalDays = Math.ceil((end-start)/86400000);
-            const elapsed = Math.ceil((now-start)/86400000);
-            const pct = Math.min(Math.round((elapsed/totalDays)*100),100);
-            const bar = document.getElementById('home-prog-bar');
-            if(bar) bar.style.width = pct + '%';
-            const pctEl = document.getElementById('home-prog-pct');
-            if(pctEl) pctEl.textContent = pct + '% complete';
+    // Phase
+    if(s.phaseName){
+        const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
+        setEl('home-phase-name',s.phaseName);
+        if(s.phaseStartDate){
+            const parts=s.phaseStartDate.split('/');
+            const start=new Date(parts[2],parts[1]-1,parts[0]);
+            const daysDiff=Math.max(0,Math.floor((Date.now()-start)/86400000));
+            setEl('home-days-training',daysDiff+' days');
+            const totalDays=s.phaseDuration||56;
+            const pct=Math.min(Math.round((daysDiff/totalDays)*100),100);
+            const bar=document.getElementById('home-prog-bar');if(bar)bar.style.width=pct+'%';
+            const pctEl=document.getElementById('home-prog-pct');if(pctEl)pctEl.textContent=pct+'% complete';
         }
     }
 
-    if (s.weight) {
-        const setEl = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
-        setEl('home-current-weight', s.weight + 'kg');
-        setEl('home-target-weight', (s.targetWeight||'—') + 'kg');
-        const diff = Math.abs(s.weight-(s.targetWeight||s.weight)).toFixed(1);
-        setEl('home-weight-change', diff + 'kg to go');
+    if(s.weight){
+        const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
+        setEl('home-current-weight',s.weight+'kg');
+        setEl('home-target-weight',(s.targetWeight||'—')+'kg');
+        const diff=Math.abs(s.weight-(s.targetWeight||s.weight)).toFixed(1);
+        setEl('home-weight-change',diff+'kg to go');
     }
 
-    const today = new Date().toLocaleDateString('en-GB');
-    const todayMeals = meals.filter(m => m.date === today);
-    let cals=0, protein=0, steps=0, water=0;
-    todayMeals.forEach(meal => meal.foods.forEach(f => { cals+=f.cal; protein+=f.protein; }));
-    const saved = localStorage.getItem('nutrition-' + today);
-    if (saved) { const d=JSON.parse(saved); steps=parseInt(d.steps)||0; water=parseFloat(d.water)||0; }
+    const today=new Date().toLocaleDateString('en-GB');
+    const todayMeals=meals.filter(m=>m.date===today);
+    let cals=0,protein=0,steps=0,water=0;
+    todayMeals.forEach(meal=>meal.foods.forEach(f=>{cals+=f.cal;protein+=f.protein;}));
+    const saved=localStorage.getItem('nutrition-'+today);
+    if(saved){const d=JSON.parse(saved);steps=parseInt(d.steps)||0;water=parseFloat(d.water)||0;}
 
-    const setEl = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
-    const setWidth = (id, pct) => { const el = document.getElementById(id); if(el) el.style.width = pct+'%'; };
-    setEl('home-calories', `${cals} / ${calTarget} kcal`);
-    setEl('home-protein', `${protein.toFixed(1)} / ${proteinTarget}g`);
-    setEl('home-steps', `${steps} / ${stepsTarget}`);
-    setEl('home-water', `${water.toFixed(1)} / 2.5L`);
-    setWidth('home-bar-calories', Math.min((cals/calTarget)*100,100));
-    setWidth('home-bar-protein', Math.min((protein/proteinTarget)*100,100));
-    setWidth('home-bar-steps', Math.min((steps/stepsTarget)*100,100));
-    setWidth('home-bar-water', Math.min((water/2.5)*100,100));
+    const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
+    const setWidth=(id,pct)=>{const el=document.getElementById(id);if(el)el.style.width=pct+'%';};
+    setEl('home-calories',`${cals} / ${calTarget} kcal`);
+    setEl('home-protein',`${protein.toFixed(1)} / ${proteinTarget}g`);
+    setEl('home-steps',`${steps} / ${stepsTarget}`);
+    setEl('home-water',`${water.toFixed(1)} / 2.5L`);
+    setWidth('home-bar-calories',Math.min((cals/calTarget)*100,100));
+    setWidth('home-bar-protein',Math.min((protein/proteinTarget)*100,100));
+    setWidth('home-bar-steps',Math.min((steps/stepsTarget)*100,100));
+    setWidth('home-bar-water',Math.min((water/2.5)*100,100));
 
-    const todayWorkout = workoutHistory.find(w => w.date === today) || cardioHistory.find(w => w.date === today);
-    const score = Math.round(Math.min((cals/calTarget)*25,25)+Math.min((protein/proteinTarget)*25,25)+Math.min((steps/stepsTarget)*25,25)+(todayWorkout?25:0));
-    const scoreEl = document.getElementById('today-score');
-    if(scoreEl) scoreEl.textContent = score;
+    const todayWorkout=workoutHistory.find(w=>w.date===today)||cardioHistory.find(w=>w.date===today);
+    const score=Math.round(Math.min((cals/calTarget)*25,25)+Math.min((protein/proteinTarget)*25,25)+Math.min((steps/stepsTarget)*25,25)+(todayWorkout?25:0));
+    const scoreEl=document.getElementById('today-score');if(scoreEl)scoreEl.textContent=score;
 
-    // Streak
-    const streakBar = document.getElementById('streak-bar');
-    if (streakBar) {
-        const days = ['M','T','W','T','F','S','S'];
-        const now = new Date();
-        const dow = now.getDay();
-        let streakCount = 0;
-        streakBar.innerHTML = '';
-        for (let i=0; i<7; i++) {
-            const d = document.createElement('div');
-            d.className = 'streak-day';
-            const dayDate = new Date(now);
-            dayDate.setDate(now.getDate()-((dow+6-i)%7));
-            const dateStr = dayDate.toLocaleDateString('en-GB');
-            const active = localStorage.getItem('nutrition-'+dateStr) || workoutHistory.find(w=>w.date===dateStr) || meals.some(m=>m.date===dateStr&&m.foods.length>0);
+    const streakBar=document.getElementById('streak-bar');
+    if(streakBar){
+        const days=['M','T','W','T','F','S','S'];
+        const now=new Date();const dow=now.getDay();let streakCount=0;
+        streakBar.innerHTML='';
+        for(let i=0;i<7;i++){
+            const d=document.createElement('div');d.className='streak-day';
+            const dayDate=new Date(now);dayDate.setDate(now.getDate()-((dow+6-i)%7));
+            const dateStr=dayDate.toLocaleDateString('en-GB');
+            const active=localStorage.getItem('nutrition-'+dateStr)||workoutHistory.find(w=>w.date===dateStr)||meals.some(m=>m.date===dateStr&&m.foods.length>0);
             if(active){d.classList.add('done');streakCount++;}
-            if(i===(dow===0?6:dow-1)) d.classList.add('today');
-            d.textContent = days[i];
-            streakBar.appendChild(d);
+            if(i===(dow===0?6:dow-1))d.classList.add('today');
+            d.textContent=days[i];streakBar.appendChild(d);
         }
-        const scEl = document.getElementById('streak-count');
-        if(scEl) scEl.textContent = streakCount + '/7';
+        const scEl=document.getElementById('streak-count');if(scEl)scEl.textContent=streakCount+'/7';
     }
 
-    // Coach
-    const prompts = [];
-    if (!todayWorkout) prompts.push({ text: "You haven't trained today — get it done", type: '' });
-    if (protein < proteinTarget) prompts.push({ text: `Need <strong>${Math.round(proteinTarget-protein)}g more protein</strong> today`, type: '' });
-    if (cals < calTarget*0.5 && new Date().getHours() > 14) prompts.push({ text: `Only ${cals} calories logged — you need more fuel`, type: '' });
-    if (steps < stepsTarget) prompts.push({ text: `<strong>${stepsTarget-steps} steps</strong> remaining today`, type: '' });
-    if (water < 2) prompts.push({ text: `Drink more water — only ${water.toFixed(1)}L logged`, type: '' });
-    if (prompts.length === 0) prompts.push({ text: "You're absolutely smashing it today!", type: 'success' });
-    const coachEl = document.getElementById('coach-prompts');
-    if(coachEl) coachEl.innerHTML = prompts.map(p => `<div class="coach-prompt ${p.type}">${p.text}</div>`).join('');
-
+    const prompts=[];
+    if(!todayWorkout) prompts.push({text:t('coach')==='COACH'?"You haven't trained today — get it done":"Você não treinou hoje — vamos lá",type:''});
+    if(protein<proteinTarget) prompts.push({text:`Need <strong>${Math.round(proteinTarget-protein)}g more protein</strong> today`,type:''});
+    if(cals<calTarget*0.5&&new Date().getHours()>14) prompts.push({text:`Only ${cals} calories logged — you need more fuel`,type:''});
+    if(steps<stepsTarget) prompts.push({text:`<strong>${stepsTarget-steps} steps</strong> remaining today`,type:''});
+    if(water<2) prompts.push({text:`Drink more water — only ${water.toFixed(1)}L logged`,type:''});
+    if(prompts.length===0) prompts.push({text:"You're absolutely smashing it today!",type:'success'});
+    const coachEl=document.getElementById('coach-prompts');
+    if(coachEl)coachEl.innerHTML=prompts.map(p=>`<div class="coach-prompt ${p.type}">${p.text}</div>`).join('');
     renderBadges();
 }
 
 // ===================== PROGRESS =====================
 function updateProgress() {
-    const s = settings;
-
-    if (s.phaseName) {
-        const setEl = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
-        setEl('prog-phase-name', s.phaseName);
-        setEl('prog-weight-to-go', Math.abs((s.weight||0)-(s.targetWeight||0)).toFixed(1) + 'kg');
-        if (s.endDate) {
-            const parts = s.endDate.split('/');
-            const end = new Date(parts[2], parts[1]-1, parts[0]);
-            const now = new Date();
-            const daysRemaining = Math.max(0, Math.ceil((end-now)/86400000));
-            setEl('prog-days-remaining', daysRemaining + ' days');
-            const startParts = (s.startDate||'').split('/');
-            const start = new Date(startParts[2], startParts[1]-1, startParts[0]);
-            const totalDays = Math.ceil((end-start)/86400000);
-            const elapsed = Math.ceil((now-start)/86400000);
-            const pct = Math.min(Math.round((elapsed/totalDays)*100),100);
-            const bar = document.getElementById('prog-bar');
-            if(bar) bar.style.width = pct + '%';
-            const pctEl = document.getElementById('prog-pct');
-            if(pctEl) pctEl.textContent = pct + '% complete';
-            if (daysRemaining === 0) {
-                const card = document.getElementById('phase-current-card');
-                if(card) card.style.borderColor = '#10B981';
-            }
+    const s=settings;
+    if(s.phaseName){
+        const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
+        setEl('prog-phase-name',s.phaseName);
+        setEl('prog-weight-to-go',Math.abs((s.weight||0)-(s.targetWeight||0)).toFixed(1)+'kg');
+        if(s.phaseStartDate){
+            const parts=s.phaseStartDate.split('/');
+            const start=new Date(parts[2],parts[1]-1,parts[0]);
+            const daysDiff=Math.max(0,Math.floor((Date.now()-start)/86400000));
+            setEl('prog-days-training',daysDiff+' days');
+            const totalDays=s.phaseDuration||56;
+            const pct=Math.min(Math.round((daysDiff/totalDays)*100),100);
+            const bar=document.getElementById('prog-bar');if(bar)bar.style.width=pct+'%';
+            const pctEl=document.getElementById('prog-pct');if(pctEl)pctEl.textContent=pct+'% complete';
         }
     }
 
-    if (phaseHistory.length > 0) {
-        const histCard = document.getElementById('phase-history-card');
-        if(histCard) histCard.style.display = 'block';
-        const histList = document.getElementById('phase-history-list');
-        if(histList) histList.innerHTML = phaseHistory.map(p => `<div class="phase-history-item"><div style="font-weight:700; color:var(--text);">${p.name}</div><div style="color:var(--text-muted); font-size:12px; margin-top:4px;">${p.startDate} → ${p.endDate}</div><div style="color:var(--primary); font-size:13px; font-weight:600; margin-top:4px;">${p.result}</div></div>`).join('');
+    if(phaseHistory.length>0){
+        const histCard=document.getElementById('phase-history-card');if(histCard)histCard.style.display='block';
+        const histList=document.getElementById('phase-history-list');
+        if(histList)histList.innerHTML=phaseHistory.map(p=>`<div class="phase-history-item"><div style="font-weight:700;color:var(--text);">${p.name}</div><div style="color:var(--text-muted);font-size:12px;margin-top:4px;">${p.startDate} → ended after ${p.days} days</div><div style="color:var(--primary);font-size:13px;font-weight:600;margin-top:4px;">${p.result}</div></div>`).join('');
     }
 
-    const setEl = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
-    setEl('workouts-count', workoutHistory.length);
-    setEl('cardio-count', cardioHistory.length);
+    const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
+    setEl('workouts-count',workoutHistory.length);
+    setEl('cardio-count',cardioHistory.length);
 
-    let daysHit = 0;
-    for (let i=0; i<30; i++) { const d=new Date(); d.setDate(d.getDate()-i); if(localStorage.getItem('nutrition-'+d.toLocaleDateString('en-GB'))||meals.some(m=>m.date===d.toLocaleDateString('en-GB')&&m.foods.length>0)) daysHit++; }
-    setEl('consistency-score', daysHit + '/30 days');
+    let daysHit=0;
+    for(let i=0;i<30;i++){const d=new Date();d.setDate(d.getDate()-i);if(localStorage.getItem('nutrition-'+d.toLocaleDateString('en-GB'))||meals.some(m=>m.date===d.toLocaleDateString('en-GB')&&m.foods.length>0))daysHit++;}
+    setEl('consistency-score',daysHit+'/30 days');
 
-    const pbs = Object.entries(personalBests);
-    const pbList = document.getElementById('pb-list');
-    if(pbList) pbList.innerHTML = pbs.length===0 ? '<p style="color:var(--text-muted);">Log workouts to track PBs.</p>' : pbs.map(([name,pb]) => `<div class="pb-item"><div><div class="pb-exercise">${name}</div><div style="color:var(--text-muted); font-size:11px;">${pb.date}</div></div><div class="pb-value">${pb.weight}kg × ${pb.reps}</div></div>`).join('');
+    const pbs=Object.entries(personalBests);
+    const pbList=document.getElementById('pb-list');
+    if(pbList)pbList.innerHTML=pbs.length===0?`<p style="color:var(--text-muted);">${t('noPBs')}</p>`:pbs.map(([name,pb])=>`<div class="pb-item"><div><div class="pb-exercise">${name}</div><div style="color:var(--text-muted);font-size:11px;">${pb.date}</div></div><div class="pb-value">${pb.weight}kg × ${pb.reps}</div></div>`).join('');
 
-    const chkHistory = document.getElementById('checkin-history');
-    if(chkHistory && checkinHistory.length>0) chkHistory.innerHTML = '<div style="margin-top:16px;">' + checkinHistory.map(c => `<div class="checkin-item"><div class="checkin-date">${c.date}</div><div class="checkin-detail">Weight: ${c.weight}kg • Energy: ${c.energy}/10</div><div class="checkin-detail">${c.notes}</div></div>`).join('') + '</div>';
+    const chkHistory=document.getElementById('checkin-history');
+    if(chkHistory&&checkinHistory.length>0)chkHistory.innerHTML='<div style="margin-top:16px;">'+checkinHistory.map(c=>`<div class="checkin-item"><div class="checkin-date">${c.date}</div><div class="checkin-detail">Weight: ${c.weight}kg • Energy: ${c.energy}/10</div><div class="checkin-detail">${c.notes}</div></div>`).join('')+'</div>';
+
+    // Load measurements
+    if(measurements.chest){
+        document.getElementById('meas-chest').value=measurements.chest||'';
+        document.getElementById('meas-waist').value=measurements.waist||'';
+        document.getElementById('meas-hips').value=measurements.hips||'';
+        document.getElementById('meas-arms').value=measurements.arms||'';
+        document.getElementById('meas-legs').value=measurements.legs||'';
+    }
 
     renderHistory();
 }
 
 function completePhase() {
-    if (!settings.phaseName) return;
-    const result = prompt('How did this phase go? (e.g. Lost 3kg, gained strength)') || 'Phase completed';
-    phaseHistory.unshift({ name: settings.phaseName, startDate: settings.startDate, endDate: settings.endDate, result });
-    const newName = prompt('Name your next phase:', 'Phase ' + (phaseHistory.length + 1)) || 'New Phase';
-    const newEnd = prompt('End date for new phase (DD/MM/YYYY):') || '';
-    settings.phaseName = newName;
-    settings.startDate = new Date().toLocaleDateString('en-GB');
-    settings.endDate = newEnd;
-    localStorage.setItem('settings', JSON.stringify(settings));
-    saveToStorage();
-    updateProgress();
-    updateHome();
+    if(!settings.phaseName) return;
+    const result=prompt('How did this phase go? (e.g. Lost 3kg, gained strength)')||'Phase completed';
+    const parts=(settings.phaseStartDate||'').split('/');
+    const start=new Date(parts[2],parts[1]-1,parts[0]);
+    const days=Math.floor((Date.now()-start)/86400000);
+    phaseHistory.unshift({name:settings.phaseName,startDate:settings.phaseStartDate,days,result});
+    const newName=prompt('Name your next phase:','Phase '+(phaseHistory.length+1))||'New Phase';
+    const dur=parseInt(prompt('Duration in days (e.g. 56 for 8 weeks):','56'))||56;
+    settings.phaseName=newName;
+    settings.phaseStartDate=new Date().toLocaleDateString('en-GB');
+    settings.phaseDuration=dur;
+    localStorage.setItem('settings',JSON.stringify(settings));
+    saveToStorage(); updateProgress(); updateHome();
 }
 
 function saveCheckin() {
-    const entry = { date: new Date().toLocaleDateString('en-GB'), weight: document.getElementById('checkin-weight').value, energy: document.getElementById('checkin-energy').value, notes: document.getElementById('checkin-notes').value };
-    if (entry.weight) { settings.weight = parseFloat(entry.weight); localStorage.setItem('settings', JSON.stringify(settings)); }
-    checkinHistory.unshift(entry);
-    saveToStorage();
-    document.getElementById('checkin-weight').value = '';
-    document.getElementById('checkin-energy').value = '';
-    document.getElementById('checkin-notes').value = '';
+    const entry={date:new Date().toLocaleDateString('en-GB'),weight:document.getElementById('checkin-weight').value,energy:document.getElementById('checkin-energy').value,notes:document.getElementById('checkin-notes').value};
+    if(entry.weight){settings.weight=parseFloat(entry.weight);localStorage.setItem('settings',JSON.stringify(settings));}
+    checkinHistory.unshift(entry); saveToStorage();
+    document.getElementById('checkin-weight').value='';
+    document.getElementById('checkin-energy').value='';
+    document.getElementById('checkin-notes').value='';
     updateProgress();
 }
 
 function saveMeasurements() {
-    measurements = { date: new Date().toLocaleDateString('en-GB'), chest: document.getElementById('meas-chest').value, waist: document.getElementById('meas-waist').value, hips: document.getElementById('meas-hips').value, arms: document.getElementById('meas-arms').value, legs: document.getElementById('meas-legs').value };
-    localStorage.setItem('measurements', JSON.stringify(measurements));
+    measurements={date:new Date().toLocaleDateString('en-GB'),chest:document.getElementById('meas-chest').value,waist:document.getElementById('meas-waist').value,hips:document.getElementById('meas-hips').value,arms:document.getElementById('meas-arms').value,legs:document.getElementById('meas-legs').value};
+    localStorage.setItem('measurements',JSON.stringify(measurements));
     alert('Measurements saved!');
 }
 
 function renderHistory() {
-    const list = document.getElementById('history-list');
-    if (!list) return;
-    const all = [...workoutHistory.map(w=>({...w,type:'workout'})),...cardioHistory.map(c=>({...c,type:'cardio'}))];
-    all.sort((a,b) => new Date(b.date.split('/').reverse().join('-'))-new Date(a.date.split('/').reverse().join('-')));
-    if (all.length===0) { list.innerHTML='<p style="color:var(--text-muted);">No sessions logged yet.</p>'; return; }
-    list.innerHTML = all.map(w => w.type==='workout'
-        ? `<div style="border-bottom:1px solid var(--border); padding:12px 0;"><div style="color:var(--primary); font-weight:700; font-size:13px;">${w.muscle} — ${w.date}${w.duration?' • '+w.duration+'min':''}</div>${w.exercises?w.exercises.map(e=>`<div style="color:var(--text-muted); font-size:12px; margin-top:2px;">${e.name} — ${e.sets.length} sets</div>`).join(''):''}</div>`
-        : `<div style="border-bottom:1px solid var(--border); padding:12px 0;"><div style="color:#10B981; font-weight:700; font-size:13px;">${w.type} — ${w.date}</div><div style="color:var(--text-muted); font-size:12px; margin-top:2px;">${w.duration}min • ${w.distance}km • ${w.intensity}</div></div>`
+    const list=document.getElementById('history-list');
+    if(!list) return;
+    const all=[...workoutHistory.map(w=>({...w,type:'workout'})),...cardioHistory.map(c=>({...c,type:'cardio'}))];
+    all.sort((a,b)=>new Date(b.date.split('/').reverse().join('-'))-new Date(a.date.split('/').reverse().join('-')));
+    if(all.length===0){list.innerHTML=`<p style="color:var(--text-muted);">${t('noSessions')}</p>`;return;}
+    list.innerHTML=all.map(w=>w.type==='workout'
+        ?`<div style="border-bottom:1px solid var(--border);padding:12px 0;"><div style="color:var(--primary);font-weight:700;font-size:13px;">${w.muscle} — ${w.date}${w.duration?' • '+w.duration+'min':''}</div>${w.exercises?w.exercises.map(e=>`<div style="color:var(--text-muted);font-size:12px;margin-top:2px;">${e.name} — ${e.sets.length} sets</div>`).join(''):''}</div>`
+        :`<div style="border-bottom:1px solid var(--border);padding:12px 0;"><div style="color:#10B981;font-weight:700;font-size:13px;">${w.type} — ${w.date}</div><div style="color:var(--text-muted);font-size:12px;margin-top:2px;">${w.duration}min • ${w.distance}km • ${w.intensity}</div></div>`
     ).join('');
 }
 
 // ===================== SETTINGS =====================
 function saveSettings() {
-    const age = parseInt(document.getElementById('set-age').value);
-    const weight = parseFloat(document.getElementById('set-weight').value);
-    const height = parseFloat(document.getElementById('set-height').value);
-    const gender = document.getElementById('set-gender').value;
-    const activity = parseFloat(document.getElementById('set-activity').value);
-    const goal = document.getElementById('set-goal').value;
-    let bmr = gender==='male' ? 10*weight+6.25*height-5*age+5 : 10*weight+6.25*height-5*age-161;
-    const tdee = Math.round(bmr*activity);
-    const calTarget = goal==='fatloss' ? tdee-500 : goal==='muscle' ? tdee+300 : tdee;
-    const proteinTarget = Math.round(weight*(goal==='muscle'?2.4:2.0));
-    settings = { ...settings,
-        name: document.getElementById('set-name').value,
-        age, weight, height, gender, activity, goal,
-        environment: document.getElementById('set-environment').value,
-        diet: document.getElementById('set-diet').value,
-        units: document.getElementById('set-units').value,
-        language: document.getElementById('set-language').value,
-        targetWeight: parseFloat(document.getElementById('set-target-weight').value),
-        phaseName: document.getElementById('set-phase-name').value || settings.phaseName,
-        startDate: document.getElementById('set-start-date').value || settings.startDate,
-        endDate: document.getElementById('set-end-date').value || settings.endDate,
-        trainingDays: parseInt(document.getElementById('set-training-days').value),
-        tdee, calTarget, proteinTarget, stepsTarget: 8000
+    const age=parseInt(document.getElementById('set-age').value);
+    const weight=parseFloat(document.getElementById('set-weight').value);
+    const height=parseFloat(document.getElementById('set-height').value);
+    const gender=document.getElementById('set-gender').value;
+    const activity=parseFloat(document.getElementById('set-activity').value);
+    const goal=document.getElementById('set-goal').value;
+    const phaseDuration=parseInt(document.getElementById('set-phase-duration').value)||56;
+    let bmr=gender==='male'?10*weight+6.25*height-5*age+5:10*weight+6.25*height-5*age-161;
+    const tdee=Math.round(bmr*activity);
+    const calTarget=goal==='fatloss'?tdee-500:goal==='muscle'?tdee+300:tdee;
+    const proteinTarget=Math.round(weight*(goal==='muscle'?2.4:2.0));
+    settings={...settings,
+        name:document.getElementById('set-name').value,age,weight,height,gender,activity,goal,
+        environment:document.getElementById('set-environment').value,
+        diet:document.getElementById('set-diet').value,
+        units:document.getElementById('set-units').value,
+        language:document.getElementById('set-language').value,
+        targetWeight:parseFloat(document.getElementById('set-target-weight').value),
+        phaseName:document.getElementById('set-phase-name').value||settings.phaseName,
+        phaseDuration,trainingDays:parseInt(document.getElementById('set-training-days').value),
+        tdee,calTarget,proteinTarget,stepsTarget:8000
     };
-    selectedLang = settings.language;
-    localStorage.setItem('settings', JSON.stringify(settings));
-    const tdeeEl = document.getElementById('tdee-result');
-    if(tdeeEl) tdeeEl.style.display='block';
-    const setEl = (id,val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
-    setEl('tdee-value', tdee+' kcal');
-    setEl('cal-target-value', calTarget+' kcal');
-    setEl('protein-target-value', proteinTarget+'g');
-    updateHome();
-    alert('Settings saved!');
+    selectedLang=settings.language;
+    localStorage.setItem('settings',JSON.stringify(settings));
+    const tdeeEl=document.getElementById('tdee-result');if(tdeeEl)tdeeEl.style.display='block';
+    const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
+    setEl('tdee-value',tdee+' kcal');setEl('cal-target-value',calTarget+' kcal');setEl('protein-target-value',proteinTarget+'g');
+    applyTranslations(); updateHome(); alert('Settings saved!');
 }
 
 function loadSettings() {
-    if (!settings.name) return;
-    const setVal = (id, val) => { const el=document.getElementById(id); if(el&&val!==undefined) el.value=val; };
-    setVal('set-name', settings.name);
-    setVal('set-age', settings.age);
-    setVal('set-gender', settings.gender);
-    setVal('set-height', settings.height);
-    setVal('set-weight', settings.weight);
-    setVal('set-target-weight', settings.targetWeight);
-    setVal('set-activity', settings.activity);
-    setVal('set-goal', settings.goal);
-    setVal('set-environment', settings.environment);
-    setVal('set-diet', settings.diet);
-    setVal('set-units', settings.units);
-    setVal('set-language', settings.language);
-    setVal('set-phase-name', settings.phaseName);
-    setVal('set-start-date', settings.startDate);
-    setVal('set-end-date', settings.endDate);
-    setVal('set-training-days', settings.trainingDays);
-    if (settings.tdee) {
-        const tdeeEl = document.getElementById('tdee-result');
-        if(tdeeEl) tdeeEl.style.display='block';
-        const setEl = (id,val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
-        setEl('tdee-value', settings.tdee+' kcal');
-        setEl('cal-target-value', settings.calTarget+' kcal');
-        setEl('protein-target-value', settings.proteinTarget+'g');
+    if(!settings.name&&!settings.calTarget) return;
+    const setVal=(id,val)=>{const el=document.getElementById(id);if(el&&val!==undefined)el.value=val;};
+    setVal('set-name',settings.name);setVal('set-age',settings.age);setVal('set-gender',settings.gender);
+    setVal('set-height',settings.height);setVal('set-weight',settings.weight);setVal('set-target-weight',settings.targetWeight);
+    setVal('set-activity',settings.activity);setVal('set-goal',settings.goal);setVal('set-environment',settings.environment);
+    setVal('set-diet',settings.diet);setVal('set-units',settings.units);setVal('set-language',settings.language);
+    setVal('set-phase-name',settings.phaseName);setVal('set-phase-duration',settings.phaseDuration||56);
+    setVal('set-training-days',settings.trainingDays);
+    if(settings.tdee){
+        const tdeeEl=document.getElementById('tdee-result');if(tdeeEl)tdeeEl.style.display='block';
+        const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
+        setEl('tdee-value',settings.tdee+' kcal');setEl('cal-target-value',settings.calTarget+' kcal');setEl('protein-target-value',settings.proteinTarget+'g');
     }
 }
 
 function calculatePlates() {
-    const target = parseFloat(document.getElementById('plates-weight').value);
-    const bar = parseFloat(document.getElementById('plates-bar').value);
-    const result = document.getElementById('plates-result');
-    if (!result) return;
-    if (!target||target<=bar) { result.style.display='block'; result.textContent='Weight must be greater than bar weight'; return; }
-    const remaining = (target-bar)/2;
-    const plates = [25,20,15,10,5,2.5,1.25];
-    let left = remaining;
-    const parts = [];
-    plates.forEach(p => { const count=Math.floor(left/p); if(count>0){parts.push(`${count}×${p}kg`);left=Math.round((left-count*p)*100)/100;} });
+    const target=parseFloat(document.getElementById('plates-weight').value);
+    const bar=parseFloat(document.getElementById('plates-bar').value);
+    const result=document.getElementById('plates-result');
+    if(!result) return;
+    if(!target||target<=bar){result.style.display='block';result.textContent='Weight must be greater than bar weight';return;}
+    const remaining=(target-bar)/2;
+    const plates=[25,20,15,10,5,2.5,1.25];
+    let left=remaining;const parts=[];
+    plates.forEach(p=>{const count=Math.floor(left/p);if(count>0){parts.push(`${count}×${p}kg`);left=Math.round((left-count*p)*100)/100;}});
     result.style.display='block';
-    result.textContent = parts.length>0 ? 'Each side: '+parts.join(' + ') : 'Bar only';
+    result.textContent=parts.length>0?'Each side: '+parts.join(' + '):'Bar only';
 }
 
 // ===================== BADGES =====================
-const badgeDefinitions = [
+const badgeDefinitions=[
     {id:'first_workout',name:'First Workout',icon:'🎉',check:()=>workoutHistory.length>=1},
     {id:'five_workouts',name:'5 Workouts',icon:'💪',check:()=>workoutHistory.length>=5},
     {id:'ten_workouts',name:'10 Workouts',icon:'🔥',check:()=>workoutHistory.length>=10},
@@ -1683,49 +1909,34 @@ const badgeDefinitions = [
     {id:'week_streak',name:'7 Day Streak',icon:'⚡',check:()=>{let s=0;for(let i=0;i<7;i++){const d=new Date();d.setDate(d.getDate()-i);if(localStorage.getItem('nutrition-'+d.toLocaleDateString('en-GB'))||workoutHistory.find(w=>w.date===d.toLocaleDateString('en-GB')))s++;}return s>=7;}}
 ];
 
-function checkBadges() {
-    const earned = JSON.parse(localStorage.getItem('badges')||'[]');
-    badgeDefinitions.forEach(b => { if(!earned.includes(b.id)&&b.check()) earned.push(b.id); });
-    localStorage.setItem('badges', JSON.stringify(earned));
-}
-
-function renderBadges() {
-    const earned = JSON.parse(localStorage.getItem('badges')||'[]');
-    const el = document.getElementById('badges-display');
-    if(el) el.innerHTML = badgeDefinitions.map(b => `<span class="badge ${earned.includes(b.id)?'earned':''}">${b.icon} ${b.name}</span>`).join('');
-}
+function checkBadges(){const earned=JSON.parse(localStorage.getItem('badges')||'[]');badgeDefinitions.forEach(b=>{if(!earned.includes(b.id)&&b.check())earned.push(b.id);});localStorage.setItem('badges',JSON.stringify(earned));}
+function renderBadges(){const earned=JSON.parse(localStorage.getItem('badges')||'[]');const el=document.getElementById('badges-display');if(el)el.innerHTML=badgeDefinitions.map(b=>`<span class="badge ${earned.includes(b.id)?'earned':''}">${b.icon} ${b.name}</span>`).join('');}
 
 // ===================== STORAGE =====================
 function saveToStorage() {
-    localStorage.setItem('workoutHistory', JSON.stringify(workoutHistory));
-    localStorage.setItem('cardioHistory', JSON.stringify(cardioHistory));
-    localStorage.setItem('checkinHistory', JSON.stringify(checkinHistory));
-    localStorage.setItem('personalBests', JSON.stringify(personalBests));
-    localStorage.setItem('savedRoutines', JSON.stringify(savedRoutines));
-    localStorage.setItem('customExercises', JSON.stringify(customExercises));
-    localStorage.setItem('meals', JSON.stringify(meals));
-    localStorage.setItem('phaseHistory', JSON.stringify(phaseHistory));
+    localStorage.setItem('workoutHistory',JSON.stringify(workoutHistory));
+    localStorage.setItem('cardioHistory',JSON.stringify(cardioHistory));
+    localStorage.setItem('checkinHistory',JSON.stringify(checkinHistory));
+    localStorage.setItem('personalBests',JSON.stringify(personalBests));
+    localStorage.setItem('savedRoutines',JSON.stringify(savedRoutines));
+    localStorage.setItem('customExercises',JSON.stringify(customExercises));
+    localStorage.setItem('meals',JSON.stringify(meals));
+    localStorage.setItem('phaseHistory',JSON.stringify(phaseHistory));
 }
 
 function loadFromStorage() {
-    const theme = localStorage.getItem('theme');
-    if (theme==='dark') { document.body.classList.add('dark'); const t=document.getElementById('dark-toggle'); if(t) t.classList.add('on'); }
-    const load = (key, def) => { const s=localStorage.getItem(key); return s?JSON.parse(s):def; };
-    workoutHistory = load('workoutHistory', []);
-    cardioHistory = load('cardioHistory', []);
-    checkinHistory = load('checkinHistory', []);
-    personalBests = load('personalBests', {});
-    savedRoutines = load('savedRoutines', []);
-    customExercises = load('customExercises', {});
-    meals = load('meals', []);
-    phaseHistory = load('phaseHistory', []);
-    measurements = load('measurements', {});
-    const s = localStorage.getItem('settings');
-    if (s) { settings = JSON.parse(s); selectedLang = settings.language || 'en'; }
-    const onboarded = localStorage.getItem('onboarded');
-    if (onboarded) document.getElementById('onboarding').style.display = 'none';
-    checkBadges();
-    updateHome();
+    const theme=localStorage.getItem('theme');
+    if(theme==='dark'){document.body.classList.add('dark');const t=document.getElementById('dark-toggle');if(t)t.classList.add('on');}
+    const load=(key,def)=>{const s=localStorage.getItem(key);return s?JSON.parse(s):def;};
+    workoutHistory=load('workoutHistory',[]);cardioHistory=load('cardioHistory',[]);
+    checkinHistory=load('checkinHistory',[]);personalBests=load('personalBests',{});
+    savedRoutines=load('savedRoutines',[]);customExercises=load('customExercises',{});
+    meals=load('meals',[]);phaseHistory=load('phaseHistory',[]);measurements=load('measurements',{});
+    const s=localStorage.getItem('settings');
+    if(s){settings=JSON.parse(s);selectedLang=settings.language||'en';}
+    const onboarded=localStorage.getItem('onboarded');
+    if(onboarded) document.getElementById('onboarding').style.display='none';
+    applyTranslations(); checkBadges(); updateHome();
 }
 
 loadFromStorage();
