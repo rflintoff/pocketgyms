@@ -197,9 +197,10 @@
         <h2 id="txt-badges">BADGES</h2>
         <div id="badges-display"></div>
     </div>
-
-    <button class="btn" onclick="showScreen('screen-train')" id="txt-log-workout">LOG A WORKOUT</button>
-</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <button class="btn" onclick="showScreen('screen-train')" id="txt-log-workout">LOG A WORKOUT</button>
+        <button class="btn-outline" onclick="logRestDay()" id="txt-rest-day">😴 Rest Day</button>
+    </div>
 
 <!-- TRAIN SCREEN -->
 <div class="screen" id="screen-train">
@@ -282,10 +283,14 @@
             <label id="lbl-select-category">Select Category</label>
             <div class="filter-bar" id="create-category-filter"></div>
             <div id="create-exercise-tags"></div>
+            <button class="btn-outline" onclick="addToRoutineSelection()" style="margin-bottom:12px;">+ Add Selected to Routine</button>
             <label id="lbl-custom-ex" style="margin-top:8px;">Add Custom Exercise</label>
             <input type="text" id="create-custom-ex" placeholder="Type exercise name...">
-            <button class="btn" onclick="saveRoutine()" id="txt-save-routine">Save Routine</button>
+            <button class="btn-small" onclick="addCustomToSelection()" style="margin-bottom:12px;">+ Add Custom</button>
+            <div id="routine-selection-list" style="margin-bottom:12px;"></div>
+            <button class="btn" onclick="saveRoutine()" id="txt-save-routine">Save Routine</button>       
         </div>
+
     </div>
 
     <div id="train-cardio" style="display:none;">
@@ -305,9 +310,9 @@
 
     <div id="train-active" style="display:none;">
         <button class="btn-outline" onclick="showTrainSection('menu')" id="txt-back-5">← Back</button>
-        <div class="workout-timer-bar" id="workout-timer-bar" style="display:none;">
-            <span class="workout-timer-label" id="txt-workout-time">WORKOUT TIME</span>
-            <span class="workout-timer-value" id="workout-timer">00:00</span>
+        <div class="workout-timer-bar" id="workout-timer-bar" style="display:none; background:var(--primary); border-radius:12px; padding:16px;">
+            <span class="workout-timer-label" style="color:rgba(255,255,255,0.8); font-size:12px;" id="txt-workout-time">WORKOUT TIME</span>
+            <span class="workout-timer-value" style="color:#fff; font-size:28px; font-weight:800;" id="workout-timer">00:00</span>
         </div>
         <div class="rest-timer" id="rest-timer">
             <div style="color:var(--text-muted); font-size:11px; font-weight:700; margin-bottom:4px;" id="txt-rest-timer">REST TIMER</div>
@@ -322,17 +327,25 @@
             <button class="btn" onclick="addExercise()" id="txt-add-ex-btn">+ Add Exercise</button>
         </div>
         <div id="exercise-log"></div>
-        <button class="btn" onclick="saveWorkout()" style="display:none;" id="save-btn">Save Workout</button>
+        <div class="card" id="steps-card-train">
+            <h2>STEPS TODAY</h2>
+            <input type="number" id="input-steps-train" placeholder="e.g. 8000">
+            <button class="btn-outline" onclick="saveStepsTrain()">Save Steps</button>
+        </div>
+        <button class="btn" onclick="saveWorkout()" style="display:none;" id="save-btn">Save Workout</button>  
     </div>
+
 
     <div id="train-cardio-active" style="display:none;">
         <button class="btn-outline" onclick="showTrainSection('menu')" id="txt-back-6">← Back</button>
         <div class="card">
             <h2 id="cardio-type-title">CARDIO LOG</h2>
-            <div class="workout-timer-bar">
-                <span class="workout-timer-label" id="txt-session-time">SESSION TIME</span>
-                <span class="workout-timer-value" id="cardio-timer">00:00</span>
-            </div>
+<button class="btn" id="cardio-start-btn" onclick="startCardioTimer()">▶ Start Session</button>
+<div class="workout-timer-bar" id="cardio-timer-bar" style="display:none;">
+    <span class="workout-timer-label" id="txt-session-time">SESSION TIME</span>
+    <span class="workout-timer-value" id="cardio-timer">00:00</span>
+    <button class="btn-small" onclick="stopCardioTimer()">Stop</button>
+</div>
             <label id="lbl-duration">Duration (minutes)</label>
             <input type="number" id="cardio-duration" placeholder="e.g. 30">
             <label id="lbl-distance">Distance (km)</label>

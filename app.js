@@ -892,15 +892,60 @@ function renderRoutinesList() {
     if(!list)return;
     if(savedRoutines.length===0){list.innerHTML='';if(msg)msg.style.display='block';return;}
     if(msg)msg.style.display='none';
-    list.innerHTML=savedRoutines.map((r,i)=>`<div class="routine-item" onclick="startRoutine(${i})"><div><div class="routine-name">${r.name}</div><div class="routine-meta">${r.exercises.length} exercises • ${r.created}</div></div><div style="display:flex;align-items:center;gap:8px;"><button class="btn-danger" onclick="event.stopPropagation();deleteRoutine(${i})">${t('delete')}</button><div class="routine-arrow">›</div></div></div>`).join('');
+    list.innerHTML=savedRoutines.map((r,i)=>`
+        <div class="routine-item" onclick="startRoutine(${i})">
+            <div>
+                <div class="routine-name">${r.name}</div>
+                <div class="routine-meta">${r.exercises.length} exercises • ${r.created}${r.duration?' • '+r.duration+' mins':''}</div>
+                ${r.programme?`<div style="color:var(--gold);font-size:11px;font-weight:700;margin-top:2px;">⭐ ${r.programme}</div>`:''}
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+                <button class="btn-danger" onclick="event.stopPropagation();deleteRoutine(${i})">${t('delete')}</button>
+                <div class="routine-arrow">›</div>
+            </div>
+        </div>`
+    ).join('');
 }
 
-function startRoutine(index) {
-    const routine=savedRoutines[index];selectedMuscle=routine.name;firstSetLogged=false;
-    exercises=routine.exercises.map(name=>({name,sets:[{reps:'',weight:''}]}));
-    showTrainSection('active');buildActiveExercisePicker();
-    const timerBar=document.getElementById('workout-timer-bar');if(timerBar)timerBar.style.display='none';
-    document.getElementById('save-btn').style.display='block';renderExercises();
+let routineSelection = [];
+
+function addToRoutineSelection() {
+    const selected=[...document.querySelectorAll('#create-exercise-tags .tag.selected')].map(t=>t.textContent);
+    if(selected.length===0){alert('Select at least one exercise first');return;}
+    selected.forEach(ex=>{if(!routineSelection.find(r=>r===ex))routineSelection.push(ex);});
+    document.querySelectorAll('#create-exercise-tags .tag').forEach(t=>t.classList.remove('selected'));
+    renderRoutineSelectionList();
+}
+
+function addCustomToSelection() {
+    const custom=document.getElementById('create-custom-ex').value.trim();
+    if(!custom)return;
+    if(!routineSelection.includes(custom))routineSelection.push(custom);
+    const activeCat=document.querySelector('#create-category-filter .filter-btn.active');
+    if(activeCat){const cat=activeCat.textContent;if(!customExercises[cat])customExercises[cat]=[];if(!customExercises[cat].includes(custom))customExercises[cat].push(custom);}
+    document.getElementById('create-custom-ex').value='';
+    renderRoutineSelectionList();
+}
+
+function renderRoutineSelectionList() {
+    const list=document.getElementById('routine-selection-list');if(!list)return;
+    if(routineSelection.length===0){list.innerHTML='';return;}
+    list.innerHTML=`<div style="background:var(--primary-light);border-radius:10px;padding:10px;"><div style="color:var(--primary);font-size:11px;font-weight:700;margin-bottom:6px;">SELECTED (${routineSelection.length})</div>${routineSelection.map((ex,i)=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);"><span style="color:var(--text);font-size:13px;">${ex}</span><span onclick="removeFromSelection(${i})" style="color:var(--danger);cursor:pointer;font-size:16px;">✕</span></div>`).join('')}</div>`;
+}
+
+function removeFromSelection(index){routineSelection.splice(index,1);renderRoutineSelectionList();}
+
+function saveRoutine() {
+    const name=document.getElementById('routine-name').value.trim();
+    if(!name){alert('Please name your routine');return;}
+    if(routineSelection.length===0){alert('Please select at least one exercise');return;}
+    savedRoutines.push({name,exercises:routineSelection,created:new Date().toLocaleDateString('en-GB')});
+    routineSelection=[];
+    saveToStorage();
+    document.getElementById('routine-name').value='';
+    document.getElementById('create-custom-ex').value='';
+    renderRoutineSelectionList();
+    showTrainSection('routines');renderRoutinesList();
 }
 
 function deleteRoutine(index){if(confirm('Delete this routine?')){savedRoutines.splice(index,1);saveToStorage();renderRoutinesList();}}
@@ -979,22 +1024,58 @@ function saveWorkout() {
     const date=new Date().toLocaleDateString('en-GB');
     const duration=workoutStartTime?Math.floor((Date.now()-workoutStartTime)/60000):0;
     clearInterval(workoutTimerInterval);
-    exercises.forEach(ex=>{ex.sets.forEach(set=>{const w=parseFloat(set.weight)||0;const r=parseInt(set.reps)||0;if(w>0&&r>0&&(!personalBests[ex.name]||w>personalBests[ex.name].weight))personalBests[ex.name]={weight:w,reps:r,date};});});
-    workoutHistory.unshift({muscle:selectedMuscle,exercises:JSON.parse(JSON.stringify(exercises)),date,duration});
+    exercises.forEach(ex=>{
+        ex.sets.forEach(set=>{
+            const w=parseFloat(set.weight)||0;const r=parseInt(set.reps)||0;
+            if(w>0&&r>0&&(!personalBests[ex.name]||w>personalBests[ex.name].weight))
+                personalBests[ex.name]={weight:w,reps:r,date};
+        });
+    });
+    workoutHistory.unshift({
+        muscle:selectedMuscle,
+        exercises:JSON.parse(JSON.stringify(exercises)),
+        date,
+        duration,
+        durationDisplay:duration>0?duration+'min':'—'
+    });
     exercises=[];selectedMuscle='';firstSetLogged=false;
     document.getElementById('exercise-log').innerHTML='';
     document.getElementById('save-btn').style.display='none';
     const timerBar=document.getElementById('workout-timer-bar');if(timerBar)timerBar.style.display='none';
-    saveToStorage();checkBadges();showScreen('screen-progress');
+    saveToStorage();checkBadges();showScreen('screen-progress');}function saveWorkout() {
 }
 
 function startCardio(type) {
     currentCardioType=type;
     document.getElementById('cardio-type-title').textContent=type.toUpperCase();
     showTrainSection('cardio-active');
+    const startBtn=document.getElementById('cardio-start-btn');
+    const timerBar=document.getElementById('cardio-timer-bar');
+    if(startBtn)startBtn.style.display='block';
+    if(timerBar)timerBar.style.display='none';
+}
+
+function startCardioTimer() {
+    const startBtn=document.getElementById('cardio-start-btn');
+    const timerBar=document.getElementById('cardio-timer-bar');
+    if(startBtn)startBtn.style.display='none';
+    if(timerBar)timerBar.style.display='flex';
     let cardioSecs=0;
     if(cardioTimerInterval)clearInterval(cardioTimerInterval);
-    cardioTimerInterval=setInterval(()=>{cardioSecs++;const mins=Math.floor(cardioSecs/60).toString().padStart(2,'0');const secs=(cardioSecs%60).toString().padStart(2,'0');const el=document.getElementById('cardio-timer');if(el)el.textContent=mins+':'+secs;},1000);
+    cardioTimerInterval=setInterval(()=>{
+        cardioSecs++;
+        const mins=Math.floor(cardioSecs/60).toString().padStart(2,'0');
+        const secs=(cardioSecs%60).toString().padStart(2,'0');
+        const el=document.getElementById('cardio-timer');if(el)el.textContent=mins+':'+secs;
+    },1000);
+}
+
+function stopCardioTimer() {
+    clearInterval(cardioTimerInterval);
+    const timerBar=document.getElementById('cardio-timer-bar');
+    if(timerBar)timerBar.style.display='none';
+    const startBtn=document.getElementById('cardio-start-btn');
+    if(startBtn)startBtn.style.display='block';
 }
 
 function saveCardio() {
@@ -1182,9 +1263,27 @@ function updateHome() {
         for(let i=0;i<7;i++){
             const d=document.createElement('div');d.className='streak-day';
             const dayDate=new Date(now);dayDate.setDate(now.getDate()-((dow+6-i)%7));
-            const dateStr=dayDate.toLocaleDateString('en-GB');
-            const active=localStorage.getItem('nutrition-'+dateStr)||workoutHistory.find(w=>w.date===dateStr)||meals.some(m=>m.date===dateStr&&m.foods.length>0);
-            if(active){d.classList.add('done');streakCount++;}
+            const nutritionData=localStorage.getItem('nutrition-'+dateStr);
+            const nd=nutritionData?JSON.parse(nutritionData):{};
+            const calTarget=settings.calTarget||2000;
+            const proteinTarget=settings.proteinTarget||150;
+            const stepsTarget=settings.stepsTarget||8000;
+            const todayMealsForDate=meals.filter(m=>m.date===dateStr);
+            let dayCals=0,dayProtein=0;
+            todayMealsForDate.forEach(meal=>meal.foods.forEach(f=>{dayCals+=f.cal;dayProtein+=f.protein;}));
+            const daySteps=parseInt(nd.steps)||0;
+            const dayWater=parseFloat(nd.water)||0;
+            const hasWorkout=workoutHistory.find(w=>w.date===dateStr)||cardioHistory.find(w=>w.date===dateStr);
+            const isRestDay=nd.restDay||false;
+            let score=0;
+            if(hasWorkout||isRestDay) score++;
+            if(dayCals>=calTarget*0.9) score++;
+            if(dayProtein>=proteinTarget*0.9) score++;
+            if(daySteps>=stepsTarget) score++;
+            if(dayWater>=2) score++;
+            const accomplished=score>=3;
+            if(accomplished){d.classList.add('done');streakCount++;}
+            if(isRestDay&&!accomplished) d.style.opacity='0.5';
             if(i===(dow===0?6:dow-1))d.classList.add('today');
             d.textContent=days[i];streakBar.appendChild(d);
         }
@@ -1275,8 +1374,14 @@ function renderHistory() {
     all.sort((a,b)=>new Date(b.date.split('/').reverse().join('-'))-new Date(a.date.split('/').reverse().join('-')));
     if(all.length===0){list.innerHTML=`<p style="color:var(--text-muted);">${t('noSessions')}</p>`;return;}
     list.innerHTML=all.map(w=>w.type==='workout'
-        ?`<div style="border-bottom:1px solid var(--border);padding:12px 0;"><div style="color:var(--primary);font-weight:700;font-size:13px;">${w.muscle} — ${w.date}${w.duration?' • '+w.duration+'min':''}</div>${w.exercises?w.exercises.map(e=>`<div style="color:var(--text-muted);font-size:12px;margin-top:2px;">${e.name} — ${e.sets.length} sets</div>`).join(''):''}</div>`
-        :`<div style="border-bottom:1px solid var(--border);padding:12px 0;"><div style="color:#10B981;font-weight:700;font-size:13px;">${w.type} — ${w.date}</div><div style="color:var(--text-muted);font-size:12px;margin-top:2px;">${w.duration}min • ${w.distance}km • ${w.intensity}</div></div>`
+        ?`<div style="border-bottom:1px solid var(--border);padding:12px 0;">
+            <div style="color:var(--primary);font-weight:700;font-size:13px;">${w.muscle} — ${w.date} ${w.duration&&w.duration>0?'• '+w.duration+' mins':''}</div>
+            ${w.exercises?w.exercises.map(e=>`<div style="color:var(--text-muted);font-size:12px;margin-top:2px;">${e.name} — ${e.sets.length} sets</div>`).join(''):''}
+          </div>`
+        :`<div style="border-bottom:1px solid var(--border);padding:12px 0;">
+            <div style="color:#10B981;font-weight:700;font-size:13px;">${w.type} — ${w.date} ${w.duration?'• '+w.duration+' mins':''}</div>
+            <div style="color:var(--text-muted);font-size:12px;margin-top:2px;">${w.distance?w.distance+'km • ':''}${w.intensity||''}</div>
+          </div>`
     ).join('');
 }
 
@@ -1589,4 +1694,25 @@ function unlockProgramme() {
     alert('🎉 ' + programme.name + ' unlocked! Check My Routines.');
     renderRoutinesList();
 }
+function logRestDay() {
+    const today=new Date().toLocaleDateString('en-GB');
+    const saved=localStorage.getItem('nutrition-'+today);
+    let data=saved?JSON.parse(saved):{steps:0,water:0};
+    data.restDay=true;
+    localStorage.setItem('nutrition-'+today,JSON.stringify(data));
+    alert('Rest day logged 😴 Focus on hitting your nutrition and steps today.');
+    updateHome();
+}
+
+function saveStepsTrain() {
+    const today=new Date().toLocaleDateString('en-GB');
+    const saved=localStorage.getItem('nutrition-'+today);
+    let data=saved?JSON.parse(saved):{steps:0,water:0};
+    const steps=document.getElementById('input-steps-train').value;
+    if(steps)data.steps=parseInt(steps);
+    localStorage.setItem('nutrition-'+today,JSON.stringify(data));
+    updateHome();
+    alert('Steps saved!');
+}
+
 loadFromStorage();
