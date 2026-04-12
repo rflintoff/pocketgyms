@@ -442,14 +442,15 @@
     </div>
     <input type="text" id="food-search" placeholder="Search..." oninput="filterFoods()" style="margin-bottom:12px;">
     <div id="food-list"></div>
-    <div id="food-portion" style="display:none; background:var(--card); border-radius:14px; padding:16px; margin-top:12px; border:1px solid var(--border);">
-        <div style="font-weight:700; color:var(--text); margin-bottom:8px; font-size:15px;" id="food-portion-label"></div>
+    <div id="food-portion" style="display:none; position:fixed; bottom:0; left:0; right:0; background:var(--card); border-radius:20px 20px 0 0; padding:20px; border-top:2px solid var(--border); z-index:9999; box-shadow:0 -4px 20px rgba(0,0,0,0.15);">
+        <div style="width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px;"></div>
+        <div style="font-weight:700; color:var(--text); margin-bottom:12px; font-size:16px;" id="food-portion-label"></div>
         <label id="lbl-portion">Portion (g or ml)</label>
-        <input type="number" id="food-portion-amount" placeholder="e.g. 150" value="100" oninput="updatePortionPreview()">
+        <input type="number" id="food-portion-amount" placeholder="e.g. 150" value="100" oninput="updatePortionPreview()" inputmode="numeric">
         <div id="food-portion-preview" style="color:var(--text-muted); font-size:13px; margin-bottom:12px; background:var(--primary-light); padding:8px; border-radius:8px;"></div>
         <button class="btn" onclick="addFoodEntry()" id="txt-add-to-meal">Add to Meal</button>
+        <button class="btn-outline" onclick="document.getElementById('food-portion').style.display='none'">Cancel</button>
     </div>
-</div>
 
 <!-- UPGRADE MODAL -->
 <div id="upgrade-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:var(--bg); z-index:9998; padding:20px; overflow-y:auto;">
@@ -546,7 +547,11 @@
         </div>
         <button class="btn" onclick="saveMeasurements()" id="txt-save-measurements">Save Measurements</button>
     </div>
-
+    <div class="card">
+        <h2>WEIGHT TREND</h2>
+        <canvas id="weight-chart" width="320" height="180" style="width:100%;height:180px;"></canvas>
+        <p style="color:var(--text-muted);font-size:12px;margin-top:8px;">Based on your weekly check-ins</p>
+    </div>
     <div class="card">
         <h2 id="txt-weekly-checkin">WEEKLY CHECK-IN</h2>
         <label id="lbl-checkin-weight">Weight this week (kg)</label>

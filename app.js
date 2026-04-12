@@ -888,7 +888,8 @@ function saveRoutine() {
 }
 
 function renderRoutinesList() {
-    const list=document.getElementById('routines-list');const msg=document.getElementById('no-routines-msg');
+    const list=document.getElementById('routines-list');
+    const msg=document.getElementById('no-routines-msg');
     if(!list)return;
     if(savedRoutines.length===0){
         list.innerHTML=`<div style="text-align:center;padding:32px 16px;">
@@ -902,15 +903,15 @@ function renderRoutinesList() {
     }
     if(msg)msg.style.display='none';
     list.innerHTML=savedRoutines.map((r,i)=>`
-        <div class="routine-item">
-            <div onclick="startRoutine(${i})" style="flex:1;cursor:pointer;">
-                <div class="routine-name">${r.name}</div>
-                <div class="routine-meta">${r.exercises.length} exercises • ${r.created}${r.duration?' • '+r.duration+' mins':''}</div>
+        <div style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:16px;margin-bottom:10px;">
+            <div onclick="startRoutine(${i})" style="cursor:pointer;margin-bottom:10px;">
+                <div style="color:var(--text);font-size:15px;font-weight:700;">${r.name}</div>
+                <div style="color:var(--text-muted);font-size:12px;margin-top:4px;">${r.exercises.length} exercises • ${r.created}${r.duration?' • '+r.duration+' mins':''}</div>
                 ${r.programme?`<div style="color:var(--gold);font-size:11px;font-weight:700;margin-top:2px;">⭐ ${r.programme}</div>`:''}
             </div>
-            <div style="display:flex;align-items:center;gap:8px;">
-                <button class="btn-danger" onclick="event.stopPropagation();deleteRoutine(${i})">${t('delete')}</button>
-                <div class="routine-arrow" onclick="startRoutine(${i})" style="cursor:pointer;">›</div>
+            <div style="display:flex;gap:8px;">
+                <button class="btn" onclick="startRoutine(${i})" style="flex:1;margin-bottom:0;padding:10px;">▶ Start</button>
+                <button class="btn-danger" onclick="deleteRoutine(${i})" style="padding:10px 14px;">Delete</button>
             </div>
         </div>`
     ).join('');
@@ -1137,7 +1138,7 @@ function renderMeals() {
         const totalFat=meal.foods.reduce((s,f)=>s+f.fat,0).toFixed(1);
         return `<div class="meal-block"><div class="meal-header"><div><div class="meal-name">${meal.name}</div><div class="meal-totals">${totalCal} kcal • P:${totalProt}g • C:${totalCarbs}g • F:${totalFat}g</div></div><div style="display:flex;gap:6px;">
     <button class="btn-small" onclick="openFoodModal(${mealIndex})">+ Add Food</button>
-    <button class="btn-small" onclick="currentMealIndex=${mealIndex};saveMealTemplate()" style="background:#FEF3C7;color:#92400E;">💾 Save</button>
+    <button class="btn-small" onclick="currentMealIndex=${mealIndex};saveMealTemplate()" style="background:#FEF3C7;color:#92400E;">📋 Save as Template</button>
 </div></div>${meal.foods.map((f,fi)=>`<div class="food-entry"><div class="food-entry-info"><div class="food-entry-name">${f.name} (${f.portion}${f.isLiquid?'ml':'g'})</div><div class="food-entry-macros">P: ${f.protein}g • C: ${f.carbs}g • F: ${f.fat}g</div></div><div class="food-entry-cals">${f.cal} kcal</div><div class="food-entry-delete" onclick="deleteFoodFromMeal(${mealIndex},${fi})">✕</div></div>`).join('')}</div>`;
     }).join('');
 }
@@ -1377,7 +1378,14 @@ streakBar.appendChild(d);
         const scEl=document.getElementById('streak-count');if(scEl)scEl.textContent=streakCount+'/7';
     }
     const prompts=[];
-    if(!todayWorkout)prompts.push({text:t('coachNoTrain'),type:''});
+    const hourNow=new Date().getHours();
+    if(!todayWorkout&&!nd.restDay)prompts.push({text:t('coachNoTrain'),type:''});
+    if(nd.restDay)prompts.push({text:'😴 Rest day logged — focus on nutrition and steps today',type:''});
+    if(protein<proteinTarget)prompts.push({text:t('coachProtein').replace('{x}',Math.round(proteinTarget-protein)),type:''});
+    if(cals<calTarget*0.5&&hourNow>14)prompts.push({text:t('coachCalories').replace('{x}',cals),type:''});
+    if(steps<stepsTarget)prompts.push({text:t('coachSteps').replace('{x}',stepsTarget-steps),type:''});
+    if(water<2)prompts.push({text:t('coachWater').replace('{x}',water.toFixed(1)),type:''});
+    if(prompts.length===0)prompts.push({text:t('coachPerfect'),type:'success'});
     if(protein<proteinTarget)prompts.push({text:t('coachProtein').replace('{x}',Math.round(proteinTarget-protein)),type:''});
     if(cals<calTarget*0.5&&new Date().getHours()>14)prompts.push({text:t('coachCalories').replace('{x}',cals),type:''});
     if(steps<stepsTarget)prompts.push({text:t('coachSteps').replace('{x}',stepsTarget-steps),type:''});
@@ -1425,6 +1433,7 @@ function updateProgress() {
         setVal('meas-hips',measurements.hips);setVal('meas-arms',measurements.arms);setVal('meas-legs',measurements.legs);
     }
     renderHistory();
+    renderWeightChart();
 }
 
 function completePhase() {
@@ -1839,7 +1848,8 @@ function logRestDay() {
 function saveStepsTrain() {
     const today=new Date().toLocaleDateString('en-GB');
     const saved=localStorage.getItem('nutrition-'+today);
-    let data=saved?JSON.parse(saved):{steps:0,water:0};
+    const nd=saved?JSON.parse(saved):{steps:0,water:0,restDay:false};
+    steps=parseInt(nd.steps)||0;water=parseFloat(nd.water)||0;
     const steps=document.getElementById('input-steps-train').value;
     if(steps)data.steps=parseInt(steps);
     localStorage.setItem('nutrition-'+today,JSON.stringify(data));
@@ -1910,5 +1920,49 @@ function loadMealTemplate() {
         closeMealTemplateModal();
     }
 }
-
+function renderWeightChart() {
+    const canvas=document.getElementById('weight-chart');if(!canvas)return;
+    const ctx=canvas.getContext('2d');
+    const data=checkinHistory.slice(0,8).reverse();
+    if(data.length<2){
+        ctx.fillStyle='var(--text-muted)';
+        ctx.font='13px sans-serif';
+        ctx.textAlign='center';
+        ctx.fillText('Log 2+ check-ins to see your trend',canvas.width/2,canvas.height/2);
+        return;
+    }
+    const weights=data.map(d=>parseFloat(d.weight)||0);
+    const min=Math.min(...weights)-2;
+    const max=Math.max(...weights)+2;
+    const w=canvas.width;const h=canvas.height;
+    const pad=30;
+    ctx.clearRect(0,0,w,h);
+    // Grid lines
+    ctx.strokeStyle='#E2E8F0';ctx.lineWidth=1;
+    for(let i=0;i<=4;i++){
+        const y=pad+(h-pad*2)*(i/4);
+        ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(w-pad,y);ctx.stroke();
+    }
+    // Line
+    ctx.strokeStyle='#2563EB';ctx.lineWidth=2.5;ctx.beginPath();
+    data.forEach((d,i)=>{
+        const x=pad+(w-pad*2)*(i/(data.length-1));
+        const y=pad+(h-pad*2)*(1-(parseFloat(d.weight)-min)/(max-min));
+        i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+    // Dots
+    ctx.fillStyle='#2563EB';
+    data.forEach((d,i)=>{
+        const x=pad+(w-pad*2)*(i/(data.length-1));
+        const y=pad+(h-pad*2)*(1-(parseFloat(d.weight)-min)/(max-min));
+        ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();
+    });
+    // Labels
+    ctx.fillStyle='#64748B';ctx.font='11px sans-serif';ctx.textAlign='center';
+    data.forEach((d,i)=>{
+        const x=pad+(w-pad*2)*(i/(data.length-1));
+        ctx.fillText(d.weight+'kg',x,h-8);
+    });
+}
 loadFromStorage();
