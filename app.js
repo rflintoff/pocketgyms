@@ -902,15 +902,15 @@ function renderRoutinesList() {
     }
     if(msg)msg.style.display='none';
     list.innerHTML=savedRoutines.map((r,i)=>`
-        <div class="routine-item" onclick="startRoutine(${i})">
-            <div>
+        <div class="routine-item">
+            <div onclick="startRoutine(${i})" style="flex:1;cursor:pointer;">
                 <div class="routine-name">${r.name}</div>
                 <div class="routine-meta">${r.exercises.length} exercises • ${r.created}${r.duration?' • '+r.duration+' mins':''}</div>
                 ${r.programme?`<div style="color:var(--gold);font-size:11px;font-weight:700;margin-top:2px;">⭐ ${r.programme}</div>`:''}
             </div>
             <div style="display:flex;align-items:center;gap:8px;">
                 <button class="btn-danger" onclick="event.stopPropagation();deleteRoutine(${i})">${t('delete')}</button>
-                <div class="routine-arrow">›</div>
+                <div class="routine-arrow" onclick="startRoutine(${i})" style="cursor:pointer;">›</div>
             </div>
         </div>`
     ).join('');
