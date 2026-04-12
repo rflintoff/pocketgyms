@@ -957,7 +957,30 @@ function saveRoutine() {
     renderRoutineSelectionList();
     showTrainSection('routines');renderRoutinesList();
 }
-
+function startRoutine(index) {
+    const routine=savedRoutines[index];
+    selectedMuscle=routine.name;
+    firstSetLogged=false;
+    if(routine.programmeData){
+        exercises=routine.programmeData.map(ex=>({
+            name:ex.name,
+            sets:[{reps:'',weight:''}],
+            targetReps:ex.reps,
+            targetSets:ex.sets
+        }));
+    } else {
+        exercises=routine.exercises.map(name=>({
+            name:typeof name==='string'?name:name.name,
+            sets:[{reps:'',weight:''}]
+        }));
+    }
+    showTrainSection('active');
+    buildActiveExercisePicker();
+    const timerBar=document.getElementById('workout-timer-bar');
+    if(timerBar)timerBar.style.display='none';
+    document.getElementById('save-btn').style.display='block';
+    renderExercises();
+}
 function deleteRoutine(index){if(confirm('Delete this routine?')){savedRoutines.splice(index,1);saveToStorage();renderRoutinesList();}}
 
 function addExercise() {
@@ -991,6 +1014,7 @@ function renderExercises() {
         }
         const lastPerf=lastEx?`<div style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:8px;padding:8px;margin-bottom:10px;"><div style="color:#EA580C;font-size:11px;font-weight:700;margin-bottom:4px;">${t('lastSession')}</div>${lastEx.sets.map((s,i)=>`<div style="color:#9A3412;font-size:12px;">Set ${i+1}: ${s.reps} reps @ ${s.weight}kg</div>`).join('')}</div>`:`<div style="color:var(--text-muted);font-size:12px;margin-bottom:10px;">${t('noPrevData')}</div>`;
         const pbBadge=pb?`<span class="pr-badge">PB: ${pb.weight}kg×${pb.reps}</span>`:'';
+        const targetInfo=ex.targetReps?`<div style="background:#F0FDF4;border-radius:6px;padding:4px 8px;margin-bottom:8px;color:#16A34A;font-size:12px;font-weight:600;">Target: ${ex.targetSets} sets × ${ex.targetReps} reps</div>`:'';
         let setsHTML=`<div class="set-headers"><div class="set-header">SET</div><div class="set-header">REPS</div><div class="set-header">KG</div><div class="set-header"></div></div>`;
         ex.sets.forEach((set,si)=>{
             const isWarmup=set.warmup||false;
@@ -1002,7 +1026,7 @@ function renderExercises() {
             </div>
             ${isWarmup?'<div style="color:#F59E0B;font-size:10px;font-weight:700;margin-bottom:4px;margin-left:44px;">WARM UP — not counted</div>':''}`;
         });
-        block.innerHTML=`<div class="exercise-name" style="justify-content:space-between;">${ex.name} ${pbBadge}<span style="color:var(--text-muted);font-size:11px;font-weight:600;cursor:pointer;" onclick="swapExercise(${ei})">⇄ Swap</span></div>${suggestion}${lastPerf}${setsHTML}...<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;"><button class="btn-outline" onclick="addSet(${ei})" style="flex:1;margin-bottom:0;">+ Set</button><button class="btn-small" onclick="startTimer(60)">60s</button><button class="btn-small" onclick="startTimer(90)">90s</button></div>`;
+        block.innerHTML=`<div class="exercise-name" style="justify-content:space-between;">${ex.name} ${pbBadge}<span style="color:var(--text-muted);font-size:11px;font-weight:600;cursor:pointer;" onclick="swapExercise(${ei})">⇄ Swap</span></div>${targetInfo}${suggestion}${lastPerf}${setsHTML}...<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;"><button class="btn-outline" onclick="addSet(${ei})" style="flex:1;margin-bottom:0;">+ Set</button><button class="btn-small" onclick="startTimer(60)">60s</button><button class="btn-small" onclick="startTimer(90)">90s</button></div>`;
         log.appendChild(block);
     });
 }
