@@ -199,7 +199,7 @@
     </div>
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
         <button class="btn" onclick="showScreen('screen-train')" id="txt-log-workout">LOG A WORKOUT</button>
-        <button class="btn-outline" onclick="logRestDay()" id="txt-rest-day">😴 Rest Day</button>
+        <button style="background:#0F4C81; color:#fff; border:none; border-radius:12px; padding:14px 20px; font-size:15px; font-weight:700; cursor:pointer; width:100%; margin-bottom:10px;" onclick="logRestDay()">😴 REST DAY</button>
     </div>
 </div>
 
@@ -216,8 +216,9 @@
         <button class="btn-outline" onclick="saveStepsTrain()">Save Steps</button>
     </div>
     <div id="train-menu">
-<div class="section-title" id="txt-how-train">HOW DO YOU WANT TO TRAIN?</div>
-        <div class="routine-item" onclick="showTrainSection('routines')">
+        <button style="background:#0F4C81; color:#fff; border:none; border-radius:12px; padding:12px 20px; font-size:14px; font-weight:700; cursor:pointer; width:100%; margin-bottom:12px;" onclick="logRestDay()">😴 Log Rest Day</button>
+        <div class="section-title" id="txt-how-train">HOW DO YOU WANT TO TRAIN?</div>
+    <div class="routine-item" onclick="showTrainSection('routines')">
             <div><div class="routine-name" id="txt-my-routines">My Routines</div><div class="routine-meta" id="txt-my-routines-sub">Start a saved workout</div></div>
             <div class="routine-arrow">›</div>
         </div>
