@@ -1292,9 +1292,15 @@ function updateHome() {
             if(dayWater>=2) score++;
             const accomplished=score>=3;
             if(accomplished){d.classList.add('done');streakCount++;}
-            if(isRestDay&&!accomplished) d.style.opacity='0.5';
-            if(i===(dow===0?6:dow-1))d.classList.add('today');
-            d.textContent=days[i];streakBar.appendChild(d);
+if(isRestDay){
+    d.textContent='😴';
+    d.style.fontSize='14px';
+    if(!accomplished)d.style.opacity='0.6';
+} else {
+    d.textContent=days[i];
+}
+if(i===(dow===0?6:dow-1))d.classList.add('today');
+streakBar.appendChild(d);
         }
         const scEl=document.getElementById('streak-count');if(scEl)scEl.textContent=streakCount+'/7';
     }
@@ -1379,20 +1385,36 @@ function saveMeasurements() {
 
 function renderHistory() {
     const list=document.getElementById('history-list');if(!list)return;
-    const all=[...workoutHistory.map(w=>({...w,type:'workout'})),...cardioHistory.map(c=>({...c,type:'cardio'}))];
+    const all=[
+        ...workoutHistory.map(w=>({...w,type:w.type||'workout'})),
+        ...cardioHistory.map(c=>({...c,type:'cardio'}))
+    ];
     all.sort((a,b)=>new Date(b.date.split('/').reverse().join('-'))-new Date(a.date.split('/').reverse().join('-')));
     if(all.length===0){list.innerHTML=`<p style="color:var(--text-muted);">${t('noSessions')}</p>`;return;}
-    list.innerHTML=all.map(w=>w.type==='workout'
-        ?`<div style="border-bottom:1px solid var(--border);padding:12px 0;">
-            <div style="color:var(--primary);font-weight:700;font-size:13px;">${w.muscle} — ${w.date} ${w.duration&&w.duration>0?'• '+w.duration+' mins':''}</div>
+    list.innerHTML=all.map(w=>{
+        const nutritionData=localStorage.getItem('nutrition-'+w.date);
+        const nd=nutritionData?JSON.parse(nutritionData):{};
+        const daySteps=parseInt(nd.steps)||0;
+        if(w.type==='rest'){
+            return `<div style="border-bottom:1px solid var(--border);padding:12px 0;">
+                <div style="color:#0F4C81;font-weight:700;font-size:13px;">😴 Rest Day — ${w.date}</div>
+                <div style="color:var(--text-muted);font-size:12px;margin-top:2px;">${daySteps>0?daySteps.toLocaleString()+' steps':'No steps logged'}</div>
+            </div>`;
+        }
+        if(w.type==='cardio'){
+            return `<div style="border-bottom:1px solid var(--border);padding:12px 0;">
+                <div style="color:#10B981;font-weight:700;font-size:13px;">🏃 ${w.type} — ${w.date}${w.duration?' • '+w.duration+' mins':''}</div>
+                <div style="color:var(--text-muted);font-size:12px;margin-top:2px;">${w.distance?w.distance+'km • ':''}${w.intensity||''}${daySteps>0?' • '+daySteps.toLocaleString()+' steps':''}</div>
+            </div>`;
+        }
+        return `<div style="border-bottom:1px solid var(--border);padding:12px 0;">
+            <div style="color:var(--primary);font-weight:700;font-size:13px;">💪 ${w.muscle} — ${w.date}${w.duration&&w.duration>0?' • '+w.duration+' mins':''}</div>
             ${w.exercises?w.exercises.map(e=>`<div style="color:var(--text-muted);font-size:12px;margin-top:2px;">${e.name} — ${e.sets.length} sets</div>`).join(''):''}
-          </div>`
-        :`<div style="border-bottom:1px solid var(--border);padding:12px 0;">
-            <div style="color:#10B981;font-weight:700;font-size:13px;">${w.type} — ${w.date} ${w.duration?'• '+w.duration+' mins':''}</div>
-            <div style="color:var(--text-muted);font-size:12px;margin-top:2px;">${w.distance?w.distance+'km • ':''}${w.intensity||''}</div>
-          </div>`
-    ).join('');
+            ${daySteps>0?`<div style="color:var(--text-muted);font-size:12px;margin-top:2px;">${daySteps.toLocaleString()} steps</div>`:''}
+        </div>`;
+    }).join('');
 }
+
 
 // ===================== SETTINGS =====================
 function saveSettings() {
@@ -1707,11 +1729,32 @@ function logRestDay() {
     const today=new Date().toLocaleDateString('en-GB');
     const saved=localStorage.getItem('nutrition-'+today);
     let data=saved?JSON.parse(saved):{steps:0,water:0};
+    if(data.restDay){
+        alert('Rest day already logged for today 😴');
+        return;
+    }
     data.restDay=true;
+    data.restDayTime=new Date().toLocaleTimeString('en-GB');
     localStorage.setItem('nutrition-'+today,JSON.stringify(data));
-    alert('Rest day logged 😴 Focus on hitting your nutrition and steps today.');
+    // Add to workout history as a rest day entry
+    const alreadyLogged=workoutHistory.find(w=>w.date===today&&w.type==='rest');
+    if(!alreadyLogged){
+        workoutHistory.unshift({
+            type:'rest',
+            muscle:'Rest Day',
+            date:today,
+            duration:0,
+            exercises:[]
+        });
+        saveToStorage();
+    }
+    checkBadges();
     updateHome();
+    updateStepsDisplay();
+    if(document.getElementById('screen-progress').classList.contains('active')) updateProgress();
+    alert('😴 Rest day logged! Focus on hitting your nutrition and steps today.');
 }
+
 
 function saveStepsTrain() {
     const today=new Date().toLocaleDateString('en-GB');
