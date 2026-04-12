@@ -635,7 +635,7 @@ function applyTranslations() {
     // Nutrition
     set('txt-todays-nutrition','todaysNutrition');set('txt-daily-totals','dailyTotals');
     set('txt-date-label','date');set('txt-status','status');
-    set('txt-cal-label','calories');set('txt-prot-label','protein');
+    set('home-txt-cal-label','calories');set('nut-txt-cal-label','calories');set('txt-prot-label','protein');
     set('txt-carbs-label','carbs');set('txt-fat-label','fat');
     set('txt-steps-label','steps');set('txt-water-label','water');
     set('txt-add-meal','addMeal');set('txt-steps-water','stepsWater');
@@ -890,7 +890,16 @@ function saveRoutine() {
 function renderRoutinesList() {
     const list=document.getElementById('routines-list');const msg=document.getElementById('no-routines-msg');
     if(!list)return;
-    if(savedRoutines.length===0){list.innerHTML='';if(msg)msg.style.display='block';return;}
+    if(savedRoutines.length===0){
+        list.innerHTML=`<div style="text-align:center;padding:32px 16px;">
+            <div style="font-size:48px;margin-bottom:12px;">🏋️</div>
+            <div style="color:var(--text);font-size:16px;font-weight:700;margin-bottom:8px;">No routines yet</div>
+            <div style="color:var(--text-muted);font-size:13px;margin-bottom:16px;">Create your first routine or unlock a programme with a code</div>
+            <button class="btn" onclick="showTrainSection('create')">Create Routine</button>
+        </div>`;
+        if(msg)msg.style.display='none';
+        return;
+    }
     if(msg)msg.style.display='none';
     list.innerHTML=savedRoutines.map((r,i)=>`
         <div class="routine-item" onclick="startRoutine(${i})">
@@ -982,8 +991,17 @@ function renderExercises() {
         const lastPerf=lastEx?`<div style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:8px;padding:8px;margin-bottom:10px;"><div style="color:#EA580C;font-size:11px;font-weight:700;margin-bottom:4px;">${t('lastSession')}</div>${lastEx.sets.map((s,i)=>`<div style="color:#9A3412;font-size:12px;">Set ${i+1}: ${s.reps} reps @ ${s.weight}kg</div>`).join('')}</div>`:`<div style="color:var(--text-muted);font-size:12px;margin-bottom:10px;">${t('noPrevData')}</div>`;
         const pbBadge=pb?`<span class="pr-badge">PB: ${pb.weight}kg×${pb.reps}</span>`:'';
         let setsHTML=`<div class="set-headers"><div class="set-header">SET</div><div class="set-header">REPS</div><div class="set-header">KG</div><div class="set-header"></div></div>`;
-        ex.sets.forEach((set,si)=>{setsHTML+=`<div class="set-row"><div class="set-num">${si+1}</div><input class="set-input" type="number" placeholder="Reps" value="${set.reps}" onchange="updateSet(${ei},${si},'reps',this.value)"><input class="set-input" type="number" placeholder="KG" value="${set.weight}" onchange="updateSet(${ei},${si},'weight',this.value)"><div class="remove-set" onclick="removeSet(${ei},${si})">✕</div></div>`;});
-        block.innerHTML=`<div class="exercise-name">${ex.name} ${pbBadge}</div>${suggestion}${lastPerf}${setsHTML}<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;"><button class="btn-outline" onclick="addSet(${ei})" style="flex:1;margin-bottom:0;">+ Set</button><button class="btn-small" onclick="startTimer(60)">60s</button><button class="btn-small" onclick="startTimer(90)">90s</button></div>`;
+        ex.sets.forEach((set,si)=>{
+            const isWarmup=set.warmup||false;
+            setsHTML+=`<div class="set-row" style="${isWarmup?'opacity:0.6;':''}">
+                <div class="set-num" style="cursor:pointer;" onclick="toggleWarmup(${ei},${si})" title="Toggle warm up">${isWarmup?'🔥':''+( si+1)}</div>
+                <input class="set-input" type="number" placeholder="Reps" value="${set.reps}" onchange="updateSet(${ei},${si},'reps',this.value)" style="${isWarmup?'border-color:#F59E0B;':''}">
+                <input class="set-input" type="number" placeholder="KG" value="${set.weight}" onchange="updateSet(${ei},${si},'weight',this.value)" style="${isWarmup?'border-color:#F59E0B;':''}">
+                <div class="remove-set" onclick="removeSet(${ei},${si})">✕</div>
+            </div>
+            ${isWarmup?'<div style="color:#F59E0B;font-size:10px;font-weight:700;margin-bottom:4px;margin-left:44px;">WARM UP — not counted</div>':''}`;
+        });
+        block.innerHTML=`<div class="exercise-name" style="justify-content:space-between;">${ex.name} ${pbBadge}<span style="color:var(--text-muted);font-size:11px;font-weight:600;cursor:pointer;" onclick="swapExercise(${ei})">⇄ Swap</span></div>${suggestion}${lastPerf}${setsHTML}...<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;"><button class="btn-outline" onclick="addSet(${ei})" style="flex:1;margin-bottom:0;">+ Set</button><button class="btn-small" onclick="startTimer(60)">60s</button><button class="btn-small" onclick="startTimer(90)">90s</button></div>`;
         log.appendChild(block);
     });
 }
@@ -991,8 +1009,11 @@ function renderExercises() {
 function updateSet(ei,si,field,val) {
     exercises[ei].sets[si][field]=val;
     if(!firstSetLogged&&val&&parseFloat(val)>0){
-        firstSetLogged=true;startWorkoutTimer();
-        const timerBar=document.getElementById('workout-timer-bar');if(timerBar)timerBar.style.display='flex';
+        // Only start timer on working sets not warm ups
+        if(!exercises[ei].sets[si].warmup){
+            firstSetLogged=true;startWorkoutTimer();
+            const timerBar=document.getElementById('workout-timer-bar');if(timerBar)timerBar.style.display='flex';
+        }
     }
 }
 
@@ -1025,7 +1046,7 @@ function saveWorkout() {
     const duration=workoutStartTime?Math.floor((Date.now()-workoutStartTime)/60000):0;
     clearInterval(workoutTimerInterval);
     exercises.forEach(ex=>{
-        ex.sets.forEach(set=>{
+        ex.sets.filter(s=>!s.warmup).forEach(set=>{
             const w=parseFloat(set.weight)||0;const r=parseInt(set.reps)||0;
             if(w>0&&r>0&&(!personalBests[ex.name]||w>personalBests[ex.name].weight))
                 personalBests[ex.name]={weight:w,reps:r,date};
@@ -1099,14 +1120,25 @@ function renderMeals() {
     const today=new Date().toLocaleDateString('en-GB');
     const todayMeals=meals.filter(m=>m.date===today);
     const container=document.getElementById('meals-container');if(!container)return;
-    if(todayMeals.length===0){container.innerHTML=`<p style="color:var(--text-muted);font-size:13px;text-align:center;padding:16px;">No meals added yet. Tap + Add Meal to start.</p>`;return;}
+    if(todayMeals.length===0){
+        container.innerHTML=`<div style="text-align:center;padding:32px 16px;">
+            <div style="font-size:48px;margin-bottom:12px;">🥗</div>
+            <div style="color:var(--text);font-size:16px;font-weight:700;margin-bottom:8px;">No meals logged today</div>
+            <div style="color:var(--text-muted);font-size:13px;margin-bottom:16px;">Start tracking your nutrition to hit your targets</div>
+            <button class="btn" onclick="addMeal()">+ Add First Meal</button>
+        </div>`;
+        return;
+    }
     container.innerHTML=todayMeals.map(meal=>{
         const mealIndex=meals.indexOf(meal);
         const totalCal=meal.foods.reduce((s,f)=>s+f.cal,0);
         const totalProt=meal.foods.reduce((s,f)=>s+f.protein,0).toFixed(1);
         const totalCarbs=meal.foods.reduce((s,f)=>s+f.carbs,0).toFixed(1);
         const totalFat=meal.foods.reduce((s,f)=>s+f.fat,0).toFixed(1);
-        return `<div class="meal-block"><div class="meal-header"><div><div class="meal-name">${meal.name}</div><div class="meal-totals">${totalCal} kcal • P:${totalProt}g • C:${totalCarbs}g • F:${totalFat}g</div></div><button class="btn-small" onclick="openFoodModal(${mealIndex})">+ ${t('addFood').replace('+ ','')}</button></div>${meal.foods.map((f,fi)=>`<div class="food-entry"><div class="food-entry-info"><div class="food-entry-name">${f.name} (${f.portion}${f.isLiquid?'ml':'g'})</div><div class="food-entry-macros">P: ${f.protein}g • C: ${f.carbs}g • F: ${f.fat}g</div></div><div class="food-entry-cals">${f.cal} kcal</div><div class="food-entry-delete" onclick="deleteFoodFromMeal(${mealIndex},${fi})">✕</div></div>`).join('')}</div>`;
+        return `<div class="meal-block"><div class="meal-header"><div><div class="meal-name">${meal.name}</div><div class="meal-totals">${totalCal} kcal • P:${totalProt}g • C:${totalCarbs}g • F:${totalFat}g</div></div><div style="display:flex;gap:6px;">
+    <button class="btn-small" onclick="openFoodModal(${mealIndex})">+ Add Food</button>
+    <button class="btn-small" onclick="currentMealIndex=${mealIndex};saveMealTemplate()" style="background:#FEF3C7;color:#92400E;">💾 Save</button>
+</div></div>${meal.foods.map((f,fi)=>`<div class="food-entry"><div class="food-entry-info"><div class="food-entry-name">${f.name} (${f.portion}${f.isLiquid?'ml':'g'})</div><div class="food-entry-macros">P: ${f.protein}g • C: ${f.carbs}g • F: ${f.fat}g</div></div><div class="food-entry-cals">${f.cal} kcal</div><div class="food-entry-delete" onclick="deleteFoodFromMeal(${mealIndex},${fi})">✕</div></div>`).join('')}</div>`;
     }).join('');
 }
 
@@ -1131,10 +1163,27 @@ function filterFoods() {
     let foods=[];
     const categories=foodFilter==='all'?Object.keys(foodDB):[foodFilter];
     categories.forEach(cat=>{if(foodDB[cat])foodDB[cat].forEach(food=>{if((diet==='standard'||food.tags.includes(diet))&&food.name.toLowerCase().includes(search))foods.push({...food,category:cat});});});
-    list.innerHTML=foods.map(f=>`<div style="padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;" onclick='selectFood(${JSON.stringify(f).replace(/'/g,"&#39;")})'>
+
+    // Recent foods at top when no search
+    let recentHTML='';
+    if(!search){
+        const recent=JSON.parse(localStorage.getItem('recentFoods')||'[]');
+        if(recent.length>0){
+            recentHTML=`<div style="margin-bottom:12px;">
+                <div style="color:var(--text-muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Recent & Common</div>
+                ${recent.slice(0,5).map(f=>`<div style="padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;" onclick='selectFood(${JSON.stringify(f).replace(/'/g,"&#39;")})'>
+                    <div style="font-weight:600;color:var(--text);font-size:13px;">${f.name}</div>
+                    <div style="margin-top:4px;"><span class="macro-pill">${f.cal} kcal</span><span class="macro-pill protein">P: ${f.protein}g</span><span class="macro-pill carbs">C: ${f.carbs}g</span><span class="macro-pill fat">F: ${f.fat}g</span></div>
+                </div>`).join('')}
+                <div style="color:var(--text-muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin:12px 0 8px;">All Foods</div>
+            </div>`;
+        }
+    }
+
+    list.innerHTML=recentHTML+( foods.map(f=>`<div style="padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;" onclick='selectFood(${JSON.stringify(f).replace(/'/g,"&#39;")})'>
         <div style="font-weight:600;color:var(--text);font-size:13px;">${f.name}</div>
         <div style="margin-top:4px;"><span class="macro-pill">${f.cal} kcal</span><span class="macro-pill protein">P: ${f.protein}g</span><span class="macro-pill carbs">C: ${f.carbs}g</span><span class="macro-pill fat">F: ${f.fat}g</span>${f.water?`<span class="macro-pill" style="background:#EFF6FF;color:#2563EB;">💧 +${f.water}L</span>`:''}</div>
-    </div>`).join('')||`<p style="color:var(--text-muted);padding:12px 0;">${t('noFoodsFound')}</p>`;
+    </div>`).join('')||`<p style="color:var(--text-muted);padding:12px 0;">${t('noFoodsFound')}</p>`);
 }
 
 function selectFood(food) {
@@ -1159,7 +1208,19 @@ function addFoodEntry() {
     const isLiquid=selectedFood.category==='drinks';
     const portion=parseFloat(document.getElementById('food-portion-amount').value)||(isLiquid?250:100);
     const ratio=portion/100;
-    const entry={name:selectedFood.name,portion,isLiquid,cal:Math.round(selectedFood.cal*ratio),protein:Math.round(selectedFood.protein*ratio*10)/10,carbs:Math.round(selectedFood.carbs*ratio*10)/10,fat:Math.round(selectedFood.fat*ratio*10)/10};
+    const entry={name:selectedFood.name,portion,isLiquid,
+        cal:Math.round(selectedFood.cal*ratio),
+        protein:Math.round(selectedFood.protein*ratio*10)/10,
+        carbs:Math.round(selectedFood.carbs*ratio*10)/10,
+        fat:Math.round(selectedFood.fat*ratio*10)/10,
+        category:selectedFood.category
+    };
+    // Save to recent foods
+    const recent=JSON.parse(localStorage.getItem('recentFoods')||'[]');
+    const exists=recent.findIndex(f=>f.name===selectedFood.name);
+    if(exists>-1)recent.splice(exists,1);
+    recent.unshift({...selectedFood});
+    localStorage.setItem('recentFoods',JSON.stringify(recent.slice(0,10)));
     if(selectedFood.water){
         const today=new Date().toLocaleDateString('en-GB');
         const saved=localStorage.getItem('nutrition-'+today);
@@ -1168,10 +1229,10 @@ function addFoodEntry() {
         localStorage.setItem('nutrition-'+today,JSON.stringify(data));
     }
     meals[currentMealIndex].foods.push(entry);
-    saveToStorage();closeFoodModal();renderMeals();loadNutrition();
+    saveToStorage();closeFoodModal();renderMeals();loadNutrition();updateHome();
 }
 
-function deleteFoodFromMeal(mealIndex,foodIndex){meals[mealIndex].foods.splice(foodIndex,1);saveToStorage();renderMeals();loadNutrition();}
+function deleteFoodFromMeal(mealIndex,foodIndex){meals[mealIndex].foods.splice(foodIndex,1);saveToStorage();renderMeals();loadNutrition();updateHome();}
 
 function saveStepsWater() {
     const today=new Date().toLocaleDateString('en-GB');
@@ -1205,11 +1266,22 @@ function loadNutrition() {
     if(saved){const d=JSON.parse(saved);steps=parseInt(d.steps)||0;water=parseFloat(d.water)||0;}
     const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
     const setWidth=(id,pct)=>{const el=document.getElementById(id);if(el)el.style.width=pct+'%';};
-    setEl('show-calories',`${totalCal} / ${calTarget} kcal`);
+    setEl('nut-show-calories',`${totalCal} / ${calTarget} kcal`);
+    const remaining=calTarget-totalCal;
+    const remainingEl=document.getElementById('cal-remaining');
+    if(remainingEl){
+        if(remaining>0){
+            remainingEl.textContent=remaining+' kcal remaining';
+            remainingEl.style.color='#10B981';
+        } else {
+            remainingEl.textContent=Math.abs(remaining)+' kcal over target';
+            remainingEl.style.color='#EF4444';
+        }
+    }
     setEl('show-protein',`${totalProtein.toFixed(1)} / ${proteinTarget}g`);
     setEl('show-carbs',`${totalCarbs.toFixed(1)}g`);setEl('show-fat',`${totalFat.toFixed(1)}g`);
     setEl('show-steps',`${steps} / ${stepsTarget}`);setEl('show-water',`${water.toFixed(1)} / 2.5L`);
-    setWidth('bar-calories',Math.min((totalCal/calTarget)*100,100));
+    setWidth('nut-bar-calories',Math.min((totalCal/calTarget)*100,100));
     setWidth('bar-protein',Math.min((totalProtein/proteinTarget)*100,100));
     setWidth('bar-steps',Math.min((steps/stepsTarget)*100,100));
     setWidth('bar-water',Math.min((water/2.5)*100,100));
@@ -1256,7 +1328,7 @@ function updateHome() {
     if(saved){const d=JSON.parse(saved);steps=parseInt(d.steps)||0;water=parseFloat(d.water)||0;}
     const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
     const setWidth=(id,pct)=>{const el=document.getElementById(id);if(el)el.style.width=pct+'%';};
-    setEl('home-calories',`${cals} / ${calTarget} kcal`);setEl('home-protein',`${protein.toFixed(1)} / ${proteinTarget}g`);
+    setEl('home-show-calories',`${cals} / ${calTarget} kcal`);setEl('home-protein',`${protein.toFixed(1)} / ${proteinTarget}g`);
     setEl('home-steps',`${steps} / ${stepsTarget}`);setEl('home-water',`${water.toFixed(1)} / 2.5L`);
     setWidth('home-bar-calories',Math.min((cals/calTarget)*100,100));
     setWidth('home-bar-protein',Math.min((protein/proteinTarget)*100,100));
@@ -1390,7 +1462,15 @@ function renderHistory() {
         ...cardioHistory.map(c=>({...c,type:'cardio'}))
     ];
     all.sort((a,b)=>new Date(b.date.split('/').reverse().join('-'))-new Date(a.date.split('/').reverse().join('-')));
-    if(all.length===0){list.innerHTML=`<p style="color:var(--text-muted);">${t('noSessions')}</p>`;return;}
+    if(all.length===0){
+        list.innerHTML=`<div style="text-align:center;padding:32px 16px;">
+            <div style="font-size:48px;margin-bottom:12px;">💪</div>
+            <div style="color:var(--text);font-size:16px;font-weight:700;margin-bottom:8px;">No sessions yet</div>
+            <div style="color:var(--text-muted);font-size:13px;margin-bottom:16px;">Log your first workout to start tracking your progress</div>
+            <button class="btn" onclick="showScreen('screen-train')">Start Training</button>
+        </div>`;
+        return;
+    }
     list.innerHTML=all.map(w=>{
         const nutritionData=localStorage.getItem('nutrition-'+w.date);
         const nd=nutritionData?JSON.parse(nutritionData):{};
@@ -1778,6 +1858,57 @@ function updateStepsDisplay() {
     const bar=document.getElementById('steps-bar-train');
     if(el)el.textContent=steps+' / '+stepsTarget.toLocaleString();
     if(bar)bar.style.width=Math.min((steps/stepsTarget)*100,100)+'%';
+}
+
+function toggleWarmup(ei,si) {
+    exercises[ei].sets[si].warmup=!exercises[ei].sets[si].warmup;
+    renderExercises();
+}
+
+function getWorkingSets(ex) {
+    return ex.sets.filter(s=>!s.warmup);
+}
+
+function swapExercise(ei) {
+    const ex=exercises[ei];
+    const cat=selectedMuscle;
+    const alternatives=getExercisesForCategory(cat).filter(e=>e!==ex.name);
+    if(alternatives.length===0){alert('No alternatives found for this category');return;}
+    const optionsList=alternatives.slice(0,6).map((alt,i)=>`${i+1}. ${alt}`).join('\n');
+    const choice=prompt(`Swap "${ex.name}" with:\n\n${optionsList}\n\nEnter number:`);
+    if(!choice)return;
+    const index=parseInt(choice)-1;
+    if(index>=0&&index<alternatives.length){
+        exercises[ei].name=alternatives[index];
+        renderExercises();
+    }
+}
+
+function saveMealTemplate() {
+    if(!currentMealIndex&&currentMealIndex!==0)return;
+    const meal=meals[currentMealIndex];
+    if(!meal||meal.foods.length===0){alert('Add some foods to this meal first');return;}
+    const templates=JSON.parse(localStorage.getItem('mealTemplates')||'[]');
+    const name=prompt('Save this meal as a template:',meal.name)||meal.name;
+    templates.push({name,foods:meal.foods,saved:new Date().toLocaleDateString('en-GB')});
+    localStorage.setItem('mealTemplates',JSON.stringify(templates));
+    alert('✅ Meal template saved!');
+}
+
+function loadMealTemplate() {
+    const templates=JSON.parse(localStorage.getItem('mealTemplates')||'[]');
+    if(templates.length===0){alert('No saved meal templates yet. Add foods to a meal and save it as a template first.');return;}
+    const list=templates.map((t,i)=>`${i+1}. ${t.name} (${t.foods.length} foods)`).join('\n');
+    const choice=prompt(`Load a meal template:\n\n${list}\n\nEnter number:`);
+    if(!choice)return;
+    const index=parseInt(choice)-1;
+    if(index>=0&&index<templates.length){
+        const template=templates[index];
+        const today=new Date().toLocaleDateString('en-GB');
+        meals.push({name:template.name,date:today,foods:[...template.foods]});
+        saveToStorage();renderMeals();loadNutrition();updateHome();
+        closeMealTemplateModal();
+    }
 }
 
 loadFromStorage();

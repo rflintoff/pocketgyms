@@ -168,8 +168,9 @@
 
     <div class="card">
         <h2 id="txt-today-progress">TODAY'S PROGRESS</h2>
-        <div class="stat-row"><span class="stat-label" id="txt-calories">Calories</span><span class="stat-value" id="home-calories">—</span></div>
+        <div class="stat-row"><span class="stat-label" id="home-txt-cal-label">Calories</span><span class="stat-value" id="home-show-calories">0 / — kcal</span></div>
         <div class="progress-bar-outer"><div class="progress-bar-inner" id="home-bar-calories"></div></div>
+        <div id="cal-remaining" style="font-size:13px;font-weight:700;margin-top:4px;margin-bottom:4px;"></div>
         <div class="stat-row" style="margin-top:10px;"><span class="stat-label" id="txt-protein">Protein</span><span class="stat-value" id="home-protein">—</span></div>
         <div class="progress-bar-outer"><div class="progress-bar-inner" id="home-bar-protein"></div></div>
         <div class="stat-row" style="margin-top:10px;"><span class="stat-label" id="txt-steps">Steps</span><span class="stat-value" id="home-steps">—</span></div>
@@ -381,8 +382,8 @@
     <div class="card">
         <h2 id="txt-daily-totals">DAILY TOTALS</h2>
         <div style="margin-bottom:10px;">
-            <div class="stat-row"><span class="stat-label" id="txt-cal-label">Calories</span><span class="stat-value" id="show-calories">0 / — kcal</span></div>
-            <div class="progress-bar-outer"><div class="progress-bar-inner" id="bar-calories"></div></div>
+            <div class="stat-row"><span class="stat-label" id="nut-txt-cal-label">Calories</span><span class="stat-value" id="nut-show-calories">0 / — kcal</span></div>
+            <div class="progress-bar-outer"><div class="progress-bar-inner" id="nut-bar-calories"></div></div>
         </div>
         <div style="margin-bottom:10px;">
             <div class="stat-row"><span class="stat-label" id="txt-prot-label">Protein</span><span class="stat-value" id="show-protein">0 / —g</span></div>
@@ -405,7 +406,10 @@
     </div>
 
     <div id="meals-container"></div>
-    <button class="btn" onclick="addMeal()" id="txt-add-meal">+ Add Meal</button>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <button class="btn" onclick="addMeal()" id="txt-add-meal">+ Add Meal</button>
+        <button class="btn-outline" onclick="loadMealTemplate()">📋 Load Template</button>
+    </div>
 
     <div class="card">
         <h2 id="txt-water-log">WATER</h2>
