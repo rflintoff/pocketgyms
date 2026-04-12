@@ -804,7 +804,7 @@ function showScreen(id) {
     if(id==='screen-calories'){loadNutrition();renderSupplements();renderMeals();}
     if(id==='screen-progress')updateProgress();
     if(id==='screen-settings')loadSettings();
-    if(id==='screen-train'){showTrainSection('menu');renderRoutinesList();}
+    if(id==='screen-train'){showTrainSection('menu');renderRoutinesList();updateStepsDisplay();}
 }
 
 // ===================== TRAIN =====================
@@ -1183,7 +1183,16 @@ function saveStepsWater() {
     localStorage.setItem('nutrition-'+today,JSON.stringify(data));
     loadNutrition();updateHome();
 }
-
+function saveWater() {
+    const today=new Date().toLocaleDateString('en-GB');
+    const saved=localStorage.getItem('nutrition-'+today);
+    let data=saved?JSON.parse(saved):{steps:0,water:0};
+    const water=document.getElementById('input-water').value;
+    if(water)data.water=parseFloat(water);
+    localStorage.setItem('nutrition-'+today,JSON.stringify(data));
+    loadNutrition();
+    updateHome();
+}
 function loadNutrition() {
     const today=new Date().toLocaleDateString('en-GB');
     const calTarget=settings.calTarget||2000;const proteinTarget=settings.proteinTarget||150;const stepsTarget=settings.stepsTarget||8000;
@@ -1711,8 +1720,21 @@ function saveStepsTrain() {
     const steps=document.getElementById('input-steps-train').value;
     if(steps)data.steps=parseInt(steps);
     localStorage.setItem('nutrition-'+today,JSON.stringify(data));
+    document.getElementById('input-steps-train').value='';
+    updateStepsDisplay();
     updateHome();
-    alert('Steps saved!');
+}
+
+function updateStepsDisplay() {
+    const today=new Date().toLocaleDateString('en-GB');
+    const saved=localStorage.getItem('nutrition-'+today);
+    const data=saved?JSON.parse(saved):{steps:0,water:0};
+    const steps=parseInt(data.steps)||0;
+    const stepsTarget=settings.stepsTarget||8000;
+    const el=document.getElementById('steps-display-train');
+    const bar=document.getElementById('steps-bar-train');
+    if(el)el.textContent=steps+' / '+stepsTarget.toLocaleString();
+    if(bar)bar.style.width=Math.min((steps/stepsTarget)*100,100)+'%';
 }
 
 loadFromStorage();

@@ -205,8 +205,18 @@
 
 <!-- TRAIN SCREEN -->
 <div class="screen" id="screen-train">
+    <div class="card">
+        <h2>STEPS TODAY</h2>
+        <div class="stat-row">
+            <span class="stat-label">Today</span>
+            <span class="stat-value" id="steps-display-train">0 / 8,000</span>
+        </div>
+        <div class="progress-bar-outer"><div class="progress-bar-inner" id="steps-bar-train"></div></div>
+        <input type="number" id="input-steps-train" placeholder="e.g. 8000" style="margin-top:10px;">
+        <button class="btn-outline" onclick="saveStepsTrain()">Save Steps</button>
+    </div>
     <div id="train-menu">
-        <div class="section-title" id="txt-how-train">HOW DO YOU WANT TO TRAIN?</div>
+<div class="section-title" id="txt-how-train">HOW DO YOU WANT TO TRAIN?</div>
         <div class="routine-item" onclick="showTrainSection('routines')">
             <div><div class="routine-name" id="txt-my-routines">My Routines</div><div class="routine-meta" id="txt-my-routines-sub">Start a saved workout</div></div>
             <div class="routine-arrow">›</div>
@@ -328,11 +338,6 @@
             <button class="btn" onclick="addExercise()" id="txt-add-ex-btn">+ Add Exercise</button>
         </div>
         <div id="exercise-log"></div>
-        <div class="card" id="steps-card-train">
-            <h2>STEPS TODAY</h2>
-            <input type="number" id="input-steps-train" placeholder="e.g. 8000">
-            <button class="btn-outline" onclick="saveStepsTrain()">Save Steps</button>
-        </div>
         <button class="btn" onclick="saveWorkout()" style="display:none;" id="save-btn">Save Workout</button>  
     </div>
 
@@ -402,14 +407,12 @@
     <button class="btn" onclick="addMeal()" id="txt-add-meal">+ Add Meal</button>
 
     <div class="card">
-        <h2 id="txt-steps-water">STEPS & WATER</h2>
-        <label id="lbl-steps-today">Steps Today</label>
-        <input type="number" id="input-steps" placeholder="e.g. 5000">
+        <h2 id="txt-water-log">WATER</h2>
         <label id="lbl-water">Water (litres)</label>
         <input type="number" id="input-water" placeholder="e.g. 2.5" step="0.25">
-        <button class="btn" onclick="saveStepsWater()" id="txt-save-sw">Save</button>
+        <button class="btn" onclick="saveWater()" id="txt-save-sw">Save</button>
     </div>
-
+  
     <div class="card">
         <h2 id="txt-supplements">SUPPLEMENTS</h2>
         <div id="supplement-list"></div>
