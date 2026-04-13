@@ -5,9 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PocketGyms</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="supabase.js"></script>
+    <script src="app.js"></script>
 </head>
 <body>
-
+<!-- AUTH MODAL -->
+<div id="auth-modal" style="display:none;">
+    <div class="auth-card">
+      <h2>POCKETGYMS</h2>
+      <p>Sign in to sync your data across all devices.</p>
+  
+      <button onclick="PG.auth.signInGoogle()" class="btn-oauth btn-google">
+        Continue with Google
+      </button>
+      <button onclick="PG.auth.signInApple()" class="btn-oauth btn-apple">
+        Continue with Apple
+      </button>
+  
+      <div class="auth-divider"><span>or</span></div>
+  
+      <input type="email" id="auth-email" placeholder="Email address">
+      <input type="password" id="auth-password" placeholder="Password">
+  
+      <button onclick="handleEmailAuth()" class="btn-primary">Sign In</button>
+      <button onclick="toggleAuthMode()" class="btn-ghost" id="auth-toggle-btn">
+        No account? Sign up
+      </button>
+      <p id="auth-error" style="color:var(--danger);font-size:13px;display:none;"></p>
+    </div>
+  </div>
 <!-- ONBOARDING -->
 <div class="onboarding" id="onboarding">
     <div class="step-indicator">
@@ -749,6 +776,5 @@
     </div>
 </div>
 
-<script src="app.js"></script>
 </body>
 </html>
