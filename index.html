@@ -158,11 +158,16 @@
             <span class="stat-label" id="txt-weekly-streak">Weekly Streak</span>
             <span class="stat-value" id="streak-count">0/7</span>
         </div>
+        <div class="stat-row">
+            <span class="stat-label">Best Streak</span>
+            <span class="stat-value" id="streak-record">—</span>
+        </div>
         <div class="streak-bar" id="streak-bar"></div>
     </div>
 
     <div class="card">
         <h2 id="txt-coach">COACH</h2>
+        <div id="daily-quote" style="background:var(--primary-light);border-left:3px solid var(--primary);border-radius:8px;padding:10px 12px;margin-bottom:10px;color:var(--text);font-size:13px;font-style:italic;"></div>
         <div id="coach-prompts"></div>
     </div>
 
@@ -199,6 +204,10 @@
         <div id="badges-display"></div>
     </div>
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <div id="next-workout-suggestion" style="display:none;background:var(--primary-light);border-radius:12px;padding:12px;margin-bottom:10px;">
+            <div style="color:var(--text-muted);font-size:11px;font-weight:700;margin-bottom:4px;">UP NEXT</div>
+            <div style="color:var(--text);font-size:14px;font-weight:700;" id="next-workout-text">—</div>
+        </div>
         <button class="btn" onclick="showScreen('screen-train')" id="txt-log-workout">LOG A WORKOUT</button>
         <button style="background:#0F4C81; color:#fff; border:none; border-radius:12px; padding:14px 20px; font-size:15px; font-weight:700; cursor:pointer; width:100%; margin-bottom:10px;" onclick="logRestDay()">😴 REST DAY</button>
     </div>
@@ -333,6 +342,7 @@
             <div class="rest-timer-count" id="rest-count">60</div>
             <button class="btn-small" onclick="stopTimer()" id="txt-stop">Stop</button>
         </div>
+        <div id="previous-workout-summary" style="display:none;"></div>
         <div class="card" id="exercise-picker">
             <h2 id="txt-add-exercise">ADD EXERCISE</h2>
             <div class="filter-bar" id="active-category-filter"></div>
@@ -699,6 +709,18 @@
         </div>
     </div>
     <button class="btn" onclick="saveSettings()" id="txt-save-settings">Save & Calculate Targets</button>
+    <div class="card" style="margin-top:12px;">
+        <h2>DANGER ZONE</h2>
+        <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px;">Permanently delete all your data. This cannot be undone.</p>
+        <button onclick="resetAllData()" style="background:#FEF2F2;color:var(--danger);border:1px solid var(--danger);border-radius:12px;padding:14px;font-size:14px;font-weight:700;cursor:pointer;width:100%;">🗑 Reset All Data</button>
+    </div>
+    <div class="card" style="margin-top:12px;text-align:center;">
+        <h2>ABOUT</h2>
+        <div style="color:var(--text);font-size:15px;font-weight:700;margin-bottom:4px;">PocketGyms</div>
+        <div style="color:var(--text-muted);font-size:13px;margin-bottom:8px;">Version 1.0</div>
+        <a href="https://privategyms.co.uk" target="_blank" style="color:var(--primary);font-size:13px;font-weight:600;text-decoration:none;display:block;margin-bottom:8px;">privategyms.co.uk</a>
+        <a href="mailto:support@privategyms.co.uk" style="color:var(--primary);font-size:13px;font-weight:600;text-decoration:none;">support@privategyms.co.uk</a>
+    </div>
 </div>
 
 <!-- NAV -->

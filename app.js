@@ -1437,6 +1437,10 @@ function updateHome() {
             const totalDays=s.phaseDuration||56;const pct=Math.min(Math.round((daysDiff/totalDays)*100),100);
             const bar=document.getElementById('home-prog-bar');if(bar)bar.style.width=pct+'%';
             const pctEl=document.getElementById('home-prog-pct');if(pctEl)pctEl.textContent=pct+'% complete';
+            const recordEl=document.getElementById('streak-record');
+if(recordEl)recordEl.textContent=localStorage.getItem('streakRecord')||'0'+'/7';
+const quoteEl=document.getElementById('daily-quote');
+if(quoteEl)quoteEl.textContent='"'+getDailyQuote()+'"';
         }
     }
     if(s.weight){
