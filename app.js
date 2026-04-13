@@ -724,8 +724,7 @@ function fastTrack() {
         phaseDuration:56,trainingDays:4,units:'kg'};
     localStorage.setItem('settings',JSON.stringify(settings));
     localStorage.setItem('onboarded','true');
-    document.getElementById('onboarding').style.display='none';
-    applyTranslations();updateHome();
+    loadFromStorage();
 }
 
 function selectHeightUnit(unit) {
@@ -781,9 +780,7 @@ function completeOnboarding() {
         phaseDuration:56,trainingDays:4,units:selectedWeightUnit,language:selectedLang};
     localStorage.setItem('settings',JSON.stringify(settings));
     localStorage.setItem('onboarded','true');
-    document.getElementById('onboarding').style.display='none';
-    document.getElementById('header-greeting').textContent='Hi '+name+' 👋';
-    applyTranslations();updateHome();
+    loadFromStorage();
 }
 
 // ===================== THEME =====================
@@ -1029,16 +1026,11 @@ function renderExercises() {
             </div>
             ${isWarmup?'<div style="color:#F59E0B;font-size:10px;font-weight:700;margin-bottom:4px;margin-left:44px;">WARM UP — not counted</div>':''}`;
         });
-        const dsOff=ex.dropset?'opacity:0.45;pointer-events:none;':'';
         block.innerHTML=`<div class="exercise-name" style="justify-content:space-between;">${ex.name} ${pbBadge}<span style="color:var(--text-muted);font-size:11px;font-weight:600;cursor:pointer;" onclick="swapExercise(${ei})">⇄ Swap</span></div>${targetInfo}${suggestion}${lastPerf}${setsHTML}<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
     <button class="btn-outline" onclick="addSet(${ei})" style="flex:1;margin-bottom:0;">+ Set</button>
-    <button class="btn-small" onclick="startTimer(60,${ei})" style="${dsOff}" ${ex.dropset?'disabled':''}>60s</button>
-    <button class="btn-small" onclick="startTimer(90,${ei})" style="${dsOff}" ${ex.dropset?'disabled':''}>90s</button>
-    <button class="btn-small" onclick="toggleSuperset(${ei})" style="${ex.superset?'background:var(--primary);color:#fff;':''}">⚡ Superset</button>
-    <button class="btn-small" onclick="toggleDropset(${ei})" style="${ex.dropset?'background:var(--danger);color:#fff;':''}">📉 Dropset</button>
-</div>
-${ex.superset?`<div style="background:#EFF6FF;border-radius:8px;padding:8px;margin-top:6px;color:var(--primary);font-size:12px;font-weight:600;">⚡ Superset active — rest only after both exercises complete</div>`:''}
-${ex.dropset?`<div style="background:#FEF2F2;border-radius:8px;padding:8px;margin-top:6px;color:var(--danger);font-size:12px;font-weight:600;">📉 Dropset active — reduce weight each set with no rest</div>`:''}`;
+    <button class="btn-small" onclick="startTimer(60,${ei})">60s</button>
+    <button class="btn-small" onclick="startTimer(90,${ei})">90s</button>
+</div>`;
         log.appendChild(block);
     });
 }
@@ -1057,49 +1049,7 @@ function updateSet(ei,si,field,val) {
 function addSet(ei){exercises[ei].sets.push({reps:'',weight:''});renderExercises();}
 function removeSet(ei,si){if(exercises[ei].sets.length>1){exercises[ei].sets.splice(si,1);renderExercises();}}
 
-function toggleSuperset(ei){exercises[ei].superset=!exercises[ei].superset;renderExercises();}
-function toggleDropset(ei){exercises[ei].dropset=!exercises[ei].dropset;renderExercises();}
-
-function isWorkingSetComplete(ei,si){
-    const s=exercises[ei]?.sets[si];
-    if(!s||s.warmup)return true;
-    const w=parseFloat(s.weight)||0,r=parseInt(s.reps,10)||0;
-    return w>0&&r>0;
-}
-function isSupersetPairAt(pairFirstEi){
-    const a=exercises[pairFirstEi],b=exercises[pairFirstEi+1];
-    return !!(a&&b&&a.superset&&b.superset);
-}
-function supersetPairFirstForEi(ei){
-    if(isSupersetPairAt(ei))return ei;
-    if(ei>0&&isSupersetPairAt(ei-1))return ei-1;
-    return null;
-}
-function supersetPartnerAllowsRest(pairFirstEi){
-    const a=pairFirstEi,b=pairFirstEi+1;
-    if(!exercises[b])return true;
-    const n=Math.min(exercises[a].sets.length,exercises[b].sets.length);
-    for(let si=0;si<n;si++){
-        const sa=exercises[a].sets[si],sb=exercises[b].sets[si];
-        if(!sa||!sb)continue;
-        if(sa.warmup||sb.warmup)continue;
-        const aDone=isWorkingSetComplete(a,si),bDone=isWorkingSetComplete(b,si);
-        if(aDone!==bDone)return false;
-    }
-    return true;
-}
-
 function startTimer(seconds,ei){
-    if(typeof ei==='number'&&exercises[ei]?.dropset){
-        alert('Dropset: go straight to your next set — no rest between drops.');
-        return;
-    }
-    const pairFirst=typeof ei==='number'?supersetPairFirstForEi(ei):null;
-    if(pairFirst!==null&&!supersetPartnerAllowsRest(pairFirst)){
-        const partnerName=ei===pairFirst?exercises[pairFirst+1].name:exercises[pairFirst].name;
-        alert('Superset: log the same set on '+partnerName+' before starting rest.');
-        return;
-    }
     if(timerInterval)clearInterval(timerInterval);
     let remaining=seconds;
     document.getElementById('rest-timer').style.display='block';
@@ -1439,23 +1389,27 @@ function updateHome() {
             const pctEl=document.getElementById('home-prog-pct');if(pctEl)pctEl.textContent=pct+'% complete';
             const recordEl=document.getElementById('streak-record');
 if(recordEl)recordEl.textContent=localStorage.getItem('streakRecord')||'0'+'/7';
-const quoteEl=document.getElementById('daily-quote');
-if(quoteEl)quoteEl.textContent='"'+getDailyQuote()+'"';
-        }
-    }
-    if(s.weight){
+}
+}
+    const quoteEl=document.getElementById('daily-quote');
+    if(quoteEl)quoteEl.textContent='"'+getDailyQuote()+'"';
+    const currentW=Number(s.weight);
+    if(Number.isFinite(currentW)&&currentW>0){
         const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
-        setEl('home-current-weight',s.weight+'kg');setEl('home-target-weight',(s.targetWeight||'—')+'kg');
-        const diff=Math.abs(s.weight-(s.targetWeight||s.weight)).toFixed(1);setEl('home-weight-change',diff+'kg to go');
+        const tw=Number(s.targetWeight);
+        const hasTarget=Number.isFinite(tw)&&tw>0;
+        setEl('home-current-weight',currentW+'kg');
+        setEl('home-target-weight',hasTarget?tw+'kg':'—');
+        const diff=Math.abs(currentW-(hasTarget?tw:currentW)).toFixed(1);
+        setEl('home-weight-change',diff+'kg to go');
     }
     const today=new Date().toLocaleDateString('en-GB');
     const todayMeals=meals.filter(m=>m.date===today);
     let cals=0,protein=0,steps=0,water=0;
     todayMeals.forEach(meal=>meal.foods.forEach(f=>{cals+=f.cal;protein+=f.protein;}));
     const saved=localStorage.getItem('nutrition-'+today);
-    const nd=saved?JSON.parse(saved):{steps:0,water:0,restDay:false};
-    steps=parseInt(nd.steps)||0;
-    water=parseFloat(nd.water)||0;
+    const nd=saved?JSON.parse(saved):{};
+    steps=parseInt(nd.steps)||0;water=parseFloat(nd.water)||0;
     const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
     const setWidth=(id,pct)=>{const el=document.getElementById(id);if(el)el.style.width=pct+'%';};
     setEl('home-show-calories',`${cals} / ${calTarget} kcal`);setEl('home-protein',`${protein.toFixed(1)} / ${proteinTarget}g`);
@@ -1519,6 +1473,13 @@ streakBar.appendChild(d);
     const coachEl=document.getElementById('coach-prompts');
     if(coachEl)coachEl.innerHTML=prompts.map(p=>`<div class="coach-prompt ${p.type}">${p.text}</div>`).join('');
     renderBadges();
+    const nextWorkout=getNextWorkoutSuggestion();
+const nextEl=document.getElementById('next-workout-suggestion');
+const nextText=document.getElementById('next-workout-text');
+if(nextEl&&nextText&&nextWorkout){
+    nextEl.style.display='block';
+    nextText.textContent=nextWorkout+' Day — based on your last session';
+}
 }
 
 // ===================== PROGRESS =====================
@@ -1710,6 +1671,24 @@ function showPreviousWorkoutSummary(category) {
         <div style="color:var(--text);font-size:13px;">${last.date} • ${last.duration||0} mins</div>
         ${topLift?`<div style="color:var(--text-muted);font-size:12px;margin-top:4px;">${topLift.name} — ${topLift.sets.length} sets</div>`:''}
     </div>`;
+}
+
+const quotes = [
+    "The only bad workout is the one that didn't happen.",
+    "Push yourself because no one else is going to do it for you.",
+    "Your body can stand almost anything. It's your mind you have to convince.",
+    "The pain you feel today will be the strength you feel tomorrow.",
+    "Don't stop when you're tired. Stop when you're done.",
+    "Success starts with self discipline.",
+    "It never gets easier. You just get stronger.",
+    "Train insane or remain the same.",
+    "Champions aren't made in gyms. They're made from what they have inside.",
+    "God is great. Work is the prayer.",
+];
+
+function getDailyQuote() {
+    const day = Math.floor(Date.now() / 86400000);
+    return quotes[day % quotes.length];
 }
 
 // ===================== STORAGE =====================
