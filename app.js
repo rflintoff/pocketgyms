@@ -28,7 +28,7 @@ PG.db.auth.onAuthStateChange(async (event, session) => {
     await initApp(session.user);
   } else {
     document.getElementById('auth-modal').style.display = 'flex';
-    document.getElementById('app').style.display = 'none';
+    document.getElementById('onboarding').style.display = 'none';
   }
 });
 
@@ -1360,7 +1360,7 @@ function deleteFoodFromMeal(mealIndex,foodIndex){meals[mealIndex].foods.splice(f
 async function saveStepsWater() {
     const today=new Date().toLocaleDateString('en-GB');
     let data=await PG.nutrition.getToday()||{steps:0,water:0};
-    const steps=document.getElementById('input-steps').value;
+    const steps=document.getElementById('input-steps-train').value;
     const water=document.getElementById('input-water').value;
     if(steps)data.steps=parseInt(steps);if(water)data.water=parseFloat(water);
     await PG.nutrition.save(data);
