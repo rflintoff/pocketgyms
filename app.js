@@ -1,4 +1,4 @@
-// ===================== TRANSLATIONS =====================
+﻿// ===================== TRANSLATIONS =====================
 const translations = {
     en: {
         langTitle:'Choose Language', langSub:'Select your preferred language', langBtn:'Continue',
@@ -1026,7 +1026,13 @@ function renderExercises() {
             </div>
             ${isWarmup?'<div style="color:#F59E0B;font-size:10px;font-weight:700;margin-bottom:4px;margin-left:44px;">WARM UP — not counted</div>':''}`;
         });
-        block.innerHTML=`<div class="exercise-name" style="justify-content:space-between;">${ex.name} ${pbBadge}<span style="color:var(--text-muted);font-size:11px;font-weight:600;cursor:pointer;" onclick="swapExercise(${ei})">⇄ Swap</span></div>${targetInfo}${suggestion}${lastPerf}${setsHTML}<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+        block.innerHTML=`<div class="exercise-name" style="justify-content:space-between;">
+<span onclick="showExerciseHistory(${JSON.stringify(ex.name)})">${ex.name} ${pbBadge}</span>
+<div style="display:flex;gap:6px;align-items:center;">
+    ${ei>0?`<button type="button" onclick="moveExercise(${ei},-1)" style="background:var(--primary-light);color:var(--primary);border:none;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:700;cursor:pointer;">↑</button>`:''}
+    ${ei<exercises.length-1?`<button type="button" onclick="moveExercise(${ei},1)" style="background:var(--primary-light);color:var(--primary);border:none;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:700;cursor:pointer;">↓</button>`:''}
+    <button type="button" onclick="removeExercise(${ei})" style="background:#FEF2F2;color:var(--danger);border:none;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:700;cursor:pointer;">��</button>
+</div></div>${targetInfo}${suggestion}${lastPerf}${setsHTML}<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
     <button class="btn-outline" onclick="addSet(${ei})" style="flex:1;margin-bottom:0;">+ Set</button>
     <button class="btn-small" onclick="startTimer(60,${ei})">60s</button>
     <button class="btn-small" onclick="startTimer(90,${ei})">90s</button>
@@ -1691,6 +1697,36 @@ function getDailyQuote() {
     return quotes[day % quotes.length];
 }
 
+function removeExercise(ei){
+    if(confirm('Remove this exercise?')){
+        exercises.splice(ei,1);
+        renderExercises();
+    }
+}
+
+function moveExercise(ei,direction){
+    const newIndex=ei+direction;
+    if(newIndex<0||newIndex>=exercises.length)return;
+    const temp=exercises[ei];
+    exercises[ei]=exercises[newIndex];
+    exercises[newIndex]=temp;
+    renderExercises();
+}
+
+function showExerciseHistory(exerciseName){
+    const rows=[];
+    workoutHistory.forEach(w=>{
+        if(!w.exercises)return;
+        const found=w.exercises.find(e=>e.name===exerciseName);
+        if(!found)return;
+        const working=found.sets.filter(s=>!s.warmup);
+        const summary=working.map((s,i)=>'Set '+(i+1)+': '+s.reps+' @ '+s.weight+'kg').join(' · ');
+        rows.push(w.date+(w.muscle?' ('+w.muscle+')':'')+': '+summary);
+    });
+    if(rows.length===0){alert('No logged history for '+exerciseName+'.');return;}
+    alert(rows.slice(0,20).join('\n'));
+}
+
 // ===================== STORAGE =====================
 function saveToStorage() {
     localStorage.setItem('workoutHistory',JSON.stringify(workoutHistory));
@@ -1994,21 +2030,6 @@ function toggleWarmup(ei,si) {
 
 function getWorkingSets(ex) {
     return ex.sets.filter(s=>!s.warmup);
-}
-
-function swapExercise(ei) {
-    const ex=exercises[ei];
-    const cat=selectedMuscle;
-    const alternatives=getExercisesForCategory(cat).filter(e=>e!==ex.name);
-    if(alternatives.length===0){alert('No alternatives found for this category');return;}
-    const optionsList=alternatives.slice(0,6).map((alt,i)=>`${i+1}. ${alt}`).join('\n');
-    const choice=prompt(`Swap "${ex.name}" with:\n\n${optionsList}\n\nEnter number:`);
-    if(!choice)return;
-    const index=parseInt(choice)-1;
-    if(index>=0&&index<alternatives.length){
-        exercises[ei].name=alternatives[index];
-        renderExercises();
-    }
 }
 
 function saveMealTemplate() {
