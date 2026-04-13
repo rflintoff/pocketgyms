@@ -1,3 +1,46 @@
+// ─── AUTH BOOT ────────────────────────────────────────────────────────────────
+let isSignUp = false;
+
+function toggleAuthMode() {
+  isSignUp = !isSignUp;
+  document.getElementById('auth-toggle-btn').textContent =
+    isSignUp ? 'Have an account? Sign in' : 'No account? Sign up';
+}
+
+async function handleEmailAuth() {
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const errEl = document.getElementById('auth-error');
+  errEl.style.display = 'none';
+
+  const fn = isSignUp ? PG.auth.signUpEmail : PG.auth.signInEmail;
+  const { error } = await fn(email, password);
+
+  if (error) {
+    errEl.textContent = error.message;
+    errEl.style.display = 'block';
+  }
+}
+
+PG.db.auth.onAuthStateChange(async (event, session) => {
+  if (session?.user) {
+    document.getElementById('auth-modal').style.display = 'none';
+    await initApp(session.user);
+  } else {
+    document.getElementById('auth-modal').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+  }
+});
+
+async function initApp(user) {
+  const profile = await PG.profile.get();
+
+  if (!profile?.goal) {
+    showOnboarding();
+  } else {
+    await loadFromStorage();
+  }
+}
 // ===================== TRANSLATIONS =====================
 const translations = {
     en: {
@@ -584,9 +627,9 @@ let firstSetLogged=false, isPremium=false;
 // ===================== PREMIUM =====================
 function showUpgrade() { document.getElementById('upgrade-modal').style.display='block'; }
 function closeUpgrade() { document.getElementById('upgrade-modal').style.display='none'; }
-function activatePremium() {
+async function activatePremium() {
     isPremium=true;
-    localStorage.setItem('isPremium','true');
+    await PG.profile.save({premium_status:true});
     closeUpgrade();
     alert('Premium activated! 🎉');
 }
@@ -717,14 +760,14 @@ function obNext(step) {
     document.getElementById('dot-'+step).classList.add('active');
 }
 
-function fastTrack() {
+async function fastTrack() {
     settings={name:'',goal:'fitness',environment:'gym',diet:'standard',weight:0,targetWeight:0,
         calTarget:2000,proteinTarget:150,stepsTarget:8000,language:selectedLang,
         phaseName:'Phase 1',phaseStartDate:new Date().toLocaleDateString('en-GB'),
         phaseDuration:56,trainingDays:4,units:'kg'};
-    localStorage.setItem('settings',JSON.stringify(settings));
-    localStorage.setItem('onboarded','true');
-    loadFromStorage();
+    await PG.profile.save(settings);
+    await PG.profile.save({onboarded:true});
+    await loadFromStorage();
 }
 
 function selectHeightUnit(unit) {
@@ -757,7 +800,7 @@ function getWeightInKg(value) {
     return value;
 }
 
-function completeOnboarding() {
+async function completeOnboarding() {
     const age=parseInt(document.getElementById('ob-age').value)||25;
     const weightRaw=parseFloat(document.getElementById('ob-weight').value)||80;
     const targetRaw=parseFloat(document.getElementById('ob-target').value)||75;
@@ -778,16 +821,16 @@ function completeOnboarding() {
         activity,tdee,calTarget,proteinTarget,stepsTarget:8000,
         phaseName:'Phase 1',phaseStartDate:new Date().toLocaleDateString('en-GB'),
         phaseDuration:56,trainingDays:4,units:selectedWeightUnit,language:selectedLang};
-    localStorage.setItem('settings',JSON.stringify(settings));
-    localStorage.setItem('onboarded','true');
-    loadFromStorage();
+    await PG.profile.save(settings);
+    await PG.profile.save({onboarded:true});
+    await loadFromStorage();
 }
 
 // ===================== THEME =====================
-function toggleTheme() {
+async function toggleTheme() {
     document.body.classList.toggle('dark');
     const toggle=document.getElementById('dark-toggle');if(toggle)toggle.classList.toggle('on');
-    localStorage.setItem('theme',document.body.classList.contains('dark')?'dark':'light');
+    await PG.profile.save({darkMode:document.body.classList.contains('dark')?'dark':'light'});
 }
 
 // ===================== NAVIGATION =====================
@@ -1233,7 +1276,7 @@ function closeFoodModal(){document.getElementById('food-modal').style.display='n
 
 function setFoodFilter(filter,btn){foodFilter=filter;document.querySelectorAll('#food-filter-bar .filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');filterFoods();}
 
-function filterFoods() {
+async function filterFoods() {
     const search=(document.getElementById('food-search').value||'').toLowerCase();
     const diet=settings.diet||'standard';
     const list=document.getElementById('food-list');if(!list)return;
@@ -1244,7 +1287,8 @@ function filterFoods() {
     // Recent foods at top when no search
     let recentHTML='';
     if(!search){
-        const recent=JSON.parse(localStorage.getItem('recentFoods')||'[]');
+        const todayNutrition=await PG.nutrition.getToday();
+        const recent=todayNutrition?.recentFoods||[];
         if(recent.length>0){
             recentHTML=`<div style="margin-bottom:12px;">
                 <div style="color:var(--text-muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Recent & Common</div>
@@ -1280,7 +1324,7 @@ function updatePortionPreview() {
     document.getElementById('food-portion-preview').textContent=`${Math.round(selectedFood.cal*ratio)} kcal • P: ${(selectedFood.protein*ratio).toFixed(1)}g • C: ${(selectedFood.carbs*ratio).toFixed(1)}g • F: ${(selectedFood.fat*ratio).toFixed(1)}g`;
 }
 
-function addFoodEntry() {
+async function addFoodEntry() {
     if(!selectedFood||currentMealIndex===null)return;
     const isLiquid=selectedFood.category==='drinks';
     const portion=parseFloat(document.getElementById('food-portion-amount').value)||(isLiquid?250:100);
@@ -1293,55 +1337,52 @@ function addFoodEntry() {
         category:selectedFood.category
     };
     // Save to recent foods
-    const recent=JSON.parse(localStorage.getItem('recentFoods')||'[]');
+    const todayNutrition=await PG.nutrition.getToday();
+    const recent=todayNutrition?.recentFoods||[];
     const exists=recent.findIndex(f=>f.name===selectedFood.name);
     if(exists>-1)recent.splice(exists,1);
     recent.unshift({...selectedFood});
-    localStorage.setItem('recentFoods',JSON.stringify(recent.slice(0,10)));
+    await PG.nutrition.save({recentFoods:recent.slice(0,10)});
     if(selectedFood.water){
         const today=new Date().toLocaleDateString('en-GB');
-        const saved=localStorage.getItem('nutrition-'+today);
-        const nd=saved?JSON.parse(saved):{steps:0,water:0,restDay:false};
+        const nd=await PG.nutrition.getToday()||{steps:0,water:0,restDay:false};
         const servingMl=Math.max(1,Math.round(selectedFood.water*1000));
         const addWater=selectedFood.water*(portion/servingMl);
         nd.water=Math.round(((parseFloat(nd.water)||0)+addWater)*100)/100;
-        localStorage.setItem('nutrition-'+today,JSON.stringify(nd));
+        await PG.nutrition.save(nd);
     }
     meals[currentMealIndex].foods.push(entry);
-    saveToStorage();updateFoodModalTotals();closeFoodModal();renderMeals();loadNutrition();updateHome();
+    await saveToStorage();updateFoodModalTotals();closeFoodModal();renderMeals();loadNutrition();updateHome();
 }
 
 function deleteFoodFromMeal(mealIndex,foodIndex){meals[mealIndex].foods.splice(foodIndex,1);saveToStorage();renderMeals();loadNutrition();updateHome();if(document.getElementById('food-modal')?.style.display==='block')updateFoodModalTotals();}
 
-function saveStepsWater() {
+async function saveStepsWater() {
     const today=new Date().toLocaleDateString('en-GB');
-    const saved=localStorage.getItem('nutrition-'+today);
-    let data=saved?JSON.parse(saved):{steps:0,water:0};
+    let data=await PG.nutrition.getToday()||{steps:0,water:0};
     const steps=document.getElementById('input-steps').value;
     const water=document.getElementById('input-water').value;
     if(steps)data.steps=parseInt(steps);if(water)data.water=parseFloat(water);
-    localStorage.setItem('nutrition-'+today,JSON.stringify(data));
+    await PG.nutrition.save(data);
     loadNutrition();updateHome();
 }
-function saveWater() {
+async function saveWater() {
     const today=new Date().toLocaleDateString('en-GB');
-    const saved=localStorage.getItem('nutrition-'+today);
-    let data=saved?JSON.parse(saved):{steps:0,water:0};
+    let data=await PG.nutrition.getToday()||{steps:0,water:0};
     const water=document.getElementById('input-water').value;
     if(water)data.water=parseFloat(water);
-    localStorage.setItem('nutrition-'+today,JSON.stringify(data));
+    await PG.nutrition.save(data);
     loadNutrition();
     updateHome();
 }
-function loadNutrition() {
+async function loadNutrition() {
     const today=new Date().toLocaleDateString('en-GB');
     const calTarget=settings.calTarget||2000;const proteinTarget=settings.proteinTarget||150;const stepsTarget=settings.stepsTarget||8000;
     const calDateEl=document.getElementById('cal-date');if(calDateEl)calDateEl.textContent=today;
     const todayMeals=meals.filter(m=>m.date===today);
     let totalCal=0,totalProtein=0,totalCarbs=0,totalFat=0;
     todayMeals.forEach(meal=>meal.foods.forEach(f=>{totalCal+=f.cal;totalProtein+=f.protein;totalCarbs+=f.carbs;totalFat+=f.fat;}));
-    const saved=localStorage.getItem('nutrition-'+today);
-    const nd=saved?JSON.parse(saved):{steps:0,water:0,restDay:false};
+    const nd=await PG.nutrition.getToday()||{steps:0,water:0,restDay:false};
     const steps=parseInt(nd.steps)||0;
     const water=parseFloat(nd.water)||0;
     const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
@@ -1370,17 +1411,18 @@ function loadNutrition() {
     if(calStatus){if(totalCal>=expectedCals){calStatus.textContent=t('onTrack');calStatus.style.color='#10B981';}else{calStatus.textContent=t('behindEat');calStatus.style.color='#F59E0B';}}
 }
 
-function renderSupplements() {
+async function renderSupplements() {
     const today=new Date().toLocaleDateString('en-GB');
-    const saved=localStorage.getItem('supplements-'+today);const done=saved?JSON.parse(saved):[];
+    const nutritionData=await PG.nutrition.getToday();
+    const done=nutritionData?.['supplements_'+today]||[];
     const list=document.getElementById('supplement-list');if(!list)return;
     list.innerHTML=supplementsList.map((s,i)=>`<div class="supplement-item"><div class="supplement-name">${s}</div><div class="supplement-check ${done.includes(i)?'done':''}" onclick="toggleSupplement(${i})">${done.includes(i)?'✓':''}</div></div>`).join('');
 }
 
-function toggleSupplement(index){const today=new Date().toLocaleDateString('en-GB');const saved=localStorage.getItem('supplements-'+today);let done=saved?JSON.parse(saved):[];done.includes(index)?done.splice(done.indexOf(index),1):done.push(index);localStorage.setItem('supplements-'+today,JSON.stringify(done));renderSupplements();}
+async function toggleSupplement(index){const today=new Date().toLocaleDateString('en-GB');const nutritionData=await PG.nutrition.getToday();let done=nutritionData?.['supplements_'+today]||[];done.includes(index)?done.splice(done.indexOf(index),1):done.push(index);await PG.nutrition.save({['supplements_'+today]:done});renderSupplements();}
 
 // ===================== HOME =====================
-function updateHome() {
+async function updateHome() {
     const s=settings;const calTarget=s.calTarget||2000;const proteinTarget=s.proteinTarget||150;const stepsTarget=s.stepsTarget||8000;
     if(s.name)document.getElementById('header-greeting').textContent='Hi '+s.name+' 👋';
     if(s.phaseName){
@@ -1394,7 +1436,7 @@ function updateHome() {
             const bar=document.getElementById('home-prog-bar');if(bar)bar.style.width=pct+'%';
             const pctEl=document.getElementById('home-prog-pct');if(pctEl)pctEl.textContent=pct+'% complete';
             const recordEl=document.getElementById('streak-record');
-if(recordEl)recordEl.textContent=localStorage.getItem('streakRecord')||'0'+'/7';
+if(recordEl){const progressEntries=await PG.progress.getAll();recordEl.textContent=(progressEntries?.[0]?.streakRecord||'0')+'/7';}
 }
 }
     const quoteEl=document.getElementById('daily-quote');
@@ -1414,8 +1456,7 @@ if(recordEl)recordEl.textContent=localStorage.getItem('streakRecord')||'0'+'/7';
     let cals=0,protein=0,steps=0,water=0;
     let carbs=0,fats=0;
     todayMeals.forEach(meal=>meal.foods.forEach(f=>{cals+=f.cal;protein+=f.protein;carbs+=f.carbs;fats+=f.fat;}));
-    const saved=localStorage.getItem('nutrition-'+today);
-    const nd=saved?JSON.parse(saved):{};
+    const nd=await PG.nutrition.getToday()||{};
     steps=parseInt(nd.steps)||0;water=parseFloat(nd.water)||0;
     const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
     const setWidth=(id,pct)=>{const el=document.getElementById(id);if(el)el.style.width=pct+'%';};
@@ -1438,8 +1479,7 @@ if(recordEl)recordEl.textContent=localStorage.getItem('streakRecord')||'0'+'/7';
             const d=document.createElement('div');d.className='streak-day';
             const dayDate=new Date(now);dayDate.setDate(now.getDate()-((dow+6-i)%7));
             const dateStr=dayDate.toLocaleDateString('en-GB');
-            const nutritionData=localStorage.getItem('nutrition-'+dateStr);
-            const nd=nutritionData?JSON.parse(nutritionData):{};
+            const nd=await PG.nutrition.getToday()||{};
             const calTarget=settings.calTarget||2000;
             const proteinTarget=settings.proteinTarget||150;
             const stepsTarget=settings.stepsTarget||8000;
@@ -1492,7 +1532,7 @@ if(nextEl&&nextText&&nextWorkout){
 }
 
 // ===================== PROGRESS =====================
-function updateProgress() {
+async function updateProgress() {
     const s=settings;
     if(s.phaseName){
         const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
@@ -1515,7 +1555,8 @@ function updateProgress() {
     const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
     setEl('workouts-count',workoutHistory.length);setEl('cardio-count',cardioHistory.length);
     let daysHit=0;
-    for(let i=0;i<30;i++){const d=new Date();d.setDate(d.getDate()-i);if(localStorage.getItem('nutrition-'+d.toLocaleDateString('en-GB'))||meals.some(m=>m.date===d.toLocaleDateString('en-GB')&&m.foods.length>0))daysHit++;}
+    const todayNutrition=await PG.nutrition.getToday();
+    for(let i=0;i<30;i++){const d=new Date();d.setDate(d.getDate()-i);if(todayNutrition||meals.some(m=>m.date===d.toLocaleDateString('en-GB')&&m.foods.length>0))daysHit++;}
     setEl('consistency-score',daysHit+'/30 days');
     const pbs=Object.entries(personalBests);
     const pbList=document.getElementById('pb-list');
@@ -1531,7 +1572,7 @@ function updateProgress() {
     renderWeightChart();
 }
 
-function completePhase() {
+async function completePhase() {
     if(!settings.phaseName)return;
     const result=prompt('How did this phase go?')||'Phase completed';
     const parts=(settings.phaseStartDate||'').split('/');
@@ -1541,25 +1582,25 @@ function completePhase() {
     const newName=prompt('Name your next phase:','Phase '+(phaseHistory.length+1))||'New Phase';
     const dur=parseInt(prompt('Duration in days (e.g. 56 for 8 weeks):','56'))||56;
     settings.phaseName=newName;settings.phaseStartDate=new Date().toLocaleDateString('en-GB');settings.phaseDuration=dur;
-    localStorage.setItem('settings',JSON.stringify(settings));
+    await PG.profile.save(settings);
     saveToStorage();updateProgress();updateHome();
 }
 
-function saveCheckin() {
+async function saveCheckin() {
     const entry={date:new Date().toLocaleDateString('en-GB'),weight:document.getElementById('checkin-weight').value,energy:document.getElementById('checkin-energy').value,notes:document.getElementById('checkin-notes').value};
-    if(entry.weight){settings.weight=parseFloat(entry.weight);localStorage.setItem('settings',JSON.stringify(settings));}
+    if(entry.weight){settings.weight=parseFloat(entry.weight);await PG.profile.save(settings);}
     checkinHistory.unshift(entry);saveToStorage();
     document.getElementById('checkin-weight').value='';document.getElementById('checkin-energy').value='';document.getElementById('checkin-notes').value='';
     updateProgress();
 }
 
-function saveMeasurements() {
+async function saveMeasurements() {
     measurements={date:new Date().toLocaleDateString('en-GB'),chest:document.getElementById('meas-chest').value,waist:document.getElementById('meas-waist').value,hips:document.getElementById('meas-hips').value,arms:document.getElementById('meas-arms').value,legs:document.getElementById('meas-legs').value};
-    localStorage.setItem('measurements',JSON.stringify(measurements));
+    await PG.progress.save(measurements);
     alert('Measurements saved!');
 }
 
-function renderHistory() {
+async function renderHistory() {
     const list=document.getElementById('history-list');if(!list)return;
     const all=[
         ...workoutHistory.map(w=>({...w,type:w.type||'workout'})),
@@ -1575,9 +1616,9 @@ function renderHistory() {
         </div>`;
         return;
     }
+    const nutritionData=await PG.nutrition.getToday();
     list.innerHTML=all.map(w=>{
-        const nutritionData=localStorage.getItem('nutrition-'+w.date);
-        const nd=nutritionData?JSON.parse(nutritionData):{};
+        const nd=nutritionData||{};
         const daySteps=parseInt(nd.steps)||0;
         if(w.type==='rest'){
             return `<div style="border-bottom:1px solid var(--border);padding:12px 0;">
@@ -1601,7 +1642,7 @@ function renderHistory() {
 
 
 // ===================== SETTINGS =====================
-function saveSettings() {
+async function saveSettings() {
     const age=parseInt(document.getElementById('set-age').value);
     const weight=parseFloat(document.getElementById('set-weight').value);
     const height=parseFloat(document.getElementById('set-height').value);
@@ -1621,7 +1662,7 @@ function saveSettings() {
         phaseDuration,trainingDays:parseInt(document.getElementById('set-training-days').value),
         tdee,calTarget,proteinTarget,stepsTarget:8000};
     selectedLang=settings.language;
-    localStorage.setItem('settings',JSON.stringify(settings));
+    await PG.profile.save(settings);
     const tdeeEl=document.getElementById('tdee-result');if(tdeeEl)tdeeEl.style.display='block';
     const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
     setEl('tdee-value',tdee+' kcal');setEl('cal-target-value',calTarget+' kcal');setEl('protein-target-value',proteinTarget+'g');
@@ -1662,11 +1703,11 @@ const badgeDefinitions=[
     {id:'ten_workouts',nameKey:'badge_ten_workouts',icon:'🔥',check:()=>workoutHistory.length>=10},
     {id:'first_pb',nameKey:'badge_first_pb',icon:'🏆',check:()=>Object.keys(personalBests).length>=1},
     {id:'first_cardio',nameKey:'badge_first_cardio',icon:'🏃',check:()=>cardioHistory.length>=1},
-    {id:'week_streak',nameKey:'badge_week_streak',icon:'⚡',check:()=>{let s=0;for(let i=0;i<7;i++){const d=new Date();d.setDate(d.getDate()-i);if(localStorage.getItem('nutrition-'+d.toLocaleDateString('en-GB'))||workoutHistory.find(w=>w.date===d.toLocaleDateString('en-GB')))s++;}return s>=7;}}
+    {id:'week_streak',nameKey:'badge_week_streak',icon:'⚡',check:async ()=>{let s=0;const todayNutrition=await PG.nutrition.getToday();for(let i=0;i<7;i++){const d=new Date();d.setDate(d.getDate()-i);if(todayNutrition||workoutHistory.find(w=>w.date===d.toLocaleDateString('en-GB')))s++;}return s>=7;}}
 ];
 
-function checkBadges(){const earned=JSON.parse(localStorage.getItem('badges')||'[]');badgeDefinitions.forEach(b=>{if(!earned.includes(b.id)&&b.check())earned.push(b.id);});localStorage.setItem('badges',JSON.stringify(earned));}
-function renderBadges(){const earned=JSON.parse(localStorage.getItem('badges')||'[]');const el=document.getElementById('badges-display');if(el)el.innerHTML=badgeDefinitions.map(b=>`<span class="badge ${earned.includes(b.id)?'earned':''}">${b.icon} ${t(b.nameKey)}</span>`).join('');}
+async function checkBadges(){const profile=await PG.profile.get();const earned=profile?.badges||[];for(const b of badgeDefinitions){const unlocked=await b.check();if(!earned.includes(b.id)&&unlocked)earned.push(b.id);}await PG.profile.save({badges:earned});}
+async function renderBadges(){const profile=await PG.profile.get();const earned=profile?.badges||[];const el=document.getElementById('badges-display');if(el)el.innerHTML=badgeDefinitions.map(b=>`<span class="badge ${earned.includes(b.id)?'earned':''}">${b.icon} ${t(b.nameKey)}</span>`).join('');}
 
 function showPreviousWorkoutSummary(category) {
     const last=workoutHistory.find(w=>w.muscle===category);
@@ -1731,29 +1772,110 @@ function showExerciseHistory(exerciseName){
 }
 
 // ===================== STORAGE =====================
-function saveToStorage() {
-    localStorage.setItem('workoutHistory',JSON.stringify(workoutHistory));
-    localStorage.setItem('cardioHistory',JSON.stringify(cardioHistory));
-    localStorage.setItem('checkinHistory',JSON.stringify(checkinHistory));
-    localStorage.setItem('personalBests',JSON.stringify(personalBests));
-    localStorage.setItem('savedRoutines',JSON.stringify(savedRoutines));
-    localStorage.setItem('customExercises',JSON.stringify(customExercises));
-    localStorage.setItem('meals',JSON.stringify(meals));
-    localStorage.setItem('phaseHistory',JSON.stringify(phaseHistory));
+function getRowTimestamp(row){
+    if(!row||typeof row!=='object') return 0;
+    const raw=row.updated_at||row.created_at||row.logged_at||row.date;
+    if(!raw) return 0;
+    const ts=Date.parse(raw);
+    return Number.isFinite(ts)?ts:0;
 }
 
-function loadFromStorage() {
-    const theme=localStorage.getItem('theme');
+function pickLatestRow(rows){
+    if(!Array.isArray(rows)||rows.length===0) return {};
+    return [...rows].sort((a,b)=>getRowTimestamp(b)-getRowTimestamp(a))[0]||{};
+}
+
+function normalizeHistoryRows(rows,snapshotKey){
+    if(!Array.isArray(rows)||rows.length===0) return [];
+    const latestSnapshot=pickLatestRow(rows.filter(r=>Array.isArray(r?.[snapshotKey])));
+    if(Array.isArray(latestSnapshot?.[snapshotKey])) return latestSnapshot[snapshotKey];
+    return rows.map(r=>({
+        ...r,
+        id:undefined,
+        user_id:undefined,
+        created_at:undefined,
+        updated_at:undefined
+    })).map(({id,user_id,created_at,updated_at,...rest})=>rest);
+}
+
+function normalizeProgressRows(rows){
+    const normalized={checkinHistory:[],personalBests:{},meals:[],phaseHistory:[],measurements:{},streakRecord:0};
+    if(!Array.isArray(rows)||rows.length===0) return normalized;
+    const sorted=[...rows].sort((a,b)=>getRowTimestamp(b)-getRowTimestamp(a));
+    const latest=sorted[0]||{};
+    if(Array.isArray(latest.checkinHistory)) normalized.checkinHistory=latest.checkinHistory;
+    if(latest.personalBests&&typeof latest.personalBests==='object') normalized.personalBests=latest.personalBests;
+    if(Array.isArray(latest.meals)) normalized.meals=latest.meals;
+    if(Array.isArray(latest.phaseHistory)) normalized.phaseHistory=latest.phaseHistory;
+    if(typeof latest.streakRecord==='number') normalized.streakRecord=latest.streakRecord;
+    const measurementSnapshot=sorted.find(r=>r&&typeof r==='object'&&(r.measurements||r.chest||r.waist||r.hips||r.arms||r.legs));
+    if(measurementSnapshot?.measurements&&typeof measurementSnapshot.measurements==='object'){
+        normalized.measurements=measurementSnapshot.measurements;
+    } else if(measurementSnapshot){
+        normalized.measurements={
+            date:measurementSnapshot.date||'',
+            chest:measurementSnapshot.chest||'',
+            waist:measurementSnapshot.waist||'',
+            hips:measurementSnapshot.hips||'',
+            arms:measurementSnapshot.arms||'',
+            legs:measurementSnapshot.legs||''
+        };
+    }
+    return normalized;
+}
+
+function normalizeRoutinesRows(rows){
+    const normalized={savedRoutines:[],customExercises:{},mealTemplates:[],unlockedCodes:[]};
+    if(!Array.isArray(rows)||rows.length===0) return normalized;
+    const sorted=[...rows].sort((a,b)=>getRowTimestamp(b)-getRowTimestamp(a));
+    const latestSnapshot=pickLatestRow(sorted.filter(r=>Array.isArray(r?.savedRoutines)));
+    if(Array.isArray(latestSnapshot.savedRoutines)){
+        normalized.savedRoutines=latestSnapshot.savedRoutines;
+        normalized.customExercises=latestSnapshot.customExercises&&typeof latestSnapshot.customExercises==='object'
+            ? latestSnapshot.customExercises
+            : {};
+    } else {
+        normalized.savedRoutines=sorted
+            .filter(r=>r&&typeof r==='object'&&typeof r.name==='string'&&Array.isArray(r.exercises))
+            .map(r=>({name:r.name,exercises:r.exercises,created:r.created,programmeData:r.programmeData,locked:r.locked}));
+    }
+    const latestTemplates=pickLatestRow(sorted.filter(r=>Array.isArray(r?.mealTemplates)));
+    if(Array.isArray(latestTemplates.mealTemplates)) normalized.mealTemplates=latestTemplates.mealTemplates;
+    const latestUnlocked=pickLatestRow(sorted.filter(r=>Array.isArray(r?.unlockedCodes)));
+    if(Array.isArray(latestUnlocked.unlockedCodes)) normalized.unlockedCodes=latestUnlocked.unlockedCodes;
+    return normalized;
+}
+
+async function saveToStorage() {
+    await PG.workouts.save({history:workoutHistory});
+    await PG.cardio.save({history:cardioHistory});
+    await PG.progress.save({checkinHistory,personalBests,meals,phaseHistory});
+    await PG.routines.save({savedRoutines,customExercises});
+}
+
+async function loadFromStorage() {
+    const profile=await PG.profile.get()||{};
+    const theme=profile.darkMode||profile.theme;
     if(theme==='dark'){document.body.classList.add('dark');const t=document.getElementById('dark-toggle');if(t)t.classList.add('on');}
-    isPremium=localStorage.getItem('isPremium')==='true';
-    const load=(key,def)=>{const s=localStorage.getItem(key);return s?JSON.parse(s):def;};
-    workoutHistory=load('workoutHistory',[]);cardioHistory=load('cardioHistory',[]);
-    checkinHistory=load('checkinHistory',[]);personalBests=load('personalBests',{});
-    savedRoutines=load('savedRoutines',[]);customExercises=load('customExercises',{});
-    meals=load('meals',[]);phaseHistory=load('phaseHistory',[]);measurements=load('measurements',{});
-    const s=localStorage.getItem('settings');if(s){settings=JSON.parse(s);selectedLang=settings.language||'en';}
-    const onboarded=localStorage.getItem('onboarded');
-    if(onboarded)document.getElementById('onboarding').style.display='none';
+    isPremium=profile.premium_status===true;
+    const workouts=await PG.workouts.getAll();
+    const cardio=await PG.cardio.getAll();
+    const routinesData=await PG.routines.getAll();
+    const progressData=await PG.progress.getAll();
+    workoutHistory=normalizeHistoryRows(workouts,'history');
+    cardioHistory=normalizeHistoryRows(cardio,'history');
+    const normalizedProgress=normalizeProgressRows(progressData);
+    checkinHistory=normalizedProgress.checkinHistory;
+    personalBests=normalizedProgress.personalBests;
+    meals=normalizedProgress.meals;
+    phaseHistory=normalizedProgress.phaseHistory;
+    measurements=normalizedProgress.measurements;
+    const normalizedRoutines=normalizeRoutinesRows(routinesData);
+    savedRoutines=normalizedRoutines.savedRoutines;
+    customExercises=normalizedRoutines.customExercises;
+    settings=profile;
+    selectedLang=settings.language||'en';
+    if(profile.onboarded)document.getElementById('onboarding').style.display='none';
     applyTranslations();checkBadges();updateHome();
 }
 // ===================== PROGRAMME TEMPLATES =====================
@@ -1933,14 +2055,16 @@ const programmeTemplates = {
 };
 
 // ===================== CODE UNLOCK =====================
-function unlockProgramme() {
+async function unlockProgramme() {
     const code = document.getElementById('programme-code').value.trim().toUpperCase();
     const programme = programmeTemplates[code];
     if (!programme) {
         alert('Invalid code. Please check your code and try again.');
         return;
     }
-    const unlockedCodes = JSON.parse(localStorage.getItem('unlockedCodes') || '[]');
+    const routinesData=await PG.routines.getAll();
+    const routinesMeta=normalizeRoutinesRows(routinesData);
+    const unlockedCodes = routinesMeta.unlockedCodes;
     if (unlockedCodes.includes(code)) {
         alert('This programme is already unlocked!');
         return;
@@ -1965,23 +2089,22 @@ function unlockProgramme() {
         }
     });
     unlockedCodes.push(code);
-    localStorage.setItem('unlockedCodes', JSON.stringify(unlockedCodes));
-    saveToStorage();
+    await PG.routines.save({unlockedCodes});
+    await saveToStorage();
     document.getElementById('programme-code').value = '';
     alert('🎉 ' + programme.name + ' unlocked! Check My Routines.');
     renderRoutinesList();
 }
-function logRestDay() {
+async function logRestDay() {
     const today=new Date().toLocaleDateString('en-GB');
-    const saved=localStorage.getItem('nutrition-'+today);
-    let data=saved?JSON.parse(saved):{steps:0,water:0};
+    let data=await PG.nutrition.getToday()||{steps:0,water:0};
     if(data.restDay){
         alert('Rest day already logged for today 😴');
         return;
     }
     data.restDay=true;
     data.restDayTime=new Date().toLocaleTimeString('en-GB');
-    localStorage.setItem('nutrition-'+today,JSON.stringify(data));
+    await PG.nutrition.save(data);
     // Add to workout history as a rest day entry
     const alreadyLogged=workoutHistory.find(w=>w.date===today&&w.type==='rest');
     if(!alreadyLogged){
@@ -1992,7 +2115,7 @@ function logRestDay() {
             duration:0,
             exercises:[]
         });
-        saveToStorage();
+        await saveToStorage();
     }
     checkBadges();
     updateHome();
@@ -2002,22 +2125,20 @@ function logRestDay() {
 }
 
 
-function saveStepsTrain() {
+async function saveStepsTrain() {
     const today=new Date().toLocaleDateString('en-GB');
-    const saved=localStorage.getItem('nutrition-'+today);
-    const nd=saved?JSON.parse(saved):{steps:0,water:0,restDay:false};
+    const nd=await PG.nutrition.getToday()||{steps:0,water:0,restDay:false};
     const stepsInput=document.getElementById('input-steps-train').value;
     if(stepsInput!=='')nd.steps=parseInt(stepsInput,10)||0;
-    localStorage.setItem('nutrition-'+today,JSON.stringify(nd));
+    await PG.nutrition.save(nd);
     document.getElementById('input-steps-train').value='';
     updateStepsDisplay();
     updateHome();
 }
 
-function updateStepsDisplay() {
+async function updateStepsDisplay() {
     const today=new Date().toLocaleDateString('en-GB');
-    const saved=localStorage.getItem('nutrition-'+today);
-    const data=saved?JSON.parse(saved):{steps:0,water:0};
+    const data=await PG.nutrition.getToday()||{steps:0,water:0};
     const steps=parseInt(data.steps)||0;
     const stepsTarget=settings.stepsTarget||8000;
     const el=document.getElementById('steps-display-train');
@@ -2035,19 +2156,21 @@ function getWorkingSets(ex) {
     return ex.sets.filter(s=>!s.warmup);
 }
 
-function saveMealTemplate() {
+async function saveMealTemplate() {
     if(!currentMealIndex&&currentMealIndex!==0)return;
     const meal=meals[currentMealIndex];
     if(!meal||meal.foods.length===0){alert('Add some foods to this meal first');return;}
-    const templates=JSON.parse(localStorage.getItem('mealTemplates')||'[]');
+    const routinesData=await PG.routines.getAll();
+    const templates=normalizeRoutinesRows(routinesData).mealTemplates;
     const name=prompt('Save this meal as a template:',meal.name)||meal.name;
     templates.push({name,foods:meal.foods,saved:new Date().toLocaleDateString('en-GB')});
-    localStorage.setItem('mealTemplates',JSON.stringify(templates));
+    await PG.routines.save({mealTemplates:templates});
     alert('✅ Meal template saved!');
 }
 
-function loadMealTemplate() {
-    const templates=JSON.parse(localStorage.getItem('mealTemplates')||'[]');
+async function loadMealTemplate() {
+    const routinesData=await PG.routines.getAll();
+    const templates=normalizeRoutinesRows(routinesData).mealTemplates;
     if(templates.length===0){alert('No saved meal templates yet. Add foods to a meal and save it as a template first.');return;}
     const list=templates.map((t,i)=>`${i+1}. ${t.name} (${t.foods.length} foods)`).join('\n');
     const choice=prompt(`Load a meal template:\n\n${list}\n\nEnter number:`);
@@ -2106,4 +2229,3 @@ function renderWeightChart() {
         ctx.fillText(d.weight+'kg',x,h-8);
     });
 }
-loadFromStorage();
