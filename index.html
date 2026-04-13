@@ -323,6 +323,7 @@
 
     <div id="train-active" style="display:none;">
         <button class="btn-outline" onclick="showTrainSection('menu')" id="txt-back-5">← Back</button>
+        <div id="previous-workout-summary" style="display:none;"></div>
         <div class="workout-timer-bar" id="workout-timer-bar" style="display:none; background:var(--primary); border-radius:12px; padding:16px;">
             <span class="workout-timer-label" style="color:rgba(255,255,255,0.8); font-size:12px;" id="txt-workout-time">WORKOUT TIME</span>
             <span class="workout-timer-value" style="color:#fff; font-size:28px; font-weight:800;" id="workout-timer">00:00</span>
@@ -430,6 +431,7 @@
         <h2 style="color:var(--text); font-size:18px; font-weight:800;" id="food-modal-title">Add Food</h2>
         <button onclick="closeFoodModal()" style="background:none; border:none; color:var(--text); font-size:24px; cursor:pointer;">✕</button>
     </div>
+    <div id="food-modal-totals" style="color:var(--text-muted);font-size:13px;margin-bottom:12px;line-height:1.4;"></div>
     <div class="filter-bar" id="food-filter-bar">
         <button class="filter-btn active" onclick="setFoodFilter('all', this)" id="filter-all">All</button>
         <button class="filter-btn" onclick="setFoodFilter('protein', this)" id="filter-protein">Protein</button>

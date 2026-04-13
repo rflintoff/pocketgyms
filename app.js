@@ -795,6 +795,7 @@ function toggleTheme() {
 
 // ===================== NAVIGATION =====================
 function showScreen(id) {
+    window.scrollTo(0,0);
     document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
@@ -811,6 +812,7 @@ function showScreen(id) {
 function showTrainSection(section) {
     ['menu','routines','quick','create','cardio','active','cardio-active'].forEach(s=>{const el=document.getElementById('train-'+s);if(el)el.style.display='none';});
     const target=document.getElementById('train-'+section);if(target)target.style.display='block';
+    if(section==='menu'){const prev=document.getElementById('previous-workout-summary');if(prev)prev.style.display='none';}
     if(section==='create')buildCreateExercisePicker();
     if(section==='active')buildActiveExercisePicker();
 }
@@ -830,7 +832,7 @@ function getExercisesForCategory(cat) {
 
 function startQuickWorkout(category) {
     selectedMuscle=category;exercises=[];firstSetLogged=false;
-    showTrainSection('active');buildActiveExercisePicker();
+    showTrainSection('active');showPreviousWorkoutSummary(category);buildActiveExercisePicker();
     document.getElementById('save-btn').style.display='none';
     document.getElementById('exercise-log').innerHTML='';
     const timerBar=document.getElementById('workout-timer-bar');if(timerBar)timerBar.style.display='none';
@@ -845,7 +847,7 @@ function buildActiveExercisePicker() {
 
 function switchActiveCategory(cat,btn) {
     document.querySelectorAll('#active-category-filter .filter-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');selectedMuscle=cat;renderActiveTags(cat);
+    btn.classList.add('active');selectedMuscle=cat;showPreviousWorkoutSummary(cat);renderActiveTags(cat);
 }
 
 function renderActiveTags(cat) {
@@ -975,6 +977,7 @@ function startRoutine(index) {
         }));
     }
     showTrainSection('active');
+    showPreviousWorkoutSummary(routine.name);
     buildActiveExercisePicker();
     const timerBar=document.getElementById('workout-timer-bar');
     if(timerBar)timerBar.style.display='none';
@@ -1026,7 +1029,16 @@ function renderExercises() {
             </div>
             ${isWarmup?'<div style="color:#F59E0B;font-size:10px;font-weight:700;margin-bottom:4px;margin-left:44px;">WARM UP — not counted</div>':''}`;
         });
-        block.innerHTML=`<div class="exercise-name" style="justify-content:space-between;">${ex.name} ${pbBadge}<span style="color:var(--text-muted);font-size:11px;font-weight:600;cursor:pointer;" onclick="swapExercise(${ei})">⇄ Swap</span></div>${targetInfo}${suggestion}${lastPerf}${setsHTML}...<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;"><button class="btn-outline" onclick="addSet(${ei})" style="flex:1;margin-bottom:0;">+ Set</button><button class="btn-small" onclick="startTimer(60)">60s</button><button class="btn-small" onclick="startTimer(90)">90s</button></div>`;
+        const dsOff=ex.dropset?'opacity:0.45;pointer-events:none;':'';
+        block.innerHTML=`<div class="exercise-name" style="justify-content:space-between;">${ex.name} ${pbBadge}<span style="color:var(--text-muted);font-size:11px;font-weight:600;cursor:pointer;" onclick="swapExercise(${ei})">⇄ Swap</span></div>${targetInfo}${suggestion}${lastPerf}${setsHTML}<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+    <button class="btn-outline" onclick="addSet(${ei})" style="flex:1;margin-bottom:0;">+ Set</button>
+    <button class="btn-small" onclick="startTimer(60,${ei})" style="${dsOff}" ${ex.dropset?'disabled':''}>60s</button>
+    <button class="btn-small" onclick="startTimer(90,${ei})" style="${dsOff}" ${ex.dropset?'disabled':''}>90s</button>
+    <button class="btn-small" onclick="toggleSuperset(${ei})" style="${ex.superset?'background:var(--primary);color:#fff;':''}">⚡ Superset</button>
+    <button class="btn-small" onclick="toggleDropset(${ei})" style="${ex.dropset?'background:var(--danger);color:#fff;':''}">📉 Dropset</button>
+</div>
+${ex.superset?`<div style="background:#EFF6FF;border-radius:8px;padding:8px;margin-top:6px;color:var(--primary);font-size:12px;font-weight:600;">⚡ Superset active — rest only after both exercises complete</div>`:''}
+${ex.dropset?`<div style="background:#FEF2F2;border-radius:8px;padding:8px;margin-top:6px;color:var(--danger);font-size:12px;font-weight:600;">📉 Dropset active — reduce weight each set with no rest</div>`:''}`;
         log.appendChild(block);
     });
 }
@@ -1045,7 +1057,49 @@ function updateSet(ei,si,field,val) {
 function addSet(ei){exercises[ei].sets.push({reps:'',weight:''});renderExercises();}
 function removeSet(ei,si){if(exercises[ei].sets.length>1){exercises[ei].sets.splice(si,1);renderExercises();}}
 
-function startTimer(seconds) {
+function toggleSuperset(ei){exercises[ei].superset=!exercises[ei].superset;renderExercises();}
+function toggleDropset(ei){exercises[ei].dropset=!exercises[ei].dropset;renderExercises();}
+
+function isWorkingSetComplete(ei,si){
+    const s=exercises[ei]?.sets[si];
+    if(!s||s.warmup)return true;
+    const w=parseFloat(s.weight)||0,r=parseInt(s.reps,10)||0;
+    return w>0&&r>0;
+}
+function isSupersetPairAt(pairFirstEi){
+    const a=exercises[pairFirstEi],b=exercises[pairFirstEi+1];
+    return !!(a&&b&&a.superset&&b.superset);
+}
+function supersetPairFirstForEi(ei){
+    if(isSupersetPairAt(ei))return ei;
+    if(ei>0&&isSupersetPairAt(ei-1))return ei-1;
+    return null;
+}
+function supersetPartnerAllowsRest(pairFirstEi){
+    const a=pairFirstEi,b=pairFirstEi+1;
+    if(!exercises[b])return true;
+    const n=Math.min(exercises[a].sets.length,exercises[b].sets.length);
+    for(let si=0;si<n;si++){
+        const sa=exercises[a].sets[si],sb=exercises[b].sets[si];
+        if(!sa||!sb)continue;
+        if(sa.warmup||sb.warmup)continue;
+        const aDone=isWorkingSetComplete(a,si),bDone=isWorkingSetComplete(b,si);
+        if(aDone!==bDone)return false;
+    }
+    return true;
+}
+
+function startTimer(seconds,ei){
+    if(typeof ei==='number'&&exercises[ei]?.dropset){
+        alert('Dropset: go straight to your next set — no rest between drops.');
+        return;
+    }
+    const pairFirst=typeof ei==='number'?supersetPairFirstForEi(ei):null;
+    if(pairFirst!==null&&!supersetPartnerAllowsRest(pairFirst)){
+        const partnerName=ei===pairFirst?exercises[pairFirst+1].name:exercises[pairFirst].name;
+        alert('Superset: log the same set on '+partnerName+' before starting rest.');
+        return;
+    }
     if(timerInterval)clearInterval(timerInterval);
     let remaining=seconds;
     document.getElementById('rest-timer').style.display='block';
@@ -1066,10 +1120,42 @@ function startWorkoutTimer() {
     },1000);
 }
 
+function showCompletionScreen(muscle,duration,exs){
+    const pbs=exs.filter(ex=>ex.sets.some(s=>!s.warmup&&parseFloat(s.weight)>0&&personalBests[ex.name]&&parseFloat(s.weight)>=personalBests[ex.name].weight)).length;
+    const modal=document.createElement('div');
+    modal.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:var(--primary);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;';
+    modal.innerHTML=`
+        <div style="font-size:64px;margin-bottom:16px;">💪</div>
+        <div style="color:#fff;font-size:28px;font-weight:800;margin-bottom:8px;">Session Complete!</div>
+        <div style="color:rgba(255,255,255,0.8);font-size:16px;margin-bottom:24px;">${muscle}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:32px;width:100%;max-width:400px;">
+            <div style="background:rgba(255,255,255,0.15);border-radius:12px;padding:16px;">
+                <div style="color:#fff;font-size:24px;font-weight:800;">${duration||0}</div>
+                <div style="color:rgba(255,255,255,0.7);font-size:11px;margin-top:4px;">MINS</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.15);border-radius:12px;padding:16px;">
+                <div style="color:#fff;font-size:24px;font-weight:800;">${exs.length}</div>
+                <div style="color:rgba(255,255,255,0.7);font-size:11px;margin-top:4px;">EXERCISES</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.15);border-radius:12px;padding:16px;">
+                <div style="color:#FFD700;font-size:24px;font-weight:800;">${pbs}</div>
+                <div style="color:rgba(255,255,255,0.7);font-size:11px;margin-top:4px;">PBs HIT</div>
+            </div>
+        </div>
+        <button type="button" class="completion-btn-progress" style="background:#fff;color:var(--primary);border:none;border-radius:14px;padding:16px 32px;font-size:16px;font-weight:800;cursor:pointer;width:100%;max-width:400px;">View Progress</button>
+        <button type="button" class="completion-btn-home" style="background:transparent;color:rgba(255,255,255,0.8);border:2px solid rgba(255,255,255,0.3);border-radius:14px;padding:14px 32px;font-size:15px;font-weight:600;cursor:pointer;width:100%;max-width:400px;margin-top:10px;">Back to Home</button>
+    `;
+    modal.querySelector('.completion-btn-progress').onclick=()=>{modal.remove();showScreen('screen-progress');};
+    modal.querySelector('.completion-btn-home').onclick=()=>{modal.remove();showScreen('screen-home');};
+    document.body.appendChild(modal);
+}
+
 function saveWorkout() {
     const date=new Date().toLocaleDateString('en-GB');
     const duration=workoutStartTime?Math.floor((Date.now()-workoutStartTime)/60000):0;
     clearInterval(workoutTimerInterval);
+    const muscle=selectedMuscle;
+    const exSnapshot=JSON.parse(JSON.stringify(exercises));
     exercises.forEach(ex=>{
         ex.sets.filter(s=>!s.warmup).forEach(set=>{
             const w=parseFloat(set.weight)||0;const r=parseInt(set.reps)||0;
@@ -1088,7 +1174,7 @@ function saveWorkout() {
     document.getElementById('exercise-log').innerHTML='';
     document.getElementById('save-btn').style.display='none';
     const timerBar=document.getElementById('workout-timer-bar');if(timerBar)timerBar.style.display='none';
-    saveToStorage();checkBadges();showScreen('screen-progress');}function saveWorkout() {
+    saveToStorage();checkBadges();showCompletionScreen(muscle,duration,exSnapshot);
 }
 
 function startCardio(type) {
@@ -1175,6 +1261,16 @@ function openFoodModal(mealIndex) {
     document.querySelectorAll('#food-filter-bar .filter-btn').forEach(b=>b.classList.remove('active'));
     const allBtn=document.getElementById('filter-all');if(allBtn)allBtn.classList.add('active');
     filterFoods();
+    updateFoodModalTotals();
+}
+
+function updateFoodModalTotals() {
+    const today=new Date().toLocaleDateString('en-GB');
+    const todayMeals=meals.filter(m=>m.date===today);
+    let totalCal=0,totalProtein=0,totalCarbs=0,totalFat=0;
+    todayMeals.forEach(meal=>meal.foods.forEach(f=>{totalCal+=f.cal;totalProtein+=f.protein;totalCarbs+=f.carbs;totalFat+=f.fat;}));
+    const el=document.getElementById('food-modal-totals');
+    if(el)el.innerHTML=`Today so far: <strong>${totalCal} kcal</strong> • P: ${totalProtein.toFixed(0)}g • C: ${totalCarbs.toFixed(0)}g • F: ${totalFat.toFixed(0)}g`;
 }
 
 function closeFoodModal(){document.getElementById('food-modal').style.display='none';selectedFood=null;document.getElementById('food-portion').style.display='none';}
@@ -1249,15 +1345,17 @@ function addFoodEntry() {
     if(selectedFood.water){
         const today=new Date().toLocaleDateString('en-GB');
         const saved=localStorage.getItem('nutrition-'+today);
-        let data=saved?JSON.parse(saved):{steps:0,water:0};
-        data.water=Math.round(((parseFloat(data.water)||0)+(selectedFood.water*(portion/250)))*100)/100;
-        localStorage.setItem('nutrition-'+today,JSON.stringify(data));
+        const nd=saved?JSON.parse(saved):{steps:0,water:0,restDay:false};
+        const servingMl=Math.max(1,Math.round(selectedFood.water*1000));
+        const addWater=selectedFood.water*(portion/servingMl);
+        nd.water=Math.round(((parseFloat(nd.water)||0)+addWater)*100)/100;
+        localStorage.setItem('nutrition-'+today,JSON.stringify(nd));
     }
     meals[currentMealIndex].foods.push(entry);
-    saveToStorage();closeFoodModal();renderMeals();loadNutrition();updateHome();
+    saveToStorage();updateFoodModalTotals();closeFoodModal();renderMeals();loadNutrition();updateHome();
 }
 
-function deleteFoodFromMeal(mealIndex,foodIndex){meals[mealIndex].foods.splice(foodIndex,1);saveToStorage();renderMeals();loadNutrition();updateHome();}
+function deleteFoodFromMeal(mealIndex,foodIndex){meals[mealIndex].foods.splice(foodIndex,1);saveToStorage();renderMeals();loadNutrition();updateHome();if(document.getElementById('food-modal')?.style.display==='block')updateFoodModalTotals();}
 
 function saveStepsWater() {
     const today=new Date().toLocaleDateString('en-GB');
@@ -1287,8 +1385,9 @@ function loadNutrition() {
     let totalCal=0,totalProtein=0,totalCarbs=0,totalFat=0;
     todayMeals.forEach(meal=>meal.foods.forEach(f=>{totalCal+=f.cal;totalProtein+=f.protein;totalCarbs+=f.carbs;totalFat+=f.fat;}));
     const saved=localStorage.getItem('nutrition-'+today);
-    let steps=0,water=0;
-    if(saved){const d=JSON.parse(saved);steps=parseInt(d.steps)||0;water=parseFloat(d.water)||0;}
+    const nd=saved?JSON.parse(saved):{steps:0,water:0,restDay:false};
+    const steps=parseInt(nd.steps)||0;
+    const water=parseFloat(nd.water)||0;
     const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
     const setWidth=(id,pct)=>{const el=document.getElementById(id);if(el)el.style.width=pct+'%';};
     setEl('nut-show-calories',`${totalCal} / ${calTarget} kcal`);
@@ -1350,7 +1449,9 @@ function updateHome() {
     let cals=0,protein=0,steps=0,water=0;
     todayMeals.forEach(meal=>meal.foods.forEach(f=>{cals+=f.cal;protein+=f.protein;}));
     const saved=localStorage.getItem('nutrition-'+today);
-    if(saved){const d=JSON.parse(saved);steps=parseInt(d.steps)||0;water=parseFloat(d.water)||0;}
+    const nd=saved?JSON.parse(saved):{steps:0,water:0,restDay:false};
+    steps=parseInt(nd.steps)||0;
+    water=parseFloat(nd.water)||0;
     const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
     const setWidth=(id,pct)=>{const el=document.getElementById(id);if(el)el.style.width=pct+'%';};
     setEl('home-show-calories',`${cals} / ${calTarget} kcal`);setEl('home-protein',`${protein.toFixed(1)} / ${proteinTarget}g`);
@@ -1369,6 +1470,7 @@ function updateHome() {
         for(let i=0;i<7;i++){
             const d=document.createElement('div');d.className='streak-day';
             const dayDate=new Date(now);dayDate.setDate(now.getDate()-((dow+6-i)%7));
+            const dateStr=dayDate.toLocaleDateString('en-GB');
             const nutritionData=localStorage.getItem('nutrition-'+dateStr);
             const nd=nutritionData?JSON.parse(nutritionData):{};
             const calTarget=settings.calTarget||2000;
@@ -1404,14 +1506,9 @@ streakBar.appendChild(d);
     const prompts=[];
     const hourNow=new Date().getHours();
     if(!todayWorkout&&!nd.restDay)prompts.push({text:t('coachNoTrain'),type:''});
-    if(nd.restDay)prompts.push({text:'😴 Rest day logged — focus on nutrition and steps today',type:''});
+    if(nd.restDay)prompts.push({text:'😴 Rest day — focus on nutrition and steps today',type:''});
     if(protein<proteinTarget)prompts.push({text:t('coachProtein').replace('{x}',Math.round(proteinTarget-protein)),type:''});
     if(cals<calTarget*0.5&&hourNow>14)prompts.push({text:t('coachCalories').replace('{x}',cals),type:''});
-    if(steps<stepsTarget)prompts.push({text:t('coachSteps').replace('{x}',stepsTarget-steps),type:''});
-    if(water<2)prompts.push({text:t('coachWater').replace('{x}',water.toFixed(1)),type:''});
-    if(prompts.length===0)prompts.push({text:t('coachPerfect'),type:'success'});
-    if(protein<proteinTarget)prompts.push({text:t('coachProtein').replace('{x}',Math.round(proteinTarget-protein)),type:''});
-    if(cals<calTarget*0.5&&new Date().getHours()>14)prompts.push({text:t('coachCalories').replace('{x}',cals),type:''});
     if(steps<stepsTarget)prompts.push({text:t('coachSteps').replace('{x}',stepsTarget-steps),type:''});
     if(water<2)prompts.push({text:t('coachWater').replace('{x}',water.toFixed(1)),type:''});
     if(prompts.length===0)prompts.push({text:t('coachPerfect'),type:'success'});
@@ -1596,6 +1693,20 @@ const badgeDefinitions=[
 
 function checkBadges(){const earned=JSON.parse(localStorage.getItem('badges')||'[]');badgeDefinitions.forEach(b=>{if(!earned.includes(b.id)&&b.check())earned.push(b.id);});localStorage.setItem('badges',JSON.stringify(earned));}
 function renderBadges(){const earned=JSON.parse(localStorage.getItem('badges')||'[]');const el=document.getElementById('badges-display');if(el)el.innerHTML=badgeDefinitions.map(b=>`<span class="badge ${earned.includes(b.id)?'earned':''}">${b.icon} ${t(b.nameKey)}</span>`).join('');}
+
+function showPreviousWorkoutSummary(category) {
+    const last=workoutHistory.find(w=>w.muscle===category);
+    const el=document.getElementById('previous-workout-summary');
+    if(!el)return;
+    if(!last){el.style.display='none';return;}
+    const topLift=last.exercises&&last.exercises.length>0?last.exercises[0]:null;
+    el.style.display='block';
+    el.innerHTML=`<div style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:10px;padding:12px;margin-bottom:12px;">
+        <div style="color:#EA580C;font-size:11px;font-weight:700;margin-bottom:4px;">LAST ${category.toUpperCase()} SESSION</div>
+        <div style="color:var(--text);font-size:13px;">${last.date} • ${last.duration||0} mins</div>
+        ${topLift?`<div style="color:var(--text-muted);font-size:12px;margin-top:4px;">${topLift.name} — ${topLift.sets.length} sets</div>`:''}
+    </div>`;
+}
 
 // ===================== STORAGE =====================
 function saveToStorage() {
@@ -1873,10 +1984,9 @@ function saveStepsTrain() {
     const today=new Date().toLocaleDateString('en-GB');
     const saved=localStorage.getItem('nutrition-'+today);
     const nd=saved?JSON.parse(saved):{steps:0,water:0,restDay:false};
-    steps=parseInt(nd.steps)||0;water=parseFloat(nd.water)||0;
-    const steps=document.getElementById('input-steps-train').value;
-    if(steps)data.steps=parseInt(steps);
-    localStorage.setItem('nutrition-'+today,JSON.stringify(data));
+    const stepsInput=document.getElementById('input-steps-train').value;
+    if(stepsInput!=='')nd.steps=parseInt(stepsInput,10)||0;
+    localStorage.setItem('nutrition-'+today,JSON.stringify(nd));
     document.getElementById('input-steps-train').value='';
     updateStepsDisplay();
     updateHome();
