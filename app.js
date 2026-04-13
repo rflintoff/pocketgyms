@@ -1,4 +1,4 @@
-﻿// ===================== TRANSLATIONS =====================
+// ===================== TRANSLATIONS =====================
 const translations = {
     en: {
         langTitle:'Choose Language', langSub:'Select your preferred language', langBtn:'Continue',
@@ -1031,7 +1031,7 @@ function renderExercises() {
 <div style="display:flex;gap:6px;align-items:center;">
     ${ei>0?`<button type="button" onclick="moveExercise(${ei},-1)" style="background:var(--primary-light);color:var(--primary);border:none;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:700;cursor:pointer;">↑</button>`:''}
     ${ei<exercises.length-1?`<button type="button" onclick="moveExercise(${ei},1)" style="background:var(--primary-light);color:var(--primary);border:none;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:700;cursor:pointer;">↓</button>`:''}
-    <button type="button" onclick="removeExercise(${ei})" style="background:#FEF2F2;color:var(--danger);border:none;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:700;cursor:pointer;">��</button>
+    <button type="button" onclick="removeExercise(${ei})" style="background:#FEF2F2;color:var(--danger);border:none;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:700;cursor:pointer;">Remove</button>
 </div></div>${targetInfo}${suggestion}${lastPerf}${setsHTML}<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
     <button class="btn-outline" onclick="addSet(${ei})" style="flex:1;margin-bottom:0;">+ Set</button>
     <button class="btn-small" onclick="startTimer(60,${ei})">60s</button>
