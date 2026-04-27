@@ -11,6 +11,19 @@ function recoverFromBootError(err, source) {
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
+    const hashParams = new URLSearchParams(window.location.hash.replace('#', '?'));
+    const queryParams = new URLSearchParams(window.location.search);
+    if (hashParams.get('access_token')) {
+      await PG.db.auth.setSession({
+        access_token: hashParams.get('access_token'),
+        refresh_token: hashParams.get('refresh_token')
+      });
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (queryParams.get('code')) {
+      await PG.db.auth.exchangeCodeForSession(queryParams.get('code'));
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
     const { data: { session } } = await PG.db.auth.getSession();
     if (session?.user) {
       appBooted = true;
@@ -828,6 +841,7 @@ async function fastTrack() {
     document.getElementById('auth-modal').style.display='none';
     document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = '');
     await loadFromStorage();
+    populateSettingsFields(settings);
 }
 
 function selectHeightUnit(unit) {
@@ -886,6 +900,7 @@ async function completeOnboarding() {
     document.getElementById('auth-modal').style.display='none';
     document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = '');
     await loadFromStorage();
+    populateSettingsFields(settings);
 }
 
 // ===================== THEME =====================
@@ -1400,9 +1415,10 @@ function renderMeals() {
         const totalProt=meal.foods.reduce((s,f)=>s+f.protein,0).toFixed(1);
         const totalCarbs=meal.foods.reduce((s,f)=>s+f.carbs,0).toFixed(1);
         const totalFat=meal.foods.reduce((s,f)=>s+f.fat,0).toFixed(1);
-        return `<div class="meal-block"><div class="meal-header"><div><div class="meal-name">${meal.name}</div><div class="meal-totals">${totalCal} kcal • P:${totalProt}g • C:${totalCarbs}g • F:${totalFat}g</div></div><div style="display:flex;gap:6px;">
+        return `<div class="meal-block"><div class="meal-header"><div><div class="meal-name">${meal.name}</div><div class="meal-totals">${totalCal} kcal • P:${totalProt}g • C:${totalCarbs}g • F:${totalFat}g</div></div><div style="display:flex;gap:6px;flex-wrap:wrap;">
     <button class="btn-small" onclick="openFoodModal(${mealIndex})">+ Add Food</button>
     <button class="btn-small" onclick="currentMealIndex=${mealIndex};saveMealTemplate()" style="background:#FEF3C7;color:#92400E;">📋 Save as Template</button>
+    <button class="btn-small" onclick="deleteMeal(${mealIndex})" style="background:#FEF2F2;color:var(--danger);">🗑 Remove Meal</button>
 </div></div>${meal.foods.map((f,fi)=>`<div class="food-entry"><div class="food-entry-info"><div class="food-entry-name">${f.name} (${f.portion}${f.isLiquid?'ml':'g'})</div><div class="food-entry-macros">P: ${f.protein}g • C: ${f.carbs}g • F: ${f.fat}g</div></div><div class="food-entry-cals">${f.cal} kcal</div><div class="food-entry-delete" onclick="deleteFoodFromMeal(${mealIndex},${fi})">✕</div></div>`).join('')}</div>`;
     }).join('');
 }
@@ -1515,7 +1531,40 @@ async function addFoodEntry() {
     }
 }
 
-function deleteFoodFromMeal(mealIndex,foodIndex){meals[mealIndex].foods.splice(foodIndex,1);saveToStorage();renderMeals();loadNutrition();updateHome();if(document.getElementById('food-modal')?.style.display==='block')updateFoodModalTotals();}
+async function deleteFoodFromMeal(mealIndex,foodIndex){
+    if(!meals[mealIndex]||!Array.isArray(meals[mealIndex].foods))return;
+    meals[mealIndex].foods.splice(foodIndex,1);
+    try{
+        await PG.nutrition.save({meals});
+        await saveToStorage();
+        renderMeals();
+        await loadNutrition();
+        await updateHome();
+        if(document.getElementById('food-modal')?.style.display==='block')updateFoodModalTotals();
+        showToast('Food removed','success',1800);
+    }catch(err){
+        console.error('deleteFoodFromMeal:',err);
+        showToast('Delete failed — please try again','error',3000);
+    }
+}
+
+async function deleteMeal(mealIndex){
+    if(!meals[mealIndex])return;
+    if(!confirm('Remove this meal?'))return;
+    meals.splice(mealIndex,1);
+    try{
+        await PG.nutrition.save({meals});
+        await saveToStorage();
+        renderMeals();
+        await loadNutrition();
+        await updateHome();
+        if(document.getElementById('food-modal')?.style.display==='block')updateFoodModalTotals();
+        showToast('Meal removed','success',1800);
+    }catch(err){
+        console.error('deleteMeal:',err);
+        showToast('Delete failed — please try again','error',3000);
+    }
+}
 
 async function saveStepsWater() {
     const today=new Date().toLocaleDateString('en-GB');
@@ -1592,12 +1641,25 @@ async function loadNutrition() {
 async function renderSupplements() {
     const today=new Date().toLocaleDateString('en-GB');
     const nutritionData=await PG.nutrition.getToday();
-    const done=nutritionData?.['supplements_'+today]||[];
+    const doneRaw=nutritionData?.['supplements_'+today]||[];
+    const done=(Array.isArray(doneRaw)?doneRaw:[]).map(v=>Number(v)).filter(Number.isFinite);
     const list=document.getElementById('supplement-list');if(!list)return;
     list.innerHTML=supplementsList.map((s,i)=>`<div class="supplement-item"><div class="supplement-name">${s}</div><div class="supplement-check ${done.includes(i)?'done':''}" onclick="toggleSupplement(${i})">${done.includes(i)?'✓':''}</div></div>`).join('');
 }
 
-async function toggleSupplement(index){const today=new Date().toLocaleDateString('en-GB');const nutritionData=await PG.nutrition.getToday();let done=nutritionData?.['supplements_'+today]||[];done.includes(index)?done.splice(done.indexOf(index),1):done.push(index);await PG.nutrition.save({['supplements_'+today]:done});renderSupplements();}
+async function toggleSupplement(index){
+    const today=new Date().toLocaleDateString('en-GB');
+    const key='supplements_'+today;
+    const nutritionData=await PG.nutrition.getToday();
+    const doneRaw=nutritionData?.[key]||[];
+    const done=(Array.isArray(doneRaw)?doneRaw:[]).map(v=>Number(v)).filter(Number.isFinite);
+    const idx=Number(index);
+    const existingPos=done.indexOf(idx);
+    if(existingPos>=0) done.splice(existingPos,1);
+    else done.push(idx);
+    await PG.nutrition.save({[key]:done});
+    await renderSupplements();
+}
 
 // ===================== HOME =====================
 async function updateHome() {
@@ -1909,18 +1971,23 @@ async function saveSettings() {
 
 function loadSettings() {
     if(!settings.name&&!settings.calTarget)return;
-    const setVal=(id,val)=>{const el=document.getElementById(id);if(el&&val!==undefined)el.value=val;};
-    setVal('set-name',settings.name);setVal('set-age',settings.age);setVal('set-gender',settings.gender);
-    setVal('set-height',settings.height);setVal('set-weight',settings.weight);setVal('set-target-weight',settings.targetWeight);
-    setVal('set-activity',settings.activity);setVal('set-goal',settings.goal);setVal('set-environment',settings.environment);
-    setVal('set-diet',settings.diet);setVal('set-units',settings.units);setVal('set-language',settings.language);
-    setVal('set-phase-name',settings.phaseName);setVal('set-phase-duration',settings.phaseDuration||56);
-    setVal('set-training-days',settings.trainingDays);
+    populateSettingsFields(settings);
     if(settings.tdee){
         const tdeeEl=document.getElementById('tdee-result');if(tdeeEl)tdeeEl.style.display='block';
         const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
         setEl('tdee-value',settings.tdee+' kcal');setEl('cal-target-value',settings.calTarget+' kcal');setEl('protein-target-value',settings.proteinTarget+'g');
     }
+}
+
+function populateSettingsFields(profile) {
+    if(!profile)return;
+    const setVal=(id,val)=>{const el=document.getElementById(id);if(el&&val!==undefined)el.value=val;};
+    setVal('set-name',profile.name);setVal('set-age',profile.age);setVal('set-gender',profile.gender);
+    setVal('set-height',profile.height);setVal('set-weight',profile.weight);setVal('set-target-weight',profile.targetWeight);
+    setVal('set-activity',profile.activity);setVal('set-goal',profile.goal);setVal('set-environment',profile.environment);
+    setVal('set-diet',profile.diet);setVal('set-units',profile.units);setVal('set-language',profile.language);
+    setVal('set-phase-name',profile.phaseName);setVal('set-phase-duration',profile.phaseDuration||56);
+    setVal('set-training-days',profile.trainingDays);
 }
 
 function calculatePlates() {
@@ -2113,6 +2180,7 @@ async function loadFromStorage() {
     settings=profile;
     selectedLang=settings.language||'en';
     if(profile.onboarded)document.getElementById('onboarding').style.display='none';
+    populateSettingsFields(settings);
     applyTranslations();checkBadges();updateHome();
 }
 // ===================== PROGRAMME TEMPLATES =====================
