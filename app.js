@@ -25,10 +25,14 @@ async function handleEmailAuth() {
 PG.db.auth.onAuthStateChange(async (event, session) => {
   if (session?.user) {
     document.getElementById('auth-modal').style.display = 'none';
+    document.querySelector('.header') && (document.querySelector('.header').style.display = '');
+    document.querySelector('.nav') && (document.querySelector('.nav').style.display = '');
     await initApp(session.user);
   } else {
     document.getElementById('auth-modal').style.display = 'flex';
     document.getElementById('onboarding').style.display = 'none';
+    document.querySelector('.header') && (document.querySelector('.header').style.display = 'none');
+    document.querySelector('.nav') && (document.querySelector('.nav').style.display = 'none');
   }
 });
 

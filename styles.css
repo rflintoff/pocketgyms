@@ -23,6 +23,102 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding-bottom: 80px; transition: background 0.3s; }
 
+/* AUTH MODAL */
+#auth-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(4px);
+}
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+}
+.auth-card h1, .auth-card h2 {
+    color: var(--text);
+    margin-bottom: 8px;
+}
+.auth-card p {
+    color: var(--text-muted);
+    margin-bottom: 16px;
+}
+.auth-card input[type="email"],
+.auth-card input[type="password"] {
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    padding: 12px;
+    font-size: 14px;
+    width: 100%;
+    margin-bottom: 10px;
+    font-family: inherit;
+}
+.auth-card input[type="email"]:focus,
+.auth-card input[type="password"]:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+.auth-card input::placeholder {
+    color: var(--text-muted);
+}
+.btn-oauth {
+    width: 100%;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    padding: 12px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+.btn-oauth:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    color: var(--primary);
+}
+.btn-oauth:active {
+    opacity: 0.9;
+}
+.auth-divider {
+    position: relative;
+    text-align: center;
+    margin: 14px 0;
+}
+.auth-divider::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    border-top: 1px solid var(--border);
+}
+.auth-divider span {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    padding: 0 10px;
+    background: var(--card);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
 /* HEADER */
 .header { background: var(--primary); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
 .header h1 { color: #fff; font-size: 20px; letter-spacing: 1px; font-weight: 800; }
