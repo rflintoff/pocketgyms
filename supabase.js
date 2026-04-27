@@ -49,7 +49,7 @@ async function getProfile() {
 async function saveProfile(updates) {
   const user = await getUser();
   if (!user) return { ok: false, error: { message: 'No authenticated user' } };
-  
+   cve4r
   // Rename fields to match database columns
   if (updates.activity !== undefined) { updates.activity_level = updates.activity; delete updates.activity; }
   if (updates.darkMode !== undefined) { updates.dark_mode = updates.darkMode; delete updates.darkMode; }
@@ -83,10 +83,15 @@ async function saveProfile(updates) {
 
 async function saveWorkout(workoutData) {
   const user = await getUser();
-  if (!user) return;
+  if (!user) return { ok: false, error: { message: 'No authenticated user' } };
+  console.log('[Supabase] saveWorkout payload:', workoutData);
   const { error } = await db.from('workouts')
     .insert({ user_id: user.id, ...workoutData });
-  if (error) console.error('saveWorkout:', error);
+  if (error) {
+    console.error('saveWorkout:', error);
+    return { ok: false, error };
+  }
+  return { ok: true, error: null };
 }
 
 async function getWorkouts(limit = 50) {
@@ -97,6 +102,7 @@ async function getWorkouts(limit = 50) {
     .eq('user_id', user.id)
     .order('logged_at', { ascending: false })
     .limit(limit);
+  console.log('[Supabase] getWorkouts rows:', data || []);
   return data || [];
 }
 
@@ -114,10 +120,15 @@ async function getTodayWorkout() {
 
 async function saveCardio(cardioData) {
   const user = await getUser();
-  if (!user) return;
+  if (!user) return { ok: false, error: { message: 'No authenticated user' } };
+  console.log('[Supabase] saveCardio payload:', cardioData);
   const { error } = await db.from('cardio_sessions')
     .insert({ user_id: user.id, ...cardioData });
-  if (error) console.error('saveCardio:', error);
+  if (error) {
+    console.error('saveCardio:', error);
+    return { ok: false, error };
+  }
+  return { ok: true, error: null };
 }
 
 async function getCardioSessions(limit = 30) {
@@ -140,24 +151,35 @@ async function getTodayNutrition() {
     .eq('user_id', user.id)
     .eq('logged_at', today)
     .maybeSingle();
+  console.log('[Supabase] getTodayNutrition row:', data || null);
   return data;
 }
 
 async function saveNutrition(nutritionData) {
   const user = await getUser();
-  if (!user) return;
+  if (!user) return { ok: false, error: { message: 'No authenticated user' } };
   const today = new Date().toISOString().split('T')[0];
+  console.log('[Supabase] saveNutrition payload:', nutritionData);
   const { error } = await db.from('nutrition_logs')
     .upsert({ user_id: user.id, logged_at: today, ...nutritionData });
-  if (error) console.error('saveNutrition:', error);
+  if (error) {
+    console.error('saveNutrition:', error);
+    return { ok: false, error };
+  }
+  return { ok: true, error: null };
 }
 
 async function saveProgressLog(progressData) {
   const user = await getUser();
-  if (!user) return;
+  if (!user) return { ok: false, error: { message: 'No authenticated user' } };
+  console.log('[Supabase] saveProgressLog payload:', progressData);
   const { error } = await db.from('progress_logs')
     .insert({ user_id: user.id, ...progressData });
-  if (error) console.error('saveProgress:', error);
+  if (error) {
+    console.error('saveProgress:', error);
+    return { ok: false, error };
+  }
+  return { ok: true, error: null };
 }
 
 async function getProgressLogs(limit = 20) {
@@ -168,6 +190,7 @@ async function getProgressLogs(limit = 20) {
     .eq('user_id', user.id)
     .order('logged_at', { ascending: false })
     .limit(limit);
+  console.log('[Supabase] getProgressLogs rows:', data || []);
   return data || [];
 }
 
@@ -178,15 +201,21 @@ async function getRoutines() {
     .select('*')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false });
+  console.log('[Supabase] getRoutines rows:', data || []);
   return data || [];
 }
 
 async function saveRoutine(routineData) {
   const user = await getUser();
-  if (!user) return;
+  if (!user) return { ok: false, error: { message: 'No authenticated user' } };
+  console.log('[Supabase] saveRoutine payload:', routineData);
   const { error } = await db.from('routines')
     .insert({ user_id: user.id, ...routineData });
-  if (error) console.error('saveRoutine:', error);
+  if (error) {
+    console.error('saveRoutine:', error);
+    return { ok: false, error };
+  }
+  return { ok: true, error: null };
 }
 
 async function deleteRoutine(routineId) {
