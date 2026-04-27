@@ -11,20 +11,32 @@ function recoverFromBootError(err, source) {
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
-    const hashParams = new URLSearchParams(window.location.hash.replace('#', '?'));
-    const queryParams = new URLSearchParams(window.location.search);
-    if (hashParams.get('access_token')) {
-      await PG.db.auth.setSession({
-        access_token: hashParams.get('access_token'),
-        refresh_token: hashParams.get('refresh_token')
-      });
-      window.history.replaceState({}, document.title, window.location.pathname);
-    } else if (queryParams.get('code')) {
-      await PG.db.auth.exchangeCodeForSession(queryParams.get('code'));
-      window.history.replaceState({}, document.title, window.location.pathname);
+    try {
+      const hashParams = new URLSearchParams(window.location.hash.replace('#', '?'));
+      const queryParams = new URLSearchParams(window.location.search);
+      if (hashParams.get('access_token')) {
+        await PG.db.auth.setSession({
+          access_token: hashParams.get('access_token'),
+          refresh_token: hashParams.get('refresh_token')
+        });
+        window.history.replaceState({}, document.title, window.location.pathname);
+      } else if (queryParams.get('code')) {
+        await PG.db.auth.exchangeCodeForSession(queryParams.get('code'));
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    } catch (tokenErr) {
+      console.error('Auth token URL handling failed; continuing with getSession boot:', tokenErr);
     }
 
-    const { data: { session } } = await PG.db.auth.getSession();
+    let session = null;
+    try {
+      const { data } = await PG.db.auth.getSession();
+      session = data?.session || null;
+    } catch (sessionErr) {
+      console.error('getSession failed during boot; continuing as signed out:', sessionErr);
+      session = null;
+    }
+
     if (session?.user) {
       appBooted = true;
       document.getElementById('auth-modal').style.display = 'none';
@@ -2467,15 +2479,33 @@ function getWorkingSets(ex) {
 }
 
 async function saveMealTemplate() {
-    if(!currentMealIndex&&currentMealIndex!==0)return;
-    const meal=meals[currentMealIndex];
-    if(!meal||meal.foods.length===0){alert('Add some foods to this meal first');return;}
-    const routinesData=await PG.routines.getAll();
-    const templates=normalizeRoutinesRows(routinesData).mealTemplates;
-    const name=prompt('Save this meal as a template:',meal.name)||meal.name;
-    templates.push({name,foods:meal.foods,saved:new Date().toLocaleDateString('en-GB')});
-    await PG.routines.save({mealTemplates:templates});
-    alert('✅ Meal template saved!');
+    try{
+        if(!currentMealIndex&&currentMealIndex!==0)return;
+        const meal=meals[currentMealIndex];
+        if(!meal||meal.foods.length===0){
+            showToast('Add some foods to this meal first','error',3000);
+            return;
+        }
+        const routinesData=await PG.routines.getAll();
+        const normalized=normalizeRoutinesRows(routinesData);
+        const templates=Array.isArray(normalized.mealTemplates)?[...normalized.mealTemplates]:[];
+        const name=prompt('Save this meal as a template:',meal.name)||meal.name;
+        templates.push({
+            name,
+            foods:Array.isArray(meal.foods)?meal.foods.map(f=>({...f})) : [],
+            saved:new Date().toLocaleDateString('en-GB')
+        });
+        await PG.routines.save({
+            savedRoutines:normalized.savedRoutines,
+            customExercises:normalized.customExercises,
+            unlockedCodes:normalized.unlockedCodes,
+            mealTemplates:templates
+        });
+        showToast('Meal template saved!','success',2200);
+    }catch(err){
+        console.error('saveMealTemplate:',err);
+        showToast('Template save failed — please try again','error',4000);
+    }
 }
 
 async function loadMealTemplate() {
