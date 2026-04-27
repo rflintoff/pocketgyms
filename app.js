@@ -1322,7 +1322,9 @@ function showCompletionScreen(muscle,duration,exs){
 }
 
 async function saveWorkout() {
-    const date=new Date().toLocaleDateString('en-GB');
+    const now=new Date();
+    const date=now.toLocaleDateString('en-GB');
+    const isoDate=now.toISOString().split('T')[0];
     const duration=workoutStartTime?Math.floor((Date.now()-workoutStartTime)/60000):0;
     clearInterval(workoutTimerInterval);
     const muscle=selectedMuscle;
@@ -1332,15 +1334,21 @@ async function saveWorkout() {
             category:muscle,
             muscle,
             date,
-            logged_at:date,
+            logged_at:isoDate,
             duration,
             durationDisplay:duration>0?duration+'min':'—',
             exercises:JSON.parse(JSON.stringify(exSnapshot))
         };
-        console.log('[Workout Save] payload:',workoutData);
+        console.log('[Workout Save] payload:',JSON.stringify(workoutData,null,2));
+        console.log('[Workout Save] exercises type check:', {
+            isArray:Array.isArray(workoutData.exercises),
+            firstExercise:workoutData.exercises?.[0]||null
+        });
         const workoutSaveResult=await PG.workouts.save(workoutData);
         console.log('[Workout Save] result:',workoutSaveResult);
         if(workoutSaveResult?.ok===false||workoutSaveResult?.error){
+            console.error('[Workout Save] failed payload:',JSON.stringify(workoutData,null,2));
+            console.error('[Workout Save] returned error:',workoutSaveResult?.error||workoutSaveResult);
             showToast('Workout save failed','error',4000);
             return;
         }
@@ -1367,7 +1375,7 @@ async function saveWorkout() {
         showCompletionScreen(muscle,duration,exSnapshot);
         showToast('Workout saved!','success',2200);
     }catch(err){
-        console.error('saveWorkout:',err);
+        console.error('[Workout Save] exception:',err);
         showToast('Workout save failed','error',4000);
     }
 }
@@ -1431,6 +1439,7 @@ async function persistNutritionState(reason, overrides={}) {
         totalFat+=Number(f.fat)||0;
     }));
     const currentNutrition=await PG.nutrition.getToday()||{};
+    const hydrationLitres=Math.round((parseFloat(overrides.water_litres??overrides.water??currentNutrition.water_litres??currentNutrition.water??0)||0)*100)/100;
     const payload={
         ...currentNutrition,
         ...overrides,
@@ -1443,12 +1452,17 @@ async function persistNutritionState(reason, overrides={}) {
             fat:Math.round(totalFat*10)/10
         },
         steps:parseInt(overrides.steps??currentNutrition.steps??0,10)||0,
-        water:Math.round((parseFloat(overrides.water??currentNutrition.water??0)||0)*100)/100
+        water:hydrationLitres,
+        water_litres:hydrationLitres
     };
     console.log(`[Nutrition Save] ${reason} payload:`,payload);
     const saveResult=await PG.nutrition.save(payload);
     console.log(`[Nutrition Save] ${reason} result:`,saveResult);
     return saveResult;
+}
+
+function getWaterLitres(nutritionRow={}) {
+    return Math.round((parseFloat(nutritionRow?.water_litres ?? nutritionRow?.water ?? 0) || 0) * 100) / 100;
 }
 
 async function addMeal() {
@@ -1485,15 +1499,17 @@ function renderMeals() {
     }
     container.innerHTML=todayMeals.map(meal=>{
         const mealIndex=meals.indexOf(meal);
-        const totalCal=meal.foods.reduce((s,f)=>s+f.cal,0);
-        const totalProt=meal.foods.reduce((s,f)=>s+f.protein,0).toFixed(1);
-        const totalCarbs=meal.foods.reduce((s,f)=>s+f.carbs,0).toFixed(1);
-        const totalFat=meal.foods.reduce((s,f)=>s+f.fat,0).toFixed(1);
-        return `<div class="meal-block"><div class="meal-header"><div><div class="meal-name">${meal.name}</div><div class="meal-totals">${totalCal} kcal • P:${totalProt}g • C:${totalCarbs}g • F:${totalFat}g</div></div><div style="display:flex;gap:6px;flex-wrap:wrap;">
+        const foods=Array.isArray(meal.foods)?meal.foods:[];
+        const totalCal=foods.reduce((s,f)=>s+(Number(f.cal)||0),0);
+        const totalProt=foods.reduce((s,f)=>s+(Number(f.protein)||0),0).toFixed(1);
+        const totalCarbs=foods.reduce((s,f)=>s+(Number(f.carbs)||0),0).toFixed(1);
+        const totalFat=foods.reduce((s,f)=>s+(Number(f.fat)||0),0).toFixed(1);
+        const foodRows=foods.map((f,fi)=>`<div class="food-entry"><div class="food-entry-info"><div class="food-entry-name">${f.name} (${f.portion}${f.isLiquid?'ml':'g'})</div><div class="food-entry-macros">P: ${f.protein}g • C: ${f.carbs}g • F: ${f.fat}g</div></div><div class="food-entry-cals">${f.cal} kcal</div><div class="food-entry-delete" onclick="deleteFoodFromMeal(${mealIndex},${fi})">✕</div></div>`).join('');
+        return `<div class="meal-block"><div class="meal-header"><div><div class="meal-name">${meal.name}</div></div><div style="display:flex;gap:6px;flex-wrap:wrap;">
     <button class="btn-small" onclick="openFoodModal(${mealIndex})">+ Add Food</button>
     <button class="btn-small" onclick="currentMealIndex=${mealIndex};saveMealTemplate()" style="background:#FEF3C7;color:#92400E;">📋 Save as Template</button>
     <button class="btn-small" onclick="deleteMeal(${mealIndex})" style="background:#FEF2F2;color:var(--danger);">🗑 Remove Meal</button>
-</div></div>${meal.foods.map((f,fi)=>`<div class="food-entry"><div class="food-entry-info"><div class="food-entry-name">${f.name} (${f.portion}${f.isLiquid?'ml':'g'})</div><div class="food-entry-macros">P: ${f.protein}g • C: ${f.carbs}g • F: ${f.fat}g</div></div><div class="food-entry-cals">${f.cal} kcal</div><div class="food-entry-delete" onclick="deleteFoodFromMeal(${mealIndex},${fi})">✕</div></div>`).join('')}</div>`;
+</div></div><div class="meal-food-list">${foodRows}</div><div class="meal-totals-row">Total: ${totalCal} kcal • P:${totalProt}g • C:${totalCarbs}g • F:${totalFat}g</div></div>`;
     }).join('');
 }
 
@@ -1684,14 +1700,26 @@ async function saveStepsWater() {
     }
 }
 async function saveWater() {
-    const today=new Date().toLocaleDateString('en-GB');
-    let data=await PG.nutrition.getToday()||{steps:0,water:0};
-    const water=document.getElementById('input-water').value;
-    if(water)data.water=parseFloat(water);
+    const waterInput=document.getElementById('input-water');
+    const waterValue=parseFloat(waterInput?.value);
+    if(!Number.isFinite(waterValue)||waterValue<=0){
+        showToast('Enter water in litres','error',2500);
+        return;
+    }
     try{
-        await persistNutritionState('saveWater', {water:data.water});
-        loadNutrition();
-        updateHome();
+        const nutritionToday=await PG.nutrition.getToday()||{};
+        const currentWater=getWaterLitres(nutritionToday);
+        const nextWater=Math.round((currentWater+waterValue)*100)/100;
+        const savePayload={water_litres:nextWater,water:nextWater};
+        console.log('[Water Save] payload:',savePayload);
+        const saveResult=await PG.nutrition.save(savePayload);
+        console.log('[Water Save] result:',saveResult);
+        if(saveResult?.ok===false||saveResult?.error){
+            throw saveResult.error||new Error('Water save failed');
+        }
+        if(waterInput)waterInput.value='';
+        await loadNutrition();
+        await updateHome();
         showToast('Saved!','success',2000);
     }catch(err){
         console.error('saveWater:',err);
@@ -1708,9 +1736,9 @@ async function loadNutrition() {
     const todayMeals=meals.filter(m=>m.date===today);
     let totalCal=0,totalProtein=0,totalCarbs=0,totalFat=0;
     todayMeals.forEach(meal=>meal.foods.forEach(f=>{totalCal+=f.cal;totalProtein+=f.protein;totalCarbs+=f.carbs;totalFat+=f.fat;}));
-    const nd=await PG.nutrition.getToday()||{steps:0,water:0,restDay:false};
+    const nd=await PG.nutrition.getToday()||{steps:0,water:0,water_litres:0,restDay:false};
     const steps=parseInt(nd.steps)||0;
-    const water=parseFloat(nd.water)||0;
+    const water=getWaterLitres(nd);
     const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
     const setWidth=(id,pct)=>{const el=document.getElementById(id);if(el)el.style.width=pct+'%';};
     setEl('nut-show-calories',`${totalCal} / ${calTarget} kcal`);
@@ -1802,7 +1830,8 @@ if(recordEl){const progressEntries=await PG.progress.getAll();recordEl.textConte
     let carbs=0,fats=0;
     todayMeals.forEach(meal=>meal.foods.forEach(f=>{cals+=f.cal;protein+=f.protein;carbs+=f.carbs;fats+=f.fat;}));
     const nd=await PG.nutrition.getToday()||{};
-    steps=parseInt(nd.steps)||0;water=parseFloat(nd.water)||0;
+    steps=parseInt(nd.steps)||0;
+    water=getWaterLitres(nd);
     const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
     const setWidth=(id,pct)=>{const el=document.getElementById(id);if(el)el.style.width=pct+'%';};
     setEl('home-show-calories',`${cals} / ${calTarget} kcal`);setEl('home-protein',`${protein.toFixed(1)} / ${proteinTarget}g`);
@@ -1835,7 +1864,7 @@ if(recordEl){const progressEntries=await PG.progress.getAll();recordEl.textConte
             let dayCals=0,dayProtein=0;
             todayMealsForDate.forEach(meal=>meal.foods.forEach(f=>{dayCals+=f.cal;dayProtein+=f.protein;}));
             const daySteps=parseInt(nd.steps)||0;
-            const dayWater=parseFloat(nd.water)||0;
+            const dayWater=getWaterLitres(nd);
             const hasWorkout=workoutHistory.find(w=>w.date===dateStr)||cardioHistory.find(w=>w.date===dateStr);
             const isRestDay=nd.restDay||false;
             let score=0;
@@ -2563,13 +2592,23 @@ async function logRestDay() {
 
 async function saveStepsTrain() {
     try{
-        const nd=await PG.nutrition.getToday()||{steps:0,water:0,restDay:false};
         const stepsInput=document.getElementById('input-steps-train').value;
-        if(stepsInput!=='')nd.steps=parseInt(stepsInput,10)||0;
-        await persistNutritionState('saveStepsTrain', {steps:nd.steps,water:nd.water,restDay:nd.restDay});
+        if(stepsInput===''){
+            showToast('Enter your steps first','error',2500);
+            return;
+        }
+        const stepsValue=parseInt(stepsInput,10)||0;
+        const savePayload={steps:stepsValue};
+        console.log('[Steps Save] payload:',savePayload);
+        const saveResult=await PG.nutrition.save(savePayload);
+        console.log('[Steps Save] result:',saveResult);
+        if(saveResult?.ok===false||saveResult?.error){
+            throw saveResult.error||new Error('Steps save failed');
+        }
         document.getElementById('input-steps-train').value='';
-        updateStepsDisplay();
-        updateHome();
+        await updateStepsDisplay();
+        await loadNutrition();
+        await updateHome();
         showToast('Saved!','success',2000);
     }catch(err){
         console.error('saveStepsTrain:',err);
@@ -2579,7 +2618,7 @@ async function saveStepsTrain() {
 
 async function updateStepsDisplay() {
     const today=new Date().toLocaleDateString('en-GB');
-    const data=await PG.nutrition.getToday()||{steps:0,water:0};
+    const data=await PG.nutrition.getToday()||{steps:0,water:0,water_litres:0};
     const steps=parseInt(data.steps)||0;
     const stepsTarget=settings.stepsTarget||8000;
     const el=document.getElementById('steps-display-train');
@@ -2605,24 +2644,22 @@ async function saveMealTemplate() {
             showToast('Add some foods to this meal first','error',3000);
             return;
         }
-        const routinesData=await PG.routines.getAll();
-        const normalized=normalizeRoutinesRows(routinesData);
-        const templates=Array.isArray(normalized.mealTemplates)?[...normalized.mealTemplates]:[];
-        const name=prompt('Save this meal as a template:',meal.name)||meal.name;
-        templates.push({
-            name,
-            foods:Array.isArray(meal.foods)?meal.foods.map(f=>({...f})) : [],
-            saved:new Date().toLocaleDateString('en-GB')
-        });
-        const templatePayload={
-            savedRoutines:normalized.savedRoutines,
-            customExercises:normalized.customExercises,
-            unlockedCodes:normalized.unlockedCodes,
-            mealTemplates:templates
+        const templateName=(prompt('Save this meal as a template:',meal.name)||meal.name||'Meal Template').trim();
+        if(!templateName){
+            showToast('Template name is required','error',2500);
+            return;
+        }
+        const mealsData={
+            name:meal.name,
+            foods:Array.isArray(meal.foods)?meal.foods.map(f=>({...f})):[]
         };
+        const templatePayload={name:templateName,exercises:[],template_data:mealsData};
         console.log('[Meal Template Save] payload:',templatePayload);
         const templateSaveResult=await PG.routines.save(templatePayload);
         console.log('[Meal Template Save] result:',templateSaveResult);
+        if(templateSaveResult?.ok===false||templateSaveResult?.error){
+            throw templateSaveResult.error||new Error('Template save failed');
+        }
         showToast('Meal template saved!','success',2200);
     }catch(err){
         console.error('saveMealTemplate:',err);
@@ -2633,17 +2670,21 @@ async function saveMealTemplate() {
 async function loadMealTemplate() {
     const routinesData=await PG.routines.getAll();
     console.log('[Meal Template Load] routines rows:',routinesData);
-    const templates=normalizeRoutinesRows(routinesData).mealTemplates;
+    const templates=(Array.isArray(routinesData)?routinesData:[])
+        .filter(r=>r&&r.template_data&&typeof r.template_data==='object')
+        .map(r=>({id:r.id,name:r.name||r.template_data.name||'Meal Template',template_data:r.template_data}));
     console.log('[Meal Template Load] templates:',templates);
     if(templates.length===0){alert('No saved meal templates yet. Add foods to a meal and save it as a template first.');return;}
-    const list=templates.map((t,i)=>`${i+1}. ${t.name} (${t.foods.length} foods)`).join('\n');
+    const list=templates.map((t,i)=>`${i+1}. ${t.name} (${Array.isArray(t.template_data?.foods)?t.template_data.foods.length:0} foods)`).join('\n');
     const choice=prompt(`Load a meal template:\n\n${list}\n\nEnter number:`);
     if(!choice)return;
     const index=parseInt(choice)-1;
     if(index>=0&&index<templates.length){
         const template=templates[index];
         const today=new Date().toLocaleDateString('en-GB');
-        meals.push({name:template.name,date:today,foods:[...template.foods]});
+        const foods=Array.isArray(template.template_data?.foods)?template.template_data.foods.map(f=>({...f})):[];
+        const mealName=(template.template_data?.name||template.name||'Meal').trim();
+        meals.push({name:mealName,date:today,foods});
         await persistNutritionState('loadMealTemplate apply');
         await saveToStorage({skipWorkouts:true,skipNutrition:true});
         renderMeals();loadNutrition();updateHome();
