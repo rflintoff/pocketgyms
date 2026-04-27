@@ -32,8 +32,7 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, Bl
     align-items: center;
     justify-content: center;
     padding: 24px;
-    background: rgba(15, 23, 42, 0.55);
-    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.85);
 }
 .auth-card {
     width: 100%;
@@ -92,6 +91,34 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, Bl
 }
 .btn-oauth:active {
     opacity: 0.9;
+}
+.auth-card .btn-primary,
+.auth-card .btn-ghost {
+    width: 100%;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: opacity 0.2s, background 0.2s, color 0.2s, border-color 0.2s;
+}
+.auth-card .btn-primary {
+    background: var(--primary);
+    color: #fff;
+    border: 1.5px solid var(--primary);
+}
+.auth-card .btn-primary:active {
+    opacity: 0.9;
+}
+.auth-card .btn-ghost {
+    background: transparent;
+    color: var(--primary);
+    border: 1.5px solid var(--border);
+}
+.auth-card .btn-ghost:hover {
+    background: var(--primary-light);
+    border-color: var(--primary);
 }
 .auth-divider {
     position: relative;

@@ -5,6 +5,7 @@ function toggleAuthMode() {
   isSignUp = !isSignUp;
   document.getElementById('auth-toggle-btn').textContent =
     isSignUp ? 'Have an account? Sign in' : 'No account? Sign up';
+  document.getElementById('auth-submit-btn').textContent = isSignUp ? 'Sign Up' : 'Sign In';
 }
 
 async function handleEmailAuth() {
