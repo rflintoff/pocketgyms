@@ -634,8 +634,6 @@
     <div class="card">
         <h2 id="txt-your-details">YOUR DETAILS</h2>
         <label id="lbl-set-name">Name</label><input type="text" id="set-name" placeholder="Your name">
-        <button class="btn" onclick="saveProfileSettings()" id="btn-save-update" style="margin-top:4px;">Save & Update</button>
-        <p id="settings-save-msg" style="display:none;color:var(--success);font-size:12px;font-weight:700;margin-bottom:10px;">Saved!</p>
         <label id="lbl-set-age">Age</label><input type="number" id="set-age" placeholder="e.g. 25">
         <label id="lbl-set-gender">Gender</label>
         <select id="set-gender"><option value="male">Male</option><option value="female">Female</option></select>
@@ -670,6 +668,8 @@
             <option value="fr">🇫🇷 Français</option>
             <option value="de">🇩🇪 Deutsch</option>
         </select>
+        <button class="btn" onclick="saveProfileSettings()" id="btn-save-update" style="margin-top:6px;">Save & Update</button>
+        <p id="settings-save-msg" style="display:none;color:var(--success);font-size:12px;font-weight:700;margin-bottom:4px;">Saved!</p>
     </div>
 
     <div class="card">
@@ -704,6 +704,7 @@
         <div class="stat-row"><span class="stat-label" id="txt-cal-target">Calorie Target</span><span class="stat-value" id="cal-target-value">—</span></div>
         <div class="stat-row"><span class="stat-label" id="txt-protein-target">Protein Target</span><span class="stat-value" id="protein-target-value">—</span></div>
         <div class="stat-row"><span class="stat-label" id="txt-steps-target">Steps Target</span><span class="stat-value">8,000 steps</span></div>
+        <button class="btn" onclick="saveSettings()" id="txt-save-settings" style="margin-top:12px;">Save & Calculate Targets</button>
     </div>
 
     <div class="card">
@@ -745,7 +746,6 @@
             </div>
         </div>
     </div>
-    <button class="btn" onclick="saveSettings()" id="txt-save-settings">Save & Calculate Targets</button>
     <div class="card" style="margin-top:12px;">
         <h2>DANGER ZONE</h2>
         <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px;">Permanently delete all your data. This cannot be undone.</p>
