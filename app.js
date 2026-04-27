@@ -2,31 +2,46 @@
 let isSignUp = false;
 let appBooted = false;
 
+function recoverFromBootError(err, source) {
+  console.error(`[Boot Error:${source}]`, err);
+  const authModal = document.getElementById('auth-modal');
+  if (authModal) authModal.style.display = 'flex';
+  document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = 'none');
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
-  const { data: { session } } = await PG.db.auth.getSession();
-  if (session?.user) {
-    appBooted = true;
-    document.getElementById('auth-modal').style.display = 'none';
-    await loadUserEmail();
-    await initApp(session.user);
-  } else {
-    document.getElementById('auth-modal').style.display = 'flex';
-    document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = 'none');
-    document.getElementById('onboarding').style.display = 'none';
+  try {
+    const { data: { session } } = await PG.db.auth.getSession();
+    if (session?.user) {
+      appBooted = true;
+      document.getElementById('auth-modal').style.display = 'none';
+      await loadUserEmail();
+      await initApp(session.user);
+    } else {
+      document.getElementById('auth-modal').style.display = 'flex';
+      document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = 'none');
+      document.getElementById('onboarding').style.display = 'none';
+    }
+  } catch (err) {
+    recoverFromBootError(err, 'DOMContentLoaded');
   }
 });
 
 PG.db.auth.onAuthStateChange(async (event, session) => {
-  if (event === 'SIGNED_IN' && !appBooted) {
-    appBooted = true;
-    document.getElementById('auth-modal').style.display = 'none';
-    await loadUserEmail();
-    await initApp(session.user);
-  } else if (event === 'SIGNED_OUT') {
-    appBooted = false;
-    document.getElementById('auth-modal').style.display = 'flex';
-    document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = 'none');
-    document.getElementById('onboarding').style.display = 'none';
+  try {
+    if (event === 'SIGNED_IN' && !appBooted) {
+      appBooted = true;
+      document.getElementById('auth-modal').style.display = 'none';
+      await loadUserEmail();
+      await initApp(session.user);
+    } else if (event === 'SIGNED_OUT') {
+      appBooted = false;
+      document.getElementById('auth-modal').style.display = 'flex';
+      document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = 'none');
+      document.getElementById('onboarding').style.display = 'none';
+    }
+  } catch (err) {
+    recoverFromBootError(err, 'AuthStateChange');
   }
 });
 
@@ -51,15 +66,19 @@ async function handleEmailAuth() {
 }
 
 async function initApp(user) {
-  const profile = await PG.profile.get();
-  const isOnboarded = profile && profile.onboarded === true;
-  document.getElementById('onboarding').style.display = 'none';
-  document.getElementById('auth-modal').style.display = 'none';
-  if (isOnboarded) {
-    document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = '');
-    await loadFromStorage();
-  } else {
-    showOnboarding();
+  try {
+    const profile = await PG.profile.get();
+    const isOnboarded = profile && profile.onboarded === true;
+    document.getElementById('onboarding').style.display = 'none';
+    document.getElementById('auth-modal').style.display = 'none';
+    if (isOnboarded) {
+      document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = '');
+      await loadFromStorage();
+    } else {
+      showOnboarding();
+    }
+  } catch (err) {
+    recoverFromBootError(err, 'initApp');
   }
 }
 
@@ -663,7 +682,6 @@ let timerInterval=null, workoutTimerInterval=null, workoutStartTime=null, cardio
 let currentCardioType='', selectedFood=null, foodFilter='all', currentMealIndex=null;
 let selectedLang='en', selectedHeightUnit='cm', selectedWeightUnit='kg';
 let firstSetLogged=false;
-let homeRenderVersion=0;
 
 // ===================== TRANSLATIONS =====================
 function t(key) { return (translations[selectedLang]&&translations[selectedLang][key])||translations.en[key]||key; }
@@ -957,14 +975,13 @@ async function savePhaseSettings() {
 
 // ===================== NAVIGATION =====================
 function showScreen(id) {
-    const previousScreenId=document.querySelector('.screen.active')?.id||'';
     window.scrollTo(0,0);
     document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
     const navMap={'screen-home':'nav-home','screen-train':'nav-train','screen-calories':'nav-calories','screen-progress':'nav-progress','screen-settings':'nav-settings'};
     if(navMap[id])document.getElementById(navMap[id]).classList.add('active');
-    if(id==='screen-home'&&previousScreenId!=='screen-home')updateHome();
+    if(id==='screen-home')updateHome();
     if(id==='screen-calories'){loadNutrition();renderSupplements();renderMeals();}
     if(id==='screen-progress')updateProgress();
     if(id==='screen-settings')loadSettings();
@@ -1584,7 +1601,6 @@ async function toggleSupplement(index){const today=new Date().toLocaleDateString
 
 // ===================== HOME =====================
 async function updateHome() {
-    const renderVersion=++homeRenderVersion;
     const s=settings;const calTarget=s.calTarget||2000;const proteinTarget=s.proteinTarget||150;const stepsTarget=s.stepsTarget||8000;
     const remainingCaloriesForMacros=Math.max(calTarget-(proteinTarget*4),0);
     const carbsTarget=s.carbsTarget||Math.max(Math.round((remainingCaloriesForMacros*0.5)/4),0);
@@ -1604,7 +1620,6 @@ async function updateHome() {
 if(recordEl){const progressEntries=await PG.progress.getAll();recordEl.textContent=(progressEntries?.[0]?.streakRecord||'0')+'/7';}
 }
 }
-    if(renderVersion!==homeRenderVersion)return;
     const quoteEl=document.getElementById('daily-quote');
     if(quoteEl)quoteEl.textContent='"'+getDailyQuote()+'"';
     const currentW=Number(s.weight);
@@ -1623,7 +1638,6 @@ if(recordEl){const progressEntries=await PG.progress.getAll();recordEl.textConte
     let carbs=0,fats=0;
     todayMeals.forEach(meal=>meal.foods.forEach(f=>{cals+=f.cal;protein+=f.protein;carbs+=f.carbs;fats+=f.fat;}));
     const nd=await PG.nutrition.getToday()||{};
-    if(renderVersion!==homeRenderVersion)return;
     steps=parseInt(nd.steps)||0;water=parseFloat(nd.water)||0;
     const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
     const setWidth=(id,pct)=>{const el=document.getElementById(id);if(el)el.style.width=pct+'%';};
@@ -1678,7 +1692,6 @@ if(isRestDay){
 if(i===(dow===0?6:dow-1))d.classList.add('today');
 fragment.appendChild(d);
         }
-        if(renderVersion!==homeRenderVersion)return;
         streakBar.appendChild(fragment);
         const scEl=document.getElementById('streak-count');if(scEl)scEl.textContent=streakCount+'/7';
     }
