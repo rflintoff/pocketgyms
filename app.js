@@ -24,11 +24,13 @@ function showAuthOnly() {
   setMainAppVisible(false);
   if (onboardingEl) onboardingEl.style.display = 'none';
   if (authModalEl) authModalEl.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
 }
 
 function showMainApp() {
   if (authModalEl) authModalEl.style.display = 'none';
   setMainAppVisible(true);
+  document.body.style.overflow = '';
 }
 
 function logAuthDebug(event, session) {
@@ -44,6 +46,9 @@ function logAuthDebug(event, session) {
 }
 
 setBootVisibility(false);
+setMainAppVisible(false);
+if (onboardingEl) onboardingEl.style.display = 'none';
+if (authModalEl) authModalEl.style.display = 'none';
 
 function toggleAuthMode() {
   isSignUp = !isSignUp;
@@ -857,6 +862,7 @@ function showOnboarding() {
     setMainAppVisible(false);
     if(onboarding)onboarding.style.display='flex';
     if(authModalEl)authModalEl.style.display='none';
+    document.body.style.overflow = 'hidden';
     obNext(0);
 }
 
@@ -1626,6 +1632,7 @@ async function loadNutrition() {
     const hour=new Date().getHours();const expectedCals=Math.round((hour/24)*calTarget);
     const calStatus=document.getElementById('cal-status');
     if(calStatus){if(totalCal>=expectedCals){calStatus.textContent=t('onTrack');calStatus.style.color='#10B981';}else{calStatus.textContent=t('behindEat');calStatus.style.color='#F59E0B';}}
+    await renderSupplements();
 }
 
 async function renderSupplements() {

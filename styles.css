@@ -146,6 +146,35 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, Bl
     letter-spacing: 0.5px;
 }
 
+@media (max-width: 640px) {
+    #auth-modal {
+        padding: 16px;
+        align-items: center;
+        justify-content: center;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .auth-card {
+        max-width: 100%;
+        width: min(100%, 420px);
+        border-radius: 16px;
+        padding: 20px 16px;
+        margin: auto;
+    }
+    .auth-card h2 {
+        font-size: 22px;
+    }
+    .auth-card p {
+        font-size: 14px;
+        line-height: 1.4;
+    }
+    .auth-card .btn-primary,
+    .auth-card .btn-ghost,
+    .btn-oauth {
+        min-height: 44px;
+    }
+}
+
 /* HEADER */
 .header { background: var(--primary); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
 .header h1 { color: #fff; font-size: 20px; letter-spacing: 1px; font-weight: 800; }
