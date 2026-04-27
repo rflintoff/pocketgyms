@@ -163,13 +163,49 @@
 
 <!-- HOME SCREEN -->
 <div class="screen active" id="screen-home" style="display:none;">
-    <div class="card" style="text-align:center;">
-        <h2 id="txt-today-score">TODAY'S SCORE</h2>
-        <div class="score-circle">
-            <div class="score-number" id="today-score">0</div>
-            <div class="score-label" id="txt-out-of">OUT OF 100</div>
+    <div class="home-hero">
+        <h1 class="home-hero-title" id="home-hero-title">Good morning</h1>
+        <p class="home-hero-sub" id="home-hero-sub">Let's crush your goals today.</p>
+    </div>
+
+    <div class="card home-daily-card">
+        <p class="card-kicker" id="txt-today-score">DAILY PROGRESS</p>
+        <div class="home-daily-row">
+            <div class="home-score-numbers">
+                <span id="today-score" class="home-score-big">0</span><span class="home-score-slash">/100</span>
+                <p class="home-score-caption" id="txt-out-of">OUT OF 100</p>
+            </div>
+            <div class="home-score-ring-wrap" aria-hidden="true">
+                <svg class="home-score-svg" viewBox="0 0 100 100">
+                    <circle class="home-score-track" cx="50" cy="50" r="40" fill="none"/>
+                    <circle id="home-score-ring-progress" class="home-score-progress" cx="50" cy="50" r="40" fill="none" transform="rotate(-90 50 50)" stroke-dasharray="251.33" stroke-dashoffset="251.33"/>
+                </svg>
+                <span class="home-score-ring-icon">📈</span>
+            </div>
         </div>
-        <div class="stat-row">
+        <div class="home-stats-strip">
+            <div class="home-stat-chip">
+                <span class="home-stat-ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M14.5 14h.5a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-.5"/><path d="M9.5 14H9a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h.5"/><path d="M4 12h16"/><path d="M14.5 10v4M9.5 10v4"/></svg></span>
+                <span class="home-stat-lbl" id="txt-home-stat-workout">Workout</span>
+                <span class="home-stat-val" id="home-stat-workout">—</span>
+            </div>
+            <div class="home-stat-chip">
+                <span class="home-stat-ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16h3l1.5-7 3.5 1.5L12 16h8"/><path d="M8 16v2.5M16 16v2.5"/></svg></span>
+                <span class="home-stat-lbl" id="txt-steps">Steps</span>
+                <span class="home-stat-val" id="home-steps">—</span>
+            </div>
+            <div class="home-stat-chip">
+                <span class="home-stat-ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 2v7c0 1.1.9 2 2 2h0"/><path d="M9 2v20"/><path d="M14 2v5a3 3 0 0 0 6 0V2"/><path d="M20 22v-8"/></svg></span>
+                <span class="home-stat-lbl" id="txt-protein">Protein</span>
+                <span class="home-stat-val" id="home-protein">—</span>
+            </div>
+            <div class="home-stat-chip">
+                <span class="home-stat-ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5S7 10 7 13.5a5 5 0 0 0 10 0C17 10 12 3.5 12 3.5Z"/></svg></span>
+                <span class="home-stat-lbl" id="txt-water">Water</span>
+                <span class="home-stat-val" id="home-water">—</span>
+            </div>
+        </div>
+        <div class="stat-row home-streak-summary">
             <span class="stat-label" id="txt-weekly-streak">Weekly Streak</span>
             <span class="stat-value" id="streak-count">0/7</span>
         </div>
@@ -191,15 +227,15 @@
         <div class="stat-row"><span class="stat-label" id="home-txt-cal-label">Calories</span><span class="stat-value" id="home-show-calories">0 / — kcal</span></div>
         <div class="progress-bar-outer"><div class="progress-bar-inner" id="home-bar-calories"></div></div>
         <div id="cal-remaining" style="font-size:13px;font-weight:700;margin-top:4px;margin-bottom:4px;"></div>
-        <div class="stat-row" style="margin-top:10px;"><span class="stat-label" id="txt-protein">Protein</span><span class="stat-value" id="home-protein">—</span></div>
+        <div class="stat-row" style="margin-top:10px;"><span class="stat-label" id="txt-protein-detail">Protein</span><span class="stat-value" id="home-protein-detail">—</span></div>
         <div class="progress-bar-outer"><div class="progress-bar-inner" id="home-bar-protein"></div></div>
         <div class="stat-row" style="margin-top:10px;"><span class="stat-label">Carbs</span><span class="stat-value" id="home-carbs">—</span></div>
         <div class="progress-bar-outer"><div class="progress-bar-inner" id="home-bar-carbs"></div></div>
         <div class="stat-row" style="margin-top:10px;"><span class="stat-label">Fat</span><span class="stat-value" id="home-fats">—</span></div>
         <div class="progress-bar-outer"><div class="progress-bar-inner" id="home-bar-fat"></div></div>
-        <div class="stat-row" style="margin-top:10px;"><span class="stat-label" id="txt-steps">Steps</span><span class="stat-value" id="home-steps">—</span></div>
+        <div class="stat-row" style="margin-top:10px;"><span class="stat-label" id="txt-steps-detail">Steps</span><span class="stat-value" id="home-steps-detail">—</span></div>
         <div class="progress-bar-outer"><div class="progress-bar-inner" id="home-bar-steps"></div></div>
-        <div class="stat-row" style="margin-top:10px;"><span class="stat-label" id="txt-water">Water</span><span class="stat-value" id="home-water">—</span></div>
+        <div class="stat-row" style="margin-top:10px;"><span class="stat-label" id="txt-water-detail">Water</span><span class="stat-value" id="home-water-detail">—</span></div>
         <div class="progress-bar-outer"><div class="progress-bar-inner" id="home-bar-water"></div></div>
     </div>
 
@@ -222,13 +258,21 @@
         <h2 id="txt-badges">BADGES</h2>
         <div id="badges-display"></div>
     </div>
-    <div class="home-workout-actions">
-        <div id="next-workout-suggestion" class="home-workout-action up-next" style="display:none;">
-            <div style="color:var(--text-muted);font-size:11px;font-weight:700;margin-bottom:4px;">UP NEXT</div>
-            <div style="color:var(--text);font-size:14px;font-weight:700;" id="next-workout-text">—</div>
+    <div class="card home-workout-card" id="home-workout-card">
+        <div class="home-workout-card-head">
+            <div>
+                <p class="card-kicker" id="txt-todays-workout">TODAY'S WORKOUT</p>
+                <h3 class="home-workout-title" id="next-workout-title">Push Day</h3>
+                <p class="home-workout-meta" id="next-workout-meta">45–60 min · Train tab</p>
+            </div>
+            <span class="home-workout-badge" id="txt-workout-primary-badge">Primary</span>
         </div>
-        <button class="btn home-workout-action" onclick="showScreen('screen-train')" id="txt-log-workout">LOG A WORKOUT</button>
-        <button class="btn home-workout-action rest-day-btn" onclick="logRestDay()">LOG A REST DAY</button>
+        <div class="home-workout-visual" aria-hidden="true"></div>
+        <button type="button" class="btn btn-start-workout" onclick="showScreen('screen-train')">
+            <span class="btn-start-workout-label" id="txt-start-workout">START WORKOUT</span>
+            <span class="btn-play-circle" aria-hidden="true">▶</span>
+        </button>
+        <button type="button" class="btn-outline home-rest-outline" onclick="logRestDay()" id="txt-log-rest-day">LOG A REST DAY</button>
     </div>
 </div>
 
@@ -436,6 +480,7 @@
     <div class="card" id="supplements-card" style="display:block;">
         <h2 id="txt-supplements">SUPPLEMENTS</h2>
         <div id="supplement-list" class="supplement-list"></div>
+        <button type="button" class="btn-outline supplement-clear-all" onclick="clearAllSupplements()" id="txt-clear-all-supplements">Clear all supplements</button>
         <div class="supplement-add-row">
             <input type="text" id="custom-supplement-input" placeholder="Add custom supplement">
             <button class="btn-small" onclick="addCustomSupplement()">Add</button>
@@ -444,7 +489,7 @@
 </div>
 
 <!-- FOOD MODAL -->
-<div id="food-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:var(--bg); z-index:9998; padding:20px; overflow-y:auto; padding-bottom:80px;">
+<div id="food-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:var(--bg); z-index:9998; padding:20px; overflow-y:auto; padding-bottom:110px;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
         <h2 style="color:var(--text); font-size:18px; font-weight:800;" id="food-modal-title">Add Food</h2>
         <button onclick="closeFoodModal()" style="background:none; border:none; color:var(--text); font-size:24px; cursor:pointer;">✕</button>
@@ -542,8 +587,8 @@
     </div>
 </div>
 
-<!-- SETTINGS SCREEN -->
-<div class="screen" id="screen-settings" style="display:none;">
+<!-- PROFILE SCREEN -->
+<div class="screen" id="screen-profile" style="display:none;">
     <div class="card">
         <h2>Account</h2>
         <p style="color:var(--text-muted);font-size:13px;margin-bottom:6px;">Signed in as</p>
@@ -610,14 +655,6 @@
         <p id="phase-save-msg" style="display:none;color:var(--success);font-size:12px;font-weight:700;margin-top:2px;">Phase saved!</p>
     </div>
 
-    <div class="card">
-        <h2 id="txt-appearance">APPEARANCE</h2>
-        <div class="toggle-row">
-            <span class="toggle-label" id="txt-dark-mode">Dark Mode</span>
-            <div class="toggle-switch" id="dark-toggle" onclick="toggleTheme()"><div class="toggle-knob"></div></div>
-        </div>
-    </div>
-
     <div class="card" id="tdee-result" style="display:none;">
         <h2 id="txt-your-targets">YOUR CALCULATED TARGETS</h2>
         <div class="stat-row"><span class="stat-label" id="txt-tdee">TDEE</span><span class="stat-value" id="tdee-value">—</span></div>
@@ -639,6 +676,15 @@
         <button class="btn-outline" onclick="calculatePlates()" id="txt-calc-plates">Calculate Plates</button>
         <div class="plates-result" id="plates-result" style="display:none;"></div>
     </div>
+
+    <div class="card">
+        <h2 id="txt-appearance">APPEARANCE</h2>
+        <div class="toggle-row">
+            <span class="toggle-label" id="txt-dark-mode">Dark Mode</span>
+            <div class="toggle-switch" id="dark-toggle" onclick="toggleTheme()"><div class="toggle-knob"></div></div>
+        </div>
+    </div>
+
     <div class="card" style="margin-top:12px;">
         <h2>Reset All Data</h2>
         <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px;">This will permanently delete all your workout, nutrition and progress data. This cannot be undone.</p>
@@ -657,25 +703,27 @@
 
 <!-- NAV -->
 <div class="nav" style="display:none;">
+    <div class="nav-inner">
     <div class="nav-item active" onclick="showScreen('screen-home')" id="nav-home">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V20a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 20V9.5z"/><path d="M9.5 21.5V12h5v9.5"/></svg>
         <span id="nav-txt-home">Home</span>
     </div>
     <div class="nav-item" onclick="showScreen('screen-train')" id="nav-train">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5h11M6.5 17.5h11M4 12h16"/></svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 14h.5a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-.5"/><path d="M9.5 14H9a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h.5"/><path d="M4 12h16"/><path d="M14.5 10v4M9.5 10v4"/></svg>
         <span id="nav-txt-train">Train</span>
     </div>
     <div class="nav-item" onclick="showScreen('screen-calories')" id="nav-calories">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h0"/><path d="M9 2v20"/><path d="M14 2v5a3 3 0 0 0 6 0V2"/><path d="M20 22v-8"/></svg>
         <span id="nav-txt-nutrition">Nutrition</span>
     </div>
     <div class="nav-item" onclick="showScreen('screen-progress')" id="nav-progress">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="12" width="4.5" height="8" rx="1"/><rect x="9.25" y="8" width="4.5" height="12" rx="1"/><rect x="15.5" y="4" width="4.5" height="16" rx="1"/></svg>
         <span id="nav-txt-progress">Progress</span>
     </div>
-    <div class="nav-item" onclick="showScreen('screen-settings')" id="nav-settings">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        <span id="nav-txt-settings">Settings</span>
+    <div class="nav-item" onclick="showScreen('screen-profile')" id="nav-profile">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20.5v-.5a7 7 0 0 1 14 0v.5"/></svg>
+        <span id="nav-txt-profile">Profile</span>
+    </div>
     </div>
 </div>
 

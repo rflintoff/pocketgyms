@@ -9,10 +9,16 @@ const translations = {
         detailsTitle:'About You', detailsSub:'Tell us a bit about yourself',
         statsTitle:'Your Stats', statsSub:"We'll calculate your perfect targets",
         letsGo:"Let's Go 🚀", next:'Next',
-        home:'Home', train:'Train', nutrition:'Nutrition', progress:'Progress', settings:'Settings',
-        coach:'COACH', todayScore:"TODAY'S SCORE", outOf:'OUT OF 100', weeklyStreak:'Weekly Streak',
+        home:'Home', train:'Train', nutrition:'Nutrition', progress:'Progress', profile:'Profile',
+        greetingMorning:'Good morning', greetingAfternoon:'Good afternoon', greetingEvening:'Good evening',
+        homeHeroSub:"Let's crush your goals today.",
+        coach:'COACH', todayScore:'DAILY PROGRESS', outOf:'OUT OF 100', weeklyStreak:'Weekly Streak',
         todayProgress:"TODAY'S PROGRESS", myPhase:'MY PHASE', daysTraining:'Days Training',
         weight:'WEIGHT', current:'Current', target:'Target', toGo:'To Go', badges:'BADGES',
+        homeStatWorkout:'Workout', workoutDoneShort:'Done', workoutRestShort:'Rest', workoutPendingShort:'—',
+        todaysWorkout:"TODAY'S WORKOUT", workoutPrimaryBadge:'Primary', startWorkout:'START WORKOUT',
+        logRestDay:'LOG A REST DAY', homeWorkoutMeta:'45–60 min · Train tab', workoutReadyTitle:'Ready to train?',
+        workoutDaySuffix:'Day', homeWorkoutHint:'Open Train to log your session.',
         logWorkout:'LOG A WORKOUT',
         coachNoTrain:"You haven't trained today — get it done",
         coachProtein:'Need <strong>{x}g more protein</strong> today',
@@ -41,6 +47,11 @@ const translations = {
         addMeal:'+ Add Meal', mealName:'Meal name:',
         stepsWater:'STEPS & WATER', stepsToday:'Steps Today', waterLitres:'Water (litres)',
         save:'Save', supplements:'SUPPLEMENTS',
+        clearAllSupplements:'Clear all supplements', removeFromList:'Remove',
+        removeCustomSupplement:'Remove',
+        restoreDefaultSupplements:'Add common supplements',
+        supplementsListEmpty:'No supplements in your list. Add your own below, or restore the common list.',
+        confirmClearSupplements:'Remove every supplement from your list and clear today’s supplement log? You can add them again anytime.',
         addFood:'Add Food', portion:'Portion (g or ml)', addToMeal:'Add to Meal',
         saveAsTemplate:'Save as Template', removeMeal:'Remove Meal',
         allFoods:'All', noFoodsFound:'No foods found',
@@ -99,10 +110,16 @@ const translations = {
         detailsTitle:'Sobre Você', detailsSub:'Conte-nos um pouco sobre você',
         statsTitle:'Suas Estatísticas', statsSub:'Calcularemos seus alvos perfeitos',
         letsGo:'Vamos lá 🚀', next:'Próximo',
-        home:'Início', train:'Treino', nutrition:'Nutrição', progress:'Progresso', settings:'Configurações',
-        coach:'COACH', todayScore:'PONTUAÇÃO DE HOJE', outOf:'DE 100', weeklyStreak:'Sequência Semanal',
+        home:'Início', train:'Treino', nutrition:'Nutrição', progress:'Progresso', profile:'Perfil',
+        greetingMorning:'Bom dia', greetingAfternoon:'Boa tarde', greetingEvening:'Boa noite',
+        homeHeroSub:'Vamos arrasar nas metas hoje.',
+        coach:'COACH', todayScore:'PROGRESSO DIÁRIO', outOf:'DE 100', weeklyStreak:'Sequência Semanal',
         todayProgress:'PROGRESSO DE HOJE', myPhase:'MINHA FASE', daysTraining:'Dias Treinando',
         weight:'PESO', current:'Atual', target:'Meta', toGo:'Faltam', badges:'CONQUISTAS',
+        homeStatWorkout:'Treino', workoutDoneShort:'Feito', workoutRestShort:'Descanso', workoutPendingShort:'—',
+        todaysWorkout:'TREINO DE HOJE', workoutPrimaryBadge:'Principal', startWorkout:'COMEÇAR TREINO',
+        logRestDay:'REGISTRAR DIA DE DESCANSO', homeWorkoutMeta:'45–60 min · Aba Treino', workoutReadyTitle:'Pronto para treinar?',
+        workoutDaySuffix:'Dia', homeWorkoutHint:'Abra Treino para registrar.',
         logWorkout:'REGISTRAR TREINO',
         coachNoTrain:'Você não treinou hoje — vamos lá',
         coachProtein:'Precisa de <strong>mais {x}g de proteína</strong> hoje',
@@ -131,6 +148,10 @@ const translations = {
         addMeal:'+ Adicionar Refeição', mealName:'Nome da refeição:',
         stepsWater:'PASSOS E ÁGUA', stepsToday:'Passos Hoje', waterLitres:'Água (litros)',
         save:'Salvar', supplements:'SUPLEMENTOS',
+        clearAllSupplements:'Limpar todos os suplementos', removeFromList:'Remover',
+        restoreDefaultSupplements:'Adicionar lista comum',
+        supplementsListEmpty:'Nenhum suplemento na lista. Adicione abaixo ou restaure a lista comum.',
+        confirmClearSupplements:'Remover todos os suplementos da lista e limpar o registo de hoje? Pode adicionar novamente quando quiser.',
         addFood:'Adicionar alimento', portion:'Porção (g ou ml)', addToMeal:'Adicionar à Refeição',
         saveAsTemplate:'Guardar como modelo', removeMeal:'Remover refeição',
         allFoods:'Todos', noFoodsFound:'Nenhum alimento encontrado',
@@ -189,10 +210,16 @@ const translations = {
         detailsTitle:'Sobre Ti', detailsSub:'Cuéntanos un poco sobre ti',
         statsTitle:'Tus Estadísticas', statsSub:'Calcularemos tus objetivos perfectos',
         letsGo:'¡Vamos! 🚀', next:'Siguiente',
-        home:'Inicio', train:'Entrenar', nutrition:'Nutrición', progress:'Progreso', settings:'Ajustes',
-        coach:'COACH', todayScore:'PUNTUACIÓN DE HOY', outOf:'DE 100', weeklyStreak:'Racha Semanal',
+        home:'Inicio', train:'Entrenar', nutrition:'Nutrición', progress:'Progreso', profile:'Perfil',
+        greetingMorning:'Buenos días', greetingAfternoon:'Buenas tardes', greetingEvening:'Buenas noches',
+        homeHeroSub:'A por los objetivos hoy.',
+        coach:'COACH', todayScore:'PROGRESO DIARIO', outOf:'DE 100', weeklyStreak:'Racha Semanal',
         todayProgress:'PROGRESO DE HOY', myPhase:'MI FASE', daysTraining:'Días Entrenando',
         weight:'PESO', current:'Actual', target:'Meta', toGo:'Faltan', badges:'LOGROS',
+        homeStatWorkout:'Entreno', workoutDoneShort:'Hecho', workoutRestShort:'Descanso', workoutPendingShort:'—',
+        todaysWorkout:'ENTRENO DE HOY', workoutPrimaryBadge:'Principal', startWorkout:'EMPEZAR ENTRENO',
+        logRestDay:'REGISTRAR DÍA DE DESCANSO', homeWorkoutMeta:'45–60 min · Pestaña Entrenar', workoutReadyTitle:'¿Listo para entrenar?',
+        workoutDaySuffix:'Día', homeWorkoutHint:'Abre Entrenar para registrar.',
         logWorkout:'REGISTRAR ENTRENAMIENTO',
         coachNoTrain:'No has entrenado hoy — ¡a por ello!',
         coachProtein:'Necesitas <strong>{x}g más de proteína</strong> hoy',
@@ -221,6 +248,10 @@ const translations = {
         addMeal:'+ Añadir Comida', mealName:'Nombre de la comida:',
         stepsWater:'PASOS Y AGUA', stepsToday:'Pasos Hoy', waterLitres:'Agua (litros)',
         save:'Guardar', supplements:'SUPLEMENTOS',
+        clearAllSupplements:'Borrar todos los suplementos', removeFromList:'Quitar',
+        restoreDefaultSupplements:'Añadir lista común',
+        supplementsListEmpty:'No hay suplementos en tu lista. Añade uno abajo o restaura la lista común.',
+        confirmClearSupplements:'¿Quitar todos los suplementos de tu lista y borrar el registro de hoy? Puedes volver a añadirlos cuando quieras.',
         addFood:'Añadir alimento', portion:'Porción (g o ml)', addToMeal:'Añadir a Comida',
         saveAsTemplate:'Guardar como plantilla', removeMeal:'Eliminar comida',
         allFoods:'Todo', noFoodsFound:'No se encontraron alimentos',
@@ -279,10 +310,16 @@ const translations = {
         detailsTitle:'À Propos de Vous', detailsSub:'Parlez-nous un peu de vous',
         statsTitle:'Vos Statistiques', statsSub:'Nous calculerons vos objectifs parfaits',
         letsGo:'Allons-y 🚀', next:'Suivant',
-        home:'Accueil', train:'Entraîner', nutrition:'Nutrition', progress:'Progrès', settings:'Paramètres',
-        coach:'COACH', todayScore:"SCORE D'AUJOURD'HUI", outOf:'SUR 100', weeklyStreak:'Série Hebdomadaire',
+        home:'Accueil', train:'Entraîner', nutrition:'Nutrition', progress:'Progrès', profile:'Profil',
+        greetingMorning:'Bonjour', greetingAfternoon:'Bon après-midi', greetingEvening:'Bonsoir',
+        homeHeroSub:'On vise les objectifs aujourd’hui.',
+        coach:'COACH', todayScore:'PROGRÈS QUOTIDIEN', outOf:'SUR 100', weeklyStreak:'Série Hebdomadaire',
         todayProgress:"PROGRÈS D'AUJOURD'HUI", myPhase:'MA PHASE', daysTraining:"Jours d'Entraînement",
         weight:'POIDS', current:'Actuel', target:'Objectif', toGo:'Restant', badges:'BADGES',
+        homeStatWorkout:'Séance', workoutDoneShort:'Fait', workoutRestShort:'Repos', workoutPendingShort:'—',
+        todaysWorkout:"SÉANCE DU JOUR", workoutPrimaryBadge:'Principal', startWorkout:"DÉMARRER L'ENTRAÎNEMENT",
+        logRestDay:'ENREGISTRER UN JOUR DE REPOS', homeWorkoutMeta:'45–60 min · Onglet Entraîner', workoutReadyTitle:'Prêt à vous entraîner ?',
+        workoutDaySuffix:'Jour', homeWorkoutHint:'Ouvrez Entraîner pour enregistrer.',
         logWorkout:"ENREGISTRER L'ENTRAÎNEMENT",
         coachNoTrain:"Vous n'avez pas entraîné aujourd'hui — allez-y!",
         coachProtein:'Besoin de <strong>{x}g de protéines supplémentaires</strong> aujourd\'hui',
@@ -311,6 +348,10 @@ const translations = {
         addMeal:'+ Ajouter Repas', mealName:'Nom du repas:',
         stepsWater:'PAS ET EAU', stepsToday:"Pas Aujourd'hui", waterLitres:'Eau (litres)',
         save:'Sauvegarder', supplements:'SUPPLÉMENTS',
+        clearAllSupplements:'Effacer tous les suppléments', removeFromList:'Retirer',
+        restoreDefaultSupplements:'Ajouter la liste courante',
+        supplementsListEmpty:'Aucun supplément dans votre liste. Ajoutez-en ci-dessous ou restaurez la liste courante.',
+        confirmClearSupplements:'Retirer tous les suppléments de votre liste et effacer le suivi du jour ? Vous pourrez les rajouter quand vous voulez.',
         addFood:'Ajouter un aliment', portion:'Portion (g ou ml)', addToMeal:'Ajouter au Repas',
         saveAsTemplate:'Enregistrer comme modèle', removeMeal:'Supprimer le repas',
         allFoods:'Tout', noFoodsFound:'Aucun aliment trouvé',
@@ -369,10 +410,16 @@ const translations = {
         detailsTitle:'Über Sie', detailsSub:'Erzählen Sie uns ein bisschen über sich',
         statsTitle:'Ihre Statistiken', statsSub:'Wir berechnen Ihre perfekten Ziele',
         letsGo:'Los geht\'s 🚀', next:'Weiter',
-        home:'Start', train:'Training', nutrition:'Ernährung', progress:'Fortschritt', settings:'Einstellungen',
-        coach:'COACH', todayScore:'HEUTIGER SCORE', outOf:'VON 100', weeklyStreak:'Wöchentliche Serie',
+        home:'Start', train:'Training', nutrition:'Ernährung', progress:'Fortschritt', profile:'Profil',
+        greetingMorning:'Guten Morgen', greetingAfternoon:'Guten Tag', greetingEvening:'Guten Abend',
+        homeHeroSub:'Heute Vollgas auf deine Ziele.',
+        coach:'COACH', todayScore:'TÄGLICHER FORTSCHRITT', outOf:'VON 100', weeklyStreak:'Wöchentliche Serie',
         todayProgress:'HEUTIGER FORTSCHRITT', myPhase:'MEINE PHASE', daysTraining:'Trainingstage',
         weight:'GEWICHT', current:'Aktuell', target:'Ziel', toGo:'Noch', badges:'ABZEICHEN',
+        homeStatWorkout:'Training', workoutDoneShort:'Fertig', workoutRestShort:'Ruhe', workoutPendingShort:'—',
+        todaysWorkout:'TRAINING HEUTE', workoutPrimaryBadge:'Fokus', startWorkout:'TRAINING STARTEN',
+        logRestDay:'RUHETAG EINTRAGEN', homeWorkoutMeta:'45–60 Min · Training-Tab', workoutReadyTitle:'Bereit fürs Training?',
+        workoutDaySuffix:'Tag', homeWorkoutHint:'Öffne Training zum Eintragen.',
         logWorkout:'TRAINING STARTEN',
         coachNoTrain:'Sie haben heute noch nicht trainiert — auf geht\'s!',
         coachProtein:'Benötigen <strong>{x}g mehr Protein</strong> heute',
@@ -401,6 +448,10 @@ const translations = {
         addMeal:'+ Mahlzeit Hinzufügen', mealName:'Mahlzeit Name:',
         stepsWater:'SCHRITTE & WASSER', stepsToday:'Schritte Heute', waterLitres:'Wasser (Liter)',
         save:'Speichern', supplements:'NAHRUNGSERGÄNZUNG',
+        clearAllSupplements:'Alle Supplements löschen', removeFromList:'Entfernen',
+        restoreDefaultSupplements:'Häufige Supplements hinzufügen',
+        supplementsListEmpty:'Keine Supplements in der Liste. Unten hinzufügen oder die gängige Liste wiederherstellen.',
+        confirmClearSupplements:'Alle Supplements aus der Liste entfernen und den heutigen Eintrag leeren? Sie können sie jederzeit neu anlegen.',
         addFood:'Lebensmittel hinzufügen', portion:'Portion (g oder ml)', addToMeal:'Zur Mahlzeit Hinzufügen',
         saveAsTemplate:'Als Vorlage speichern', removeMeal:'Mahlzeit entfernen',
         allFoods:'Alle', noFoodsFound:'Keine Lebensmittel gefunden',
@@ -593,7 +644,29 @@ function supplementUnitSelectHtml(selectedUnit){
 function escapeHtmlText(str){
     return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
+function dedupeSupplementNamesOrdered(arr){
+    const seen=new Set();
+    const out=[];
+    (arr||[]).forEach(x=>{
+        const s=typeof x==='string'?x.trim():'';
+        if(!s||seen.has(s)) return;
+        seen.add(s);
+        out.push(s);
+    });
+    return out;
+}
+function legacyMergedSupplementNames(savedSupplements){
+    const savedNames=(Array.isArray(savedSupplements)?savedSupplements:[]).map(s=>s&&s.name).filter(Boolean);
+    return dedupeSupplementNamesOrdered([...(settings.custom_supplements||[]),...defaultSupplements,...savedNames]);
+}
+function getDisplayedSupplementNames(savedSupplements){
+    if(Array.isArray(settings.supplements_catalog)) return dedupeSupplementNamesOrdered(settings.supplements_catalog);
+    return legacyMergedSupplementNames(savedSupplements||[]);
+}
 let renderedSupplements = [];
+function isListedCustomSupplement(name){
+    return (settings.custom_supplements||[]).some(c=>String(c).toLowerCase()===String(name).toLowerCase());
+}
 const mealPresets = ['Breakfast','Lunch','Dinner','Snack','Pre-Workout','Post-Workout'];
 
 // ===================== STATE =====================
@@ -612,13 +685,17 @@ function applyTranslations() {
     const setPlaceholder=(id,key)=>{const el=document.getElementById(id);if(el&&key)el.placeholder=t(key);};
     // Nav
     set('nav-txt-home','home');set('nav-txt-train','train');set('nav-txt-nutrition','nutrition');
-    set('nav-txt-progress','progress');set('nav-txt-settings','settings');
+    set('nav-txt-progress','progress');set('nav-txt-profile','profile');
     // Home
     set('txt-today-score','todayScore');set('txt-out-of','outOf');set('txt-weekly-streak','weeklyStreak');
+    set('home-hero-sub','homeHeroSub');
+    set('txt-home-stat-workout','homeStatWorkout');set('txt-protein','protein');set('txt-steps','steps');set('txt-water','water');
+    set('txt-protein-detail','protein');set('txt-steps-detail','steps');set('txt-water-detail','water');
     set('txt-coach','coach');set('txt-today-progress','todayProgress');set('txt-my-phase','myPhase');
     set('txt-days-training','daysTraining');set('txt-weight','weight');
     set('txt-current','current');set('txt-target','target');set('txt-to-go','toGo');
-    set('txt-badges','badges');set('txt-log-workout','logWorkout');
+    set('txt-badges','badges');set('txt-start-workout','startWorkout');set('txt-todays-workout','todaysWorkout');
+    set('txt-workout-primary-badge','workoutPrimaryBadge');set('txt-log-rest-day','logRestDay');
     // Train
     set('txt-how-train','howTrain');set('txt-my-routines','myRoutines');set('txt-my-routines-sub','myRoutinesSub');
     set('txt-quick-workout','quickWorkout');set('txt-quick-workout-sub','quickWorkoutSub');
@@ -653,7 +730,7 @@ function applyTranslations() {
     set('txt-steps-label','steps');set('txt-water-label','water');
     set('txt-add-meal','addMeal');set('txt-steps-water','stepsWater');
     set('lbl-steps-today','stepsToday');set('lbl-water','waterLitres');
-    set('txt-save-sw','save');set('txt-supplements','supplements');
+    set('txt-save-sw','save');set('txt-supplements','supplements');set('txt-clear-all-supplements','clearAllSupplements');
     set('filter-all','allFoods');set('txt-add-to-meal','addToMeal');set('lbl-portion','portion');
     renderSupplements();
     // Progress
@@ -894,12 +971,12 @@ function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-    const navMap={'screen-home':'nav-home','screen-train':'nav-train','screen-calories':'nav-calories','screen-progress':'nav-progress','screen-settings':'nav-settings'};
+    const navMap={'screen-home':'nav-home','screen-train':'nav-train','screen-calories':'nav-calories','screen-progress':'nav-progress','screen-profile':'nav-profile'};
     if(navMap[id])document.getElementById(navMap[id]).classList.add('active');
     if(id==='screen-home')updateHome();
     if(id==='screen-calories'){loadNutrition();renderSupplements();renderMeals();}
     if(id==='screen-progress')updateProgress();
-    if(id==='screen-settings')loadSettings();
+    if(id==='screen-profile')loadSettings();
     if(id==='screen-train'){showTrainSection('menu');renderRoutinesList();updateStepsDisplay();}
 }
 
@@ -1670,8 +1747,12 @@ async function renderSupplements() {
     const savedSupplements=Array.isArray(nutritionData?.supplements)?nutritionData.supplements:[];
     const supplementMap=new Map(savedSupplements.filter(s=>s&&s.name).map(s=>[s.name, s]));
     const list=document.getElementById('supplement-list');if(!list)return;
-    const allSupplements=[...new Set([...(settings.custom_supplements||[]),...defaultSupplements,...savedSupplements.map(s=>s.name).filter(Boolean)])];
+    const allSupplements=getDisplayedSupplementNames(savedSupplements);
     renderedSupplements=allSupplements;
+    if(allSupplements.length===0){
+        list.innerHTML=`<p class="supplement-empty-msg">${t('supplementsListEmpty')}</p><button type="button" class="btn supplement-restore-defaults" onclick="restoreDefaultSupplementList()">${t('restoreDefaultSupplements')}</button>`;
+        return;
+    }
     list.innerHTML=allSupplements.map((s,i)=>{
         const saved=supplementMap.get(s)||{};
         const checked=saved.taken===true;
@@ -1681,7 +1762,7 @@ async function renderSupplements() {
         const savedUnit=saved.unit&&supplementUnitValues.includes(saved.unit)?saved.unit:null;
         const unitVal=savedUnit||getDefaultSupplementUnit(s);
         const nameSafe=escapeHtmlText(s);
-        return `<div class="supplement-item"><div class="supplement-item-name">${nameSafe}</div><div class="supplement-item-controls"><input type="number" class="supplement-qty" id="supp-qty-${i}" placeholder="Qty" inputmode="decimal" value="${quantityVal}"><select class="supplement-unit" id="supp-unit-${i}">${supplementUnitSelectHtml(unitVal)}</select><span class="supplement-taken-wrap"><input type="checkbox" class="supplement-checkbox" id="supp-taken-${i}" title="Taken" ${checked?'checked':''} onclick="saveSupplementByIndex(${i})"></span><button type="button" class="supplement-save" onclick="saveSupplementByIndex(${i})">${t('save')}</button></div></div>`;
+        return `<div class="supplement-item"><div class="supplement-item-top"><div class="supplement-item-name">${nameSafe}</div><button type="button" class="supplement-row-remove" onclick="removeSupplementFromList(${i})">${t('removeFromList')}</button></div><div class="supplement-item-controls"><input type="number" class="supplement-qty" id="supp-qty-${i}" placeholder="Qty" inputmode="decimal" value="${quantityVal}"><select class="supplement-unit" id="supp-unit-${i}">${supplementUnitSelectHtml(unitVal)}</select><span class="supplement-taken-wrap"><input type="checkbox" class="supplement-checkbox" id="supp-taken-${i}" title="Taken" ${checked?'checked':''} onclick="saveSupplementByIndex(${i})"></span><button type="button" class="supplement-save" onclick="saveSupplementByIndex(${i})">${t('save')}</button></div></div>`;
     }).join('');
 }
 
@@ -1721,13 +1802,20 @@ async function addCustomSupplement() {
         showToast('Enter a supplement name','error',2000);
         return;
     }
-    const existing=Array.isArray(settings.custom_supplements)?[...settings.custom_supplements]:[];
-    if(existing.some(s=>String(s).toLowerCase()===name.toLowerCase())){
+    const nutritionData=await PG.nutrition.getToday();
+    const displayed=getDisplayedSupplementNames(nutritionData?.supplements||[]);
+    if(displayed.some(s=>String(s).toLowerCase()===name.toLowerCase())){
         showToast('Supplement already exists','error',2000);
         return;
     }
+    const existing=Array.isArray(settings.custom_supplements)?[...settings.custom_supplements]:[];
     const updated=[...existing,name];
-    const saveResult=await PG.profile.save({custom_supplements:updated});
+    const payload={custom_supplements:updated};
+    if(Array.isArray(settings.supplements_catalog)){
+        settings.supplements_catalog=dedupeSupplementNamesOrdered([...settings.supplements_catalog,name]);
+        payload.supplements_catalog=settings.supplements_catalog;
+    }
+    const saveResult=await PG.profile.save(payload);
     if(saveResult?.ok===false||saveResult?.error){
         showToast('Save failed — please try again','error',3000);
         return;
@@ -1738,13 +1826,88 @@ async function addCustomSupplement() {
     showToast('Custom supplement added','success',1600);
 }
 
+async function deleteCustomSupplementByIndex(index){
+    if(!Array.isArray(renderedSupplements)||!renderedSupplements[index]) return;
+    const name=renderedSupplements[index];
+    const nameLower=String(name).toLowerCase();
+    const customs=Array.isArray(settings.custom_supplements)?[...settings.custom_supplements]:[];
+    if(!customs.some(c=>String(c).toLowerCase()===nameLower)) return;
+    const updated=customs.filter(c=>String(c).toLowerCase()!==nameLower);
+    const nutritionData=await PG.nutrition.getToday();
+    const savedSupplements=Array.isArray(nutritionData?.supplements)?nutritionData.supplements:[];
+    const payload={custom_supplements:updated};
+    if(Array.isArray(settings.supplements_catalog)){
+        const nextCatalog=settings.supplements_catalog.filter(n=>n!==name);
+        settings.supplements_catalog=nextCatalog;
+        payload.supplements_catalog=nextCatalog;
+    }
+    settings.custom_supplements=updated;
+    const prof=await PG.profile.save(payload);
+    if(prof?.ok===false||prof?.error){
+        showToast('Save failed — please try again','error',3500);
+        return;
+    }
+    const supplements=savedSupplements.filter(s=>s&&s.name!==name);
+    const nut=await PG.nutrition.save({supplements});
+    if(nut?.ok===false||nut?.error){
+        showToast('Save failed — please try again','error',3500);
+        return;
+    }
+    await renderSupplements();
+    showToast('Custom supplement removed','success',1400);
+}
+
+async function clearAllSupplements(){
+    if(!confirm(t('confirmClearSupplements'))) return;
+    settings.supplements_catalog=[];
+    settings.custom_supplements=[];
+    const prof=await PG.profile.save({supplements_catalog:[],custom_supplements:[]});
+    if(prof?.ok===false||prof?.error){
+        showToast('Save failed — please try again','error',3500);
+        return;
+    }
+    const nut=await PG.nutrition.save({supplements:[]});
+    if(nut?.ok===false||nut?.error){
+        showToast('Save failed — please try again','error',3500);
+        return;
+    }
+    await renderSupplements();
+    showToast('Supplements cleared','success',1600);
+}
+
+async function restoreDefaultSupplementList(){
+    const customs=dedupeSupplementNamesOrdered(settings.custom_supplements||[]);
+    const next=dedupeSupplementNamesOrdered([...defaultSupplements,...customs]);
+    settings.supplements_catalog=next;
+    const prof=await PG.profile.save({supplements_catalog:next});
+    if(prof?.ok===false||prof?.error){
+        showToast('Save failed — please try again','error',3500);
+        return;
+    }
+    await renderSupplements();
+    showToast('Supplement list updated','success',1600);
+}
+
 // ===================== HOME =====================
 async function updateHome() {
     const s=settings;const calTarget=s.calTarget||2000;const proteinTarget=s.proteinTarget||150;const stepsTarget=s.stepsTarget||8000;
     const remainingCaloriesForMacros=Math.max(calTarget-(proteinTarget*4),0);
     const carbsTarget=s.carbsTarget||Math.max(Math.round((remainingCaloriesForMacros*0.5)/4),0);
     const fatTarget=s.fatTarget||Math.max(Math.round((remainingCaloriesForMacros*0.5)/9),0);
-    if(s.name)document.getElementById('header-greeting').textContent='Hi '+s.name+' 👋';
+    const greetEl=document.getElementById('header-greeting');
+    if(greetEl){
+        const h=new Date().getHours();
+        const greetKey=h<12?'greetingMorning':(h<17?'greetingAfternoon':'greetingEvening');
+        greetEl.textContent=s.name?t(greetKey)+', '+s.name:t(greetKey);
+    }
+    const heroTitle=document.getElementById('home-hero-title');
+    const heroSub=document.getElementById('home-hero-sub');
+    if(heroTitle){
+        const h=new Date().getHours();
+        const greetKey=h<12?'greetingMorning':(h<17?'greetingAfternoon':'greetingEvening');
+        heroTitle.textContent=s.name?t(greetKey)+', '+s.name:t(greetKey);
+    }
+    if(heroSub)heroSub.textContent=t('homeHeroSub');
     if(s.phaseName){
         const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
         setEl('home-phase-name',s.phaseName);
@@ -1781,10 +1944,15 @@ if(recordEl){const progressEntries=await PG.progress.getAll();recordEl.textConte
     water=getWaterLitres(nd);
     const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
     const setWidth=(id,pct)=>{const el=document.getElementById(id);if(el)el.style.width=pct+'%';};
-    setEl('home-show-calories',`${cals} / ${calTarget} kcal`);setEl('home-protein',`${protein.toFixed(1)} / ${proteinTarget}g`);
+    setEl('home-show-calories',`${cals} / ${calTarget} kcal`);
+    const proteinStr=`${protein.toFixed(1)} / ${proteinTarget}g`;
+    setEl('home-protein',proteinStr);setEl('home-protein-detail',proteinStr);
     setEl('home-carbs',`${carbs.toFixed(1)}g`);
     setEl('home-fats',`${fats.toFixed(1)}g`);
-    setEl('home-steps',`${steps} / ${stepsTarget}`);setEl('home-water',`${water.toFixed(1)} / 2.5L`);
+    const stepsStr=`${steps.toLocaleString()} / ${stepsTarget.toLocaleString()}`;
+    const waterStr=`${water.toFixed(1)} / 2.5L`;
+    setEl('home-steps',stepsStr);setEl('home-steps-detail',stepsStr);
+    setEl('home-water',waterStr);setEl('home-water-detail',waterStr);
     setWidth('home-bar-calories',Math.min((cals/calTarget)*100,100));
     setWidth('home-bar-protein',Math.min((protein/proteinTarget)*100,100));
     setWidth('home-bar-carbs',Math.min((carbs/Math.max(carbsTarget,1))*100,100));
@@ -1794,6 +1962,14 @@ if(recordEl){const progressEntries=await PG.progress.getAll();recordEl.textConte
     const todayWorkout=workoutHistory.find(w=>w.date===today)||cardioHistory.find(w=>w.date===today);
     const score=Math.round(Math.min((cals/calTarget)*25,25)+Math.min((protein/proteinTarget)*25,25)+Math.min((steps/stepsTarget)*25,25)+(todayWorkout?25:0));
     const scoreEl=document.getElementById('today-score');if(scoreEl)scoreEl.textContent=score;
+    const scoreRing=document.getElementById('home-score-ring-progress');
+    if(scoreRing){
+        const R=40;const C=2*Math.PI*R;
+        scoreRing.style.strokeDasharray=String(C);
+        scoreRing.style.strokeDashoffset=String(C*(1-Math.min(Math.max(score,0),100)/100));
+    }
+    const wChip=document.getElementById('home-stat-workout');
+    if(wChip)wChip.textContent=nd.restDay?t('workoutRestShort'):(todayWorkout?t('workoutDoneShort'):t('workoutPendingShort'));
     const streakBar=document.getElementById('streak-bar');
     if(streakBar){
         const days=['M','T','W','T','F','S','S'];const now=new Date();const dow=now.getDay();let streakCount=0;
@@ -1848,23 +2024,20 @@ fragment.appendChild(d);
     if(coachEl)coachEl.innerHTML=prompts.map(p=>`<div class="coach-prompt ${p.type}">${p.text}</div>`).join('');
     renderBadges();
     const nextWorkout=getNextWorkoutSuggestion();
-const nextEl=document.getElementById('next-workout-suggestion');
-const nextText=document.getElementById('next-workout-text');
-if(nextEl&&nextText&&nextWorkout){
-    nextEl.style.display='block';
-    nextText.textContent=nextWorkout+' Day — based on your last session';
-}
+    const titleEl=document.getElementById('next-workout-title');
+    const metaEl=document.getElementById('next-workout-meta');
+    if(titleEl)titleEl.textContent=nextWorkout?`${nextWorkout} ${t('workoutDaySuffix')}`:t('workoutReadyTitle');
+    if(metaEl)metaEl.textContent=nextWorkout?t('homeWorkoutMeta'):t('homeWorkoutHint');
 }
 
 function getNextWorkoutSuggestion() {
     if(Array.isArray(workoutHistory)&&workoutHistory.length>0){
         const lastWorkout=workoutHistory.find(w=>w&&w.type!=='rest');
-        if(lastWorkout&&lastWorkout.muscle){
-            return 'Next: '+lastWorkout.muscle;
-        }
+        if(lastWorkout&&lastWorkout.muscle)return String(lastWorkout.muscle);
     }
-    return 'Upper Body';
+    return '';
 }
+
 
 // ===================== PROGRESS =====================
 async function updateProgress() {
@@ -1919,7 +2092,7 @@ async function renderSupplementHistory() {
         dayKeys.push(d.toISOString().split('T')[0]);
     }
     const byDate=new Map((Array.isArray(rows)?rows:[]).map(r=>[r.logged_at,r]));
-    const namesSet=new Set([...(defaultSupplements||[]),...((settings.custom_supplements)||[])]);
+    const namesSet=new Set(getDisplayedSupplementNames([]));
     dayKeys.forEach(day=>{
         const daySupps=byDate.get(day)?.supplements;
         if(Array.isArray(daySupps)){
@@ -2384,7 +2557,8 @@ async function loadFromStorage() {
         calTarget:profile.calorie_target??profile.calTarget??2000,
         proteinTarget:profile.protein_target??profile.proteinTarget??150,
         stepsTarget:profile.steps_target??profile.stepsTarget??8000,
-        custom_supplements:Array.isArray(profile.custom_supplements)?profile.custom_supplements:[]
+        custom_supplements:Array.isArray(profile.custom_supplements)?profile.custom_supplements:[],
+        supplements_catalog:Array.isArray(profile.supplements_catalog)?profile.supplements_catalog:undefined
     };
     selectedLang=settings.language||'en';
     if(profile.onboarded)document.getElementById('onboarding').style.display='none';

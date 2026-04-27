@@ -8,7 +8,7 @@ const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const PROFILE_COLUMNS = new Set([
   'id','name','goal','training_env','dietary_pref','gender','age','height_cm','weight_kg','target_weight_kg',
   'activity_level','units','language','dark_mode','tdee','calorie_target','protein_target','steps_target',
-  'premium_status','programme_codes','custom_supplements','onboarded','badges','created_at','updated_at'
+  'premium_status','programme_codes','custom_supplements','supplements_catalog','onboarded','badges','created_at','updated_at'
 ]);
 const WORKOUT_COLUMNS = new Set(['category','routine_name','duration_seconds','notes','exercises','is_rest_day','logged_at']);
 const CARDIO_COLUMNS = new Set(['type','duration_minutes','distance_km','intensity','notes','logged_at']);
