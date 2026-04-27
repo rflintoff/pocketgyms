@@ -1659,6 +1659,7 @@ async function renderHistory() {
 
 // ===================== SETTINGS =====================
 async function saveSettings() {
+    const nameValue=document.getElementById('set-name').value;
     const age=parseInt(document.getElementById('set-age').value);
     const weight=parseFloat(document.getElementById('set-weight').value);
     const height=parseFloat(document.getElementById('set-height').value);
@@ -1670,15 +1671,37 @@ async function saveSettings() {
     const tdee=Math.round(bmr*activity);
     const calTarget=goal==='fatloss'?tdee-500:goal==='muscle'?tdee+300:tdee;
     const proteinTarget=Math.round(weight*(goal==='muscle'?2.4:2.0));
-    settings={...settings,name:document.getElementById('set-name').value,age,weight,height,gender,activity,goal,
+    const darkMode=document.body.classList.contains('dark')?'dark':'light';
+    settings={...settings,name:nameValue,age,weight,height,gender,activity,goal,
         environment:document.getElementById('set-environment').value,diet:document.getElementById('set-diet').value,
         units:document.getElementById('set-units').value,language:document.getElementById('set-language').value,
         targetWeight:parseFloat(document.getElementById('set-target-weight').value),
         phaseName:document.getElementById('set-phase-name').value||settings.phaseName,
         phaseDuration,trainingDays:parseInt(document.getElementById('set-training-days').value),
-        tdee,calTarget,proteinTarget,stepsTarget:8000};
+        tdee,calTarget,proteinTarget,stepsTarget:8000,darkMode};
     selectedLang=settings.language;
-    await PG.profile.save(settings);
+    await PG.profile.save({
+        name:nameValue,
+        goal:settings.goal,
+        age:settings.age,
+        gender:settings.gender,
+        height:settings.height,
+        weight:settings.weight,
+        targetWeight:settings.targetWeight,
+        activity:settings.activity,
+        units:settings.units,
+        language:settings.language,
+        darkMode:settings.darkMode,
+        environment:settings.environment,
+        diet:settings.diet,
+        phaseName:settings.phaseName,
+        phaseDuration:settings.phaseDuration,
+        trainingDays:settings.trainingDays,
+        tdee:settings.tdee,
+        calTarget:settings.calTarget,
+        proteinTarget:settings.proteinTarget,
+        stepsTarget:settings.stepsTarget
+    });
     const tdeeEl=document.getElementById('tdee-result');if(tdeeEl)tdeeEl.style.display='block';
     const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
     setEl('tdee-value',tdee+' kcal');setEl('cal-target-value',calTarget+' kcal');setEl('protein-target-value',proteinTarget+'g');
