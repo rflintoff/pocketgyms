@@ -1,5 +1,49 @@
 // ─── AUTH BOOT ────────────────────────────────────────────────────────────────
 let isSignUp = false;
+let authBootCompleted = false;
+
+const authModalEl = document.getElementById('auth-modal');
+const onboardingEl = document.getElementById('onboarding');
+const headerEl = document.querySelector('.header');
+const navEl = document.querySelector('.nav');
+const appScreenEls = document.querySelectorAll('.screen');
+
+function setBootVisibility(isVisible) {
+  document.body.style.visibility = isVisible ? 'visible' : 'hidden';
+}
+
+function setMainAppVisible(isVisible) {
+  appScreenEls.forEach((el) => {
+    el.style.display = isVisible ? '' : 'none';
+  });
+  if (headerEl) headerEl.style.display = isVisible ? '' : 'none';
+  if (navEl) navEl.style.display = isVisible ? '' : 'none';
+}
+
+function showAuthOnly() {
+  setMainAppVisible(false);
+  if (onboardingEl) onboardingEl.style.display = 'none';
+  if (authModalEl) authModalEl.style.display = 'flex';
+}
+
+function showMainApp() {
+  if (authModalEl) authModalEl.style.display = 'none';
+  setMainAppVisible(true);
+}
+
+function logAuthDebug(event, session) {
+  const debugPayload = {
+    event,
+    hasSession: !!session,
+    hasUser: !!session?.user,
+    userId: session?.user?.id || null,
+    email: session?.user?.email || null,
+    bootCompleted: authBootCompleted
+  };
+  console.debug('[Auth Debug]', debugPayload);
+}
+
+setBootVisibility(false);
 
 function toggleAuthMode() {
   isSignUp = !isSignUp;
@@ -23,42 +67,81 @@ async function handleEmailAuth() {
   }
 }
 
-PG.db.auth.getSession().then(async ({ data: { session } }) => {
-  if (session?.user) {
-    document.getElementById('onboarding').style.display = 'none';
-    document.getElementById('auth-modal').style.display = 'none';
-    document.querySelector('.header') && (document.querySelector('.header').style.display = '');
-    document.querySelector('.nav') && (document.querySelector('.nav').style.display = '');
-    await loadFromStorage();
-  } else {
-    document.getElementById('auth-modal').style.display = 'flex';
-    document.getElementById('onboarding').style.display = 'none';
-    document.querySelector('.header') && (document.querySelector('.header').style.display = 'none');
-    document.querySelector('.nav') && (document.querySelector('.nav').style.display = 'none');
-  }
-});
+PG.db.auth.getSession()
+  .then(async ({ data: { session } }) => {
+    logAuthDebug('INITIAL_SESSION', session);
+    if (session?.user) {
+      await initApp(session.user);
+    } else {
+      showAuthOnly();
+    }
+  })
+  .catch((err) => {
+    console.error('Auth session boot failed:', err);
+    showAuthOnly();
+  })
+  .finally(() => {
+    authBootCompleted = true;
+    setBootVisibility(true);
+  });
 
 PG.db.auth.onAuthStateChange(async (event, session) => {
+  logAuthDebug(event, session);
+  if (!authBootCompleted) return;
   if (event === 'SIGNED_IN') {
-    document.getElementById('auth-modal').style.display = 'none';
-    document.querySelector('.header') && (document.querySelector('.header').style.display = '');
-    document.querySelector('.nav') && (document.querySelector('.nav').style.display = '');
     await initApp(session.user);
   } else if (event === 'SIGNED_OUT') {
-    document.getElementById('auth-modal').style.display = 'flex';
-    document.getElementById('onboarding').style.display = 'none';
-    document.querySelector('.header') && (document.querySelector('.header').style.display = 'none');
-    document.querySelector('.nav') && (document.querySelector('.nav').style.display = 'none');
+    showAuthOnly();
   }
 });
 
 async function initApp(user) {
   const profile = await PG.profile.get();
   const isBrandNewUser = !profile || profile.onboarded !== true;
+  await loadUserEmail();
 
   if (isBrandNewUser) showOnboarding();
-  else await loadFromStorage();
+  else {
+    showMainApp();
+    await loadFromStorage();
+  }
 }
+
+async function loadUserEmail() {
+  try {
+    const { data, error } = await PG.auth.getUser();
+    if (error) throw error;
+    const email = data?.user?.email || 'Not available';
+    const targets = [
+      document.getElementById('account-email'),
+      document.getElementById('settings-account-email'),
+      document.getElementById('user-email'),
+      document.querySelector('[data-account-email]')
+    ];
+    targets.filter(Boolean).forEach((el) => {
+      el.textContent = email;
+    });
+  } catch (err) {
+    console.error('loadUserEmail:', err);
+  }
+}
+
+async function signOut() {
+  try {
+    await PG.auth.signOut();
+  } finally {
+    window.location.reload();
+  }
+}
+
+document.addEventListener('click', async (event) => {
+  const signOutTrigger = event.target.closest(
+    '#sign-out-btn, #settings-signout-btn, [data-action="sign-out"]'
+  );
+  if (!signOutTrigger) return;
+  event.preventDefault();
+  await signOut();
+});
 // ===================== TRANSLATIONS =====================
 const translations = {
     en: {
@@ -640,17 +723,7 @@ let personalBests={}, settings={}, savedRoutines=[], customExercises={}, meals=[
 let timerInterval=null, workoutTimerInterval=null, workoutStartTime=null, cardioTimerInterval=null;
 let currentCardioType='', selectedFood=null, foodFilter='all', currentMealIndex=null;
 let selectedLang='en', selectedHeightUnit='cm', selectedWeightUnit='kg';
-let firstSetLogged=false, isPremium=false;
-
-// ===================== PREMIUM =====================
-function showUpgrade() { document.getElementById('upgrade-modal').style.display='block'; }
-function closeUpgrade() { document.getElementById('upgrade-modal').style.display='none'; }
-async function activatePremium() {
-    isPremium=true;
-    await PG.profile.save({premium_status:true});
-    closeUpgrade();
-    alert('Premium activated! 🎉');
-}
+let firstSetLogged=false;
 
 // ===================== TRANSLATIONS =====================
 function t(key) { return (translations[selectedLang]&&translations[selectedLang][key])||translations.en[key]||key; }
@@ -781,10 +854,9 @@ function obNext(step) {
 
 function showOnboarding() {
     const onboarding=document.getElementById('onboarding');
+    setMainAppVisible(false);
     if(onboarding)onboarding.style.display='flex';
-    document.getElementById('auth-modal').style.display='none';
-    document.querySelector('.header') && (document.querySelector('.header').style.display='none');
-    document.querySelector('.nav') && (document.querySelector('.nav').style.display='none');
+    if(authModalEl)authModalEl.style.display='none';
     obNext(0);
 }
 
@@ -795,9 +867,7 @@ async function fastTrack() {
         phaseName:'Phase 1',phaseStartDate:new Date().toLocaleDateString('en-GB'),
         phaseDuration:56,trainingDays:4,units:'kg',onboarded:true};
     await PG.profile.save(settings);
-    await PG.profile.save({ onboarded: true });
-    document.querySelector('.header') && (document.querySelector('.header').style.display = '');
-    document.querySelector('.nav') && (document.querySelector('.nav').style.display = '');
+    showMainApp();
     await loadFromStorage();
 }
 
@@ -854,8 +924,7 @@ async function completeOnboarding() {
         phaseDuration:56,trainingDays:4,units:selectedWeightUnit,language:selectedLang,onboarded:true};
     await PG.profile.save(settings);
     const onboarding=document.getElementById('onboarding');if(onboarding)onboarding.style.display='none';
-    document.querySelector('.header') && (document.querySelector('.header').style.display = '');
-    document.querySelector('.nav') && (document.querySelector('.nav').style.display = '');
+    showMainApp();
     await loadFromStorage();
 }
 
@@ -1684,6 +1753,16 @@ if(nextEl&&nextText&&nextWorkout){
 }
 }
 
+function getNextWorkoutSuggestion() {
+    if(Array.isArray(workoutHistory)&&workoutHistory.length>0){
+        const lastWorkout=workoutHistory.find(w=>w&&w.type!=='rest');
+        if(lastWorkout&&lastWorkout.muscle){
+            return 'Next: '+lastWorkout.muscle;
+        }
+    }
+    return 'Upper Body';
+}
+
 // ===================== PROGRESS =====================
 async function updateProgress() {
     const s=settings;
@@ -2053,7 +2132,6 @@ async function loadFromStorage() {
     const profile=await PG.profile.get()||{};
     const theme=profile.darkMode||profile.theme;
     if(theme==='dark'){document.body.classList.add('dark');const t=document.getElementById('dark-toggle');if(t)t.classList.add('on');}
-    isPremium=profile.premium_status===true;
     const workouts=await PG.workouts.getAll();
     const cardio=await PG.cardio.getAll();
     const routinesData=await PG.routines.getAll();

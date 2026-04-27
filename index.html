@@ -151,19 +151,6 @@
         </select>
         <button class="btn" onclick="completeOnboarding()" id="ob-btn-stats">Let's Go 🚀</button>
 
-        <!-- PREMIUM TEASER AT END OF SETUP -->
-        <div class="premium-lock" style="margin-top:16px;">
-            <div class="premium-badge">⭐ PREMIUM</div>
-            <div class="premium-lock-title">Your Custom Plan is Ready</div>
-            <div class="premium-lock-sub">Unlock your personalised 8 week programme, AI coaching and weekly plan adjustments</div>
-            <div class="premium-feature-list">
-                <div class="premium-feature-item">✅ 8 week progressive workout plan</div>
-                <div class="premium-feature-item">✅ AI weekly check-in coaching</div>
-                <div class="premium-feature-item">✅ Auto calorie and macro targets</div>
-                <div class="premium-feature-item">✅ Progressive overload built in</div>
-            </div>
-            <button class="btn-premium" onclick="completeOnboarding()">Start Free — Upgrade Later</button>
-        </div>
     </div>
 </div>
 
@@ -274,24 +261,6 @@
         <div class="routine-item" onclick="showTrainSection('cardio')">
             <div><div class="routine-name" id="txt-cardio">Cardiovascular</div><div class="routine-meta" id="txt-cardio-sub">Running, cycling, walking and more</div></div>
             <div class="routine-arrow">›</div>
-        </div>
-
-        <!-- PREMIUM PLAN TEASER -->
-        <div class="premium-lock" style="margin-top:8px;">
-            <div class="premium-badge">⭐ PREMIUM</div>
-            <div class="premium-lock-title" id="txt-premium-plan-title">Your Custom Workout Plan</div>
-            <div class="premium-lock-sub" id="txt-premium-plan-sub">Get your personalised 8 week progressive programme based on your goal</div>
-            <div class="premium-teaser">
-                <div class="routine-item" style="margin-bottom:8px;">
-                    <div><div class="routine-name">Week 1 — Fat Loss Programme</div><div class="routine-meta">Push Day • 4 exercises • Progressive overload</div></div>
-                    <div class="routine-arrow">›</div>
-                </div>
-                <div class="routine-item">
-                    <div><div class="routine-name">Week 1 — Fat Loss Programme</div><div class="routine-meta">Pull Day • 4 exercises • Progressive overload</div></div>
-                    <div class="routine-arrow">›</div>
-                </div>
-            </div>
-            <button class="btn-premium" onclick="showUpgrade()">🔓 Unlock Premium — £9.99/month</button>
         </div>
     </div>
 
@@ -498,48 +467,6 @@
     </div>
 </div>
 
-<!-- UPGRADE MODAL -->
-<div id="upgrade-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:var(--bg); z-index:9998; padding:20px; overflow-y:auto;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-        <h2 style="color:var(--text); font-size:20px; font-weight:800;">Upgrade to Premium</h2>
-        <button onclick="closeUpgrade()" style="background:none; border:none; color:var(--text); font-size:24px; cursor:pointer;">✕</button>
-    </div>
-    <div class="card" style="background:linear-gradient(135deg, #1E3A5F, #2563EB); border:none;">
-        <div style="text-align:center; padding:8px 0;">
-            <div style="font-size:40px; margin-bottom:8px;">⭐</div>
-            <div style="color:#fff; font-size:22px; font-weight:800; margin-bottom:4px;">PocketGyms Premium</div>
-            <div style="color:rgba(255,255,255,0.8); font-size:14px; margin-bottom:16px;">Everything you need to reach your goal</div>
-            <div style="color:#FFD700; font-size:32px; font-weight:800;">£9.99<span style="font-size:16px; color:rgba(255,255,255,0.7)">/month</span></div>
-        </div>
-    </div>
-    <div class="card">
-        <h2>WHAT YOU GET</h2>
-        <div class="premium-feature-list">
-            <div class="premium-feature-item unlocked">✅ Personalised 8 week workout programme</div>
-            <div class="premium-feature-item unlocked">✅ AI weekly check-in coaching</div>
-            <div class="premium-feature-item unlocked">✅ Auto calorie and macro targets via TDEE</div>
-            <div class="premium-feature-item unlocked">✅ Progressive overload built in week by week</div>
-            <div class="premium-feature-item unlocked">✅ Plan adjustments based on your results</div>
-            <div class="premium-feature-item unlocked">✅ Advanced progress analytics</div>
-            <div class="premium-feature-item unlocked">✅ Plateau detection and recommendations</div>
-            <div class="premium-feature-item unlocked">✅ Meal timing and nutrition guidance</div>
-        </div>
-    </div>
-    <div class="card">
-        <h2>FREE PLAN INCLUDES</h2>
-        <div class="premium-feature-list">
-            <div class="premium-feature-item unlocked">✅ Workout tracking</div>
-            <div class="premium-feature-item unlocked">✅ Nutrition logging</div>
-            <div class="premium-feature-item unlocked">✅ Progress tracking</div>
-            <div class="premium-feature-item unlocked">✅ Streaks and badges</div>
-            <div class="premium-feature-item unlocked">✅ Workout history</div>
-        </div>
-    </div>
-    <button class="btn-premium" onclick="activatePremium()">Start Premium — £9.99/month</button>
-    <button class="btn-outline" onclick="closeUpgrade()">Continue with Free</button>
-    <p style="color:var(--text-muted); font-size:12px; text-align:center; margin-top:8px;">Cancel anytime. No commitment.</p>
-</div>
-
 <!-- PROGRESS SCREEN -->
 <div class="screen" id="screen-progress">
     <div class="card">
@@ -569,19 +496,6 @@
         <div id="pb-list"><p style="color:var(--text-muted);">Log workouts to track PBs.</p></div>
     </div>
 
-    <!-- PREMIUM PROGRESS TEASER -->
-    <div class="premium-lock">
-        <div class="premium-badge">⭐ PREMIUM</div>
-        <div class="premium-lock-title">Advanced Progress Analytics</div>
-        <div class="premium-lock-sub">Plateau detection, PB predictions, body composition estimates and weekly AI reports</div>
-        <div class="premium-teaser">
-            <div class="stat-row"><span class="stat-label">Consistency Score</span><span class="stat-value">87%</span></div>
-            <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:87%"></div></div>
-            <div class="stat-row" style="margin-top:8px;"><span class="stat-label">Bench Press Prediction</span><span class="stat-value">100kg in 6 weeks</span></div>
-        </div>
-        <button class="btn-premium" onclick="showUpgrade()">🔓 Unlock Premium</button>
-    </div>
-
     <div class="card">
         <h2 id="txt-body-measurements">BODY MEASUREMENTS</h2>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
@@ -608,18 +522,6 @@
         <input type="text" id="checkin-notes" placeholder="How did this week go?">
         <button class="btn" onclick="saveCheckin()" id="txt-save-checkin">Save Check-In</button>
 
-        <!-- PREMIUM AI COACHING TEASER -->
-        <div class="premium-lock" style="margin-top:16px;">
-            <div class="premium-badge">⭐ PREMIUM</div>
-            <div class="premium-lock-title">AI Coaching After Every Check-In</div>
-            <div class="premium-lock-sub">Get personalised advice based on your actual results</div>
-            <div class="premium-teaser" style="background:var(--primary-light); border-radius:8px; padding:12px; margin-bottom:12px;">
-                <div style="font-size:12px; color:var(--primary); font-weight:700; margin-bottom:4px;">YOUR AI COACH SAYS:</div>
-                <div style="font-size:13px; color:var(--text);">Great week — you trained 4 days and hit your protein 6/7 days. Weight dropped 0.4kg. For next week push your bench press up 2.5kg and add one more cardio session.</div>
-            </div>
-            <button class="btn-premium" onclick="showUpgrade()">🔓 Unlock AI Coaching</button>
-        </div>
-
         <div id="checkin-history"></div>
     </div>
 
@@ -631,6 +533,13 @@
 
 <!-- SETTINGS SCREEN -->
 <div class="screen" id="screen-settings">
+    <div class="card">
+        <h2>Account</h2>
+        <p style="color:var(--text-muted);font-size:13px;margin-bottom:6px;">Signed in as</p>
+        <p id="account-email" style="color:var(--text);font-size:15px;font-weight:700;margin-bottom:12px;">—</p>
+        <button id="sign-out-btn" style="background:#FEF2F2;color:var(--danger);border:1px solid var(--danger);border-radius:12px;padding:12px 14px;font-size:14px;font-weight:700;cursor:pointer;width:100%;">Sign Out</button>
+    </div>
+
     <div class="card">
         <h2 id="txt-your-details">YOUR DETAILS</h2>
         <label id="lbl-set-name">Name</label><input type="text" id="set-name" placeholder="Your name">
