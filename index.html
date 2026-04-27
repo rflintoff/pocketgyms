@@ -221,13 +221,13 @@
         <h2 id="txt-badges">BADGES</h2>
         <div id="badges-display"></div>
     </div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-        <div id="next-workout-suggestion" style="display:none;background:var(--primary-light);border-radius:12px;padding:12px;margin-bottom:10px;">
+    <div class="home-workout-actions">
+        <div id="next-workout-suggestion" class="home-workout-action up-next" style="display:none;">
             <div style="color:var(--text-muted);font-size:11px;font-weight:700;margin-bottom:4px;">UP NEXT</div>
             <div style="color:var(--text);font-size:14px;font-weight:700;" id="next-workout-text">—</div>
         </div>
-        <button class="btn" onclick="showScreen('screen-train')" id="txt-log-workout">LOG A WORKOUT</button>
-        <button style="background:#0F4C81; color:#fff; border:none; border-radius:12px; padding:14px 20px; font-size:15px; font-weight:700; cursor:pointer; width:100%; margin-bottom:10px;" onclick="logRestDay()">😴 REST DAY</button>
+        <button class="btn home-workout-action" onclick="showScreen('screen-train')" id="txt-log-workout">LOG A WORKOUT</button>
+        <button class="home-workout-action rest-day-btn" onclick="logRestDay()">😴 REST DAY</button>
     </div>
 </div>
 
