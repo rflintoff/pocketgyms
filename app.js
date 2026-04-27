@@ -991,11 +991,6 @@ async function savePhaseSettings() {
         const durationDays=parseInt(document.getElementById('set-phase-duration').value)||56;
         const trainingDays=parseInt(document.getElementById('set-training-days').value)||4;
         settings={...settings,phaseName,phaseDuration:durationDays,trainingDays};
-        await PG.progress.save({
-            phase_name:phaseName,
-            duration_weeks:Math.round(durationDays/7),
-            training_days_per_week:trainingDays
-        });
         await PG.profile.save({phaseName,phaseDuration:durationDays,trainingDays});
         showSaveMessage('phase-save-msg','Phase saved!');
         showToast('Saved!','success',2000);
@@ -1326,18 +1321,19 @@ async function saveWorkout() {
     const date=now.toLocaleDateString('en-GB');
     const isoDate=now.toISOString().split('T')[0];
     const duration=workoutStartTime?Math.floor((Date.now()-workoutStartTime)/60000):0;
+    const durationSeconds=workoutStartTime?Math.floor((Date.now()-workoutStartTime)/1000):0;
     clearInterval(workoutTimerInterval);
     const muscle=selectedMuscle;
     const exSnapshot=JSON.parse(JSON.stringify(exercises));
     try{
         const workoutData={
             category:muscle,
-            muscle,
-            date,
             logged_at:isoDate,
-            duration,
-            durationDisplay:duration>0?duration+'min':'—',
-            exercises:JSON.parse(JSON.stringify(exSnapshot))
+            duration_seconds:durationSeconds,
+            notes:'',
+            exercises:JSON.parse(JSON.stringify(exSnapshot)),
+            is_rest_day:false,
+            routine_name:''
         };
         console.log('[Workout Save] payload:',JSON.stringify(workoutData,null,2));
         console.log('[Workout Save] exercises type check:', {
@@ -1415,10 +1411,23 @@ function stopCardioTimer() {
 
 async function saveCardio() {
     clearInterval(cardioTimerInterval);
-    const date=new Date().toLocaleDateString('en-GB');
-    cardioHistory.unshift({type:currentCardioType,duration:document.getElementById('cardio-duration').value,distance:document.getElementById('cardio-distance').value,intensity:document.getElementById('cardio-intensity').value,notes:document.getElementById('cardio-notes').value,date});
+    const now=new Date();
+    const date=now.toLocaleDateString('en-GB');
+    const payload={
+        type:currentCardioType||'Cardio',
+        duration_minutes:parseFloat(document.getElementById('cardio-duration').value)||0,
+        distance_km:parseFloat(document.getElementById('cardio-distance').value)||0,
+        intensity:document.getElementById('cardio-intensity').value||'moderate',
+        notes:document.getElementById('cardio-notes').value||'',
+        logged_at:now.toISOString().split('T')[0]
+    };
+    cardioHistory.unshift({type:payload.type,duration:payload.duration_minutes,distance:payload.distance_km,intensity:payload.intensity,notes:payload.notes,date});
     try{
-        await saveToStorage();
+        const saveResult=await PG.cardio.save(payload);
+        if(saveResult?.ok===false||saveResult?.error){
+            throw saveResult.error||new Error('Cardio save failed');
+        }
+        await saveToStorage({skipWorkouts:true,skipNutrition:true});
         showScreen('screen-progress');
         showToast('Saved!','success',2000);
     }catch(err){
@@ -1710,7 +1719,7 @@ async function saveWater() {
         const nutritionToday=await PG.nutrition.getToday()||{};
         const currentWater=getWaterLitres(nutritionToday);
         const nextWater=Math.round((currentWater+waterValue)*100)/100;
-        const savePayload={water_litres:nextWater,water:nextWater};
+        const savePayload={water_litres:nextWater};
         console.log('[Water Save] payload:',savePayload);
         const saveResult=await PG.nutrition.save(savePayload);
         console.log('[Water Save] result:',saveResult);
@@ -1976,9 +1985,29 @@ async function completePhase() {
 
 async function saveCheckin() {
     try{
-        const entry={date:new Date().toLocaleDateString('en-GB'),weight:document.getElementById('checkin-weight').value,energy:document.getElementById('checkin-energy').value,notes:document.getElementById('checkin-notes').value};
-        if(entry.weight){settings.weight=parseFloat(entry.weight);await PG.profile.save(settings);}
-        checkinHistory.unshift(entry);await saveToStorage();
+        const now=new Date();
+        const entry={
+            date:now.toLocaleDateString('en-GB'),
+            weight:document.getElementById('checkin-weight').value,
+            energy:document.getElementById('checkin-energy').value,
+            notes:document.getElementById('checkin-notes').value
+        };
+        const progressPayload={
+            logged_at:now.toISOString().split('T')[0],
+            weight_kg:entry.weight?parseFloat(entry.weight):undefined,
+            energy_level:entry.energy?parseInt(entry.energy,10):undefined,
+            notes:entry.notes||''
+        };
+        const saveResult=await PG.progress.save(progressPayload);
+        if(saveResult?.ok===false||saveResult?.error){
+            throw saveResult.error||new Error('Check-in save failed');
+        }
+        if(entry.weight){
+            settings.weight=parseFloat(entry.weight);
+            await PG.profile.save({weight:settings.weight});
+        }
+        checkinHistory.unshift(entry);
+        await saveToStorage({skipWorkouts:true,skipNutrition:true});
         document.getElementById('checkin-weight').value='';document.getElementById('checkin-energy').value='';document.getElementById('checkin-notes').value='';
         updateProgress();
         showToast('Saved!','success',2000);
@@ -1990,8 +2019,20 @@ async function saveCheckin() {
 
 async function saveMeasurements() {
     try{
-        measurements={date:new Date().toLocaleDateString('en-GB'),chest:document.getElementById('meas-chest').value,waist:document.getElementById('meas-waist').value,hips:document.getElementById('meas-hips').value,arms:document.getElementById('meas-arms').value,legs:document.getElementById('meas-legs').value};
-        await PG.progress.save(measurements);
+        const now=new Date();
+        measurements={date:now.toLocaleDateString('en-GB'),chest:document.getElementById('meas-chest').value,waist:document.getElementById('meas-waist').value,hips:document.getElementById('meas-hips').value,arms:document.getElementById('meas-arms').value,legs:document.getElementById('meas-legs').value};
+        const payload={
+            logged_at:now.toISOString().split('T')[0],
+            chest_cm:measurements.chest?parseFloat(measurements.chest):undefined,
+            waist_cm:measurements.waist?parseFloat(measurements.waist):undefined,
+            hips_cm:measurements.hips?parseFloat(measurements.hips):undefined,
+            arms_cm:measurements.arms?parseFloat(measurements.arms):undefined,
+            legs_cm:measurements.legs?parseFloat(measurements.legs):undefined
+        };
+        const saveResult=await PG.progress.save(payload);
+        if(saveResult?.ok===false||saveResult?.error){
+            throw saveResult.error||new Error('Measurement save failed');
+        }
         showToast('Saved!','success',2000);
     }catch(err){
         console.error('saveMeasurements:',err);
@@ -2225,13 +2266,31 @@ function normalizeHistoryRows(rows,snapshotKey){
     if(!Array.isArray(rows)||rows.length===0) return [];
     const latestSnapshot=pickLatestRow(rows.filter(r=>Array.isArray(r?.[snapshotKey])));
     if(Array.isArray(latestSnapshot?.[snapshotKey])) return latestSnapshot[snapshotKey];
-    return rows.map(r=>({
-        ...r,
-        id:undefined,
-        user_id:undefined,
-        created_at:undefined,
-        updated_at:undefined
-    })).map(({id,user_id,created_at,updated_at,...rest})=>rest);
+    return rows.map(r=>{
+        const baseDate=r.logged_at?new Date(r.logged_at).toLocaleDateString('en-GB'):(r.date||'');
+        if(Array.isArray(r.exercises)||r.category!==undefined||r.is_rest_day!==undefined){
+            return {
+                type:r.is_rest_day?'rest':'workout',
+                muscle:r.category||'Workout',
+                date:baseDate,
+                duration:r.duration_seconds?Math.round((parseFloat(r.duration_seconds)||0)/60):0,
+                exercises:Array.isArray(r.exercises)?r.exercises:[]
+            };
+        }
+        if(r.type!==undefined||r.duration_minutes!==undefined||r.distance_km!==undefined){
+            return {
+                type:'cardio',
+                cardioType:r.type||'Cardio',
+                date:baseDate,
+                duration:r.duration_minutes||0,
+                distance:r.distance_km||0,
+                intensity:r.intensity||'',
+                notes:r.notes||''
+            };
+        }
+        const {id,user_id,created_at,updated_at,...rest}=r||{};
+        return rest;
+    });
 }
 
 function normalizeProgressRows(rows){
@@ -2244,17 +2303,26 @@ function normalizeProgressRows(rows){
     if(Array.isArray(latest.meals)) normalized.meals=latest.meals;
     if(Array.isArray(latest.phaseHistory)) normalized.phaseHistory=latest.phaseHistory;
     if(typeof latest.streakRecord==='number') normalized.streakRecord=latest.streakRecord;
-    const measurementSnapshot=sorted.find(r=>r&&typeof r==='object'&&(r.measurements||r.chest||r.waist||r.hips||r.arms||r.legs));
-    if(measurementSnapshot?.measurements&&typeof measurementSnapshot.measurements==='object'){
-        normalized.measurements=measurementSnapshot.measurements;
-    } else if(measurementSnapshot){
+
+    const rowBasedCheckins=sorted
+        .filter(r=>r&&typeof r==='object'&&(r.weight_kg!==undefined||r.energy_level!==undefined||r.notes))
+        .map(r=>({
+            date:r.logged_at?new Date(r.logged_at).toLocaleDateString('en-GB'):'',
+            weight:r.weight_kg??'',
+            energy:r.energy_level??'',
+            notes:r.notes??''
+        }));
+    if(rowBasedCheckins.length>0) normalized.checkinHistory=rowBasedCheckins;
+
+    const measurementSnapshot=sorted.find(r=>r&&typeof r==='object'&&(r.chest_cm!==undefined||r.waist_cm!==undefined||r.hips_cm!==undefined||r.arms_cm!==undefined||r.legs_cm!==undefined));
+    if(measurementSnapshot){
         normalized.measurements={
-            date:measurementSnapshot.date||'',
-            chest:measurementSnapshot.chest||'',
-            waist:measurementSnapshot.waist||'',
-            hips:measurementSnapshot.hips||'',
-            arms:measurementSnapshot.arms||'',
-            legs:measurementSnapshot.legs||''
+            date:measurementSnapshot.logged_at?new Date(measurementSnapshot.logged_at).toLocaleDateString('en-GB'):'',
+            chest:measurementSnapshot.chest_cm??'',
+            waist:measurementSnapshot.waist_cm??'',
+            hips:measurementSnapshot.hips_cm??'',
+            arms:measurementSnapshot.arms_cm??'',
+            legs:measurementSnapshot.legs_cm??''
         };
     }
     return normalized;
@@ -2272,7 +2340,7 @@ function normalizeRoutinesRows(rows){
             : {};
     } else {
         normalized.savedRoutines=sorted
-            .filter(r=>r&&typeof r==='object'&&typeof r.name==='string'&&Array.isArray(r.exercises))
+            .filter(r=>r&&typeof r==='object'&&typeof r.name==='string'&&Array.isArray(r.exercises)&&r.category!=='MEAL_TEMPLATE')
             .map(r=>({name:r.name,exercises:r.exercises,created:r.created,programmeData:r.programmeData,locked:r.locked}));
     }
     const latestTemplates=pickLatestRow(sorted.filter(r=>Array.isArray(r?.mealTemplates)));
@@ -2285,23 +2353,9 @@ function normalizeRoutinesRows(rows){
 async function saveToStorage(opts={}) {
     const options={skipWorkouts:false,skipNutrition:false,...opts};
     if(!options.skipWorkouts){
-        const workoutPayload={history:workoutHistory};
-        console.log('[Storage Save] workouts payload:',workoutPayload);
-        const workoutResult=await PG.workouts.save(workoutPayload);
-        console.log('[Storage Save] workouts result:',workoutResult);
+        console.log('[Storage Save] skipping legacy workouts snapshot save');
     }
-    const cardioPayload={history:cardioHistory};
-    console.log('[Storage Save] cardio payload:',cardioPayload);
-    const cardioResult=await PG.cardio.save(cardioPayload);
-    console.log('[Storage Save] cardio result:',cardioResult);
-    const progressPayload={checkinHistory,personalBests,meals,phaseHistory};
-    console.log('[Storage Save] progress payload:',progressPayload);
-    const progressResult=await PG.progress.save(progressPayload);
-    console.log('[Storage Save] progress result:',progressResult);
-    const routinesPayload={savedRoutines,customExercises};
-    console.log('[Storage Save] routines payload:',routinesPayload);
-    const routinesResult=await PG.routines.save(routinesPayload);
-    console.log('[Storage Save] routines result:',routinesResult);
+    console.log('[Storage Save] skipping legacy cardio/progress/routines snapshot saves');
     if(!options.skipNutrition){
         const nutritionResult=await persistNutritionState('saveToStorage sync');
         console.log('[Storage Save] nutrition sync result:',nutritionResult);
@@ -2310,8 +2364,8 @@ async function saveToStorage(opts={}) {
 
 async function loadFromStorage() {
     const profile=await PG.profile.get()||{};
-    const theme=profile.darkMode||profile.theme;
-    if(theme==='dark'){document.body.classList.add('dark');const t=document.getElementById('dark-toggle');if(t)t.classList.add('on');}
+    const isDark=profile.dark_mode===true||profile.darkMode==='dark'||profile.darkMode===true||profile.theme==='dark';
+    if(isDark){document.body.classList.add('dark');const t=document.getElementById('dark-toggle');if(t)t.classList.add('on');}
     const workouts=await PG.workouts.getAll();
     const cardio=await PG.cardio.getAll();
     const routinesData=await PG.routines.getAll();
@@ -2337,7 +2391,19 @@ async function loadFromStorage() {
     const normalizedRoutines=normalizeRoutinesRows(routinesData);
     savedRoutines=normalizedRoutines.savedRoutines;
     customExercises=normalizedRoutines.customExercises;
-    settings=profile;
+    settings={
+        ...profile,
+        weight:profile.weight_kg??profile.weight??0,
+        targetWeight:profile.target_weight_kg??profile.targetWeight??0,
+        height:profile.height_cm??profile.height??0,
+        environment:profile.training_env??profile.environment??'gym',
+        diet:profile.dietary_pref??profile.diet??'standard',
+        darkMode:isDark?'dark':'light',
+        activity:profile.activity_level??profile.activity??1.55,
+        calTarget:profile.calorie_target??profile.calTarget??2000,
+        proteinTarget:profile.protein_target??profile.proteinTarget??150,
+        stepsTarget:profile.steps_target??profile.stepsTarget??8000
+    };
     selectedLang=settings.language||'en';
     if(profile.onboarded)document.getElementById('onboarding').style.display='none';
     populateSettingsFields(settings);
@@ -2527,9 +2593,7 @@ async function unlockProgramme() {
         alert('Invalid code. Please check your code and try again.');
         return;
     }
-    const routinesData=await PG.routines.getAll();
-    const routinesMeta=normalizeRoutinesRows(routinesData);
-    const unlockedCodes = routinesMeta.unlockedCodes;
+    const unlockedCodes=Array.isArray(settings.programme_codes)?[...settings.programme_codes]:[];
     if (unlockedCodes.includes(code)) {
         alert('This programme is already unlocked!');
         return;
@@ -2554,7 +2618,8 @@ async function unlockProgramme() {
         }
     });
     unlockedCodes.push(code);
-    await PG.routines.save({unlockedCodes});
+    settings.programme_codes=unlockedCodes;
+    await PG.profile.save({programme_codes:unlockedCodes});
     await saveToStorage();
     document.getElementById('programme-code').value = '';
     alert('🎉 ' + programme.name + ' unlocked! Check My Routines.');
@@ -2592,24 +2657,32 @@ async function logRestDay() {
 
 async function saveStepsTrain() {
     try{
-        const stepsInput=document.getElementById('input-steps-train').value;
+        const stepsInputEl=document.getElementById('input-steps-train');
+        const stepsInput=stepsInputEl?.value;
         if(stepsInput===''){
             showToast('Enter your steps first','error',2500);
             return;
         }
         const stepsValue=parseInt(stepsInput,10)||0;
-        const savePayload={steps:stepsValue};
+        if(stepsValue<=0){
+            showToast('Enter a valid step amount','error',2500);
+            return;
+        }
+        const currentNutrition=await PG.nutrition.getToday()||{};
+        const currentSteps=parseInt(currentNutrition.steps,10)||0;
+        const totalSteps=currentSteps+stepsValue;
+        const savePayload={steps:totalSteps};
         console.log('[Steps Save] payload:',savePayload);
         const saveResult=await PG.nutrition.save(savePayload);
         console.log('[Steps Save] result:',saveResult);
         if(saveResult?.ok===false||saveResult?.error){
             throw saveResult.error||new Error('Steps save failed');
         }
-        document.getElementById('input-steps-train').value='';
+        if(stepsInputEl)stepsInputEl.value='';
         await updateStepsDisplay();
         await loadNutrition();
         await updateHome();
-        showToast('Saved!','success',2000);
+        showToast(`Added ${stepsValue.toLocaleString('en-GB')} steps — Total: ${totalSteps.toLocaleString('en-GB')} steps today`,'success',2600);
     }catch(err){
         console.error('saveStepsTrain:',err);
         showToast('Save failed — please try again','error',4000);
@@ -2623,7 +2696,7 @@ async function updateStepsDisplay() {
     const stepsTarget=settings.stepsTarget||8000;
     const el=document.getElementById('steps-display-train');
     const bar=document.getElementById('steps-bar-train');
-    if(el)el.textContent=steps+' / '+stepsTarget.toLocaleString();
+    if(el)el.textContent=`${steps.toLocaleString('en-GB')} / ${stepsTarget.toLocaleString('en-GB')}`;
     if(bar)bar.style.width=Math.min((steps/stepsTarget)*100,100)+'%';
 }
 
@@ -2649,11 +2722,8 @@ async function saveMealTemplate() {
             showToast('Template name is required','error',2500);
             return;
         }
-        const mealsData={
-            name:meal.name,
-            foods:Array.isArray(meal.foods)?meal.foods.map(f=>({...f})):[]
-        };
-        const templatePayload={name:templateName,exercises:[],template_data:mealsData};
+        const foodsData=Array.isArray(meal.foods)?meal.foods.map(f=>({...f})):[];
+        const templatePayload={name:templateName,category:'MEAL_TEMPLATE',exercises:foodsData};
         console.log('[Meal Template Save] payload:',templatePayload);
         const templateSaveResult=await PG.routines.save(templatePayload);
         console.log('[Meal Template Save] result:',templateSaveResult);
@@ -2671,19 +2741,19 @@ async function loadMealTemplate() {
     const routinesData=await PG.routines.getAll();
     console.log('[Meal Template Load] routines rows:',routinesData);
     const templates=(Array.isArray(routinesData)?routinesData:[])
-        .filter(r=>r&&r.template_data&&typeof r.template_data==='object')
-        .map(r=>({id:r.id,name:r.name||r.template_data.name||'Meal Template',template_data:r.template_data}));
+        .filter(r=>r&&r.category==='MEAL_TEMPLATE'&&Array.isArray(r.exercises))
+        .map(r=>({id:r.id,name:r.name||'Meal Template',foods:r.exercises}));
     console.log('[Meal Template Load] templates:',templates);
     if(templates.length===0){alert('No saved meal templates yet. Add foods to a meal and save it as a template first.');return;}
-    const list=templates.map((t,i)=>`${i+1}. ${t.name} (${Array.isArray(t.template_data?.foods)?t.template_data.foods.length:0} foods)`).join('\n');
+    const list=templates.map((t,i)=>`${i+1}. ${t.name} (${Array.isArray(t.foods)?t.foods.length:0} foods)`).join('\n');
     const choice=prompt(`Load a meal template:\n\n${list}\n\nEnter number:`);
     if(!choice)return;
     const index=parseInt(choice)-1;
     if(index>=0&&index<templates.length){
         const template=templates[index];
         const today=new Date().toLocaleDateString('en-GB');
-        const foods=Array.isArray(template.template_data?.foods)?template.template_data.foods.map(f=>({...f})):[];
-        const mealName=(template.template_data?.name||template.name||'Meal').trim();
+        const foods=Array.isArray(template.foods)?template.foods.map(f=>({...f})):[];
+        const mealName=(template.name||'Meal').trim();
         meals.push({name:mealName,date:today,foods});
         await persistNutritionState('loadMealTemplate apply');
         await saveToStorage({skipWorkouts:true,skipNutrition:true});
