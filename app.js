@@ -52,13 +52,17 @@ PG.db.auth.onAuthStateChange(async (event, session) => {
 });
 
 async function initApp(user) {
+  const { data: { session } } = await PG.db.auth.getSession();
   const profile = await PG.profile.get();
-  const hasNoName = !profile?.name || String(profile.name).trim() === '';
-  const hasNoGoal = !profile?.goal || String(profile.goal).trim() === '';
-  const isOnboarded = profile?.onboarded === true;
-  const shouldShowOnboarding = !profile || (hasNoName && hasNoGoal && !isOnboarded);
+  const isBrandNewUser = !profile || profile?.onboarded !== true;
 
-  if (shouldShowOnboarding) showOnboarding();
+  // On session restore, always boot the main app.
+  if (session?.user) {
+    await loadFromStorage();
+    return;
+  }
+
+  if (isBrandNewUser) showOnboarding();
   else await loadFromStorage();
 }
 // ===================== TRANSLATIONS =====================
@@ -786,6 +790,7 @@ async function fastTrack() {
         phaseName:'Phase 1',phaseStartDate:new Date().toLocaleDateString('en-GB'),
         phaseDuration:56,trainingDays:4,units:'kg',onboarded:true};
     await PG.profile.save(settings);
+    await PG.profile.save({ onboarded: true });
     const onboarding=document.getElementById('onboarding');if(onboarding)onboarding.style.display='none';
     document.querySelector('.header') && (document.querySelector('.header').style.display = '');
     document.querySelector('.nav') && (document.querySelector('.nav').style.display = '');
