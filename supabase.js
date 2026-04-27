@@ -53,6 +53,13 @@ async function saveProfile(updates) {
   if (updates.weight_kg !== undefined) updates.weight_kg = isNaN(parseFloat(updates.weight_kg)) ? null : parseFloat(updates.weight_kg);
   if (updates.target_weight_kg !== undefined) updates.target_weight_kg = isNaN(parseFloat(updates.target_weight_kg)) ? null : parseFloat(updates.target_weight_kg);
   if (updates.age !== undefined) updates.age = isNaN(parseInt(updates.age)) ? null : parseInt(updates.age);
+  if (updates.activity !== undefined) { updates.activity_level = updates.activity; delete updates.activity; }
+  if (updates.darkMode !== undefined) { updates.dark_mode = updates.darkMode; delete updates.darkMode; }
+  if (updates.diet !== undefined) { updates.dietary_pref = updates.diet; delete updates.diet; }
+  if (updates.environment !== undefined) { updates.training_env = updates.environment; delete updates.environment; }
+  if (updates.height !== undefined) { updates.height_cm = updates.height; delete updates.height; }
+  if (updates.targetWeight !== undefined) { updates.target_weight_kg = updates.targetWeight; delete updates.targetWeight; }
+  if (updates.weight !== undefined) { updates.weight_kg = updates.weight; delete updates.weight; }
   const payload = { id: user.id, ...updates, updated_at: new Date().toISOString() };
   const { error } = await db.from('profiles').upsert(payload, { onConflict: 'id' });
   if (error) {
