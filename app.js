@@ -50,13 +50,17 @@ async function handleEmailAuth() {
 
 async function initApp(user) {
   const profile = await PG.profile.get();
-  const isBrandNewUser = !profile || profile.onboarded !== true;
+  const isOnboardedUser = !!profile && profile.onboarded === true;
+  const onboardingEl = document.getElementById('onboarding');
 
-  if (isBrandNewUser) showOnboarding();
-  else {
+  if (isOnboardedUser) {
+    if (onboardingEl) onboardingEl.style.display = 'none';
     document.getElementById('auth-modal').style.display = 'none';
     document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = '');
     await loadFromStorage();
+  } else {
+    // Only users with missing profile or explicit non-onboarded status see onboarding.
+    showOnboarding();
   }
 }
 
