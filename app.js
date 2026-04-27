@@ -1,64 +1,30 @@
 // ─── AUTH BOOT ────────────────────────────────────────────────────────────────
 let isSignUp = false;
-let authBootCompleted = false;
 
-function getAuthModalEl() {
-  return document.getElementById('auth-modal');
-}
+document.addEventListener('DOMContentLoaded', async () => {
+  const { data: { session } } = await PG.db.auth.getSession();
+  if (session?.user) {
+    document.getElementById('auth-modal').style.display = 'none';
+    document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = '');
+    await loadUserEmail();
+    await initApp(session.user);
+  } else {
+    document.getElementById('auth-modal').style.display = 'flex';
+    document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = 'none');
+  }
+});
 
-function getOnboardingEl() {
-  return document.getElementById('onboarding');
-}
-
-function setBootVisibility(isVisible) {
-  document.body.style.visibility = isVisible ? 'visible' : 'hidden';
-}
-
-function setMainAppVisible(isVisible) {
-  const appScreenEls = document.querySelectorAll('.screen');
-  const headerEl = document.querySelector('.header');
-  const navEl = document.querySelector('.nav');
-  appScreenEls.forEach((el) => {
-    el.style.display = isVisible ? '' : 'none';
-  });
-  if (headerEl) headerEl.style.display = isVisible ? '' : 'none';
-  if (navEl) navEl.style.display = isVisible ? '' : 'none';
-}
-
-function showAuthOnly() {
-  const onboardingEl = getOnboardingEl();
-  const authModalEl = getAuthModalEl();
-  setMainAppVisible(false);
-  if (onboardingEl) onboardingEl.style.display = 'none';
-  if (authModalEl) authModalEl.style.display = 'flex';
-  document.body.style.overflow = 'hidden';
-}
-
-function showMainApp() {
-  const authModalEl = getAuthModalEl();
-  if (authModalEl) authModalEl.style.display = 'none';
-  setMainAppVisible(true);
-  document.body.style.overflow = '';
-}
-
-function logAuthDebug(event, session) {
-  const debugPayload = {
-    event,
-    hasSession: !!session,
-    hasUser: !!session?.user,
-    userId: session?.user?.id || null,
-    email: session?.user?.email || null,
-    bootCompleted: authBootCompleted
-  };
-  console.debug('[Auth Debug]', debugPayload);
-}
-
-setBootVisibility(false);
-setMainAppVisible(false);
-const onboardingEl = getOnboardingEl();
-const authModalEl = getAuthModalEl();
-if (onboardingEl) onboardingEl.style.display = 'none';
-if (authModalEl) authModalEl.style.display = 'none';
+PG.db.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'SIGNED_IN') {
+    document.getElementById('auth-modal').style.display = 'none';
+    document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = '');
+    await loadUserEmail();
+    await initApp(session.user);
+  } else if (event === 'SIGNED_OUT') {
+    document.getElementById('auth-modal').style.display = 'flex';
+    document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = 'none');
+  }
+});
 
 function toggleAuthMode() {
   isSignUp = !isSignUp;
@@ -82,43 +48,14 @@ async function handleEmailAuth() {
   }
 }
 
-PG.db.auth.getSession()
-  .then(async ({ data: { session } }) => {
-    logAuthDebug('INITIAL_SESSION', session);
-    if (session?.user) {
-      await loadUserEmail();
-      await initApp(session.user);
-    } else {
-      showAuthOnly();
-    }
-  })
-  .catch((err) => {
-    console.error('Auth session boot failed:', err);
-    showAuthOnly();
-  })
-  .finally(() => {
-    authBootCompleted = true;
-    setBootVisibility(true);
-  });
-
-PG.db.auth.onAuthStateChange(async (event, session) => {
-  logAuthDebug(event, session);
-  if (!authBootCompleted) return;
-  if (event === 'SIGNED_IN') {
-    await loadUserEmail();
-    await initApp(session.user);
-  } else if (event === 'SIGNED_OUT') {
-    showAuthOnly();
-  }
-});
-
 async function initApp(user) {
   const profile = await PG.profile.get();
   const isBrandNewUser = !profile || profile.onboarded !== true;
 
   if (isBrandNewUser) showOnboarding();
   else {
-    showMainApp();
+    document.getElementById('auth-modal').style.display = 'none';
+    document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = '');
     await loadFromStorage();
   }
 }
@@ -136,11 +73,7 @@ async function loadUserEmail() {
 }
 
 async function signOut() {
-  try {
-    await PG.auth.signOut();
-  } finally {
-    window.location.reload();
-  }
+  await PG.auth.signOut();
 }
 // ===================== TRANSLATIONS =====================
 const translations = {
@@ -854,11 +787,9 @@ function obNext(step) {
 
 function showOnboarding() {
     const onboarding=document.getElementById('onboarding');
-    const authModalEl=getAuthModalEl();
-    setMainAppVisible(false);
+    document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = 'none');
     if(onboarding)onboarding.style.display='flex';
-    if(authModalEl)authModalEl.style.display='none';
-    document.body.style.overflow = 'hidden';
+    document.getElementById('auth-modal').style.display='none';
     obNext(0);
 }
 
@@ -869,7 +800,8 @@ async function fastTrack() {
         phaseName:'Phase 1',phaseStartDate:new Date().toLocaleDateString('en-GB'),
         phaseDuration:56,trainingDays:4,units:'kg',onboarded:true};
     await PG.profile.save(settings);
-    showMainApp();
+    document.getElementById('auth-modal').style.display='none';
+    document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = '');
     await loadFromStorage();
 }
 
@@ -926,7 +858,8 @@ async function completeOnboarding() {
         phaseDuration:56,trainingDays:4,units:selectedWeightUnit,language:selectedLang,onboarded:true};
     await PG.profile.save(settings);
     const onboarding=document.getElementById('onboarding');if(onboarding)onboarding.style.display='none';
-    showMainApp();
+    document.getElementById('auth-modal').style.display='none';
+    document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = '');
     await loadFromStorage();
 }
 

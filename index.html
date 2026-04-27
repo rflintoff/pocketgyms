@@ -11,7 +11,7 @@
 </head>
 <body>
 <!-- AUTH MODAL -->
-<div id="auth-modal" style="display:none;">
+<div id="auth-modal" style="display:flex;">
     <div class="auth-card">
       <h2>POCKETGYMS</h2>
       <p>Sign in to sync your data across all devices.</p>
@@ -155,13 +155,13 @@
 </div>
 
 <!-- HEADER -->
-<div class="header">
+<div class="header" style="display:none;">
     <h1>POCKETGYMS</h1>
     <span class="header-greeting" id="header-greeting"></span>
 </div>
 
 <!-- HOME SCREEN -->
-<div class="screen active" id="screen-home">
+<div class="screen active" id="screen-home" style="display:none;">
     <div class="card" style="text-align:center;">
         <h2 id="txt-today-score">TODAY'S SCORE</h2>
         <div class="score-circle">
@@ -232,7 +232,7 @@
 </div>
 
 <!-- TRAIN SCREEN -->
-<div class="screen" id="screen-train">
+<div class="screen" id="screen-train" style="display:none;">
     <div class="card">
         <h2>STEPS TODAY</h2>
         <div class="stat-row">
@@ -383,7 +383,7 @@
 </div>
 
 <!-- NUTRITION SCREEN -->
-<div class="screen" id="screen-calories">
+<div class="screen" id="screen-calories" style="display:none;">
     <div class="card">
         <h2 id="txt-todays-nutrition">TODAY'S NUTRITION</h2>
         <div class="stat-row"><span class="stat-label" id="txt-date-label">Date</span><span class="stat-value" id="cal-date"></span></div>
@@ -468,7 +468,7 @@
 </div>
 
 <!-- PROGRESS SCREEN -->
-<div class="screen" id="screen-progress">
+<div class="screen" id="screen-progress" style="display:none;">
     <div class="card">
         <h2 id="txt-current-phase">CURRENT PHASE</h2>
         <div class="stat-row"><span class="stat-label" id="txt-phase-name-label">Phase</span><span class="stat-value" id="prog-phase-name">—</span></div>
@@ -532,7 +532,7 @@
 </div>
 
 <!-- SETTINGS SCREEN -->
-<div class="screen" id="screen-settings">
+<div class="screen" id="screen-settings" style="display:none;">
     <div class="card">
         <h2>Account</h2>
         <p style="color:var(--text-muted);font-size:13px;margin-bottom:6px;">Signed in as</p>
@@ -670,7 +670,7 @@
 </div>
 
 <!-- NAV -->
-<div class="nav">
+<div class="nav" style="display:none;">
     <div class="nav-item active" onclick="showScreen('screen-home')" id="nav-home">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         <span id="nav-txt-home">Home</span>
