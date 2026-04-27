@@ -41,16 +41,24 @@ async function getUser() {
 async function getProfile() {
   const user = await getUser();
   if (!user) return null;
-  const { data } = await db.from('profiles').select('*').eq('id', user.id).single();
+  const { data, error } = await db.from('profiles').select('*').eq('id', user.id).maybeSingle();
+  if (error) console.error('getProfile:', error);
   return data;
 }
 
 async function saveProfile(updates) {
   const user = await getUser();
-  if (!user) return;
-  const { error } = await db.from('profiles')
-    .upsert({ id: user.id, ...updates, updated_at: new Date().toISOString() });
-  if (error) console.error('saveProfile:', error);
+  if (!user) return { ok: false, error: { message: 'No authenticated user' } };
+  const payload = { id: user.id, ...updates, updated_at: new Date().toISOString() };
+  const { data, error } = await db.from('profiles')
+    .upsert(payload, { onConflict: 'id' })
+    .select()
+    .maybeSingle();
+  if (error) {
+    console.error('saveProfile:', error, 'payload:', payload);
+    return { ok: false, error, data: null };
+  }
+  return { ok: true, error: null, data };
 }
 
 async function saveWorkout(workoutData) {

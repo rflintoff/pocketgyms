@@ -873,42 +873,75 @@ function showSaveMessage(id, text) {
     setTimeout(()=>{el.style.display='none';},1600);
 }
 
+let toastTimer=null;
+function showToast(message,type='success',duration=2000){
+    const toast=document.getElementById('toast');
+    if(!toast)return;
+    if(toastTimer)clearTimeout(toastTimer);
+    toast.textContent=message;
+    toast.className=type==='error'?'toast toast-error':'toast toast-success';
+    toast.style.display='block';
+    requestAnimationFrame(()=>toast.classList.add('show'));
+    toastTimer=setTimeout(()=>{
+        toast.classList.remove('show');
+        setTimeout(()=>{toast.style.display='none';},250);
+    },duration);
+}
+
 async function saveProfileSettings() {
-    const payload={
-        name:document.getElementById('set-name').value,
-        age:parseInt(document.getElementById('set-age').value),
-        gender:document.getElementById('set-gender').value,
-        height:parseFloat(document.getElementById('set-height').value),
-        weight:parseFloat(document.getElementById('set-weight').value),
-        targetWeight:parseFloat(document.getElementById('set-target-weight').value),
-        activity:parseFloat(document.getElementById('set-activity').value),
-        goal:document.getElementById('set-goal').value,
-        environment:document.getElementById('set-environment').value,
-        diet:document.getElementById('set-diet').value,
-        units:document.getElementById('set-units').value,
-        language:document.getElementById('set-language').value,
-        darkMode:document.body.classList.contains('dark')?'dark':'light'
-    };
-    settings={...settings,...payload};
-    selectedLang=payload.language||selectedLang;
-    await PG.profile.save(payload);
-    applyTranslations();
-    updateHome();
-    showSaveMessage('settings-save-msg','Saved!');
+    try{
+        const payload={
+            name:document.getElementById('set-name').value,
+            age:parseInt(document.getElementById('set-age').value),
+            gender:document.getElementById('set-gender').value,
+            height:parseFloat(document.getElementById('set-height').value),
+            weight:parseFloat(document.getElementById('set-weight').value),
+            targetWeight:parseFloat(document.getElementById('set-target-weight').value),
+            activity:parseFloat(document.getElementById('set-activity').value),
+            goal:document.getElementById('set-goal').value,
+            environment:document.getElementById('set-environment').value,
+            diet:document.getElementById('set-diet').value,
+            units:document.getElementById('set-units').value,
+            language:document.getElementById('set-language').value,
+            darkMode:document.body.classList.contains('dark')?'dark':'light'
+        };
+        console.log('[Settings] Save & Update payload:', payload);
+        settings={...settings,...payload};
+        selectedLang=payload.language||selectedLang;
+        const saveResult=await PG.profile.save(payload);
+        console.log('[Settings] Save & Update result:', saveResult);
+        if(saveResult?.ok===false){
+            showToast('Save failed — please try again','error',4000);
+            return;
+        }
+        applyTranslations();
+        updateHome();
+        showSaveMessage('settings-save-msg','Saved!');
+        showToast('Saved!','success',2000);
+    }catch(err){
+        console.error('saveProfileSettings:',err);
+        showToast('Save failed — please try again','error',4000);
+    }
 }
 
 async function savePhaseSettings() {
-    const phaseName=document.getElementById('set-phase-name').value||'Phase 1';
-    const durationDays=parseInt(document.getElementById('set-phase-duration').value)||56;
-    const trainingDays=parseInt(document.getElementById('set-training-days').value)||4;
-    settings={...settings,phaseName,phaseDuration:durationDays,trainingDays};
-    await PG.progress.save({
-        phase_name:phaseName,
-        duration_weeks:Math.round(durationDays/7),
-        training_days_per_week:trainingDays
-    });
-    await PG.profile.save({phaseName,phaseDuration:durationDays,trainingDays});
-    showSaveMessage('phase-save-msg','Phase saved!');
+    try{
+        const phaseName=document.getElementById('set-phase-name').value||'Phase 1';
+        const durationDays=parseInt(document.getElementById('set-phase-duration').value)||56;
+        const trainingDays=parseInt(document.getElementById('set-training-days').value)||4;
+        settings={...settings,phaseName,phaseDuration:durationDays,trainingDays};
+        await PG.progress.save({
+            phase_name:phaseName,
+            duration_weeks:Math.round(durationDays/7),
+            training_days_per_week:trainingDays
+        });
+        await PG.profile.save({phaseName,phaseDuration:durationDays,trainingDays});
+        showSaveMessage('phase-save-msg','Phase saved!');
+        showToast('Saved!','success',2000);
+    }catch(err){
+        console.error('savePhaseSettings:',err);
+        showToast('Save failed — please try again','error',4000);
+    }
 }
 
 // ===================== NAVIGATION =====================
@@ -1227,7 +1260,7 @@ function showCompletionScreen(muscle,duration,exs){
     document.body.appendChild(modal);
 }
 
-function saveWorkout() {
+async function saveWorkout() {
     const date=new Date().toLocaleDateString('en-GB');
     const duration=workoutStartTime?Math.floor((Date.now()-workoutStartTime)/60000):0;
     clearInterval(workoutTimerInterval);
@@ -1251,7 +1284,15 @@ function saveWorkout() {
     document.getElementById('exercise-log').innerHTML='';
     document.getElementById('save-btn').style.display='none';
     const timerBar=document.getElementById('workout-timer-bar');if(timerBar)timerBar.style.display='none';
-    saveToStorage();checkBadges();showCompletionScreen(muscle,duration,exSnapshot);
+    try{
+        await saveToStorage();
+        checkBadges();
+        showCompletionScreen(muscle,duration,exSnapshot);
+        showToast('Saved!','success',2000);
+    }catch(err){
+        console.error('saveWorkout:',err);
+        showToast('Save failed — please try again','error',4000);
+    }
 }
 
 function startCardio(type) {
@@ -1287,11 +1328,18 @@ function stopCardioTimer() {
     if(startBtn)startBtn.style.display='block';
 }
 
-function saveCardio() {
+async function saveCardio() {
     clearInterval(cardioTimerInterval);
     const date=new Date().toLocaleDateString('en-GB');
     cardioHistory.unshift({type:currentCardioType,duration:document.getElementById('cardio-duration').value,distance:document.getElementById('cardio-distance').value,intensity:document.getElementById('cardio-intensity').value,notes:document.getElementById('cardio-notes').value,date});
-    saveToStorage();showScreen('screen-progress');
+    try{
+        await saveToStorage();
+        showScreen('screen-progress');
+        showToast('Saved!','success',2000);
+    }catch(err){
+        console.error('saveCardio:',err);
+        showToast('Save failed — please try again','error',4000);
+    }
 }
 
 // ===================== NUTRITION =====================
@@ -1404,33 +1452,38 @@ function updatePortionPreview() {
 
 async function addFoodEntry() {
     if(!selectedFood||currentMealIndex===null)return;
-    const isLiquid=selectedFood.category==='drinks';
-    const portion=parseFloat(document.getElementById('food-portion-amount').value)||(isLiquid?250:100);
-    const ratio=portion/100;
-    const entry={name:selectedFood.name,portion,isLiquid,
-        cal:Math.round(selectedFood.cal*ratio),
-        protein:Math.round(selectedFood.protein*ratio*10)/10,
-        carbs:Math.round(selectedFood.carbs*ratio*10)/10,
-        fat:Math.round(selectedFood.fat*ratio*10)/10,
-        category:selectedFood.category
-    };
-    // Save to recent foods
-    const todayNutrition=await PG.nutrition.getToday();
-    const recent=todayNutrition?.recentFoods||[];
-    const exists=recent.findIndex(f=>f.name===selectedFood.name);
-    if(exists>-1)recent.splice(exists,1);
-    recent.unshift({...selectedFood});
-    await PG.nutrition.save({recentFoods:recent.slice(0,10)});
-    if(selectedFood.water){
-        const today=new Date().toLocaleDateString('en-GB');
-        const nd=await PG.nutrition.getToday()||{steps:0,water:0,restDay:false};
-        const servingMl=Math.max(1,Math.round(selectedFood.water*1000));
-        const addWater=selectedFood.water*(portion/servingMl);
-        nd.water=Math.round(((parseFloat(nd.water)||0)+addWater)*100)/100;
-        await PG.nutrition.save(nd);
+    try{
+        const isLiquid=selectedFood.category==='drinks';
+        const portion=parseFloat(document.getElementById('food-portion-amount').value)||(isLiquid?250:100);
+        const ratio=portion/100;
+        const entry={name:selectedFood.name,portion,isLiquid,
+            cal:Math.round(selectedFood.cal*ratio),
+            protein:Math.round(selectedFood.protein*ratio*10)/10,
+            carbs:Math.round(selectedFood.carbs*ratio*10)/10,
+            fat:Math.round(selectedFood.fat*ratio*10)/10,
+            category:selectedFood.category
+        };
+        // Save to recent foods
+        const todayNutrition=await PG.nutrition.getToday();
+        const recent=todayNutrition?.recentFoods||[];
+        const exists=recent.findIndex(f=>f.name===selectedFood.name);
+        if(exists>-1)recent.splice(exists,1);
+        recent.unshift({...selectedFood});
+        await PG.nutrition.save({recentFoods:recent.slice(0,10)});
+        if(selectedFood.water){
+            const nd=await PG.nutrition.getToday()||{steps:0,water:0,restDay:false};
+            const servingMl=Math.max(1,Math.round(selectedFood.water*1000));
+            const addWater=selectedFood.water*(portion/servingMl);
+            nd.water=Math.round(((parseFloat(nd.water)||0)+addWater)*100)/100;
+            await PG.nutrition.save(nd);
+        }
+        meals[currentMealIndex].foods.push(entry);
+        await saveToStorage();updateFoodModalTotals();closeFoodModal();renderMeals();loadNutrition();updateHome();
+        showToast('Saved!','success',2000);
+    }catch(err){
+        console.error('addFoodEntry:',err);
+        showToast('Save failed — please try again','error',4000);
     }
-    meals[currentMealIndex].foods.push(entry);
-    await saveToStorage();updateFoodModalTotals();closeFoodModal();renderMeals();loadNutrition();updateHome();
 }
 
 function deleteFoodFromMeal(mealIndex,foodIndex){meals[mealIndex].foods.splice(foodIndex,1);saveToStorage();renderMeals();loadNutrition();updateHome();if(document.getElementById('food-modal')?.style.display==='block')updateFoodModalTotals();}
@@ -1441,17 +1494,29 @@ async function saveStepsWater() {
     const steps=document.getElementById('input-steps-train').value;
     const water=document.getElementById('input-water').value;
     if(steps)data.steps=parseInt(steps);if(water)data.water=parseFloat(water);
-    await PG.nutrition.save(data);
-    loadNutrition();updateHome();
+    try{
+        await PG.nutrition.save(data);
+        loadNutrition();updateHome();
+        showToast('Saved!','success',2000);
+    }catch(err){
+        console.error('saveStepsWater:',err);
+        showToast('Save failed — please try again','error',4000);
+    }
 }
 async function saveWater() {
     const today=new Date().toLocaleDateString('en-GB');
     let data=await PG.nutrition.getToday()||{steps:0,water:0};
     const water=document.getElementById('input-water').value;
     if(water)data.water=parseFloat(water);
-    await PG.nutrition.save(data);
-    loadNutrition();
-    updateHome();
+    try{
+        await PG.nutrition.save(data);
+        loadNutrition();
+        updateHome();
+        showToast('Saved!','success',2000);
+    }catch(err){
+        console.error('saveWater:',err);
+        showToast('Save failed — please try again','error',4000);
+    }
 }
 async function loadNutrition() {
     const today=new Date().toLocaleDateString('en-GB');
@@ -1675,17 +1740,28 @@ async function completePhase() {
 }
 
 async function saveCheckin() {
-    const entry={date:new Date().toLocaleDateString('en-GB'),weight:document.getElementById('checkin-weight').value,energy:document.getElementById('checkin-energy').value,notes:document.getElementById('checkin-notes').value};
-    if(entry.weight){settings.weight=parseFloat(entry.weight);await PG.profile.save(settings);}
-    checkinHistory.unshift(entry);saveToStorage();
-    document.getElementById('checkin-weight').value='';document.getElementById('checkin-energy').value='';document.getElementById('checkin-notes').value='';
-    updateProgress();
+    try{
+        const entry={date:new Date().toLocaleDateString('en-GB'),weight:document.getElementById('checkin-weight').value,energy:document.getElementById('checkin-energy').value,notes:document.getElementById('checkin-notes').value};
+        if(entry.weight){settings.weight=parseFloat(entry.weight);await PG.profile.save(settings);}
+        checkinHistory.unshift(entry);await saveToStorage();
+        document.getElementById('checkin-weight').value='';document.getElementById('checkin-energy').value='';document.getElementById('checkin-notes').value='';
+        updateProgress();
+        showToast('Saved!','success',2000);
+    }catch(err){
+        console.error('saveCheckin:',err);
+        showToast('Save failed — please try again','error',4000);
+    }
 }
 
 async function saveMeasurements() {
-    measurements={date:new Date().toLocaleDateString('en-GB'),chest:document.getElementById('meas-chest').value,waist:document.getElementById('meas-waist').value,hips:document.getElementById('meas-hips').value,arms:document.getElementById('meas-arms').value,legs:document.getElementById('meas-legs').value};
-    await PG.progress.save(measurements);
-    alert('Measurements saved!');
+    try{
+        measurements={date:new Date().toLocaleDateString('en-GB'),chest:document.getElementById('meas-chest').value,waist:document.getElementById('meas-waist').value,hips:document.getElementById('meas-hips').value,arms:document.getElementById('meas-arms').value,legs:document.getElementById('meas-legs').value};
+        await PG.progress.save(measurements);
+        showToast('Saved!','success',2000);
+    }catch(err){
+        console.error('saveMeasurements:',err);
+        showToast('Save failed — please try again','error',4000);
+    }
 }
 
 async function renderHistory() {
@@ -1731,6 +1807,7 @@ async function renderHistory() {
 
 // ===================== SETTINGS =====================
 async function saveSettings() {
+    try{
     const nameValue=document.getElementById('set-name').value;
     const age=parseInt(document.getElementById('set-age').value);
     const weight=parseFloat(document.getElementById('set-weight').value);
@@ -1752,7 +1829,7 @@ async function saveSettings() {
         phaseDuration,trainingDays:parseInt(document.getElementById('set-training-days').value),
         tdee,calTarget,proteinTarget,stepsTarget:8000,darkMode};
     selectedLang=settings.language;
-    await PG.profile.save({
+    const saveResult=await PG.profile.save({
         name:nameValue,
         goal:settings.goal,
         age:settings.age,
@@ -1774,10 +1851,18 @@ async function saveSettings() {
         proteinTarget:settings.proteinTarget,
         stepsTarget:settings.stepsTarget
     });
+    if(saveResult?.ok===false){
+        showToast('Save failed — please try again','error',4000);
+        return;
+    }
     const tdeeEl=document.getElementById('tdee-result');if(tdeeEl)tdeeEl.style.display='block';
     const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
     setEl('tdee-value',tdee+' kcal');setEl('cal-target-value',calTarget+' kcal');setEl('protein-target-value',proteinTarget+'g');
-    applyTranslations();updateHome();alert('Settings saved!');
+    applyTranslations();updateHome();showToast('Saved!','success',2000);
+    }catch(err){
+        console.error('saveSettings:',err);
+        showToast('Save failed — please try again','error',4000);
+    }
 }
 
 function loadSettings() {
@@ -2237,14 +2322,19 @@ async function logRestDay() {
 
 
 async function saveStepsTrain() {
-    const today=new Date().toLocaleDateString('en-GB');
-    const nd=await PG.nutrition.getToday()||{steps:0,water:0,restDay:false};
-    const stepsInput=document.getElementById('input-steps-train').value;
-    if(stepsInput!=='')nd.steps=parseInt(stepsInput,10)||0;
-    await PG.nutrition.save(nd);
-    document.getElementById('input-steps-train').value='';
-    updateStepsDisplay();
-    updateHome();
+    try{
+        const nd=await PG.nutrition.getToday()||{steps:0,water:0,restDay:false};
+        const stepsInput=document.getElementById('input-steps-train').value;
+        if(stepsInput!=='')nd.steps=parseInt(stepsInput,10)||0;
+        await PG.nutrition.save(nd);
+        document.getElementById('input-steps-train').value='';
+        updateStepsDisplay();
+        updateHome();
+        showToast('Saved!','success',2000);
+    }catch(err){
+        console.error('saveStepsTrain:',err);
+        showToast('Save failed — please try again','error',4000);
+    }
 }
 
 async function updateStepsDisplay() {
