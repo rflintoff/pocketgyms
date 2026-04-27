@@ -200,20 +200,28 @@
                 <span class="home-stat-val" id="home-protein">—</span>
             </div>
             <div class="home-stat-chip">
-                <span class="home-stat-ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5S7 10 7 13.5a5 5 0 0 0 10 0C17 10 12 3.5 12 3.5Z"/></svg></span>
-                <span class="home-stat-lbl" id="txt-water">Water</span>
-                <span class="home-stat-val" id="home-water">—</span>
+                <span class="home-stat-ico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
+                <span class="home-stat-lbl" id="txt-sleep">Sleep</span>
+                <span class="home-stat-val" id="home-sleep">—</span>
             </div>
         </div>
-        <div class="stat-row home-streak-summary">
-            <span class="stat-label" id="txt-weekly-streak">Weekly Streak</span>
-            <span class="stat-value" id="streak-count">0/7</span>
+    </div>
+
+    <div class="card home-workout-card" id="home-workout-card">
+        <div class="home-workout-card-head">
+            <div>
+                <p class="card-kicker" id="txt-todays-workout">TODAY'S WORKOUT</p>
+                <h3 class="home-workout-title" id="next-workout-title">Push Day</h3>
+                <p class="home-workout-meta" id="next-workout-meta">45–60 min · Train tab</p>
+            </div>
+            <span class="home-workout-badge" id="txt-workout-primary-badge">Primary</span>
         </div>
-        <div class="stat-row">
-            <span class="stat-label">Best Streak</span>
-            <span class="stat-value" id="streak-record">—</span>
-        </div>
-        <div class="streak-bar" id="streak-bar"></div>
+        <div class="home-workout-visual" aria-hidden="true"></div>
+        <button type="button" class="btn btn-start-workout" onclick="showScreen('screen-train')">
+            <span class="btn-start-workout-label" id="txt-start-workout">START WORKOUT</span>
+            <span class="btn-play-circle" aria-hidden="true">▶</span>
+        </button>
+        <button type="button" class="btn home-rest-outline" onclick="logRestDay()" id="txt-log-rest-day">LOG A REST DAY</button>
     </div>
 
     <div class="card">
@@ -226,7 +234,7 @@
         <h2 id="txt-today-progress">TODAY'S PROGRESS</h2>
         <div class="stat-row"><span class="stat-label" id="home-txt-cal-label">Calories</span><span class="stat-value" id="home-show-calories">0 / — kcal</span></div>
         <div class="progress-bar-outer"><div class="progress-bar-inner" id="home-bar-calories"></div></div>
-        <div id="cal-remaining" style="font-size:13px;font-weight:700;margin-top:4px;margin-bottom:4px;"></div>
+        <div id="home-cal-remaining" style="font-size:13px;font-weight:700;margin-top:4px;margin-bottom:4px;"></div>
         <div class="stat-row" style="margin-top:10px;"><span class="stat-label" id="txt-protein-detail">Protein</span><span class="stat-value" id="home-protein-detail">—</span></div>
         <div class="progress-bar-outer"><div class="progress-bar-inner" id="home-bar-protein"></div></div>
         <div class="stat-row" style="margin-top:10px;"><span class="stat-label">Carbs</span><span class="stat-value" id="home-carbs">—</span></div>
@@ -258,26 +266,36 @@
         <h2 id="txt-badges">BADGES</h2>
         <div id="badges-display"></div>
     </div>
-    <div class="card home-workout-card" id="home-workout-card">
-        <div class="home-workout-card-head">
-            <div>
-                <p class="card-kicker" id="txt-todays-workout">TODAY'S WORKOUT</p>
-                <h3 class="home-workout-title" id="next-workout-title">Push Day</h3>
-                <p class="home-workout-meta" id="next-workout-meta">45–60 min · Train tab</p>
-            </div>
-            <span class="home-workout-badge" id="txt-workout-primary-badge">Primary</span>
+    <div class="card home-weekly-card">
+        <div class="stat-row home-streak-summary" style="margin-bottom:8px;">
+            <span class="stat-label" id="txt-weekly-streak">Weekly streak</span>
+            <span class="stat-value" id="streak-count">0/7</span>
         </div>
-        <div class="home-workout-visual" aria-hidden="true"></div>
-        <button type="button" class="btn btn-start-workout" onclick="showScreen('screen-train')">
-            <span class="btn-start-workout-label" id="txt-start-workout">START WORKOUT</span>
-            <span class="btn-play-circle" aria-hidden="true">▶</span>
-        </button>
-        <button type="button" class="btn btn-accent-yellow home-rest-outline" onclick="logRestDay()" id="txt-log-rest-day">LOG A REST DAY</button>
+        <div class="stat-row" style="margin-bottom:10px;">
+            <span class="stat-label">Best streak</span>
+            <span class="stat-value" id="streak-record">—</span>
+        </div>
+        <div class="streak-bar" id="streak-bar"></div>
     </div>
 </div>
 
 <!-- TRAIN SCREEN -->
 <div class="screen" id="screen-train" style="display:none;">
+    <div class="card train-program-card">
+        <div class="train-program-head">
+            <h2 class="train-program-title" id="train-program-title">Program: Hybrid Athlete</h2>
+        </div>
+        <div class="train-phase-tabs">
+            <span class="train-phase-tab" id="train-phase-tab-1">Phase 1</span>
+            <span class="train-phase-tab" id="train-phase-tab-2">Phase 2</span>
+            <span class="train-phase-tab" id="train-phase-tab-3">Phase 3</span>
+        </div>
+        <div class="train-week-progress-wrap">
+            <div class="train-week-progress-track"><div class="train-week-progress-fill" id="train-week-progress-fill"></div></div>
+            <p class="train-week-progress-label" id="train-week-progress-label">0% · Week 1 of 8</p>
+        </div>
+        <div class="train-week-list" id="train-week-list"></div>
+    </div>
     <div class="card">
         <h2>STEPS TODAY</h2>
         <div class="stat-row">
@@ -289,7 +307,7 @@
         <button class="btn-outline" onclick="saveStepsTrain()">Save Steps</button>
     </div>
     <div id="train-menu">
-        <button type="button" class="btn btn-accent-yellow" style="margin-bottom:12px;" onclick="logRestDay()">LOG A REST DAY</button>
+        <button type="button" class="btn" style="margin-bottom:12px;" onclick="logRestDay()">LOG A REST DAY</button>
         <div class="section-title" id="txt-how-train">HOW DO YOU WANT TO TRAIN?</div>
     <div class="routine-item" onclick="showTrainSection('routines')">
             <div><div class="routine-name" id="txt-my-routines">My Routines</div><div class="routine-meta" id="txt-my-routines-sub">Start a saved workout</div></div>
@@ -430,17 +448,29 @@
 
 <!-- NUTRITION SCREEN -->
 <div class="screen" id="screen-calories" style="display:none;">
-    <div class="card">
-        <h2 id="txt-todays-nutrition">TODAY'S NUTRITION</h2>
-        <div class="stat-row"><span class="stat-label" id="txt-date-label">Date</span><span class="stat-value" id="cal-date"></span></div>
+    <div class="card nut-hero-card">
+        <h2 id="txt-todays-nutrition" class="nut-screen-title">NUTRITION</h2>
+        <div class="nut-date-nav">
+            <button type="button" class="nut-nav-btn" onclick="nutritionDayShift(-1)" aria-label="Previous day">‹</button>
+            <button type="button" class="nut-today-mid" onclick="nutritionJumpToday()" id="nut-date-nav-label">Today</button>
+            <button type="button" class="nut-nav-btn" onclick="nutritionDayShift(1)" aria-label="Next day">›</button>
+        </div>
+        <p class="nut-cal-date-sub" id="cal-date"></p>
         <div class="stat-row" style="margin-top:4px;"><span class="stat-label" id="txt-status">Status</span><span id="cal-status" class="stat-value">—</span></div>
+        <div class="nut-hero-calories" id="nut-hero-calories">0 / 2,000 kcal</div>
+        <p class="nut-cal-remaining" id="nut-cal-remaining"></p>
+        <div class="progress-bar-outer nut-hero-cal-bar"><div class="progress-bar-inner" id="nut-bar-calories"></div></div>
+        <div class="nut-macro-pills">
+            <div class="nut-macro-pill nut-macro-pill--protein"><span class="nut-m-pill-lbl" id="nut-lbl-protein">Protein</span><span id="nut-pill-protein" class="nut-m-pill-val">0 / 150g</span><div class="nut-m-pill-track"><span class="nut-m-pill-fill" id="nut-pill-bar-protein"></span></div></div>
+            <div class="nut-macro-pill nut-macro-pill--carbs"><span class="nut-m-pill-lbl" id="nut-lbl-carbs">Carbs</span><span id="nut-pill-carbs" class="nut-m-pill-val">0 / 250g</span><div class="nut-m-pill-track"><span class="nut-m-pill-fill" id="nut-pill-bar-carbs"></span></div></div>
+            <div class="nut-macro-pill nut-macro-pill--fats"><span class="nut-m-pill-lbl" id="nut-lbl-fats">Fats</span><span id="nut-pill-fats" class="nut-m-pill-val">0 / 70g</span><div class="nut-m-pill-track"><span class="nut-m-pill-fill" id="nut-pill-bar-fats"></span></div></div>
+        </div>
     </div>
 
     <div class="card">
         <h2 id="txt-daily-totals">DAILY TOTALS</h2>
         <div style="margin-bottom:10px;">
             <div class="stat-row"><span class="stat-label" id="nut-txt-cal-label">Calories</span><span class="stat-value" id="nut-show-calories">0 / — kcal</span></div>
-            <div class="progress-bar-outer"><div class="progress-bar-inner" id="nut-bar-calories"></div></div>
         </div>
         <div style="margin-bottom:10px;">
             <div class="stat-row"><span class="stat-label" id="txt-prot-label">Protein</span><span class="stat-value" id="show-protein">0 / —g</span></div>
@@ -458,10 +488,6 @@
             <div class="stat-row"><span class="stat-label" id="txt-steps-label">Steps</span><span class="stat-value" id="show-steps">0 / —</span></div>
             <div class="progress-bar-outer"><div class="progress-bar-inner" id="bar-steps"></div></div>
         </div>
-        <div>
-            <div class="stat-row"><span class="stat-label" id="txt-water-label">Water</span><span class="stat-value" id="show-water">0 / 2.5L</span></div>
-            <div class="progress-bar-outer"><div class="progress-bar-inner" id="bar-water"></div></div>
-        </div>
     </div>
 
     <div id="meals-container" class="meals-container"></div>
@@ -470,10 +496,16 @@
         <button class="btn-outline" onclick="loadMealTemplate()">📋 Load Template</button>
     </div>
 
-    <div class="card">
+    <div class="card nut-water-card">
         <h2 id="txt-water-log">WATER</h2>
+        <div class="nut-water-row">
+            <span class="nut-water-summary" id="show-water">0 / 3L</span>
+            <div class="nut-water-dots" id="nut-water-dots"></div>
+            <button type="button" class="nut-water-plus" onclick="addWaterQuick()" aria-label="Add 250ml water">+</button>
+        </div>
+        <div class="progress-bar-outer"><div class="progress-bar-inner" id="bar-water"></div></div>
         <label id="lbl-water">Water (litres)</label>
-        <input type="number" id="input-water" placeholder="e.g. 2.5" step="0.25">
+        <input type="number" id="input-water" placeholder="e.g. 0.5" step="0.25">
         <button class="btn" onclick="saveWater()" id="txt-save-sw">Save</button>
     </div>
   
@@ -533,6 +565,21 @@
 
 <!-- PROGRESS SCREEN -->
 <div class="screen" id="screen-progress" style="display:none;">
+    <div class="card progress-filters-card">
+        <h2 class="progress-screen-heading">PROGRESS</h2>
+        <div class="progress-filter-row">
+            <button type="button" class="progress-filter-btn" data-range="1W" onclick="setProgressFilter('1W',this)">1W</button>
+            <button type="button" class="progress-filter-btn active" data-range="1M" onclick="setProgressFilter('1M',this)">1M</button>
+            <button type="button" class="progress-filter-btn" data-range="3M" onclick="setProgressFilter('3M',this)">3M</button>
+            <button type="button" class="progress-filter-btn" data-range="6M" onclick="setProgressFilter('6M',this)">6M</button>
+            <button type="button" class="progress-filter-btn" data-range="1Y" onclick="setProgressFilter('1Y',this)">1Y</button>
+            <button type="button" class="progress-filter-btn" data-range="All" onclick="setProgressFilter('All',this)">All</button>
+        </div>
+        <div class="progress-weight-hero">
+            <div class="progress-weight-big" id="progress-weight-current">—</div>
+            <div class="progress-weight-delta" id="progress-weight-delta"></div>
+        </div>
+    </div>
     <div class="card">
         <h2 id="txt-weekly-checkin">WEEKLY CHECK-IN</h2>
         <label id="lbl-checkin-weight">Weight this week (kg)</label>
@@ -573,6 +620,25 @@
         <div id="pb-list"><p style="color:var(--label-secondary);">Log workouts to track PBs.</p></div>
     </div>
 
+    <div class="card progress-strength-card">
+        <h2>STRENGTH PROGRESS</h2>
+        <p class="progress-strength-ex" id="progress-strength-ex-name">Bench press</p>
+        <div class="progress-strength-val" id="progress-strength-ex-val">—</div>
+        <p class="progress-strength-note">Based on your heaviest logged set per exercise.</p>
+    </div>
+
+    <div class="card progress-photos-card">
+        <div class="progress-photos-head">
+            <h2>PHOTOS</h2>
+            <span class="progress-photos-seeall">See all</span>
+        </div>
+        <div class="progress-photos-row">
+            <div class="progress-photo-placeholder"></div>
+            <div class="progress-photo-placeholder"></div>
+            <div class="progress-photo-placeholder"></div>
+        </div>
+    </div>
+
     <div class="card">
         <h2>SUPPLEMENT LOG (LAST 7 DAYS)</h2>
         <div id="supplement-log-grid"></div>
@@ -602,14 +668,46 @@
 
 <!-- PROFILE SCREEN -->
 <div class="screen" id="screen-profile" style="display:none;">
-    <div class="card">
+    <div class="profile-hero-card">
+        <div class="profile-hero-top">
+            <div id="profile-hero-avatar" class="profile-hero-avatar">PG</div>
+            <div class="profile-hero-text">
+                <div class="profile-hero-name-row">
+                    <h2 id="profile-hero-name" class="profile-hero-name">Athlete</h2>
+                    <span class="profile-level-badge" id="profile-level-badge">Level 12</span>
+                </div>
+                <p id="profile-hero-goal" class="profile-hero-goal">Hybrid Athlete</p>
+            </div>
+        </div>
+        <div class="profile-xp-wrap">
+            <div class="profile-xp-track"><div class="profile-xp-fill" id="profile-xp-fill"></div></div>
+            <p id="profile-xp-label" class="profile-xp-label">0 / 4,000 XP</p>
+        </div>
+        <div class="profile-hero-stats">
+            <div class="profile-hero-stat"><span class="phs-num" id="profile-stat-workouts">0</span><span class="phs-lbl">Workouts</span></div>
+            <div class="profile-hero-stat"><span class="phs-num" id="profile-stat-streak">0</span><span class="phs-lbl">Streak</span></div>
+            <div class="profile-hero-stat"><span class="phs-num" id="profile-stat-achievements">0</span><span class="phs-lbl">Achievements</span></div>
+        </div>
+    </div>
+    <div class="card profile-achievements-card">
+        <h2 class="profile-achievements-title">Achievements</h2>
+        <div id="profile-hex-badges" class="profile-hex-row"></div>
+    </div>
+    <div class="card profile-quick-menu">
+        <button type="button" class="profile-menu-row" onclick="document.getElementById('profile-section-plans').scrollIntoView({behavior:'smooth',block:'start'})">My Plans <span class="profile-menu-chev">›</span></button>
+        <button type="button" class="profile-menu-row" onclick="document.getElementById('profile-section-details').scrollIntoView({behavior:'smooth',block:'start'})">Body Stats <span class="profile-menu-chev">›</span></button>
+        <button type="button" class="profile-menu-row" onclick="showScreen('screen-progress')">Photos <span class="profile-menu-chev">›</span></button>
+        <button type="button" class="profile-menu-row" onclick="showScreen('screen-progress')">Personal Records <span class="profile-menu-chev">›</span></button>
+        <button type="button" class="profile-menu-row" onclick="document.getElementById('profile-section-appearance').scrollIntoView({behavior:'smooth',block:'start'})">Settings <span class="profile-menu-chev">›</span></button>
+    </div>
+    <div class="card" id="profile-section-account">
         <h2>Account</h2>
         <p style="color:var(--label-secondary);font-size:13px;margin-bottom:6px;">Signed in as</p>
         <p id="account-email" style="color:var(--text);font-size:15px;font-weight:700;margin-bottom:12px;">—</p>
-        <button id="sign-out-btn" onclick="signOut()" style="background:#FEF2F2;color:var(--danger);border:1px solid var(--danger);border-radius:12px;padding:12px 14px;font-size:14px;font-weight:700;cursor:pointer;width:100%;">Sign Out</button>
+        <button type="button" id="sign-out-btn" class="btn btn-destructive" onclick="signOut()">Sign Out</button>
     </div>
 
-    <div class="card">
+    <div class="card" id="profile-section-details">
         <h2 id="txt-your-details">YOUR DETAILS</h2>
         <label id="lbl-set-name">Name</label><input type="text" id="set-name" placeholder="Your name">
         <label id="lbl-set-age">Age</label><input type="number" id="set-age" placeholder="e.g. 25">
@@ -650,7 +748,7 @@
         <p id="settings-save-msg" style="display:none;color:var(--success);font-size:12px;font-weight:700;margin-bottom:4px;">Saved!</p>
     </div>
 
-    <div class="card">
+    <div class="card" id="profile-section-plans">
         <h2 id="txt-my-transformation">MY TRANSFORMATION PHASE</h2>
         <p style="color:var(--label-secondary); font-size:13px; margin-bottom:12px;" id="txt-phase-desc">Optional: Set a goal phase to track your transformation progress.</p>
         <label id="lbl-phase-name">Phase Name</label><input type="text" id="set-phase-name" placeholder="e.g. Summer Cut">
@@ -690,7 +788,7 @@
         <div class="plates-result" id="plates-result" style="display:none;"></div>
     </div>
 
-    <div class="card">
+    <div class="card" id="profile-section-appearance">
         <h2 id="txt-appearance">APPEARANCE</h2>
         <div class="toggle-row">
             <span class="toggle-label" id="txt-dark-mode">Dark Mode</span>
@@ -703,7 +801,7 @@
         <p style="color:var(--label-secondary);font-size:13px;margin-bottom:12px;">This will permanently delete all your workout, nutrition and progress data. This cannot be undone.</p>
         <label>Type RESET to confirm</label>
         <input type="text" id="reset-confirm-input" placeholder="Type RESET" oninput="handleResetConfirmInput()">
-        <button id="reset-all-data-btn" onclick="resetAllData()" disabled style="background:#FEF2F2;color:var(--danger);border:1px solid var(--danger);border-radius:12px;padding:14px;font-size:14px;font-weight:700;cursor:not-allowed;width:100%;opacity:0.6;">🗑 Reset All Data</button>
+        <button type="button" id="reset-all-data-btn" class="btn btn-destructive" onclick="resetAllData()" disabled>🗑 Reset All Data</button>
     </div>
     <div class="card" style="margin-top:12px;text-align:center;">
         <h2>ABOUT</h2>
