@@ -25,10 +25,11 @@ async function handleEmailAuth() {
 
 PG.db.auth.getSession().then(async ({ data: { session } }) => {
   if (session?.user) {
+    document.getElementById('onboarding').style.display = 'none';
     document.getElementById('auth-modal').style.display = 'none';
     document.querySelector('.header') && (document.querySelector('.header').style.display = '');
     document.querySelector('.nav') && (document.querySelector('.nav').style.display = '');
-    await initApp(session.user);
+    await loadFromStorage();
   } else {
     document.getElementById('auth-modal').style.display = 'flex';
     document.getElementById('onboarding').style.display = 'none';
@@ -52,15 +53,8 @@ PG.db.auth.onAuthStateChange(async (event, session) => {
 });
 
 async function initApp(user) {
-  const { data: { session } } = await PG.db.auth.getSession();
   const profile = await PG.profile.get();
-  const isBrandNewUser = !profile || profile?.onboarded !== true;
-
-  // On session restore, always boot the main app.
-  if (session?.user) {
-    await loadFromStorage();
-    return;
-  }
+  const isBrandNewUser = !profile || profile.onboarded !== true;
 
   if (isBrandNewUser) showOnboarding();
   else await loadFromStorage();
@@ -778,20 +772,30 @@ function selectLang(lang,el) {
 }
 
 function obNext(step) {
+    if(!document.getElementById('ob-step-'+step)||!document.getElementById('dot-'+step))return;
     document.querySelectorAll('.onboarding-step').forEach(s=>s.classList.remove('active'));
     document.querySelectorAll('.step-dot').forEach(d=>d.classList.remove('active'));
     document.getElementById('ob-step-'+step).classList.add('active');
     document.getElementById('dot-'+step).classList.add('active');
 }
 
+function showOnboarding() {
+    const onboarding=document.getElementById('onboarding');
+    if(onboarding)onboarding.style.display='flex';
+    document.getElementById('auth-modal').style.display='none';
+    document.querySelector('.header') && (document.querySelector('.header').style.display='none');
+    document.querySelector('.nav') && (document.querySelector('.nav').style.display='none');
+    obNext(0);
+}
+
 async function fastTrack() {
+    const onboarding=document.getElementById('onboarding');if(onboarding)onboarding.style.display='none';
     settings={name:'',goal:'fitness',environment:'gym',diet:'standard',weight:0,targetWeight:0,
         calTarget:2000,proteinTarget:150,stepsTarget:8000,language:selectedLang,
         phaseName:'Phase 1',phaseStartDate:new Date().toLocaleDateString('en-GB'),
         phaseDuration:56,trainingDays:4,units:'kg',onboarded:true};
     await PG.profile.save(settings);
     await PG.profile.save({ onboarded: true });
-    const onboarding=document.getElementById('onboarding');if(onboarding)onboarding.style.display='none';
     document.querySelector('.header') && (document.querySelector('.header').style.display = '');
     document.querySelector('.nav') && (document.querySelector('.nav').style.display = '');
     await loadFromStorage();
@@ -859,7 +863,52 @@ async function completeOnboarding() {
 async function toggleTheme() {
     document.body.classList.toggle('dark');
     const toggle=document.getElementById('dark-toggle');if(toggle)toggle.classList.toggle('on');
-    await PG.profile.save({darkMode:document.body.classList.contains('dark')?'dark':'light'});
+}
+
+function showSaveMessage(id, text) {
+    const el=document.getElementById(id);
+    if(!el)return;
+    el.textContent=text;
+    el.style.display='block';
+    setTimeout(()=>{el.style.display='none';},1600);
+}
+
+async function saveProfileSettings() {
+    const payload={
+        name:document.getElementById('set-name').value,
+        age:parseInt(document.getElementById('set-age').value),
+        gender:document.getElementById('set-gender').value,
+        height:parseFloat(document.getElementById('set-height').value),
+        weight:parseFloat(document.getElementById('set-weight').value),
+        targetWeight:parseFloat(document.getElementById('set-target-weight').value),
+        activity:parseFloat(document.getElementById('set-activity').value),
+        goal:document.getElementById('set-goal').value,
+        environment:document.getElementById('set-environment').value,
+        diet:document.getElementById('set-diet').value,
+        units:document.getElementById('set-units').value,
+        language:document.getElementById('set-language').value,
+        darkMode:document.body.classList.contains('dark')?'dark':'light'
+    };
+    settings={...settings,...payload};
+    selectedLang=payload.language||selectedLang;
+    await PG.profile.save(payload);
+    applyTranslations();
+    updateHome();
+    showSaveMessage('settings-save-msg','Saved!');
+}
+
+async function savePhaseSettings() {
+    const phaseName=document.getElementById('set-phase-name').value||'Phase 1';
+    const durationDays=parseInt(document.getElementById('set-phase-duration').value)||56;
+    const trainingDays=parseInt(document.getElementById('set-training-days').value)||4;
+    settings={...settings,phaseName,phaseDuration:durationDays,trainingDays};
+    await PG.progress.save({
+        phase_name:phaseName,
+        duration_weeks:Math.round(durationDays/7),
+        training_days_per_week:trainingDays
+    });
+    await PG.profile.save({phaseName,phaseDuration:durationDays,trainingDays});
+    showSaveMessage('phase-save-msg','Phase saved!');
 }
 
 // ===================== NAVIGATION =====================

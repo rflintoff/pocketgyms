@@ -36,7 +36,7 @@
     </div>
   </div>
 <!-- ONBOARDING -->
-<div class="onboarding" id="onboarding">
+<div class="onboarding" id="onboarding" style="display:none;">
     <div class="step-indicator">
         <div class="step-dot active" id="dot-0"></div>
         <div class="step-dot" id="dot-1"></div>
@@ -634,6 +634,8 @@
     <div class="card">
         <h2 id="txt-your-details">YOUR DETAILS</h2>
         <label id="lbl-set-name">Name</label><input type="text" id="set-name" placeholder="Your name">
+        <button class="btn" onclick="saveProfileSettings()" id="btn-save-update" style="margin-top:4px;">Save & Update</button>
+        <p id="settings-save-msg" style="display:none;color:var(--success);font-size:12px;font-weight:700;margin-bottom:10px;">Saved!</p>
         <label id="lbl-set-age">Age</label><input type="number" id="set-age" placeholder="e.g. 25">
         <label id="lbl-set-gender">Gender</label>
         <select id="set-gender"><option value="male">Male</option><option value="female">Female</option></select>
@@ -684,6 +686,8 @@
         </select>
         <label id="lbl-training-days">Training Days Per Week</label>
         <input type="number" id="set-training-days" placeholder="e.g. 4" min="1" max="7">
+        <button class="btn" onclick="savePhaseSettings()" id="btn-save-phase">Save Phase</button>
+        <p id="phase-save-msg" style="display:none;color:var(--success);font-size:12px;font-weight:700;margin-top:2px;">Phase saved!</p>
     </div>
 
     <div class="card">
