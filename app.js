@@ -1,28 +1,32 @@
 // ─── AUTH BOOT ────────────────────────────────────────────────────────────────
 let isSignUp = false;
+let appBooted = false;
 
 document.addEventListener('DOMContentLoaded', async () => {
   const { data: { session } } = await PG.db.auth.getSession();
   if (session?.user) {
+    appBooted = true;
     document.getElementById('auth-modal').style.display = 'none';
-    document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = '');
     await loadUserEmail();
     await initApp(session.user);
   } else {
     document.getElementById('auth-modal').style.display = 'flex';
     document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = 'none');
+    document.getElementById('onboarding').style.display = 'none';
   }
 });
 
 PG.db.auth.onAuthStateChange(async (event, session) => {
-  if (event === 'SIGNED_IN') {
+  if (event === 'SIGNED_IN' && !appBooted) {
+    appBooted = true;
     document.getElementById('auth-modal').style.display = 'none';
-    document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = '');
     await loadUserEmail();
     await initApp(session.user);
   } else if (event === 'SIGNED_OUT') {
+    appBooted = false;
     document.getElementById('auth-modal').style.display = 'flex';
     document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = 'none');
+    document.getElementById('onboarding').style.display = 'none';
   }
 });
 
@@ -38,10 +42,8 @@ async function handleEmailAuth() {
   const password = document.getElementById('auth-password').value;
   const errEl = document.getElementById('auth-error');
   errEl.style.display = 'none';
-
   const fn = isSignUp ? PG.auth.signUpEmail : PG.auth.signInEmail;
   const { error } = await fn(email, password);
-
   if (error) {
     errEl.textContent = error.message;
     errEl.style.display = 'block';
@@ -50,35 +52,35 @@ async function handleEmailAuth() {
 
 async function initApp(user) {
   const profile = await PG.profile.get();
-  const isOnboardedUser = !!profile && profile.onboarded === true;
-  const onboardingEl = document.getElementById('onboarding');
-
-  if (isOnboardedUser) {
-    if (onboardingEl) onboardingEl.style.display = 'none';
-    document.getElementById('auth-modal').style.display = 'none';
+  const isOnboarded = profile && profile.onboarded === true;
+  document.getElementById('onboarding').style.display = 'none';
+  document.getElementById('auth-modal').style.display = 'none';
+  if (isOnboarded) {
     document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = '');
     await loadFromStorage();
   } else {
-    // Only users with missing profile or explicit non-onboarded status see onboarding.
     showOnboarding();
   }
 }
 
 async function loadUserEmail() {
   try {
-    const { data, error } = await PG.db.auth.getUser();
-    if (error) throw error;
-    const email = data?.user?.email || 'Not available';
-    const accountEmailEl = document.getElementById('account-email');
-    if (accountEmailEl) accountEmailEl.textContent = email;
+    const { data } = await PG.db.auth.getUser();
+    const email = data?.user?.email || '';
+    const el = document.getElementById('account-email');
+    if (el) el.textContent = email;
   } catch (err) {
     console.error('loadUserEmail:', err);
   }
 }
 
-async function signOut() {
+window.signOut = async function() {
+  appBooted = false;
   await PG.auth.signOut();
-}
+  document.getElementById('auth-modal').style.display = 'flex';
+  document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = 'none');
+  document.getElementById('onboarding').style.display = 'none';
+};
 // ===================== TRANSLATIONS =====================
 const translations = {
     en: {
