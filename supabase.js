@@ -49,21 +49,17 @@ async function getProfile() {
 async function saveProfile(updates) {
   const user = await getUser();
   if (!user) return { ok: false, error: { message: 'No authenticated user' } };
-  // Sanitize numeric fields
-if (updates.height_cm !== undefined) updates.height_cm = isNaN(parseFloat(updates.height_cm)) ? null : parseFloat(updates.height_cm);
-if (updates.weight_kg !== undefined) updates.weight_kg = isNaN(parseFloat(updates.weight_kg)) ? null : parseFloat(updates.weight_kg);
-if (updates.target_weight_kg !== undefined) updates.target_weight_kg = isNaN(parseFloat(updates.target_weight_kg)) ? null : parseFloat(updates.target_weight_kg);
-if (updates.age !== undefined) updates.age = isNaN(parseInt(updates.age)) ? null : parseInt(updates.age);
-  const payload = {  id: user.id, ...updates, updated_at: new Date().toISOString() };
-  const { data, error } = await db.from('profiles')
-    .upsert(payload, { onConflict: 'id' })
-    .select()
-    .maybeSingle();
+  if (updates.height_cm !== undefined) updates.height_cm = isNaN(parseFloat(updates.height_cm)) ? null : parseFloat(updates.height_cm);
+  if (updates.weight_kg !== undefined) updates.weight_kg = isNaN(parseFloat(updates.weight_kg)) ? null : parseFloat(updates.weight_kg);
+  if (updates.target_weight_kg !== undefined) updates.target_weight_kg = isNaN(parseFloat(updates.target_weight_kg)) ? null : parseFloat(updates.target_weight_kg);
+  if (updates.age !== undefined) updates.age = isNaN(parseInt(updates.age)) ? null : parseInt(updates.age);
+  const payload = { id: user.id, ...updates, updated_at: new Date().toISOString() };
+  const { error } = await db.from('profiles').upsert(payload, { onConflict: 'id' });
   if (error) {
-    console.error('saveProfile:', error, 'payload:', payload);
-    return { ok: false, error, data: null };
+    console.error('saveProfile error:', error, 'payload:', payload);
+    return { ok: false, error };
   }
-  return { ok: true, error: null, data };
+  return { ok: true, error: null };
 }
 
 async function saveWorkout(workoutData) {
