@@ -49,7 +49,12 @@ async function getProfile() {
 async function saveProfile(updates) {
   const user = await getUser();
   if (!user) return { ok: false, error: { message: 'No authenticated user' } };
-  const payload = { id: user.id, ...updates, updated_at: new Date().toISOString() };
+  // Sanitize numeric fields
+if (updates.height_cm !== undefined) updates.height_cm = isNaN(parseFloat(updates.height_cm)) ? null : parseFloat(updates.height_cm);
+if (updates.weight_kg !== undefined) updates.weight_kg = isNaN(parseFloat(updates.weight_kg)) ? null : parseFloat(updates.weight_kg);
+if (updates.target_weight_kg !== undefined) updates.target_weight_kg = isNaN(parseFloat(updates.target_weight_kg)) ? null : parseFloat(updates.target_weight_kg);
+if (updates.age !== undefined) updates.age = isNaN(parseInt(updates.age)) ? null : parseInt(updates.age);
+  const payload = {  id: user.id, ...updates, updated_at: new Date().toISOString() };
   const { data, error } = await db.from('profiles')
     .upsert(payload, { onConflict: 'id' })
     .select()
