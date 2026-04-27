@@ -2,17 +2,22 @@
 let isSignUp = false;
 let authBootCompleted = false;
 
-const authModalEl = document.getElementById('auth-modal');
-const onboardingEl = document.getElementById('onboarding');
-const headerEl = document.querySelector('.header');
-const navEl = document.querySelector('.nav');
-const appScreenEls = document.querySelectorAll('.screen');
+function getAuthModalEl() {
+  return document.getElementById('auth-modal');
+}
+
+function getOnboardingEl() {
+  return document.getElementById('onboarding');
+}
 
 function setBootVisibility(isVisible) {
   document.body.style.visibility = isVisible ? 'visible' : 'hidden';
 }
 
 function setMainAppVisible(isVisible) {
+  const appScreenEls = document.querySelectorAll('.screen');
+  const headerEl = document.querySelector('.header');
+  const navEl = document.querySelector('.nav');
   appScreenEls.forEach((el) => {
     el.style.display = isVisible ? '' : 'none';
   });
@@ -21,6 +26,8 @@ function setMainAppVisible(isVisible) {
 }
 
 function showAuthOnly() {
+  const onboardingEl = getOnboardingEl();
+  const authModalEl = getAuthModalEl();
   setMainAppVisible(false);
   if (onboardingEl) onboardingEl.style.display = 'none';
   if (authModalEl) authModalEl.style.display = 'flex';
@@ -28,6 +35,7 @@ function showAuthOnly() {
 }
 
 function showMainApp() {
+  const authModalEl = getAuthModalEl();
   if (authModalEl) authModalEl.style.display = 'none';
   setMainAppVisible(true);
   document.body.style.overflow = '';
@@ -47,6 +55,8 @@ function logAuthDebug(event, session) {
 
 setBootVisibility(false);
 setMainAppVisible(false);
+const onboardingEl = getOnboardingEl();
+const authModalEl = getAuthModalEl();
 if (onboardingEl) onboardingEl.style.display = 'none';
 if (authModalEl) authModalEl.style.display = 'none';
 
@@ -76,6 +86,7 @@ PG.db.auth.getSession()
   .then(async ({ data: { session } }) => {
     logAuthDebug('INITIAL_SESSION', session);
     if (session?.user) {
+      await loadUserEmail();
       await initApp(session.user);
     } else {
       showAuthOnly();
@@ -94,6 +105,7 @@ PG.db.auth.onAuthStateChange(async (event, session) => {
   logAuthDebug(event, session);
   if (!authBootCompleted) return;
   if (event === 'SIGNED_IN') {
+    await loadUserEmail();
     await initApp(session.user);
   } else if (event === 'SIGNED_OUT') {
     showAuthOnly();
@@ -103,7 +115,6 @@ PG.db.auth.onAuthStateChange(async (event, session) => {
 async function initApp(user) {
   const profile = await PG.profile.get();
   const isBrandNewUser = !profile || profile.onboarded !== true;
-  await loadUserEmail();
 
   if (isBrandNewUser) showOnboarding();
   else {
@@ -114,18 +125,11 @@ async function initApp(user) {
 
 async function loadUserEmail() {
   try {
-    const { data, error } = await PG.auth.getUser();
+    const { data, error } = await PG.db.auth.getUser();
     if (error) throw error;
     const email = data?.user?.email || 'Not available';
-    const targets = [
-      document.getElementById('account-email'),
-      document.getElementById('settings-account-email'),
-      document.getElementById('user-email'),
-      document.querySelector('[data-account-email]')
-    ];
-    targets.filter(Boolean).forEach((el) => {
-      el.textContent = email;
-    });
+    const accountEmailEl = document.getElementById('account-email');
+    if (accountEmailEl) accountEmailEl.textContent = email;
   } catch (err) {
     console.error('loadUserEmail:', err);
   }
@@ -138,15 +142,6 @@ async function signOut() {
     window.location.reload();
   }
 }
-
-document.addEventListener('click', async (event) => {
-  const signOutTrigger = event.target.closest(
-    '#sign-out-btn, #settings-signout-btn, [data-action="sign-out"]'
-  );
-  if (!signOutTrigger) return;
-  event.preventDefault();
-  await signOut();
-});
 // ===================== TRANSLATIONS =====================
 const translations = {
     en: {
@@ -859,6 +854,7 @@ function obNext(step) {
 
 function showOnboarding() {
     const onboarding=document.getElementById('onboarding');
+    const authModalEl=getAuthModalEl();
     setMainAppVisible(false);
     if(onboarding)onboarding.style.display='flex';
     if(authModalEl)authModalEl.style.display='none';
