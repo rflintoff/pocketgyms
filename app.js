@@ -1,117 +1,4 @@
 // ─── AUTH BOOT ────────────────────────────────────────────────────────────────
-let isSignUp = false;
-let appBooted = false;
-
-document.addEventListener('DOMContentLoaded', async () => {
-  document.body.style.visibility = 'hidden';
-  try {
-    const hashParams = new URLSearchParams(window.location.hash.replace('#', '?'));
-    if (hashParams.get('access_token')) {
-      await PG.db.auth.setSession({
-        access_token: hashParams.get('access_token'),
-        refresh_token: hashParams.get('refresh_token')
-      });
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-  } catch(e) {}
-  const { data: { session } } = await PG.db.auth.getSession();
-  document.body.style.visibility = 'visible';
-  if (session?.user) {
-    appBooted = true;
-    document.getElementById('auth-modal').style.display = 'none';
-    await loadUserEmail();
-    await initApp(session.user);
-  } else {
-    document.getElementById('auth-modal').style.display = 'flex';
-    document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = 'none');
-    document.getElementById('onboarding').style.display = 'none';
-  }
-});
-
-function recoverFromBootError(err, source) {
-  console.error(`[Boot Error:${source}]`, err);
-  document.body.style.visibility = 'visible';
-  const authModal = document.getElementById('auth-modal');
-  if (authModal) authModal.style.display = 'flex';
-  document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = 'none');
-}
-
-PG.db.auth.onAuthStateChange(async (event, session) => {
-  try {
-    if (event === 'SIGNED_IN' && !appBooted) {
-      appBooted = true;
-      document.getElementById('auth-modal').style.display = 'none';
-      await loadUserEmail();
-      await initApp(session.user);
-    } else if (event === 'SIGNED_OUT') {
-      appBooted = false;
-      document.getElementById('auth-modal').style.display = 'flex';
-      document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = 'none');
-      document.getElementById('onboarding').style.display = 'none';
-      document.body.style.visibility = 'visible';
-    }
-  } catch (err) {
-    recoverFromBootError(err, 'AuthStateChange');
-  }
-});
-
-function toggleAuthMode() {
-  isSignUp = !isSignUp;
-  document.getElementById('auth-toggle-btn').textContent =
-    isSignUp ? 'Have an account? Sign in' : 'No account? Sign up';
-  document.getElementById('auth-submit-btn').textContent = isSignUp ? 'Sign Up' : 'Sign In';
-}
-
-async function handleEmailAuth() {
-  const email = document.getElementById('auth-email').value.trim();
-  const password = document.getElementById('auth-password').value;
-  const errEl = document.getElementById('auth-error');
-  errEl.style.display = 'none';
-  const fn = isSignUp ? PG.auth.signUpEmail : PG.auth.signInEmail;
-  const { error } = await fn(email, password);
-  if (error) {
-    errEl.textContent = error.message;
-    errEl.style.display = 'block';
-  }
-}
-
-async function initApp(user) {
-  try {
-    const profile = await PG.profile.get();
-    const isOnboarded = profile && profile.onboarded === true;
-    document.getElementById('onboarding').style.display = 'none';
-    document.getElementById('auth-modal').style.display = 'none';
-    if (isOnboarded) {
-      document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = '');
-      await loadFromStorage();
-      document.body.style.visibility = 'visible';
-    } else {
-      showOnboarding();
-      document.body.style.visibility = 'visible';
-    }
-  } catch (err) {
-    recoverFromBootError(err, 'initApp');
-  }
-}
-
-async function loadUserEmail() {
-  try {
-    const { data } = await PG.db.auth.getUser();
-    const email = data?.user?.email || '';
-    const el = document.getElementById('account-email');
-    if (el) el.textContent = email;
-  } catch (err) {
-    console.error('loadUserEmail:', err);
-  }
-}
-
-window.signOut = async function() {
-  appBooted = false;
-  await PG.auth.signOut();
-  document.getElementById('auth-modal').style.display = 'flex';
-  document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = 'none');
-  document.getElementById('onboarding').style.display = 'none';
-};
 // ===================== TRANSLATIONS =====================
 const translations = {
     en: {
@@ -684,7 +571,7 @@ const exerciseDB = {
     Abs: {gym:['Plank','Crunch','Bicycle Crunch','Leg Raise','Hanging Leg Raise','Cable Crunch','Ab Wheel','Russian Twist','Cable Woodchop'],home:['Plank','Crunch','Bicycle Crunch','Leg Raise','Mountain Climber','Ab Wheel','Hollow Hold','V-Up','Flutter Kick','Reverse Crunch']}
 };
 
-const supplementsList = ['Creatine','Whey Protein','Vitamin D','Omega 3','Multivitamin','Pre-Workout','Magnesium'];
+const defaultSupplements = ['Whey Protein','Creatine','Multivitamin','Vitamin D','Omega 3','Magnesium','Pre-workout','Caffeine','BCAAs','Zinc'];
 const mealPresets = ['Breakfast','Lunch','Dinner','Snack','Pre-Workout','Post-Workout'];
 
 // ===================== STATE =====================
@@ -746,9 +633,6 @@ function applyTranslations() {
     set('lbl-steps-today','stepsToday');set('lbl-water','waterLitres');
     set('txt-save-sw','save');set('txt-supplements','supplements');
     set('filter-all','allFoods');set('txt-add-to-meal','addToMeal');set('lbl-portion','portion');
-    // Supplements translated
-    const suppNames=[t('supp_creatine'),t('supp_whey'),t('supp_vitd'),t('supp_omega'),t('supp_multi'),t('supp_pre'),t('supp_mag')];
-    suppNames.forEach((name,i)=>{supplementsList[i]=name;});
     renderSupplements();
     // Progress
     set('txt-current-phase','currentPhase');set('txt-phase-history','phaseHistory');
@@ -1760,33 +1644,58 @@ async function loadNutrition() {
 }
 
 async function renderSupplements() {
-    const today=new Date().toLocaleDateString('en-GB');
     const nutritionData=await PG.nutrition.getToday();
-    const supplementsState=(nutritionData?.supplements&&typeof nutritionData.supplements==='object')?nutritionData.supplements:{};
-    const done=Array.isArray(supplementsState[today])?supplementsState[today]:[];
+    const savedSupplements=Array.isArray(nutritionData?.supplements)?nutritionData.supplements:[];
+    const takenMap=new Map(savedSupplements.filter(s=>s&&s.name).map(s=>[s.name, !!s.taken]));
     const list=document.getElementById('supplement-list');if(!list)return;
-    list.innerHTML=supplementsList.map((s,i)=>{
-        const checked=done.includes(s);
-        return `<label class="supplement-item"><span class="supplement-name">${s}</span><input type="checkbox" class="supplement-checkbox" ${checked?'checked':''} onchange="toggleSupplement('${String(s).replace(/'/g,"\\'")}')"></label>`;
+    const allSupplements=[...new Set([...(settings.custom_supplements||[]),...defaultSupplements])];
+    list.innerHTML=allSupplements.map((s)=>{
+        const checked=takenMap.get(s)===true;
+        return `<label class="supplement-item"><span class="supplement-name">${s}</span><input type="checkbox" class="supplement-checkbox" ${checked?'checked':''} onchange="toggleSupplement('${String(s).replace(/'/g,"\\'")}', this.checked)"></label>`;
     }).join('');
 }
 
-async function toggleSupplement(name){
-    const today=new Date().toLocaleDateString('en-GB');
+async function toggleSupplement(name, isChecked){
     const nutritionData=await PG.nutrition.getToday();
-    const supplementsState=(nutritionData?.supplements&&typeof nutritionData.supplements==='object')?{...nutritionData.supplements}:{};
-    const done=Array.isArray(supplementsState[today])?[...supplementsState[today]]:[];
-    const existingPos=done.indexOf(name);
-    if(existingPos>=0) done.splice(existingPos,1);
-    else done.push(name);
-    supplementsState[today]=done;
-    const saveResult=await PG.nutrition.save({supplements:supplementsState});
+    const done=Array.isArray(nutritionData?.supplements)?[...nutritionData.supplements]:[];
+    const next=done.filter(s=>s&&s.name!==name);
+    if(isChecked){
+        const now=new Date();
+        const hh=String(now.getHours()).padStart(2,'0');
+        const mm=String(now.getMinutes()).padStart(2,'0');
+        next.push({name,taken:true,time:`${hh}:${mm}`});
+    }
+    const saveResult=await PG.nutrition.save({supplements:next});
     if(saveResult?.ok===false||saveResult?.error){
         showToast('Save failed — please try again','error',3500);
         return;
     }
     await renderSupplements();
     showToast('Supplements updated','success',1400);
+}
+
+async function addCustomSupplement() {
+    const input=document.getElementById('custom-supplement-input');
+    const name=(input?.value||'').trim();
+    if(!name){
+        showToast('Enter a supplement name','error',2000);
+        return;
+    }
+    const existing=Array.isArray(settings.custom_supplements)?[...settings.custom_supplements]:[];
+    if(existing.some(s=>String(s).toLowerCase()===name.toLowerCase())){
+        showToast('Supplement already exists','error',2000);
+        return;
+    }
+    const updated=[...existing,name];
+    const saveResult=await PG.profile.save({custom_supplements:updated});
+    if(saveResult?.ok===false||saveResult?.error){
+        showToast('Save failed — please try again','error',3000);
+        return;
+    }
+    settings.custom_supplements=updated;
+    if(input)input.value='';
+    await renderSupplements();
+    showToast('Custom supplement added','success',1600);
 }
 
 // ===================== HOME =====================
@@ -1956,6 +1865,45 @@ async function updateProgress() {
     }
     renderHistory();
     renderWeightChart();
+    await renderSupplementHistory();
+}
+
+async function renderSupplementHistory() {
+    const container=document.getElementById('supplement-log-grid');
+    if(!container) return;
+    const rows=await PG.nutrition.getAll(14);
+    const dayKeys=[];
+    for(let i=6;i>=0;i--){
+        const d=new Date();
+        d.setDate(d.getDate()-i);
+        dayKeys.push(d.toISOString().split('T')[0]);
+    }
+    const byDate=new Map((Array.isArray(rows)?rows:[]).map(r=>[r.logged_at,r]));
+    const namesSet=new Set([...(defaultSupplements||[]),...((settings.custom_supplements)||[])]);
+    dayKeys.forEach(day=>{
+        const daySupps=byDate.get(day)?.supplements;
+        if(Array.isArray(daySupps)){
+            daySupps.forEach(s=>{ if(s?.name) namesSet.add(s.name); });
+        }
+    });
+    const names=[...namesSet];
+    if(names.length===0){
+        container.innerHTML='<p style="color:var(--text-muted);font-size:12px;">No supplement logs yet.</p>';
+        return;
+    }
+    const headers=dayKeys.map(day=>{
+        const d=new Date(day);
+        return `<th>${d.toLocaleDateString('en-GB',{day:'2-digit',month:'2-digit'})}</th>`;
+    }).join('');
+    const body=names.map(name=>{
+        const cells=dayKeys.map(day=>{
+            const daySupps=byDate.get(day)?.supplements;
+            const taken=Array.isArray(daySupps)&&daySupps.some(s=>s&&s.name===name&&s.taken===true);
+            return `<td>${taken?'✓':'✕'}</td>`;
+        }).join('');
+        return `<tr><td>${name}</td>${cells}</tr>`;
+    }).join('');
+    container.innerHTML=`<div class="supplement-log-grid"><table class="supplement-log-table"><thead><tr><th>Supplement</th>${headers}</tr></thead><tbody>${body}</tbody></table></div>`;
 }
 
 async function completePhase() {
@@ -2391,12 +2339,14 @@ async function loadFromStorage() {
         activity:profile.activity_level??profile.activity??1.55,
         calTarget:profile.calorie_target??profile.calTarget??2000,
         proteinTarget:profile.protein_target??profile.proteinTarget??150,
-        stepsTarget:profile.steps_target??profile.stepsTarget??8000
+        stepsTarget:profile.steps_target??profile.stepsTarget??8000,
+        custom_supplements:Array.isArray(profile.custom_supplements)?profile.custom_supplements:[]
     };
     selectedLang=settings.language||'en';
     if(profile.onboarded)document.getElementById('onboarding').style.display='none';
     populateSettingsFields(settings);
     applyTranslations();checkBadges();updateHome();
+    await renderSupplements();
 }
 // ===================== PROGRAMME TEMPLATES =====================
 const programmeTemplates = {

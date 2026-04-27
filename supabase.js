@@ -8,7 +8,7 @@ const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const PROFILE_COLUMNS = new Set([
   'id','name','goal','training_env','dietary_pref','gender','age','height_cm','weight_kg','target_weight_kg',
   'activity_level','units','language','dark_mode','tdee','calorie_target','protein_target','steps_target',
-  'premium_status','programme_codes','onboarded','badges','created_at','updated_at'
+  'premium_status','programme_codes','custom_supplements','onboarded','badges','created_at','updated_at'
 ]);
 const WORKOUT_COLUMNS = new Set(['category','routine_name','duration_seconds','notes','exercises','is_rest_day','logged_at']);
 const CARDIO_COLUMNS = new Set(['type','duration_minutes','distance_km','intensity','notes','logged_at']);
@@ -215,6 +215,17 @@ async function getTodayNutrition() {
   return data;
 }
 
+async function getNutritionLogs(limit = 30) {
+  const user = await getUser();
+  if (!user) return [];
+  const { data } = await db.from('nutrition_logs')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('logged_at', { ascending: false })
+    .limit(limit);
+  return data || [];
+}
+
 async function saveNutrition(nutritionData) {
   const user = await getUser();
   if (!user) return { ok: false, error: { message: 'No authenticated user' } };
@@ -329,7 +340,7 @@ window.PG = {
   profile: { get: getProfile, save: saveProfile },
   workouts: { save: saveWorkout, getAll: getWorkouts, getToday: getTodayWorkout },
   cardio: { save: saveCardio, getAll: getCardioSessions },
-  nutrition: { getToday: getTodayNutrition, save: saveNutrition },
+  nutrition: { getToday: getTodayNutrition, getAll: getNutritionLogs, save: saveNutrition },
   progress: { save: saveProgressLog, getAll: getProgressLogs },
   routines: { getAll: getRoutines, save: saveRoutine, delete: deleteRoutine }
 };
