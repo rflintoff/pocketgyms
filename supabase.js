@@ -49,10 +49,8 @@ async function getProfile() {
 async function saveProfile(updates) {
   const user = await getUser();
   if (!user) return { ok: false, error: { message: 'No authenticated user' } };
-  if (updates.height_cm !== undefined) updates.height_cm = isNaN(parseFloat(updates.height_cm)) ? null : parseFloat(updates.height_cm);
-  if (updates.weight_kg !== undefined) updates.weight_kg = isNaN(parseFloat(updates.weight_kg)) ? null : parseFloat(updates.weight_kg);
-  if (updates.target_weight_kg !== undefined) updates.target_weight_kg = isNaN(parseFloat(updates.target_weight_kg)) ? null : parseFloat(updates.target_weight_kg);
-  if (updates.age !== undefined) updates.age = isNaN(parseInt(updates.age)) ? null : parseInt(updates.age);
+  
+  // Rename fields to match database columns
   if (updates.activity !== undefined) { updates.activity_level = updates.activity; delete updates.activity; }
   if (updates.darkMode !== undefined) { updates.dark_mode = updates.darkMode; delete updates.darkMode; }
   if (updates.diet !== undefined) { updates.dietary_pref = updates.diet; delete updates.diet; }
@@ -60,14 +58,19 @@ async function saveProfile(updates) {
   if (updates.height !== undefined) { updates.height_cm = updates.height; delete updates.height; }
   if (updates.targetWeight !== undefined) { updates.target_weight_kg = updates.targetWeight; delete updates.targetWeight; }
   if (updates.weight !== undefined) { updates.weight_kg = updates.weight; delete updates.weight; }
+
+  // Sanitize and convert values
+  if (updates.height_cm !== undefined) updates.height_cm = isNaN(parseFloat(updates.height_cm)) ? null : parseFloat(updates.height_cm);
+  if (updates.weight_kg !== undefined) updates.weight_kg = isNaN(parseFloat(updates.weight_kg)) ? null : parseFloat(updates.weight_kg);
+  if (updates.target_weight_kg !== undefined) updates.target_weight_kg = isNaN(parseFloat(updates.target_weight_kg)) ? null : parseFloat(updates.target_weight_kg);
+  if (updates.age !== undefined) updates.age = isNaN(parseInt(updates.age)) ? null : parseInt(updates.age);
   if (updates.dark_mode !== undefined) updates.dark_mode = updates.dark_mode === 'dark' || updates.dark_mode === true;
-if (updates.height_cm !== undefined) updates.height_cm = isNaN(parseFloat(updates.height_cm)) ? null : parseFloat(updates.height_cm);
-if (updates.weight_kg !== undefined) updates.weight_kg = isNaN(parseFloat(updates.weight_kg)) ? null : parseFloat(updates.weight_kg);
-if (updates.target_weight_kg !== undefined) updates.target_weight_kg = isNaN(parseFloat(updates.target_weight_kg)) ? null : parseFloat(updates.target_weight_kg);
-if (updates.activity_level !== undefined) {
-  const actMap = { 1.2: 'sedentary', 1.375: 'lightly_active', 1.55: 'moderately_active', 1.725: 'very_active' };
-  updates.activity_level = actMap[updates.activity_level] || String(updates.activity_level);
-}
+  if (updates.units !== undefined) updates.units = (updates.units === 'kg' || updates.units === 'kg / km') ? 'metric' : 'imperial';
+  if (updates.activity_level !== undefined && typeof updates.activity_level === 'number') {
+    const actMap = { 1.2: 'sedentary', 1.375: 'lightly_active', 1.55: 'moderately_active', 1.725: 'very_active' };
+    updates.activity_level = actMap[updates.activity_level] || 'moderately_active';
+  }
+
   const payload = { id: user.id, ...updates, updated_at: new Date().toISOString() };
   const { error } = await db.from('profiles').upsert(payload, { onConflict: 'id' });
   if (error) {
@@ -76,6 +79,7 @@ if (updates.activity_level !== undefined) {
   }
   return { ok: true, error: null };
 }
+
 
 async function saveWorkout(workoutData) {
   const user = await getUser();
