@@ -23,13 +23,27 @@ async function handleEmailAuth() {
   }
 }
 
-PG.db.auth.onAuthStateChange(async (event, session) => {
+PG.db.auth.getSession().then(async ({ data: { session } }) => {
   if (session?.user) {
     document.getElementById('auth-modal').style.display = 'none';
     document.querySelector('.header') && (document.querySelector('.header').style.display = '');
     document.querySelector('.nav') && (document.querySelector('.nav').style.display = '');
     await initApp(session.user);
   } else {
+    document.getElementById('auth-modal').style.display = 'flex';
+    document.getElementById('onboarding').style.display = 'none';
+    document.querySelector('.header') && (document.querySelector('.header').style.display = 'none');
+    document.querySelector('.nav') && (document.querySelector('.nav').style.display = 'none');
+  }
+});
+
+PG.db.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'SIGNED_IN') {
+    document.getElementById('auth-modal').style.display = 'none';
+    document.querySelector('.header') && (document.querySelector('.header').style.display = '');
+    document.querySelector('.nav') && (document.querySelector('.nav').style.display = '');
+    await initApp(session.user);
+  } else if (event === 'SIGNED_OUT') {
     document.getElementById('auth-modal').style.display = 'flex';
     document.getElementById('onboarding').style.display = 'none';
     document.querySelector('.header') && (document.querySelector('.header').style.display = 'none');
@@ -770,9 +784,11 @@ async function fastTrack() {
     settings={name:'',goal:'fitness',environment:'gym',diet:'standard',weight:0,targetWeight:0,
         calTarget:2000,proteinTarget:150,stepsTarget:8000,language:selectedLang,
         phaseName:'Phase 1',phaseStartDate:new Date().toLocaleDateString('en-GB'),
-        phaseDuration:56,trainingDays:4,units:'kg'};
+        phaseDuration:56,trainingDays:4,units:'kg',onboarded:true};
     await PG.profile.save(settings);
-    await PG.profile.save({onboarded:true});
+    const onboarding=document.getElementById('onboarding');if(onboarding)onboarding.style.display='none';
+    document.querySelector('.header') && (document.querySelector('.header').style.display = '');
+    document.querySelector('.nav') && (document.querySelector('.nav').style.display = '');
     await loadFromStorage();
 }
 
@@ -826,9 +842,11 @@ async function completeOnboarding() {
         diet:document.getElementById('ob-diet').value,
         activity,tdee,calTarget,proteinTarget,stepsTarget:8000,
         phaseName:'Phase 1',phaseStartDate:new Date().toLocaleDateString('en-GB'),
-        phaseDuration:56,trainingDays:4,units:selectedWeightUnit,language:selectedLang};
+        phaseDuration:56,trainingDays:4,units:selectedWeightUnit,language:selectedLang,onboarded:true};
     await PG.profile.save(settings);
-    await PG.profile.save({onboarded:true});
+    const onboarding=document.getElementById('onboarding');if(onboarding)onboarding.style.display='none';
+    document.querySelector('.header') && (document.querySelector('.header').style.display = '');
+    document.querySelector('.nav') && (document.querySelector('.nav').style.display = '');
     await loadFromStorage();
 }
 
