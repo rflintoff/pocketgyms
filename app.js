@@ -53,6 +53,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   } catch (err) {
     recoverFromBootError(err, 'DOMContentLoaded');
   }
+  setTimeout(() => {
+    document.body.style.visibility = 'visible';
+  }, 3000);
 });
 
 PG.db.auth.onAuthStateChange(async (event, session) => {
@@ -67,6 +70,7 @@ PG.db.auth.onAuthStateChange(async (event, session) => {
       document.getElementById('auth-modal').style.display = 'flex';
       document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = 'none');
       document.getElementById('onboarding').style.display = 'none';
+      document.body.style.visibility = 'visible';
     }
   } catch (err) {
     recoverFromBootError(err, 'AuthStateChange');
