@@ -4,12 +4,14 @@ let appBooted = false;
 
 function recoverFromBootError(err, source) {
   console.error(`[Boot Error:${source}]`, err);
+  document.body.style.visibility = 'visible';
   const authModal = document.getElementById('auth-modal');
   if (authModal) authModal.style.display = 'flex';
   document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = 'none');
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+  document.body.style.visibility = 'hidden';
   try {
     try {
       const hashParams = new URLSearchParams(window.location.hash.replace('#', '?'));
@@ -46,6 +48,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('auth-modal').style.display = 'flex';
       document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = 'none');
       document.getElementById('onboarding').style.display = 'none';
+      document.body.style.visibility = 'visible';
     }
   } catch (err) {
     recoverFromBootError(err, 'DOMContentLoaded');
@@ -99,8 +102,10 @@ async function initApp(user) {
     if (isOnboarded) {
       document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = '');
       await loadFromStorage();
+      document.body.style.visibility = 'visible';
     } else {
       showOnboarding();
+      document.body.style.visibility = 'visible';
     }
   } catch (err) {
     recoverFromBootError(err, 'initApp');
