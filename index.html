@@ -420,8 +420,8 @@
         </div>
     </div>
 
-    <div id="meals-container"></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+    <div id="meals-container" class="meals-container"></div>
+    <div class="nutrition-meals-footer">
         <button class="btn" onclick="addMeal()" id="txt-add-meal">+ Add Meal</button>
         <button class="btn-outline" onclick="loadMealTemplate()">📋 Load Template</button>
     </div>
@@ -435,7 +435,7 @@
   
     <div class="card" id="supplements-card" style="display:block;">
         <h2 id="txt-supplements">SUPPLEMENTS</h2>
-        <div id="supplement-list"></div>
+        <div id="supplement-list" class="supplement-list"></div>
         <div class="supplement-add-row">
             <input type="text" id="custom-supplement-input" placeholder="Add custom supplement">
             <button class="btn-small" onclick="addCustomSupplement()">Add</button>
@@ -475,6 +475,19 @@
 
 <!-- PROGRESS SCREEN -->
 <div class="screen" id="screen-progress" style="display:none;">
+    <div class="card">
+        <h2 id="txt-weekly-checkin">WEEKLY CHECK-IN</h2>
+        <label id="lbl-checkin-weight">Weight this week (kg)</label>
+        <input type="number" id="checkin-weight" placeholder="e.g. 80">
+        <label id="lbl-checkin-energy">Energy levels (1-10)</label>
+        <input type="number" id="checkin-energy" placeholder="e.g. 7" min="1" max="10">
+        <label id="lbl-checkin-notes">Notes</label>
+        <input type="text" id="checkin-notes" placeholder="How did this week go?">
+        <button class="btn" onclick="saveCheckin()" id="txt-save-checkin">Save Check-In</button>
+
+        <div id="checkin-history"></div>
+    </div>
+
     <div class="card">
         <h2 id="txt-current-phase">CURRENT PHASE</h2>
         <div class="stat-row"><span class="stat-label" id="txt-phase-name-label">Phase</span><span class="stat-value" id="prog-phase-name">—</span></div>
@@ -523,19 +536,6 @@
         <canvas id="weight-chart" width="320" height="180" style="width:100%;height:180px;"></canvas>
         <p style="color:var(--text-muted);font-size:12px;margin-top:8px;">Based on your weekly check-ins</p>
     </div>
-    <div class="card">
-        <h2 id="txt-weekly-checkin">WEEKLY CHECK-IN</h2>
-        <label id="lbl-checkin-weight">Weight this week (kg)</label>
-        <input type="number" id="checkin-weight" placeholder="e.g. 80">
-        <label id="lbl-checkin-energy">Energy levels (1-10)</label>
-        <input type="number" id="checkin-energy" placeholder="e.g. 7" min="1" max="10">
-        <label id="lbl-checkin-notes">Notes</label>
-        <input type="text" id="checkin-notes" placeholder="How did this week go?">
-        <button class="btn" onclick="saveCheckin()" id="txt-save-checkin">Save Check-In</button>
-
-        <div id="checkin-history"></div>
-    </div>
-
     <div class="card">
         <h2 id="txt-workout-history">WORKOUT HISTORY</h2>
         <div id="history-list"><p style="color:var(--text-muted);">No sessions logged yet.</p></div>

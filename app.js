@@ -41,7 +41,8 @@ const translations = {
         addMeal:'+ Add Meal', mealName:'Meal name:',
         stepsWater:'STEPS & WATER', stepsToday:'Steps Today', waterLitres:'Water (litres)',
         save:'Save', supplements:'SUPPLEMENTS',
-        addFood:'+ Add Food', portion:'Portion (g or ml)', addToMeal:'Add to Meal',
+        addFood:'Add Food', portion:'Portion (g or ml)', addToMeal:'Add to Meal',
+        saveAsTemplate:'Save as Template', removeMeal:'Remove Meal',
         allFoods:'All', noFoodsFound:'No foods found',
         supp_creatine:'Creatine', supp_whey:'Whey Protein', supp_vitd:'Vitamin D',
         supp_omega:'Omega 3', supp_multi:'Multivitamin', supp_pre:'Pre-Workout', supp_mag:'Magnesium',
@@ -130,7 +131,8 @@ const translations = {
         addMeal:'+ Adicionar Refeição', mealName:'Nome da refeição:',
         stepsWater:'PASSOS E ÁGUA', stepsToday:'Passos Hoje', waterLitres:'Água (litros)',
         save:'Salvar', supplements:'SUPLEMENTOS',
-        addFood:'+ Adicionar Alimento', portion:'Porção (g ou ml)', addToMeal:'Adicionar à Refeição',
+        addFood:'Adicionar alimento', portion:'Porção (g ou ml)', addToMeal:'Adicionar à Refeição',
+        saveAsTemplate:'Guardar como modelo', removeMeal:'Remover refeição',
         allFoods:'Todos', noFoodsFound:'Nenhum alimento encontrado',
         supp_creatine:'Creatina', supp_whey:'Proteína Whey', supp_vitd:'Vitamina D',
         supp_omega:'Ômega 3', supp_multi:'Multivitamínico', supp_pre:'Pré-Treino', supp_mag:'Magnésio',
@@ -219,7 +221,8 @@ const translations = {
         addMeal:'+ Añadir Comida', mealName:'Nombre de la comida:',
         stepsWater:'PASOS Y AGUA', stepsToday:'Pasos Hoy', waterLitres:'Agua (litros)',
         save:'Guardar', supplements:'SUPLEMENTOS',
-        addFood:'+ Añadir Alimento', portion:'Porción (g o ml)', addToMeal:'Añadir a Comida',
+        addFood:'Añadir alimento', portion:'Porción (g o ml)', addToMeal:'Añadir a Comida',
+        saveAsTemplate:'Guardar como plantilla', removeMeal:'Eliminar comida',
         allFoods:'Todo', noFoodsFound:'No se encontraron alimentos',
         supp_creatine:'Creatina', supp_whey:'Proteína Whey', supp_vitd:'Vitamina D',
         supp_omega:'Omega 3', supp_multi:'Multivitamínico', supp_pre:'Pre-Entreno', supp_mag:'Magnesio',
@@ -308,7 +311,8 @@ const translations = {
         addMeal:'+ Ajouter Repas', mealName:'Nom du repas:',
         stepsWater:'PAS ET EAU', stepsToday:"Pas Aujourd'hui", waterLitres:'Eau (litres)',
         save:'Sauvegarder', supplements:'SUPPLÉMENTS',
-        addFood:'+ Ajouter Aliment', portion:'Portion (g ou ml)', addToMeal:'Ajouter au Repas',
+        addFood:'Ajouter un aliment', portion:'Portion (g ou ml)', addToMeal:'Ajouter au Repas',
+        saveAsTemplate:'Enregistrer comme modèle', removeMeal:'Supprimer le repas',
         allFoods:'Tout', noFoodsFound:'Aucun aliment trouvé',
         supp_creatine:'Créatine', supp_whey:'Protéine Whey', supp_vitd:'Vitamine D',
         supp_omega:'Oméga 3', supp_multi:'Multivitamine', supp_pre:'Pré-Entraînement', supp_mag:'Magnésium',
@@ -397,7 +401,8 @@ const translations = {
         addMeal:'+ Mahlzeit Hinzufügen', mealName:'Mahlzeit Name:',
         stepsWater:'SCHRITTE & WASSER', stepsToday:'Schritte Heute', waterLitres:'Wasser (Liter)',
         save:'Speichern', supplements:'NAHRUNGSERGÄNZUNG',
-        addFood:'+ Lebensmittel Hinzufügen', portion:'Portion (g oder ml)', addToMeal:'Zur Mahlzeit Hinzufügen',
+        addFood:'Lebensmittel hinzufügen', portion:'Portion (g oder ml)', addToMeal:'Zur Mahlzeit Hinzufügen',
+        saveAsTemplate:'Als Vorlage speichern', removeMeal:'Mahlzeit entfernen',
         allFoods:'Alle', noFoodsFound:'Keine Lebensmittel gefunden',
         supp_creatine:'Kreatin', supp_whey:'Whey Protein', supp_vitd:'Vitamin D',
         supp_omega:'Omega 3', supp_multi:'Multivitamin', supp_pre:'Pre-Workout', supp_mag:'Magnesium',
@@ -572,6 +577,22 @@ const exerciseDB = {
 };
 
 const defaultSupplements = ['Whey Protein','Creatine','Multivitamin','Vitamin D','Omega 3','Magnesium','Pre-workout','Caffeine','BCAAs','Zinc'];
+const supplementDefaultUnits = {
+    'Whey Protein':'g','Creatine':'g','Magnesium':'mg','Pre-workout':'g','BCAAs':'g','Caffeine':'mg',
+    'Multivitamin':'tablets','Vitamin D':'tablets','Omega 3':'tablets','Zinc':'tablets'
+};
+const supplementUnitValues = ['g','mg','ml','tablets','scoops'];
+function getDefaultSupplementUnit(name){
+    if(name&&Object.prototype.hasOwnProperty.call(supplementDefaultUnits,name)) return supplementDefaultUnits[name];
+    return 'g';
+}
+function supplementUnitSelectHtml(selectedUnit){
+    const sel=supplementUnitValues.includes(selectedUnit)?selectedUnit:'g';
+    return supplementUnitValues.map(u=>`<option value="${u}"${u===sel?' selected':''}>${u}</option>`).join('');
+}
+function escapeHtmlText(str){
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
 let renderedSupplements = [];
 const mealPresets = ['Breakfast','Lunch','Dinner','Snack','Pre-Workout','Post-Workout'];
 
@@ -1381,11 +1402,11 @@ function renderMeals() {
         const totalCarbs=foods.reduce((s,f)=>s+(Number(f.carbs)||0),0).toFixed(1);
         const totalFat=foods.reduce((s,f)=>s+(Number(f.fat)||0),0).toFixed(1);
         const foodRows=foods.map((f,fi)=>`<div class="food-entry"><div class="food-entry-info"><div class="food-entry-name">${f.name} (${f.portion}${f.isLiquid?'ml':'g'})</div><div class="food-entry-macros">P: ${f.protein}g • C: ${f.carbs}g • F: ${f.fat}g</div></div><div class="food-entry-cals">${f.cal} kcal</div><div class="food-entry-delete" onclick="deleteFoodFromMeal(${mealIndex},${fi})">✕</div></div>`).join('');
-        return `<div class="meal-block"><div class="meal-header"><div><div class="meal-name">${meal.name}</div></div><div style="display:flex;gap:6px;flex-wrap:wrap;">
-    <button class="btn-small" onclick="openFoodModal(${mealIndex})">+ Add Food</button>
-    <button class="btn-small" onclick="currentMealIndex=${mealIndex};saveMealTemplate()" style="background:#FEF3C7;color:#92400E;">📋 Save as Template</button>
-    <button class="btn-small" onclick="deleteMeal(${mealIndex})" style="background:#FEF2F2;color:var(--danger);">🗑 Remove Meal</button>
-</div></div><div class="meal-food-list">${foodRows}</div><div class="meal-totals-row">Total: ${totalCal} kcal • P:${totalProt}g • C:${totalCarbs}g • F:${totalFat}g</div></div>`;
+        return `<div class="meal-block"><div class="meal-header"><div class="meal-name">${meal.name}</div></div><div class="meal-actions" role="group" aria-label="Meal actions">
+    <button type="button" class="meal-action-btn meal-action-btn--primary" onclick="openFoodModal(${mealIndex})">${t('addFood')}</button>
+    <button type="button" class="meal-action-btn meal-action-btn--template" onclick="currentMealIndex=${mealIndex};saveMealTemplate()">${t('saveAsTemplate')}</button>
+    <button type="button" class="meal-action-btn meal-action-btn--remove" onclick="deleteMeal(${mealIndex})">${t('removeMeal')}</button>
+</div><div class="meal-food-list">${foodRows}</div><div class="meal-totals-row">Total: ${totalCal} kcal • P:${totalProt}g • C:${totalCarbs}g • F:${totalFat}g</div></div>`;
     }).join('');
 }
 
@@ -1655,9 +1676,12 @@ async function renderSupplements() {
         const saved=supplementMap.get(s)||{};
         const checked=saved.taken===true;
         const hasQty=saved.quantity!==undefined&&saved.quantity!==null&&saved.quantity!=='';
-        const quantityVal=hasQty?saved.quantity:'';
-        const unitVal=saved.unit||'tablets';
-        return `<div class="supplement-item"><span class="supplement-name">${s}</span><input type="number" class="supplement-qty" id="supp-qty-${i}" placeholder="g / mg / ml" value="${quantityVal}"><select class="supplement-unit" id="supp-unit-${i}"><option value="g" ${unitVal==='g'?'selected':''}>g</option><option value="mg" ${unitVal==='mg'?'selected':''}>mg</option><option value="ml" ${unitVal==='ml'?'selected':''}>ml</option><option value="tablets" ${unitVal==='tablets'?'selected':''}>tablets</option><option value="scoops" ${unitVal==='scoops'?'selected':''}>scoops</option></select><input type="checkbox" class="supplement-checkbox" id="supp-taken-${i}" ${checked?'checked':''} onclick="saveSupplementByIndex(${i})"><button type="button" class="btn-small supplement-save" onclick="saveSupplementByIndex(${i})">Save</button></div>`;
+        const qn=Number(saved.quantity);
+        const quantityVal=hasQty&&Number.isFinite(qn)?String(qn):'';
+        const savedUnit=saved.unit&&supplementUnitValues.includes(saved.unit)?saved.unit:null;
+        const unitVal=savedUnit||getDefaultSupplementUnit(s);
+        const nameSafe=escapeHtmlText(s);
+        return `<div class="supplement-item"><div class="supplement-item-name">${nameSafe}</div><div class="supplement-item-controls"><input type="number" class="supplement-qty" id="supp-qty-${i}" placeholder="Qty" inputmode="decimal" value="${quantityVal}"><select class="supplement-unit" id="supp-unit-${i}">${supplementUnitSelectHtml(unitVal)}</select><span class="supplement-taken-wrap"><input type="checkbox" class="supplement-checkbox" id="supp-taken-${i}" title="Taken" ${checked?'checked':''} onclick="saveSupplementByIndex(${i})"></span><button type="button" class="supplement-save" onclick="saveSupplementByIndex(${i})">${t('save')}</button></div></div>`;
     }).join('');
 }
 
@@ -1677,7 +1701,9 @@ async function saveSupplementByIndex(index){
         const qtyRaw=(qtyEl.value||'').trim();
         const qtyParsed=parseFloat(qtyRaw);
         const qty=Number.isFinite(qtyParsed)?qtyParsed:null;
-        next.push({name,taken:true,quantity:qty,unit:unitEl.value||'tablets'});
+        const u=(unitEl.value||'').trim();
+        const unit=supplementUnitValues.includes(u)?u:getDefaultSupplementUnit(name);
+        next.push({name,taken:true,quantity:qty,unit});
     });
     const saveResult=await PG.nutrition.save({supplements:next});
     if(saveResult?.ok===false||saveResult?.error){
