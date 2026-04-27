@@ -2,6 +2,32 @@
 let isSignUp = false;
 let appBooted = false;
 
+document.addEventListener('DOMContentLoaded', async () => {
+  document.body.style.visibility = 'hidden';
+  try {
+    const hashParams = new URLSearchParams(window.location.hash.replace('#', '?'));
+    if (hashParams.get('access_token')) {
+      await PG.db.auth.setSession({
+        access_token: hashParams.get('access_token'),
+        refresh_token: hashParams.get('refresh_token')
+      });
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  } catch(e) {}
+  const { data: { session } } = await PG.db.auth.getSession();
+  document.body.style.visibility = 'visible';
+  if (session?.user) {
+    appBooted = true;
+    document.getElementById('auth-modal').style.display = 'none';
+    await loadUserEmail();
+    await initApp(session.user);
+  } else {
+    document.getElementById('auth-modal').style.display = 'flex';
+    document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = 'none');
+    document.getElementById('onboarding').style.display = 'none';
+  }
+});
+
 function recoverFromBootError(err, source) {
   console.error(`[Boot Error:${source}]`, err);
   document.body.style.visibility = 'visible';
@@ -9,54 +35,6 @@ function recoverFromBootError(err, source) {
   if (authModal) authModal.style.display = 'flex';
   document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = 'none');
 }
-
-document.addEventListener('DOMContentLoaded', async () => {
-  document.body.style.visibility = 'hidden';
-  try {
-    try {
-      const hashParams = new URLSearchParams(window.location.hash.replace('#', '?'));
-      const queryParams = new URLSearchParams(window.location.search);
-      if (hashParams.get('access_token')) {
-        await PG.db.auth.setSession({
-          access_token: hashParams.get('access_token'),
-          refresh_token: hashParams.get('refresh_token')
-        });
-        window.history.replaceState({}, document.title, window.location.pathname);
-      } else if (queryParams.get('code')) {
-        await PG.db.auth.exchangeCodeForSession(queryParams.get('code'));
-        window.history.replaceState({}, document.title, window.location.pathname);
-      }
-    } catch (tokenErr) {
-      console.error('Auth token URL handling failed; continuing with getSession boot:', tokenErr);
-    }
-
-    let session = null;
-    try {
-      const { data } = await PG.db.auth.getSession();
-      session = data?.session || null;
-    } catch (sessionErr) {
-      console.error('getSession failed during boot; continuing as signed out:', sessionErr);
-      session = null;
-    }
-
-    if (session?.user) {
-      appBooted = true;
-      document.getElementById('auth-modal').style.display = 'none';
-      await loadUserEmail();
-      await initApp(session.user);
-    } else {
-      document.getElementById('auth-modal').style.display = 'flex';
-      document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = 'none');
-      document.getElementById('onboarding').style.display = 'none';
-      document.body.style.visibility = 'visible';
-    }
-  } catch (err) {
-    recoverFromBootError(err, 'DOMContentLoaded');
-  }
-  setTimeout(() => {
-    document.body.style.visibility = 'visible';
-  }, 3000);
-});
 
 PG.db.auth.onAuthStateChange(async (event, session) => {
   try {
