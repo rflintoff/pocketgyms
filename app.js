@@ -39,12 +39,13 @@ PG.db.auth.onAuthStateChange(async (event, session) => {
 
 async function initApp(user) {
   const profile = await PG.profile.get();
+  const hasNoName = !profile?.name || String(profile.name).trim() === '';
+  const hasNoGoal = !profile?.goal || String(profile.goal).trim() === '';
+  const isOnboarded = profile?.onboarded === true;
+  const shouldShowOnboarding = !profile || (hasNoName && hasNoGoal && !isOnboarded);
 
-  if (!profile?.goal) {
-    showOnboarding();
-  } else {
-    await loadFromStorage();
-  }
+  if (shouldShowOnboarding) showOnboarding();
+  else await loadFromStorage();
 }
 // ===================== TRANSLATIONS =====================
 const translations = {
@@ -1383,6 +1384,9 @@ async function saveWater() {
 async function loadNutrition() {
     const today=new Date().toLocaleDateString('en-GB');
     const calTarget=settings.calTarget||2000;const proteinTarget=settings.proteinTarget||150;const stepsTarget=settings.stepsTarget||8000;
+    const remainingCaloriesForMacros=Math.max(calTarget-(proteinTarget*4),0);
+    const carbsTarget=settings.carbsTarget||Math.max(Math.round((remainingCaloriesForMacros*0.5)/4),0);
+    const fatTarget=settings.fatTarget||Math.max(Math.round((remainingCaloriesForMacros*0.5)/9),0);
     const calDateEl=document.getElementById('cal-date');if(calDateEl)calDateEl.textContent=today;
     const todayMeals=meals.filter(m=>m.date===today);
     let totalCal=0,totalProtein=0,totalCarbs=0,totalFat=0;
@@ -1409,6 +1413,8 @@ async function loadNutrition() {
     setEl('show-steps',`${steps} / ${stepsTarget}`);setEl('show-water',`${water.toFixed(1)} / 2.5L`);
     setWidth('nut-bar-calories',Math.min((totalCal/calTarget)*100,100));
     setWidth('bar-protein',Math.min((totalProtein/proteinTarget)*100,100));
+    setWidth('bar-carbs',Math.min((totalCarbs/Math.max(carbsTarget,1))*100,100));
+    setWidth('bar-fat',Math.min((totalFat/Math.max(fatTarget,1))*100,100));
     setWidth('bar-steps',Math.min((steps/stepsTarget)*100,100));
     setWidth('bar-water',Math.min((water/2.5)*100,100));
     const hour=new Date().getHours();const expectedCals=Math.round((hour/24)*calTarget);
@@ -1429,6 +1435,9 @@ async function toggleSupplement(index){const today=new Date().toLocaleDateString
 // ===================== HOME =====================
 async function updateHome() {
     const s=settings;const calTarget=s.calTarget||2000;const proteinTarget=s.proteinTarget||150;const stepsTarget=s.stepsTarget||8000;
+    const remainingCaloriesForMacros=Math.max(calTarget-(proteinTarget*4),0);
+    const carbsTarget=s.carbsTarget||Math.max(Math.round((remainingCaloriesForMacros*0.5)/4),0);
+    const fatTarget=s.fatTarget||Math.max(Math.round((remainingCaloriesForMacros*0.5)/9),0);
     if(s.name)document.getElementById('header-greeting').textContent='Hi '+s.name+' 👋';
     if(s.phaseName){
         const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
@@ -1471,6 +1480,8 @@ if(recordEl){const progressEntries=await PG.progress.getAll();recordEl.textConte
     setEl('home-steps',`${steps} / ${stepsTarget}`);setEl('home-water',`${water.toFixed(1)} / 2.5L`);
     setWidth('home-bar-calories',Math.min((cals/calTarget)*100,100));
     setWidth('home-bar-protein',Math.min((protein/proteinTarget)*100,100));
+    setWidth('home-bar-carbs',Math.min((carbs/Math.max(carbsTarget,1))*100,100));
+    setWidth('home-bar-fat',Math.min((fats/Math.max(fatTarget,1))*100,100));
     setWidth('home-bar-steps',Math.min((steps/stepsTarget)*100,100));
     setWidth('home-bar-water',Math.min((water/2.5)*100,100));
     const todayWorkout=workoutHistory.find(w=>w.date===today)||cardioHistory.find(w=>w.date===today);
