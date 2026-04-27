@@ -1657,25 +1657,18 @@ async function renderSupplements() {
         const hasQty=saved.quantity!==undefined&&saved.quantity!==null&&saved.quantity!=='';
         const quantityVal=hasQty?saved.quantity:'';
         const unitVal=saved.unit||'tablets';
-        return `<div class="supplement-item"><span class="supplement-name">${s}</span><input type="number" class="supplement-qty" id="supp-qty-${i}" placeholder="g / mg / ml" value="${quantityVal}" oninput="saveSupplementByIndex(${i})"><select class="supplement-unit" id="supp-unit-${i}" onchange="saveSupplementByIndex(${i})"><option value="g" ${unitVal==='g'?'selected':''}>g</option><option value="mg" ${unitVal==='mg'?'selected':''}>mg</option><option value="ml" ${unitVal==='ml'?'selected':''}>ml</option><option value="tablets" ${unitVal==='tablets'?'selected':''}>tablets</option><option value="scoops" ${unitVal==='scoops'?'selected':''}>scoops</option></select><input type="checkbox" class="supplement-checkbox" id="supp-taken-${i}" ${checked?'checked':''} onchange="saveSupplementByIndex(${i})"></div>`;
+        return `<div class="supplement-item"><span class="supplement-name">${s}</span><input type="number" class="supplement-qty" id="supp-qty-${i}" placeholder="g / mg / ml" value="${quantityVal}"><select class="supplement-unit" id="supp-unit-${i}"><option value="g" ${unitVal==='g'?'selected':''}>g</option><option value="mg" ${unitVal==='mg'?'selected':''}>mg</option><option value="ml" ${unitVal==='ml'?'selected':''}>ml</option><option value="tablets" ${unitVal==='tablets'?'selected':''}>tablets</option><option value="scoops" ${unitVal==='scoops'?'selected':''}>scoops</option></select><input type="checkbox" class="supplement-checkbox" id="supp-taken-${i}" ${checked?'checked':''} onclick="saveSupplementByIndex(${i})"><button type="button" class="btn-small supplement-save" onclick="saveSupplementByIndex(${i})">Save</button></div>`;
     }).join('');
 }
 
 async function saveSupplementByIndex(index){
     if(!Array.isArray(renderedSupplements)||!renderedSupplements[index]) return;
-    const quantityInput=document.getElementById(`supp-qty-${index}`);
-    const unitInput=document.getElementById(`supp-unit-${index}`);
     const takenInput=document.getElementById(`supp-taken-${index}`);
-    if(!quantityInput||!unitInput||!takenInput) return;
-    const taken=takenInput.checked===true;
-    const quantityRaw=(quantityInput.value||'').trim();
-    const parsedQty=parseFloat(quantityRaw);
-    const quantity=Number.isFinite(parsedQty)?parsedQty:null;
-    const unit=unitInput.value||'tablets';
+    if(!takenInput) return;
 
     const nutritionData=await PG.nutrition.getToday();
     const existing=Array.isArray(nutritionData?.supplements)?nutritionData.supplements:[];
-    const next=existing.filter(s=>s&&s.name&&renderedSupplements.includes(s.name)===false);
+    const next=existing.filter(s=>s&&s.name&&!renderedSupplements.includes(s.name));
     renderedSupplements.forEach((name, i)=>{
         const qtyEl=document.getElementById(`supp-qty-${i}`);
         const unitEl=document.getElementById(`supp-unit-${i}`);
@@ -1686,9 +1679,6 @@ async function saveSupplementByIndex(index){
         const qty=Number.isFinite(qtyParsed)?qtyParsed:null;
         next.push({name,taken:true,quantity:qty,unit:unitEl.value||'tablets'});
     });
-    if(taken && !next.some(s=>s.name===renderedSupplements[index])){
-        next.push({name:renderedSupplements[index],taken:true,quantity,unit});
-    }
     const saveResult=await PG.nutrition.save({supplements:next});
     if(saveResult?.ok===false||saveResult?.error){
         showToast('Save failed — please try again','error',3500);
