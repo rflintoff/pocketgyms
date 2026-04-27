@@ -629,37 +629,12 @@
         <button class="btn-outline" onclick="calculatePlates()" id="txt-calc-plates">Calculate Plates</button>
         <div class="plates-result" id="plates-result" style="display:none;"></div>
     </div>
-    <div class="card">
-        <h2>UNLOCK PROGRAMME</h2>
-        <p style="color:var(--text-muted); font-size:13px; margin-bottom:12px;">Have a programme code? Enter it below to unlock your full workout plan.</p>
-        <label>Programme Code</label>
-        <input type="text" id="programme-code" placeholder="e.g. PGBEGIN" style="text-transform:uppercase;">
-        <button class="btn" onclick="unlockProgramme()">🔓 Unlock Programme</button>
-    
-        <!-- TEASER FOR NON BUYERS -->
-        <div style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border);">
-            <div style="color:var(--text-muted); font-size:12px; font-weight:600; margin-bottom:8px;">AVAILABLE PROGRAMMES</div>
-            <div style="background:var(--primary-light); border-radius:10px; padding:12px; margin-bottom:8px;">
-                <div style="font-weight:700; color:var(--text); font-size:13px;">🔒 Beginner's Guide to the Gym</div>
-                <div style="color:var(--text-muted); font-size:12px; margin-top:4px;">4 structured workouts — Push, Pull, Legs, Core</div>
-                <div style="color:var(--primary); font-size:12px; font-weight:600; margin-top:4px;">privategyms.co.uk/beginners-guide — £14.99</div>
-            </div>
-            <div style="background:var(--primary-light); border-radius:10px; padding:12px; margin-bottom:8px;">
-                <div style="font-weight:700; color:var(--text); font-size:13px;">🔒 Fat Loss Programme</div>
-                <div style="color:var(--text-muted); font-size:12px; margin-top:4px;">Gym and home options — structured fat loss</div>
-                <div style="color:var(--primary); font-size:12px; font-weight:600; margin-top:4px;">privategyms.co.uk/fat-loss-programme — £24.99</div>
-            </div>
-            <div style="background:var(--primary-light); border-radius:10px; padding:12px;">
-                <div style="font-weight:700; color:var(--text); font-size:13px;">🔒 Muscle Building Programme</div>
-                <div style="color:var(--text-muted); font-size:12px; margin-top:4px;">Progressive overload — serious size and strength</div>
-                <div style="color:var(--primary); font-size:12px; font-weight:600; margin-top:4px;">privategyms.co.uk/muscle-build-programme — £24.99</div>
-            </div>
-        </div>
-    </div>
     <div class="card" style="margin-top:12px;">
-        <h2>DANGER ZONE</h2>
-        <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px;">Permanently delete all your data. This cannot be undone.</p>
-        <button onclick="resetAllData()" style="background:#FEF2F2;color:var(--danger);border:1px solid var(--danger);border-radius:12px;padding:14px;font-size:14px;font-weight:700;cursor:pointer;width:100%;">🗑 Reset All Data</button>
+        <h2>Reset All Data</h2>
+        <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px;">This will permanently delete all your workout, nutrition and progress data. This cannot be undone.</p>
+        <label>Type RESET to confirm</label>
+        <input type="text" id="reset-confirm-input" placeholder="Type RESET" oninput="handleResetConfirmInput()">
+        <button id="reset-all-data-btn" onclick="resetAllData()" disabled style="background:#FEF2F2;color:var(--danger);border:1px solid var(--danger);border-radius:12px;padding:14px;font-size:14px;font-weight:700;cursor:not-allowed;width:100%;opacity:0.6;">🗑 Reset All Data</button>
     </div>
     <div class="card" style="margin-top:12px;text-align:center;">
         <h2>ABOUT</h2>

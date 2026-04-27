@@ -1784,24 +1784,31 @@ async function loadNutrition() {
 async function renderSupplements() {
     const today=new Date().toLocaleDateString('en-GB');
     const nutritionData=await PG.nutrition.getToday();
-    const doneRaw=nutritionData?.['supplements_'+today]||[];
-    const done=(Array.isArray(doneRaw)?doneRaw:[]).map(v=>Number(v)).filter(Number.isFinite);
+    const supplementsState=(nutritionData?.supplements&&typeof nutritionData.supplements==='object')?nutritionData.supplements:{};
+    const done=Array.isArray(supplementsState[today])?supplementsState[today]:[];
     const list=document.getElementById('supplement-list');if(!list)return;
-    list.innerHTML=supplementsList.map((s,i)=>`<div class="supplement-item"><div class="supplement-name">${s}</div><div class="supplement-check ${done.includes(i)?'done':''}" onclick="toggleSupplement(${i})">${done.includes(i)?'✓':''}</div></div>`).join('');
+    list.innerHTML=supplementsList.map((s,i)=>{
+        const checked=done.includes(s);
+        return `<label class="supplement-item"><span class="supplement-name">${s}</span><input type="checkbox" class="supplement-checkbox" ${checked?'checked':''} onchange="toggleSupplement('${String(s).replace(/'/g,"\\'")}')"></label>`;
+    }).join('');
 }
 
-async function toggleSupplement(index){
+async function toggleSupplement(name){
     const today=new Date().toLocaleDateString('en-GB');
-    const key='supplements_'+today;
     const nutritionData=await PG.nutrition.getToday();
-    const doneRaw=nutritionData?.[key]||[];
-    const done=(Array.isArray(doneRaw)?doneRaw:[]).map(v=>Number(v)).filter(Number.isFinite);
-    const idx=Number(index);
-    const existingPos=done.indexOf(idx);
+    const supplementsState=(nutritionData?.supplements&&typeof nutritionData.supplements==='object')?{...nutritionData.supplements}:{};
+    const done=Array.isArray(supplementsState[today])?[...supplementsState[today]]:[];
+    const existingPos=done.indexOf(name);
     if(existingPos>=0) done.splice(existingPos,1);
-    else done.push(idx);
-    await persistNutritionState('toggleSupplement', {[key]:done});
+    else done.push(name);
+    supplementsState[today]=done;
+    const saveResult=await PG.nutrition.save({supplements:supplementsState});
+    if(saveResult?.ok===false||saveResult?.error){
+        showToast('Save failed — please try again','error',3500);
+        return;
+    }
     await renderSupplements();
+    showToast('Supplements updated','success',1400);
 }
 
 // ===================== HOME =====================
@@ -2590,6 +2597,44 @@ const programmeTemplates = {
 };
 
 // ===================== CODE UNLOCK =====================
+function handleResetConfirmInput() {
+    const input=document.getElementById('reset-confirm-input');
+    const btn=document.getElementById('reset-all-data-btn');
+    if(!input||!btn)return;
+    const enabled=(input.value||'').trim()==='RESET';
+    btn.disabled=!enabled;
+    btn.style.cursor=enabled?'pointer':'not-allowed';
+    btn.style.opacity=enabled?'1':'0.6';
+}
+
+async function resetAllData() {
+    const input=document.getElementById('reset-confirm-input');
+    const confirmValue=(input?.value||'').trim();
+    if(confirmValue!=='RESET'){
+        showToast('Type RESET to confirm','error',2500);
+        return;
+    }
+    if(!confirm('This will permanently delete all data. Continue?')) return;
+    try{
+        const { data }=await PG.db.auth.getUser();
+        const userId=data?.user?.id;
+        if(!userId){
+            showToast('No user session found','error',3000);
+            return;
+        }
+        const tables=['workouts','nutrition_logs','progress_logs','cardio_sessions','routines'];
+        for(const table of tables){
+            const { error }=await PG.db.from(table).delete().eq('user_id',userId);
+            if(error) throw error;
+        }
+        showToast('All data deleted','success',1800);
+        setTimeout(()=>window.location.reload(),900);
+    }catch(err){
+        console.error('resetAllData:',err);
+        showToast('Reset failed — please try again','error',4000);
+    }
+}
+
 async function unlockProgramme() {
     const code = document.getElementById('programme-code').value.trim().toUpperCase();
     const programme = programmeTemplates[code];

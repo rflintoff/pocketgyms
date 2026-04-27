@@ -12,7 +12,7 @@ const PROFILE_COLUMNS = new Set([
 ]);
 const WORKOUT_COLUMNS = new Set(['category','routine_name','duration_seconds','notes','exercises','is_rest_day','logged_at']);
 const CARDIO_COLUMNS = new Set(['type','duration_minutes','distance_km','intensity','notes','logged_at']);
-const NUTRITION_COLUMNS = new Set(['meals','total_calories','total_protein_g','total_carbs_g','total_fat_g','water_litres','steps']);
+const NUTRITION_COLUMNS = new Set(['meals','total_calories','total_protein_g','total_carbs_g','total_fat_g','water_litres','steps','supplements']);
 const PROGRESS_COLUMNS = new Set(['logged_at','weight_kg','energy_level','notes','chest_cm','waist_cm','hips_cm','arms_cm','legs_cm']);
 const ROUTINE_COLUMNS = new Set(['name','category','exercises']);
 
