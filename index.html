@@ -218,7 +218,7 @@
 
     <div class="card">
         <h2 id="txt-coach">COACH</h2>
-        <div id="daily-quote" style="background:var(--primary-light);border-left:3px solid var(--primary);border-radius:8px;padding:10px 12px;margin-bottom:10px;color:var(--text);font-size:13px;font-style:italic;"></div>
+        <div id="daily-quote" style="background:var(--bg);border-left:3px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:10px;color:var(--text);font-size:13px;font-style:italic;"></div>
         <div id="coach-prompts"></div>
     </div>
 
@@ -243,8 +243,8 @@
         <h2 id="txt-my-phase">MY PHASE</h2>
         <div class="stat-row"><span class="stat-label" id="txt-phase-label">Phase</span><span class="stat-value" id="home-phase-name">—</span></div>
         <div class="stat-row"><span class="stat-label" id="txt-days-training">Days Training</span><span class="stat-value" id="home-days-training">—</span></div>
-        <div class="progress-bar-outer"><div class="progress-bar-inner gold" id="home-prog-bar"></div></div>
-        <p style="color:var(--text-muted); font-size:12px; margin-top:6px;" id="home-prog-pct"></p>
+        <div class="progress-bar-outer"><div class="progress-bar-inner" id="home-prog-bar"></div></div>
+        <p style="color:var(--label-secondary); font-size:12px; margin-top:6px;" id="home-prog-pct"></p>
     </div>
 
     <div class="card">
@@ -272,7 +272,7 @@
             <span class="btn-start-workout-label" id="txt-start-workout">START WORKOUT</span>
             <span class="btn-play-circle" aria-hidden="true">▶</span>
         </button>
-        <button type="button" class="btn-outline home-rest-outline" onclick="logRestDay()" id="txt-log-rest-day">LOG A REST DAY</button>
+        <button type="button" class="btn btn-accent-yellow home-rest-outline" onclick="logRestDay()" id="txt-log-rest-day">LOG A REST DAY</button>
     </div>
 </div>
 
@@ -289,7 +289,7 @@
         <button class="btn-outline" onclick="saveStepsTrain()">Save Steps</button>
     </div>
     <div id="train-menu">
-        <button style="background:#0F4C81; color:#fff; border:none; border-radius:12px; padding:12px 20px; font-size:14px; font-weight:700; cursor:pointer; width:100%; margin-bottom:12px;" onclick="logRestDay()">LOG A REST DAY</button>
+        <button type="button" class="btn btn-accent-yellow" style="margin-bottom:12px;" onclick="logRestDay()">LOG A REST DAY</button>
         <div class="section-title" id="txt-how-train">HOW DO YOU WANT TO TRAIN?</div>
     <div class="routine-item" onclick="showTrainSection('routines')">
             <div><div class="routine-name" id="txt-my-routines">My Routines</div><div class="routine-meta" id="txt-my-routines-sub">Start a saved workout</div></div>
@@ -313,7 +313,7 @@
         <button class="btn-outline" onclick="showTrainSection('menu')" id="txt-back-1">← Back</button>
         <div class="section-title" id="txt-my-routines-title">MY ROUTINES</div>
         <div id="routines-list"></div>
-        <p style="color:var(--text-muted); font-size:13px; display:none;" id="no-routines-msg">No routines yet. Create one first.</p>
+        <p style="color:var(--label-secondary); font-size:13px; display:none;" id="no-routines-msg">No routines yet. Create one first.</p>
     </div>
 
     <div id="train-quick" style="display:none;">
@@ -384,7 +384,7 @@
         </div>
         <div class="rest-timer" id="rest-timer">
             <button class="rest-timer-cancel" onclick="stopTimer()" aria-label="Cancel rest timer">✕</button>
-            <div style="color:var(--text-muted); font-size:11px; font-weight:700; margin-bottom:4px;" id="txt-rest-timer">REST TIMER</div>
+            <div style="color:var(--label-secondary); font-size:11px; font-weight:700; margin-bottom:4px;" id="txt-rest-timer">REST TIMER</div>
             <div class="rest-timer-count" id="rest-count">60</div>
             <button class="btn-small" onclick="stopTimer()" id="txt-stop">Stop</button>
         </div>
@@ -397,7 +397,7 @@
             <button class="btn" onclick="addExercise()" id="txt-add-ex-btn">+ Add Exercise</button>
         </div>
         <div id="exercise-log"></div>
-        <button class="btn" onclick="saveWorkout()" style="display:none;" id="save-btn">Save Workout</button>  
+        <button class="btn btn-accent-yellow" onclick="saveWorkout()" style="display:none;" id="save-btn">Save Workout</button>  
     </div>
 
 
@@ -480,11 +480,24 @@
     <div class="card" id="supplements-card" style="display:block;">
         <h2 id="txt-supplements">SUPPLEMENTS</h2>
         <div id="supplement-list" class="supplement-list"></div>
+        <button type="button" class="btn btn-supplement-open" onclick="openSupplementPickerModal()" id="txt-add-supplement">Add Supplement</button>
         <button type="button" class="btn-outline supplement-clear-all" onclick="clearAllSupplements()" id="txt-clear-all-supplements">Clear all supplements</button>
         <div class="supplement-add-row">
             <input type="text" id="custom-supplement-input" placeholder="Add custom supplement">
             <button class="btn-small" onclick="addCustomSupplement()">Add</button>
         </div>
+    </div>
+</div>
+
+<!-- Supplement picker (default list) -->
+<div id="supplement-picker-modal" class="supplement-picker-modal" style="display:none;" aria-hidden="true">
+    <div class="supplement-picker-backdrop" onclick="closeSupplementPickerModal()"></div>
+    <div class="supplement-picker-sheet" role="dialog" aria-labelledby="txt-add-supplement-modal-title">
+        <div class="supplement-picker-head">
+            <h3 class="supplement-picker-title" id="txt-add-supplement-modal-title">Add supplement</h3>
+            <button type="button" class="supplement-picker-close" onclick="closeSupplementPickerModal()" aria-label="Close">✕</button>
+        </div>
+        <div id="supplement-picker-list" class="supplement-picker-list"></div>
     </div>
 </div>
 
@@ -494,7 +507,7 @@
         <h2 style="color:var(--text); font-size:18px; font-weight:800;" id="food-modal-title">Add Food</h2>
         <button onclick="closeFoodModal()" style="background:none; border:none; color:var(--text); font-size:24px; cursor:pointer;">✕</button>
     </div>
-    <div id="food-modal-totals" style="color:var(--text-muted);font-size:13px;margin-bottom:12px;line-height:1.4;"></div>
+    <div id="food-modal-totals" style="color:var(--label-secondary);font-size:13px;margin-bottom:12px;line-height:1.4;"></div>
     <div class="filter-bar" id="food-filter-bar">
         <button class="filter-btn active" onclick="setFoodFilter('all', this)" id="filter-all">All</button>
         <button class="filter-btn" onclick="setFoodFilter('protein', this)" id="filter-protein">Protein</button>
@@ -512,7 +525,7 @@
         <div style="font-weight:700; color:var(--text); margin-bottom:12px; font-size:16px;" id="food-portion-label"></div>
         <label id="lbl-portion">Portion (g or ml)</label>
         <input type="number" id="food-portion-amount" placeholder="e.g. 150" value="100" oninput="updatePortionPreview()" inputmode="numeric">
-        <div id="food-portion-preview" style="color:var(--text-muted); font-size:13px; margin-bottom:12px; background:var(--primary-light); padding:8px; border-radius:8px;"></div>
+        <div id="food-portion-preview" style="color:var(--label-secondary); font-size:13px; margin-bottom:12px; background:var(--bg); padding:8px; border-radius:8px; border:1px solid var(--border);"></div>
         <button class="btn" onclick="addFoodEntry()" id="txt-add-to-meal">Add to Meal</button>
         <button class="btn-outline" onclick="document.getElementById('food-portion').style.display='none'">Cancel</button>
     </div>
@@ -538,8 +551,8 @@
         <div class="stat-row"><span class="stat-label" id="txt-phase-name-label">Phase</span><span class="stat-value" id="prog-phase-name">—</span></div>
         <div class="stat-row"><span class="stat-label" id="txt-days-training-prog">Days Training</span><span class="stat-value" id="prog-days-training">—</span></div>
         <div class="stat-row"><span class="stat-label" id="txt-weight-to-go">Weight to Goal</span><span class="stat-value" id="prog-weight-to-go">—</span></div>
-        <div class="progress-bar-outer"><div class="progress-bar-inner gold" id="prog-bar"></div></div>
-        <p style="color:var(--text-muted); font-size:12px; margin-top:6px;" id="prog-pct"></p>
+        <div class="progress-bar-outer"><div class="progress-bar-inner" id="prog-bar"></div></div>
+        <p style="color:var(--label-secondary); font-size:12px; margin-top:6px;" id="prog-pct"></p>
         <button class="btn-outline" style="margin-top:12px;" onclick="completePhase()" id="txt-complete-phase">Complete Phase & Start New</button>
     </div>
 
@@ -557,7 +570,7 @@
 
     <div class="card">
         <h2 id="txt-personal-bests">PERSONAL BESTS</h2>
-        <div id="pb-list"><p style="color:var(--text-muted);">Log workouts to track PBs.</p></div>
+        <div id="pb-list"><p style="color:var(--label-secondary);">Log workouts to track PBs.</p></div>
     </div>
 
     <div class="card">
@@ -579,11 +592,11 @@
     <div class="card">
         <h2>WEIGHT TREND</h2>
         <canvas id="weight-chart" width="320" height="180" style="width:100%;height:180px;"></canvas>
-        <p style="color:var(--text-muted);font-size:12px;margin-top:8px;">Based on your weekly check-ins</p>
+        <p style="color:var(--label-secondary);font-size:12px;margin-top:8px;">Based on your weekly check-ins</p>
     </div>
     <div class="card">
         <h2 id="txt-workout-history">WORKOUT HISTORY</h2>
-        <div id="history-list"><p style="color:var(--text-muted);">No sessions logged yet.</p></div>
+        <div id="history-list"><p style="color:var(--label-secondary);">No sessions logged yet.</p></div>
     </div>
 </div>
 
@@ -591,7 +604,7 @@
 <div class="screen" id="screen-profile" style="display:none;">
     <div class="card">
         <h2>Account</h2>
-        <p style="color:var(--text-muted);font-size:13px;margin-bottom:6px;">Signed in as</p>
+        <p style="color:var(--label-secondary);font-size:13px;margin-bottom:6px;">Signed in as</p>
         <p id="account-email" style="color:var(--text);font-size:15px;font-weight:700;margin-bottom:12px;">—</p>
         <button id="sign-out-btn" onclick="signOut()" style="background:#FEF2F2;color:var(--danger);border:1px solid var(--danger);border-radius:12px;padding:12px 14px;font-size:14px;font-weight:700;cursor:pointer;width:100%;">Sign Out</button>
     </div>
@@ -639,7 +652,7 @@
 
     <div class="card">
         <h2 id="txt-my-transformation">MY TRANSFORMATION PHASE</h2>
-        <p style="color:var(--text-muted); font-size:13px; margin-bottom:12px;" id="txt-phase-desc">Optional: Set a goal phase to track your transformation progress.</p>
+        <p style="color:var(--label-secondary); font-size:13px; margin-bottom:12px;" id="txt-phase-desc">Optional: Set a goal phase to track your transformation progress.</p>
         <label id="lbl-phase-name">Phase Name</label><input type="text" id="set-phase-name" placeholder="e.g. Summer Cut">
         <label id="lbl-phase-duration">Duration</label>
         <select id="set-phase-duration">
@@ -687,7 +700,7 @@
 
     <div class="card" style="margin-top:12px;">
         <h2>Reset All Data</h2>
-        <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px;">This will permanently delete all your workout, nutrition and progress data. This cannot be undone.</p>
+        <p style="color:var(--label-secondary);font-size:13px;margin-bottom:12px;">This will permanently delete all your workout, nutrition and progress data. This cannot be undone.</p>
         <label>Type RESET to confirm</label>
         <input type="text" id="reset-confirm-input" placeholder="Type RESET" oninput="handleResetConfirmInput()">
         <button id="reset-all-data-btn" onclick="resetAllData()" disabled style="background:#FEF2F2;color:var(--danger);border:1px solid var(--danger);border-radius:12px;padding:14px;font-size:14px;font-weight:700;cursor:not-allowed;width:100%;opacity:0.6;">🗑 Reset All Data</button>
@@ -695,9 +708,9 @@
     <div class="card" style="margin-top:12px;text-align:center;">
         <h2>ABOUT</h2>
         <div style="color:var(--text);font-size:15px;font-weight:700;margin-bottom:4px;">PocketGyms</div>
-        <div style="color:var(--text-muted);font-size:13px;margin-bottom:8px;">Version 2.0</div>
-        <a href="https://privategyms.co.uk" target="_blank" style="color:var(--primary);font-size:13px;font-weight:600;text-decoration:none;display:block;margin-bottom:8px;">privategyms.co.uk</a>
-        <a href="mailto:contact@privategyms.co.uk" style="color:var(--primary);font-size:13px;font-weight:600;text-decoration:none;">contact@privategyms.co.uk</a>
+        <div style="color:var(--label-secondary);font-size:13px;margin-bottom:8px;">Version 2.0</div>
+        <a href="https://privategyms.co.uk" target="_blank" style="color:var(--text);font-size:13px;font-weight:600;text-decoration:underline;display:block;margin-bottom:8px;">privategyms.co.uk</a>
+        <a href="mailto:contact@privategyms.co.uk" style="color:var(--text);font-size:13px;font-weight:600;text-decoration:underline;">contact@privategyms.co.uk</a>
     </div>
 </div>
 
@@ -705,23 +718,23 @@
 <div class="nav" style="display:none;">
     <div class="nav-inner">
     <div class="nav-item active" onclick="showScreen('screen-home')" id="nav-home">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V20a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 20V9.5z"/><path d="M9.5 21.5V12h5v9.5"/></svg>
+        <span class="nav-item-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V20a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 20V9.5z"/><path d="M9.5 21.5V12h5v9.5"/></svg></span>
         <span id="nav-txt-home">Home</span>
     </div>
     <div class="nav-item" onclick="showScreen('screen-train')" id="nav-train">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 14h.5a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-.5"/><path d="M9.5 14H9a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h.5"/><path d="M4 12h16"/><path d="M14.5 10v4M9.5 10v4"/></svg>
+        <span class="nav-item-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 14h.5a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-.5"/><path d="M9.5 14H9a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h.5"/><path d="M4 12h16"/><path d="M14.5 10v4M9.5 10v4"/></svg></span>
         <span id="nav-txt-train">Train</span>
     </div>
     <div class="nav-item" onclick="showScreen('screen-calories')" id="nav-calories">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h0"/><path d="M9 2v20"/><path d="M14 2v5a3 3 0 0 0 6 0V2"/><path d="M20 22v-8"/></svg>
+        <span class="nav-item-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h0"/><path d="M9 2v20"/><path d="M14 2v5a3 3 0 0 0 6 0V2"/><path d="M20 22v-8"/></svg></span>
         <span id="nav-txt-nutrition">Nutrition</span>
     </div>
     <div class="nav-item" onclick="showScreen('screen-progress')" id="nav-progress">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="12" width="4.5" height="8" rx="1"/><rect x="9.25" y="8" width="4.5" height="12" rx="1"/><rect x="15.5" y="4" width="4.5" height="16" rx="1"/></svg>
+        <span class="nav-item-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="12" width="4.5" height="8" rx="1"/><rect x="9.25" y="8" width="4.5" height="12" rx="1"/><rect x="15.5" y="4" width="4.5" height="16" rx="1"/></svg></span>
         <span id="nav-txt-progress">Progress</span>
     </div>
     <div class="nav-item" onclick="showScreen('screen-profile')" id="nav-profile">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20.5v-.5a7 7 0 0 1 14 0v.5"/></svg>
+        <span class="nav-item-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20.5v-.5a7 7 0 0 1 14 0v.5"/></svg></span>
         <span id="nav-txt-profile">Profile</span>
     </div>
     </div>
