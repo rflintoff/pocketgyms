@@ -49,8 +49,11 @@ const translations = {
         save:'Save', supplements:'SUPPLEMENTS',
         clearAllSupplements:'Clear all supplements', removeFromList:'Remove',
         removeCustomSupplement:'Remove',
-        restoreDefaultSupplements:'Add common supplements',
-        supplementsListEmpty:'No supplements in your list. Add your own below, or restore the common list.',
+        addSupplement:'Add Supplement',
+        addSupplementModalTitle:'Add supplement',
+        supplementAlreadyAdded:'Already in your list',
+        supplementAddedToast:'Supplement added',
+        supplementsListEmpty:'No supplements in your list yet. Tap “Add Supplement” to choose from the list, or add a custom name below.',
         confirmClearSupplements:'Remove every supplement from your list and clear today’s supplement log? You can add them again anytime.',
         addFood:'Add Food', portion:'Portion (g or ml)', addToMeal:'Add to Meal',
         saveAsTemplate:'Save as Template', removeMeal:'Remove Meal',
@@ -149,8 +152,11 @@ const translations = {
         stepsWater:'PASSOS E ÁGUA', stepsToday:'Passos Hoje', waterLitres:'Água (litros)',
         save:'Salvar', supplements:'SUPLEMENTOS',
         clearAllSupplements:'Limpar todos os suplementos', removeFromList:'Remover',
-        restoreDefaultSupplements:'Adicionar lista comum',
-        supplementsListEmpty:'Nenhum suplemento na lista. Adicione abaixo ou restaure a lista comum.',
+        addSupplement:'Adicionar suplemento',
+        addSupplementModalTitle:'Adicionar suplemento',
+        supplementAlreadyAdded:'Já está na sua lista',
+        supplementAddedToast:'Suplemento adicionado',
+        supplementsListEmpty:'Nenhum suplemento na lista. Toque em “Adicionar suplemento” ou adicione um nome abaixo.',
         confirmClearSupplements:'Remover todos os suplementos da lista e limpar o registo de hoje? Pode adicionar novamente quando quiser.',
         addFood:'Adicionar alimento', portion:'Porção (g ou ml)', addToMeal:'Adicionar à Refeição',
         saveAsTemplate:'Guardar como modelo', removeMeal:'Remover refeição',
@@ -249,8 +255,11 @@ const translations = {
         stepsWater:'PASOS Y AGUA', stepsToday:'Pasos Hoy', waterLitres:'Agua (litros)',
         save:'Guardar', supplements:'SUPLEMENTOS',
         clearAllSupplements:'Borrar todos los suplementos', removeFromList:'Quitar',
-        restoreDefaultSupplements:'Añadir lista común',
-        supplementsListEmpty:'No hay suplementos en tu lista. Añade uno abajo o restaura la lista común.',
+        addSupplement:'Añadir suplemento',
+        addSupplementModalTitle:'Añadir suplemento',
+        supplementAlreadyAdded:'Ya está en tu lista',
+        supplementAddedToast:'Suplemento añadido',
+        supplementsListEmpty:'No hay suplementos. Pulsa “Añadir suplemento” o escribe un nombre abajo.',
         confirmClearSupplements:'¿Quitar todos los suplementos de tu lista y borrar el registro de hoy? Puedes volver a añadirlos cuando quieras.',
         addFood:'Añadir alimento', portion:'Porción (g o ml)', addToMeal:'Añadir a Comida',
         saveAsTemplate:'Guardar como plantilla', removeMeal:'Eliminar comida',
@@ -349,8 +358,11 @@ const translations = {
         stepsWater:'PAS ET EAU', stepsToday:"Pas Aujourd'hui", waterLitres:'Eau (litres)',
         save:'Sauvegarder', supplements:'SUPPLÉMENTS',
         clearAllSupplements:'Effacer tous les suppléments', removeFromList:'Retirer',
-        restoreDefaultSupplements:'Ajouter la liste courante',
-        supplementsListEmpty:'Aucun supplément dans votre liste. Ajoutez-en ci-dessous ou restaurez la liste courante.',
+        addSupplement:'Ajouter un supplément',
+        addSupplementModalTitle:'Ajouter un supplément',
+        supplementAlreadyAdded:'Déjà dans votre liste',
+        supplementAddedToast:'Supplément ajouté',
+        supplementsListEmpty:'Aucun supplément. Appuyez sur « Ajouter un supplément » ou saisissez un nom ci-dessous.',
         confirmClearSupplements:'Retirer tous les suppléments de votre liste et effacer le suivi du jour ? Vous pourrez les rajouter quand vous voulez.',
         addFood:'Ajouter un aliment', portion:'Portion (g ou ml)', addToMeal:'Ajouter au Repas',
         saveAsTemplate:'Enregistrer comme modèle', removeMeal:'Supprimer le repas',
@@ -449,8 +461,11 @@ const translations = {
         stepsWater:'SCHRITTE & WASSER', stepsToday:'Schritte Heute', waterLitres:'Wasser (Liter)',
         save:'Speichern', supplements:'NAHRUNGSERGÄNZUNG',
         clearAllSupplements:'Alle Supplements löschen', removeFromList:'Entfernen',
-        restoreDefaultSupplements:'Häufige Supplements hinzufügen',
-        supplementsListEmpty:'Keine Supplements in der Liste. Unten hinzufügen oder die gängige Liste wiederherstellen.',
+        addSupplement:'Supplement hinzufügen',
+        addSupplementModalTitle:'Supplement hinzufügen',
+        supplementAlreadyAdded:'Bereits in der Liste',
+        supplementAddedToast:'Supplement hinzugefügt',
+        supplementsListEmpty:'Noch keine Supplements. Tippe auf „Supplement hinzufügen“ oder gib unten einen Namen ein.',
         confirmClearSupplements:'Alle Supplements aus der Liste entfernen und den heutigen Eintrag leeren? Sie können sie jederzeit neu anlegen.',
         addFood:'Lebensmittel hinzufügen', portion:'Portion (g oder ml)', addToMeal:'Zur Mahlzeit Hinzufügen',
         saveAsTemplate:'Als Vorlage speichern', removeMeal:'Mahlzeit entfernen',
@@ -731,6 +746,7 @@ function applyTranslations() {
     set('txt-add-meal','addMeal');set('txt-steps-water','stepsWater');
     set('lbl-steps-today','stepsToday');set('lbl-water','waterLitres');
     set('txt-save-sw','save');set('txt-supplements','supplements');set('txt-clear-all-supplements','clearAllSupplements');
+    set('txt-add-supplement','addSupplement');set('txt-add-supplement-modal-title','addSupplementModalTitle');
     set('filter-all','allFoods');set('txt-add-to-meal','addToMeal');set('lbl-portion','portion');
     renderSupplements();
     // Progress
@@ -889,6 +905,7 @@ async function completeOnboarding() {
 async function toggleTheme() {
     document.body.classList.toggle('dark');
     const toggle=document.getElementById('dark-toggle');if(toggle)toggle.classList.toggle('on');
+    renderWeightChart();
 }
 
 function showSaveMessage(id, text) {
@@ -1069,7 +1086,7 @@ function renderRoutinesList() {
         list.innerHTML=`<div style="text-align:center;padding:32px 16px;">
             <div style="font-size:48px;margin-bottom:12px;">🏋️</div>
             <div style="color:var(--text);font-size:16px;font-weight:700;margin-bottom:8px;">No routines yet</div>
-            <div style="color:var(--text-muted);font-size:13px;margin-bottom:16px;">Create your first routine or unlock a programme with a code</div>
+            <div style="color:var(--label-secondary);font-size:13px;margin-bottom:16px;">Create your first routine or unlock a programme with a code</div>
             <button class="btn" onclick="showTrainSection('create')">Create Routine</button>
         </div>`;
         if(msg)msg.style.display='none';
@@ -1080,7 +1097,7 @@ function renderRoutinesList() {
         <div style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:16px;margin-bottom:10px;">
             <div onclick="startRoutine(${i})" style="cursor:pointer;margin-bottom:10px;">
                 <div style="color:var(--text);font-size:15px;font-weight:700;">${r.name}</div>
-                <div style="color:var(--text-muted);font-size:12px;margin-top:4px;">${r.exercises.length} exercises • ${r.created}${r.duration?' • '+r.duration+' mins':''}</div>
+                <div style="color:var(--label-secondary);font-size:12px;margin-top:4px;">${r.exercises.length} exercises • ${r.created}${r.duration?' • '+r.duration+' mins':''}</div>
                 ${r.programme?`<div style="color:var(--gold);font-size:11px;font-weight:700;margin-top:2px;">⭐ ${r.programme}</div>`:''}
             </div>
             <div style="display:flex;gap:8px;">
@@ -1114,7 +1131,7 @@ function addCustomToSelection() {
 function renderRoutineSelectionList() {
     const list=document.getElementById('routine-selection-list');if(!list)return;
     if(routineSelection.length===0){list.innerHTML='';return;}
-    list.innerHTML=`<div style="background:var(--primary-light);border-radius:10px;padding:10px;"><div style="color:var(--primary);font-size:11px;font-weight:700;margin-bottom:6px;">SELECTED (${routineSelection.length})</div>${routineSelection.map((ex,i)=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);"><span style="color:var(--text);font-size:13px;">${ex}</span><span onclick="removeFromSelection(${i})" style="color:var(--danger);cursor:pointer;font-size:16px;">✕</span></div>`).join('')}</div>`;
+    list.innerHTML=`<div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px;"><div style="color:var(--text);font-size:11px;font-weight:700;margin-bottom:6px;">SELECTED (${routineSelection.length})</div>${routineSelection.map((ex,i)=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);"><span style="color:var(--text);font-size:13px;">${ex}</span><span onclick="removeFromSelection(${i})" style="color:var(--danger);cursor:pointer;font-size:16px;">✕</span></div>`).join('')}</div>`;
 }
 
 function removeFromSelection(index){routineSelection.splice(index,1);renderRoutineSelectionList();}
@@ -1187,7 +1204,7 @@ function renderExercises() {
             const suggested=lastWeight>0?(lastWeight+2.5).toFixed(1):'—';
             suggestion=`<div style="background:#F0FDF4;border:1px solid #86EFAC;border-radius:8px;padding:8px;margin-bottom:8px;"><div style="color:#16A34A;font-size:11px;font-weight:700;margin-bottom:2px;">${t('autoProgression')}</div><div style="color:#166534;font-size:12px;">${t('tryToday').replace('{x}',suggested).replace('{y}',lastWeight)}</div></div>`;
         }
-        const lastPerf=lastEx?`<div style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:8px;padding:8px;margin-bottom:10px;"><div style="color:#EA580C;font-size:11px;font-weight:700;margin-bottom:4px;">${t('lastSession')}</div>${lastEx.sets.map((s,i)=>`<div style="color:#9A3412;font-size:12px;">Set ${i+1}: ${s.reps} reps @ ${s.weight}kg</div>`).join('')}</div>`:`<div style="color:var(--text-muted);font-size:12px;margin-bottom:10px;">${t('noPrevData')}</div>`;
+        const lastPerf=lastEx?`<div style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:8px;padding:8px;margin-bottom:10px;"><div style="color:#EA580C;font-size:11px;font-weight:700;margin-bottom:4px;">${t('lastSession')}</div>${lastEx.sets.map((s,i)=>`<div style="color:#9A3412;font-size:12px;">Set ${i+1}: ${s.reps} reps @ ${s.weight}kg</div>`).join('')}</div>`:`<div style="color:var(--label-secondary);font-size:12px;margin-bottom:10px;">${t('noPrevData')}</div>`;
         const pbBadge=pb?`<span class="pr-badge">PB: ${pb.weight}kg×${pb.reps}</span>`:'';
         const targetInfo=ex.targetReps?`<div style="background:#F0FDF4;border-radius:6px;padding:4px 8px;margin-bottom:8px;color:#16A34A;font-size:12px;font-weight:600;">Target: ${ex.targetSets} sets × ${ex.targetReps} reps</div>`:'';
         let setsHTML=`<div class="set-headers"><div class="set-header">SET</div><div class="set-header">REPS</div><div class="set-header">KG</div><div class="set-header"></div></div>`;
@@ -1195,17 +1212,17 @@ function renderExercises() {
             const isWarmup=set.warmup||false;
             setsHTML+=`<div class="set-row" style="${isWarmup?'opacity:0.6;':''}">
                 <div class="set-num" style="cursor:pointer;" onclick="toggleWarmup(${ei},${si})" title="Toggle warm up">${isWarmup?'🔥':''+( si+1)}</div>
-                <input class="set-input" type="number" placeholder="Reps" value="${set.reps}" onchange="updateSet(${ei},${si},'reps',this.value)" style="${isWarmup?'border-color:#F59E0B;':''}">
-                <input class="set-input" type="number" placeholder="KG" value="${set.weight}" onchange="updateSet(${ei},${si},'weight',this.value)" style="${isWarmup?'border-color:#F59E0B;':''}">
+                <input class="set-input" type="number" placeholder="Reps" value="${set.reps}" onchange="updateSet(${ei},${si},'reps',this.value)" style="${isWarmup?'border-color:#C2410C;':''}">
+                <input class="set-input" type="number" placeholder="KG" value="${set.weight}" onchange="updateSet(${ei},${si},'weight',this.value)" style="${isWarmup?'border-color:#C2410C;':''}">
                 <div class="remove-set" onclick="removeSet(${ei},${si})">✕</div>
             </div>
-            ${isWarmup?'<div style="color:#F59E0B;font-size:10px;font-weight:700;margin-bottom:4px;margin-left:44px;">WARM UP — not counted</div>':''}`;
+            ${isWarmup?'<div style="color:#C2410C;font-size:10px;font-weight:700;margin-bottom:4px;margin-left:44px;">WARM UP — not counted</div>':''}`;
         });
         block.innerHTML=`<div class="exercise-name" style="justify-content:space-between;">
 <span onclick="showExerciseHistory(${JSON.stringify(ex.name)})">${ex.name} ${pbBadge}</span>
 <div style="display:flex;gap:6px;align-items:center;">
-    ${ei>0?`<button type="button" onclick="moveExercise(${ei},-1)" style="background:var(--primary-light);color:var(--primary);border:none;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:700;cursor:pointer;">↑</button>`:''}
-    ${ei<exercises.length-1?`<button type="button" onclick="moveExercise(${ei},1)" style="background:var(--primary-light);color:var(--primary);border:none;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:700;cursor:pointer;">↓</button>`:''}
+    ${ei>0?`<button type="button" onclick="moveExercise(${ei},-1)" style="background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:11px;font-weight:700;cursor:pointer;">↑</button>`:''}
+    ${ei<exercises.length-1?`<button type="button" onclick="moveExercise(${ei},1)" style="background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:11px;font-weight:700;cursor:pointer;">↓</button>`:''}
     <button type="button" onclick="removeExercise(${ei})" style="background:#FEF2F2;color:var(--danger);border:none;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:700;cursor:pointer;">Remove</button>
 </div></div>${targetInfo}${suggestion}${lastPerf}${setsHTML}<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
     <button class="btn-outline" onclick="addSet(${ei})" style="flex:1;margin-bottom:0;">+ Set</button>
@@ -1254,7 +1271,7 @@ function startWorkoutTimer() {
 function showCompletionScreen(muscle,duration,exs){
     const pbs=exs.filter(ex=>ex.sets.some(s=>!s.warmup&&parseFloat(s.weight)>0&&personalBests[ex.name]&&parseFloat(s.weight)>=personalBests[ex.name].weight)).length;
     const modal=document.createElement('div');
-    modal.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:var(--primary);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;';
+    modal.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:#111111;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;';
     modal.innerHTML=`
         <div style="font-size:64px;margin-bottom:16px;">💪</div>
         <div style="color:#fff;font-size:28px;font-weight:800;margin-bottom:8px;">Session Complete!</div>
@@ -1269,11 +1286,11 @@ function showCompletionScreen(muscle,duration,exs){
                 <div style="color:rgba(255,255,255,0.7);font-size:11px;margin-top:4px;">EXERCISES</div>
             </div>
             <div style="background:rgba(255,255,255,0.15);border-radius:12px;padding:16px;">
-                <div style="color:#FFD700;font-size:24px;font-weight:800;">${pbs}</div>
+                <div style="color:#ffffff;font-size:24px;font-weight:800;">${pbs}</div>
                 <div style="color:rgba(255,255,255,0.7);font-size:11px;margin-top:4px;">PBs HIT</div>
             </div>
         </div>
-        <button type="button" class="completion-btn-progress" style="background:#fff;color:var(--primary);border:none;border-radius:14px;padding:16px 32px;font-size:16px;font-weight:800;cursor:pointer;width:100%;max-width:400px;">View Progress</button>
+        <button type="button" class="completion-btn-progress" style="background:#fff;color:#111111;border:none;border-radius:14px;padding:16px 32px;font-size:16px;font-weight:800;cursor:pointer;width:100%;max-width:400px;">View Progress</button>
         <button type="button" class="completion-btn-home" style="background:transparent;color:rgba(255,255,255,0.8);border:2px solid rgba(255,255,255,0.3);border-radius:14px;padding:14px 32px;font-size:15px;font-weight:600;cursor:pointer;width:100%;max-width:400px;margin-top:10px;">Back to Home</button>
     `;
     modal.querySelector('.completion-btn-progress').onclick=()=>{modal.remove();showScreen('screen-progress');};
@@ -1466,7 +1483,7 @@ function renderMeals() {
         container.innerHTML=`<div style="text-align:center;padding:32px 16px;">
             <div style="font-size:48px;margin-bottom:12px;">🥗</div>
             <div style="color:var(--text);font-size:16px;font-weight:700;margin-bottom:8px;">No meals logged today</div>
-            <div style="color:var(--text-muted);font-size:13px;margin-bottom:16px;">Start tracking your nutrition to hit your targets</div>
+            <div style="color:var(--label-secondary);font-size:13px;margin-bottom:16px;">Start tracking your nutrition to hit your targets</div>
             <button class="btn" onclick="addMeal()">+ Add First Meal</button>
         </div>`;
         return;
@@ -1549,20 +1566,20 @@ async function filterFoods() {
         const recent=todayNutrition?.recentFoods||[];
         if(recent.length>0){
             recentHTML=`<div style="margin-bottom:12px;">
-                <div style="color:var(--text-muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Recent & Common</div>
+                <div style="color:var(--label-secondary);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Recent & Common</div>
                 ${recent.slice(0,5).map(f=>`<div style="padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;" onclick='selectFood(${JSON.stringify(f).replace(/'/g,"&#39;")})'>
                     <div style="font-weight:600;color:var(--text);font-size:13px;">${f.name}</div>
                     <div style="margin-top:4px;"><span class="macro-pill">${f.cal} kcal</span><span class="macro-pill protein">P: ${f.protein}g</span><span class="macro-pill carbs">C: ${f.carbs}g</span><span class="macro-pill fat">F: ${f.fat}g</span></div>
                 </div>`).join('')}
-                <div style="color:var(--text-muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin:12px 0 8px;">All Foods</div>
+                <div style="color:var(--label-secondary);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin:12px 0 8px;">All Foods</div>
             </div>`;
         }
     }
 
     list.innerHTML=recentHTML+( foods.map(f=>`<div style="padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;" onclick='selectFood(${JSON.stringify(f).replace(/'/g,"&#39;")})'>
         <div style="font-weight:600;color:var(--text);font-size:13px;">${f.name}</div>
-        <div style="margin-top:4px;"><span class="macro-pill">${f.cal} kcal</span><span class="macro-pill protein">P: ${f.protein}g</span><span class="macro-pill carbs">C: ${f.carbs}g</span><span class="macro-pill fat">F: ${f.fat}g</span>${f.water?`<span class="macro-pill" style="background:#EFF6FF;color:#2563EB;">💧 +${f.water}L</span>`:''}</div>
-    </div>`).join('')||`<p style="color:var(--text-muted);padding:12px 0;">${t('noFoodsFound')}</p>`);
+        <div style="margin-top:4px;"><span class="macro-pill">${f.cal} kcal</span><span class="macro-pill protein">P: ${f.protein}g</span><span class="macro-pill carbs">C: ${f.carbs}g</span><span class="macro-pill fat">F: ${f.fat}g</span>${f.water?`<span class="macro-pill" style="background:#ecfeff;color:#0e7490;border-color:#a5f3fc;">💧 +${f.water}L</span>`:''}</div>
+    </div>`).join('')||`<p style="color:var(--label-secondary);padding:12px 0;">${t('noFoodsFound')}</p>`);
 }
 
 function selectFood(food) {
@@ -1738,7 +1755,7 @@ async function loadNutrition() {
     setWidth('bar-water',Math.min((water/2.5)*100,100));
     const hour=new Date().getHours();const expectedCals=Math.round((hour/24)*calTarget);
     const calStatus=document.getElementById('cal-status');
-    if(calStatus){if(totalCal>=expectedCals){calStatus.textContent=t('onTrack');calStatus.style.color='#10B981';}else{calStatus.textContent=t('behindEat');calStatus.style.color='#F59E0B';}}
+    if(calStatus){if(totalCal>=expectedCals){calStatus.textContent=t('onTrack');calStatus.style.color='#10B981';}else{calStatus.textContent=t('behindEat');calStatus.style.color='#C2410C';}}
     await renderSupplements();
 }
 
@@ -1750,7 +1767,7 @@ async function renderSupplements() {
     const allSupplements=getDisplayedSupplementNames(savedSupplements);
     renderedSupplements=allSupplements;
     if(allSupplements.length===0){
-        list.innerHTML=`<p class="supplement-empty-msg">${t('supplementsListEmpty')}</p><button type="button" class="btn supplement-restore-defaults" onclick="restoreDefaultSupplementList()">${t('restoreDefaultSupplements')}</button>`;
+        list.innerHTML=`<p class="supplement-empty-msg">${t('supplementsListEmpty')}</p>`;
         return;
     }
     list.innerHTML=allSupplements.map((s,i)=>{
@@ -1875,9 +1892,53 @@ async function clearAllSupplements(){
     showToast('Supplements cleared','success',1600);
 }
 
-async function restoreDefaultSupplementList(){
-    const customs=dedupeSupplementNamesOrdered(settings.custom_supplements||[]);
-    const next=dedupeSupplementNamesOrdered([...defaultSupplements,...customs]);
+async function openSupplementPickerModal(){
+    const modal=document.getElementById('supplement-picker-modal');
+    if(!modal)return;
+    await refreshSupplementPickerList();
+    modal.classList.add('is-open');
+    modal.style.display='flex';
+    modal.setAttribute('aria-hidden','false');
+    document.body.style.overflow='hidden';
+}
+
+function closeSupplementPickerModal(){
+    const modal=document.getElementById('supplement-picker-modal');
+    if(!modal)return;
+    modal.classList.remove('is-open');
+    modal.style.display='none';
+    modal.setAttribute('aria-hidden','true');
+    document.body.style.overflow='';
+}
+
+async function refreshSupplementPickerList(){
+    const listEl=document.getElementById('supplement-picker-list');
+    if(!listEl)return;
+    const nutritionData=await PG.nutrition.getToday();
+    const displayed=getDisplayedSupplementNames(nutritionData?.supplements||[]);
+    const displayedLower=new Set(displayed.map(s=>String(s).toLowerCase()));
+    listEl.innerHTML=defaultSupplements.map((name,idx)=>{
+        const safe=escapeHtmlText(name);
+        const on=displayedLower.has(String(name).toLowerCase());
+        if(on){
+            return `<div class="supplement-picker-row"><span class="supplement-picker-name">${safe}</span><span class="supplement-picker-added" title="${t('supplementAlreadyAdded')}">✓</span></div>`;
+        }
+        return `<div class="supplement-picker-row"><span class="supplement-picker-name">${safe}</span><button type="button" class="supplement-picker-add" onclick="addCatalogSupplementToListByIndex(${idx})" aria-label="+">+</button></div>`;
+    }).join('');
+}
+
+async function addCatalogSupplementToListByIndex(idx){
+    const name=defaultSupplements[idx];
+    if(!name)return;
+    const nutritionData=await PG.nutrition.getToday();
+    const displayed=getDisplayedSupplementNames(nutritionData?.supplements||[]);
+    if(displayed.some(s=>String(s).toLowerCase()===String(name).toLowerCase())){
+        showToast(t('supplementAlreadyAdded'),'info',1800);
+        await refreshSupplementPickerList();
+        return;
+    }
+    const catalog=Array.isArray(settings.supplements_catalog)?[...settings.supplements_catalog]:[];
+    const next=dedupeSupplementNamesOrdered([...catalog,name]);
     settings.supplements_catalog=next;
     const prof=await PG.profile.save({supplements_catalog:next});
     if(prof?.ok===false||prof?.error){
@@ -1885,7 +1946,8 @@ async function restoreDefaultSupplementList(){
         return;
     }
     await renderSupplements();
-    showToast('Supplement list updated','success',1600);
+    await refreshSupplementPickerList();
+    showToast(t('supplementAddedToast'),'success',1400);
 }
 
 // ===================== HOME =====================
@@ -2058,7 +2120,7 @@ async function updateProgress() {
     if(phaseHistory.length>0){
         const histCard=document.getElementById('phase-history-card');if(histCard)histCard.style.display='block';
         const histList=document.getElementById('phase-history-list');
-        if(histList)histList.innerHTML=phaseHistory.map(p=>`<div class="phase-history-item"><div style="font-weight:700;color:var(--text);">${p.name}</div><div style="color:var(--text-muted);font-size:12px;margin-top:4px;">${p.startDate} → ${p.days} days</div><div style="color:var(--primary);font-size:13px;font-weight:600;margin-top:4px;">${p.result}</div></div>`).join('');
+        if(histList)histList.innerHTML=phaseHistory.map(p=>`<div class="phase-history-item"><div style="font-weight:700;color:var(--text);">${p.name}</div><div style="color:var(--label-secondary);font-size:12px;margin-top:4px;">${p.startDate} → ${p.days} days</div><div style="color:var(--text);font-size:13px;font-weight:600;margin-top:4px;">${p.result}</div></div>`).join('');
     }
     const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
     setEl('workouts-count',workoutHistory.length);setEl('cardio-count',cardioHistory.length);
@@ -2068,7 +2130,7 @@ async function updateProgress() {
     setEl('consistency-score',daysHit+'/30 days');
     const pbs=Object.entries(personalBests);
     const pbList=document.getElementById('pb-list');
-    if(pbList)pbList.innerHTML=pbs.length===0?`<p style="color:var(--text-muted);">${t('noPBs')}</p>`:pbs.map(([name,pb])=>`<div class="pb-item"><div><div class="pb-exercise">${name}</div><div style="color:var(--text-muted);font-size:11px;">${pb.date}</div></div><div class="pb-value">${pb.weight}kg × ${pb.reps}</div></div>`).join('');
+    if(pbList)pbList.innerHTML=pbs.length===0?`<p style="color:var(--label-secondary);">${t('noPBs')}</p>`:pbs.map(([name,pb])=>`<div class="pb-item"><div><div class="pb-exercise">${name}</div><div style="color:var(--label-secondary);font-size:11px;">${pb.date}</div></div><div class="pb-value">${pb.weight}kg × ${pb.reps}</div></div>`).join('');
     const chkHistory=document.getElementById('checkin-history');
     if(chkHistory&&checkinHistory.length>0)chkHistory.innerHTML='<div style="margin-top:16px;">'+checkinHistory.map(c=>`<div class="checkin-item"><div class="checkin-date">${c.date}</div><div class="checkin-detail">Weight: ${c.weight}kg • Energy: ${c.energy}/10</div><div class="checkin-detail">${c.notes}</div></div>`).join('')+'</div>';
     if(measurements.chest){
@@ -2101,7 +2163,7 @@ async function renderSupplementHistory() {
     });
     const names=[...namesSet];
     if(names.length===0){
-        container.innerHTML='<p style="color:var(--text-muted);font-size:12px;">No supplement logs yet.</p>';
+        container.innerHTML='<p style="color:var(--label-secondary);font-size:12px;">No supplement logs yet.</p>';
         return;
     }
     const headers=dayKeys.map(day=>{
@@ -2205,7 +2267,7 @@ async function renderHistory() {
         list.innerHTML=`<div style="text-align:center;padding:32px 16px;">
             <div style="font-size:48px;margin-bottom:12px;">💪</div>
             <div style="color:var(--text);font-size:16px;font-weight:700;margin-bottom:8px;">No sessions yet</div>
-            <div style="color:var(--text-muted);font-size:13px;margin-bottom:16px;">Log your first workout to start tracking your progress</div>
+            <div style="color:var(--label-secondary);font-size:13px;margin-bottom:16px;">Log your first workout to start tracking your progress</div>
             <button class="btn" onclick="showScreen('screen-train')">Start Training</button>
         </div>`;
         return;
@@ -2217,19 +2279,19 @@ async function renderHistory() {
         if(w.type==='rest'){
             return `<div style="border-bottom:1px solid var(--border);padding:12px 0;">
                 <div style="color:#0F4C81;font-weight:700;font-size:13px;">😴 Rest Day — ${w.date}</div>
-                <div style="color:var(--text-muted);font-size:12px;margin-top:2px;">${daySteps>0?daySteps.toLocaleString()+' steps':'No steps logged'}</div>
+                <div style="color:var(--label-secondary);font-size:12px;margin-top:2px;">${daySteps>0?daySteps.toLocaleString()+' steps':'No steps logged'}</div>
             </div>`;
         }
         if(w.type==='cardio'){
             return `<div style="border-bottom:1px solid var(--border);padding:12px 0;">
                 <div style="color:#10B981;font-weight:700;font-size:13px;">🏃 ${w.type} — ${w.date}${w.duration?' • '+w.duration+' mins':''}</div>
-                <div style="color:var(--text-muted);font-size:12px;margin-top:2px;">${w.distance?w.distance+'km • ':''}${w.intensity||''}${daySteps>0?' • '+daySteps.toLocaleString()+' steps':''}</div>
+                <div style="color:var(--label-secondary);font-size:12px;margin-top:2px;">${w.distance?w.distance+'km • ':''}${w.intensity||''}${daySteps>0?' • '+daySteps.toLocaleString()+' steps':''}</div>
             </div>`;
         }
         return `<div style="border-bottom:1px solid var(--border);padding:12px 0;">
-            <div style="color:var(--primary);font-weight:700;font-size:13px;">💪 ${w.muscle} — ${w.date}${w.duration&&w.duration>0?' • '+w.duration+' mins':''}</div>
-            ${w.exercises?w.exercises.map(e=>`<div style="color:var(--text-muted);font-size:12px;margin-top:2px;">${e.name} — ${e.sets.length} sets</div>`).join(''):''}
-            ${daySteps>0?`<div style="color:var(--text-muted);font-size:12px;margin-top:2px;">${daySteps.toLocaleString()} steps</div>`:''}
+            <div style="color:var(--text);font-weight:700;font-size:13px;">💪 ${w.muscle} — ${w.date}${w.duration&&w.duration>0?' • '+w.duration+' mins':''}</div>
+            ${w.exercises?w.exercises.map(e=>`<div style="color:var(--label-secondary);font-size:12px;margin-top:2px;">${e.name} — ${e.sets.length} sets</div>`).join(''):''}
+            ${daySteps>0?`<div style="color:var(--label-secondary);font-size:12px;margin-top:2px;">${daySteps.toLocaleString()} steps</div>`:''}
         </div>`;
     }).join('');
 }
@@ -2350,7 +2412,7 @@ function showPreviousWorkoutSummary(category) {
     el.innerHTML=`<div style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:10px;padding:12px;margin-bottom:12px;">
         <div style="color:#EA580C;font-size:11px;font-weight:700;margin-bottom:4px;">LAST ${category.toUpperCase()} SESSION</div>
         <div style="color:var(--text);font-size:13px;">${last.date} • ${last.duration||0} mins</div>
-        ${topLift?`<div style="color:var(--text-muted);font-size:12px;margin-top:4px;">${topLift.name} — ${topLift.sets.length} sets</div>`:''}
+        ${topLift?`<div style="color:var(--label-secondary);font-size:12px;margin-top:4px;">${topLift.name} — ${topLift.sets.length} sets</div>`:''}
     </div>`;
 }
 
@@ -2959,9 +3021,13 @@ async function loadMealTemplate() {
 function renderWeightChart() {
     const canvas=document.getElementById('weight-chart');if(!canvas)return;
     const ctx=canvas.getContext('2d');
+    const isDark=document.body.classList.contains('dark');
+    const lineColor=isDark?'#ffffff':'#111111';
+    const labelColor=isDark?'rgba(255,255,255,0.65)':'#8E8E93';
+    const gridColor=isDark?'#38383A':'#E5E5EA';
     const data=checkinHistory.slice(0,8).reverse();
     if(data.length<2){
-        ctx.fillStyle='var(--text-muted)';
+        ctx.fillStyle=labelColor;
         ctx.font='13px sans-serif';
         ctx.textAlign='center';
         ctx.fillText('Log 2+ check-ins to see your trend',canvas.width/2,canvas.height/2);
@@ -2974,13 +3040,13 @@ function renderWeightChart() {
     const pad=30;
     ctx.clearRect(0,0,w,h);
     // Grid lines
-    ctx.strokeStyle='#E2E8F0';ctx.lineWidth=1;
+    ctx.strokeStyle=gridColor;ctx.lineWidth=1;
     for(let i=0;i<=4;i++){
         const y=pad+(h-pad*2)*(i/4);
         ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(w-pad,y);ctx.stroke();
     }
     // Line
-    ctx.strokeStyle='#2563EB';ctx.lineWidth=2.5;ctx.beginPath();
+    ctx.strokeStyle=lineColor;ctx.lineWidth=2.5;ctx.beginPath();
     data.forEach((d,i)=>{
         const x=pad+(w-pad*2)*(i/(data.length-1));
         const y=pad+(h-pad*2)*(1-(parseFloat(d.weight)-min)/(max-min));
@@ -2988,14 +3054,14 @@ function renderWeightChart() {
     });
     ctx.stroke();
     // Dots
-    ctx.fillStyle='#2563EB';
+    ctx.fillStyle=lineColor;
     data.forEach((d,i)=>{
         const x=pad+(w-pad*2)*(i/(data.length-1));
         const y=pad+(h-pad*2)*(1-(parseFloat(d.weight)-min)/(max-min));
         ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();
     });
     // Labels
-    ctx.fillStyle='#64748B';ctx.font='11px sans-serif';ctx.textAlign='center';
+    ctx.fillStyle=labelColor;ctx.font='11px sans-serif';ctx.textAlign='center';
     data.forEach((d,i)=>{
         const x=pad+(w-pad*2)*(i/(data.length-1));
         ctx.fillText(d.weight+'kg',x,h-8);
