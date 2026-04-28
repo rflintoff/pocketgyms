@@ -2,6 +2,11 @@
 function hapticTap(){ try{ navigator.vibrate(10); }catch(_){} }
 function hapticError(){ try{ navigator.vibrate(50); }catch(_){} }
 function hapticAchievement(){ try{ navigator.vibrate([30,20,30]); }catch(_){} }
+// ── DEV MODE ─────────────────────────────────────────────
+if (new URLSearchParams(window.location.search).get('dev') === 'true') {
+  localStorage.setItem('devMode', 'true');
+}
+const isDevMode = localStorage.getItem('devMode') === 'true';
 document.addEventListener('click',(e)=>{
     const el=e.target.closest('button,.nav-item,.routine-item,.category-btn,.meal-action-btn,.filter-btn,.tag,.btn-oauth,.supplement-picker-add,.supplement-picker-close,.lang-btn,.path-btn,.unit-btn,.food-entry-delete,.exercise-block .remove-set');
     if(el)hapticTap();
@@ -1011,6 +1016,7 @@ function showScreen(id) {
     if(id==='screen-profile'){
         void loadSettings();
         globalThis.renderProfileTab?.();
+        if (isDevMode) renderDevPanel();
     }
     if(id==='screen-train'){showTrainSection('menu');renderRoutinesList();updateStepsDisplay();renderTrainWeek();}
 }
@@ -2041,6 +2047,19 @@ async function addCatalogSupplementToListByIndex(idx){
     showToast(t('supplementAddedToast'),'success',1400);
 }
 
+function getGreeting(name) {
+  const hour = new Date().getHours();
+  let timeOfDay;
+  if (hour >= 5 && hour < 12) timeOfDay = 'morning';
+  else if (hour < 17) timeOfDay = 'afternoon';
+  else if (hour < 21) timeOfDay = 'evening';
+  else timeOfDay = 'night';
+  return {
+    title: `Good ${timeOfDay}, ${name} 👋`,
+    subtitle: "Let's crush your goals today."
+  };
+}
+
 // New home tab UI
 async function updateHome() {
     const calTarget=settings.calTarget||2000;
@@ -2071,19 +2090,11 @@ async function updateHome() {
     updateUpcoming();
     updateNutritionTab(cals, protein, carbs, fats, calTarget, proteinTarget);
 
-    // Greeting
-    const hour = new Date().getHours();
+    const greeting = getGreeting(settings.name || 'Athlete');
     const greetingEl = document.getElementById('home-hero-title');
-    if (greetingEl) {
-      const name = settings.name || 'Athlete';
-      let greeting = 'Good morning 👋';
-      if (hour >= 12 && hour < 17) greeting = 'Good afternoon 👋';
-      else if (hour >= 17 && hour < 20) greeting = 'Good evening 👋';
-      else if (hour >= 20) greeting = 'Good night 👋';
-      greetingEl.textContent = greeting;
-    }
+    if (greetingEl) greetingEl.textContent = greeting.title;
     const subEl = document.getElementById('home-hero-sub');
-    if (subEl) subEl.textContent = `Let's crush your goals today, ${settings.name || 'Athlete'}.`;
+    if (subEl) subEl.textContent = greeting.subtitle;
 
     // Daily Score (Workout 25 + Cals 25 + Steps 25 + Protein 25)
     const todayWorkoutDone = workoutHistory.some(w => w.date === new Date().toLocaleDateString('en-GB') && w.type !== 'rest');
@@ -2162,18 +2173,35 @@ async function updateHome() {
         const d2 = new Date(now2);
         d2.setDate(now2.getDate() + mondayOffset2 + i);
         const ds2 = d2.toLocaleDateString('en-GB');
-        const done2 = !!(workoutHistory.find(w => w.date === ds2) || cardioHistory.find(c => c.date === ds2));
-        if (done2) weekDone++;
         const isToday2 = i === (dow2 === 0 ? 6 : dow2 - 1);
-        const h = done2 ? 40 : isToday2 ? 24 : Math.floor(Math.random() * 16) + 8;
-        const color = done2 ? '#22c55e' : isToday2 ? '#FFD60A' : 'var(--border)';
+
+        const isRestDay = !!(workoutHistory.find(w => w.date === ds2 && w.type === 'rest'));
+        const isWorkoutDone = !!(
+          workoutHistory.find(w => w.date === ds2 && w.type !== 'rest') ||
+          cardioHistory.find(c => c.date === ds2)
+        );
+
+        if (isWorkoutDone) weekDone++;
+
+        const h = isWorkoutDone ? 40 : isRestDay ? 20 : isToday2 ? 24 : 12;
+        const color = isWorkoutDone
+          ? '#22c55e'
+          : isRestDay
+            ? '#6E6E73'
+            : isToday2
+              ? '#FFD60A'
+              : 'var(--border)';
+
         bars.push(`<div style="flex:1;height:${h}px;background:${color};border-radius:4px;align-self:flex-end;"></div>`);
       }
       homeWeeklyBars.innerHTML = bars.join('');
-      const totalScheduled2 = (Array.isArray(savedRoutines) ? savedRoutines : []).reduce((a, r) => a + (r.scheduled_days ? r.scheduled_days.length : 0), 0);
-      const consistency2 = totalScheduled2 > 0 ? Math.round((weekDone / Math.min(totalScheduled2, 7)) * 100) : 0;
+
+      const totalPlanned = (Array.isArray(savedRoutines) ? savedRoutines : [])
+        .reduce((a, r) => a + (r.scheduled_days ? r.scheduled_days.length : 0), 0);
+      const denominator = totalPlanned > 0 ? Math.min(totalPlanned, 7) : 7;
+      const consistency2 = Math.round((weekDone / denominator) * 100);
       setText('home-weekly-consistency', consistency2 + '%');
-      setText('home-weekly-text', `${weekDone} of ${Math.min(totalScheduled2, 7)} workouts completed`);
+      setText('home-weekly-text', `${weekDone} of ${denominator} workouts completed`);
     }
 
     // Home today's plan card
@@ -2796,7 +2824,13 @@ async function loadFromStorage() {
         supplements_catalog:Array.isArray(profile.supplements_catalog)?profile.supplements_catalog:undefined
     };
     selectedLang=settings.language||'en';
-    if(profile.onboarded)document.getElementById('onboarding').style.display='none';
+    if (profile.onboarded && !isDevMode) {
+        document.getElementById('onboarding').style.display = 'none';
+    } else if (!profile.onboarded) {
+        // Show onboarding for new users
+        const onboarding = document.getElementById('onboarding');
+        if (onboarding) onboarding.style.display = 'flex';
+    }
     populateSettingsFields(settings);
     applyTranslations();checkBadges();updateHome();
     await renderSupplements();
@@ -4365,6 +4399,40 @@ function renderProfileTab() {
     }).join('');
   }
 
+function renderDevPanel() {
+  const existing = document.getElementById('dev-panel-section');
+  if (existing) return;
+  const profileScreen = document.getElementById('screen-profile');
+  if (!profileScreen) return;
+  const panel = document.createElement('div');
+  panel.id = 'dev-panel-section';
+  panel.className = 'card';
+  panel.style.marginBottom = '12px';
+  panel.style.border = '1.5px dashed #FFD60A';
+  panel.innerHTML = `
+    <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:#FFD60A;margin-bottom:12px;">⚡ DEVELOPER MODE</p>
+    <button onclick="devOpenOnboarding()" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:12px;font-size:13px;font-weight:700;color:var(--text);cursor:pointer;margin-bottom:8px;text-align:left;">
+      👁 Preview Onboarding
+    </button>
+    <button onclick="devResetOnboarding()" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:12px;font-size:13px;font-weight:700;color:var(--text);cursor:pointer;margin-bottom:8px;text-align:left;">
+      🔄 Reset Onboarding Flag
+    </button>
+    <button onclick="devResetAllData()" style="width:100%;background:var(--bg);border:1px solid #ef4444;border-radius:12px;padding:12px;font-size:13px;font-weight:700;color:#ef4444;cursor:pointer;margin-bottom:8px;text-align:left;">
+      🗑 Reset All Data
+    </button>
+    <button onclick="devToggleMode()" style="width:100%;background:transparent;border:none;font-size:12px;color:var(--label-secondary);cursor:pointer;padding:4px;">
+      Disable dev mode
+    </button>
+  `;
+  // Insert before the About card (last card in profile)
+  const aboutCard = profileScreen.querySelector('.card:last-of-type');
+  if (aboutCard) {
+    profileScreen.insertBefore(panel, aboutCard);
+  } else {
+    profileScreen.appendChild(panel);
+  }
+}
+
 function openSleepModal() {
   const modal = document.getElementById('sleep-modal');
   if (modal) { modal.style.display = 'flex'; }
@@ -4430,4 +4498,30 @@ function getWorkoutMuscles(name) {
   if (/back/.test(n)) return 'Back, Biceps';
   if (/shoulder/.test(n)) return 'Shoulders, Traps';
   return 'Multiple Muscle Groups';
+}
+
+function devResetOnboarding() {
+  if (!confirm('Reset onboarding? This will show the setup flow again on next load.')) return;
+  settings.onboarded = false;
+  PG.profile.save({ onboarded: false }).then(() => {
+    showToast('Onboarding reset — reload to see it', 'success', 2500);
+  });
+}
+
+function devOpenOnboarding() {
+  const onboarding = document.getElementById('onboarding');
+  if (onboarding) {
+    onboarding.style.display = 'flex';
+    ob2Next(1);
+  }
+}
+
+function devResetAllData() {
+  if (!confirm('Delete all workout, nutrition and progress data? Account stays intact.')) return;
+  resetAllData();
+}
+
+function devToggleMode() {
+  localStorage.removeItem('devMode');
+  showToast('Dev mode disabled — reload', 'success', 2000);
 }
