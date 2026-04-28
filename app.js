@@ -934,7 +934,7 @@ function showToast(message,type='success',duration=2000){
     if(!toast)return;
     if(toastTimer)clearTimeout(toastTimer);
     if(type==='error')hapticError();
-    else if(type==='success')hapticSuccess();
+    else if(type==='success'&&typeof hapticSuccess==='function')hapticSuccess();
     toast.textContent=message;
     toast.className=type==='error'?'toast toast-error':'toast toast-success';
     toast.style.display='block';
@@ -1849,6 +1849,7 @@ async function renderSupplements() {
     const supplementMap=new Map(savedSupplements.filter(s=>s&&s.name).map(s=>[s.name, s]));
     const list=document.getElementById('supplement-list');if(!list)return;
     const allSupplements=getDisplayedSupplementNames(savedSupplements);
+    console.log('rendered supplements:', allSupplements);
     renderedSupplements=allSupplements;
     if(allSupplements.length===0){
         list.innerHTML=`<p class="supplement-empty-msg">${t('supplementsListEmpty')}</p>`;
@@ -1930,6 +1931,7 @@ async function addCustomSupplement() {
 
 async function removeSupplementFromList(supplementName){
     const name=String(supplementName||'').trim();
+    console.log('removing:', name);
     if(!name) return;
     const nameLower=name.toLowerCase();
 
