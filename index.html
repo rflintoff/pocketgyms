@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>PocketGyms</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -11,450 +11,622 @@
     <script src="app.js"></script>
 </head>
 <body>
+
 <!-- AUTH MODAL -->
-<div id="auth-modal" style="display:flex;">
-    <div class="auth-card">
-      <h2>POCKETGYMS</h2>
-      <p>Sign in to sync your data across all devices.</p>
-  
-      <button onclick="PG.auth.signInGoogle()" class="btn-oauth btn-google">
-        <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
-          <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
-          <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
-          <path d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" fill="#FBBC05"/>
-          <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z" fill="#EA4335"/>
-        </svg>
-        Continue with Google
+<div id="auth-modal" style="display:none;">
+  <div class="auth-card">
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="width:56px;height:56px;background:#FFD60A;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:22px;font-weight:800;color:#111;">P</div>
+      <h2 style="font-size:20px;font-weight:800;letter-spacing:1px;">POCKETGYMS</h2>
+      <p style="font-size:13px;color:var(--label-secondary);margin-top:4px;">Your fitness journey starts here.</p>
+    </div>
+    <button onclick="PG.auth.signInApple()" class="btn-oauth btn-apple" style="display:flex;align-items:center;justify-content:center;gap:10px;background:#111;color:#fff;border-color:#111;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+      Continue with Apple
+    </button>
+    <button onclick="PG.auth.signInGoogle()" class="btn-oauth btn-google">
+      <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+        <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+        <path d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" fill="#FBBC05"/>
+        <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z" fill="#EA4335"/>
+      </svg>
+      Continue with Google
+    </button>
+    <div class="auth-divider"><span>or</span></div>
+    <input type="email" id="auth-email" placeholder="Email address">
+    <input type="password" id="auth-password" placeholder="Password">
+    <button onclick="handleEmailAuth()" id="auth-submit-btn" style="width:100%;background:#FFD60A;color:#111;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:10px;">Sign In</button>
+    <button onclick="toggleAuthMode()" id="auth-toggle-btn" style="width:100%;background:transparent;color:var(--text);border:1.5px solid var(--border);border-radius:12px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;">No account? Sign up</button>
+    <p id="auth-error" style="color:var(--danger);font-size:13px;display:none;margin-top:8px;text-align:center;"></p>
+    <p style="font-size:11px;color:var(--label-secondary);text-align:center;margin-top:12px;">By continuing, you agree to our <span style="text-decoration:underline;cursor:pointer;">Terms & Privacy Policy</span></p>
+  </div>
+</div>
+
+<!-- ONBOARDING V2 -->
+<div id="onboarding" style="display:none;" class="onboarding-v2">
+
+  <!-- Progress bar -->
+  <div class="ob2-progress-bar">
+    <div class="ob2-progress-fill" id="ob2-progress-fill" style="width:20%;"></div>
+  </div>
+
+  <!-- SCREEN 1: WELCOME / QUICK START -->
+  <div class="ob2-screen active" id="ob2-s1">
+    <div style="text-align:center;padding:40px 24px;">
+      <div style="width:72px;height:72px;background:#FFD60A;border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:32px;font-weight:800;color:#111;">P</div>
+      <h1 style="font-size:28px;font-weight:800;color:#fff;margin-bottom:8px;">Get set up in<br>30 seconds</h1>
+      <p style="font-size:15px;color:rgba(255,255,255,0.7);margin-bottom:32px;">Answer a few quick questions and we'll personalise your experience.</p>
+      <button onclick="ob2Next(2)" style="width:100%;max-width:360px;background:#FFD60A;color:#111;border:none;border-radius:16px;padding:18px;font-size:16px;font-weight:800;cursor:pointer;margin-bottom:12px;">Start Setup</button>
+      <button onclick="ob2Skip()" style="width:100%;max-width:360px;background:transparent;color:rgba(255,255,255,0.7);border:1.5px solid rgba(255,255,255,0.2);border-radius:16px;padding:16px;font-size:14px;font-weight:700;cursor:pointer;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;vertical-align:middle;"><path d="M13 2l3 10H2l3-10"/><path d="M12 22V12"/></svg>
+        Skip for now
       </button>
-      <button onclick="PG.auth.signInApple()" class="btn-oauth btn-apple">
-        Continue with Apple
-      </button>
-  
-      <div class="auth-divider"><span>or</span></div>
-  
-      <input type="email" id="auth-email" placeholder="Email address">
-      <input type="password" id="auth-password" placeholder="Password">
-  
-      <button onclick="handleEmailAuth()" class="btn-primary" id="auth-submit-btn" style="background:#f5c842;color:#111;">Sign In</button>
-      <button onclick="toggleAuthMode()" class="btn-ghost" id="auth-toggle-btn">
-        No account? Sign up
-      </button>
-      <p id="auth-error" style="color:var(--danger);font-size:13px;display:none;"></p>
+      <p style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:12px;">You can always update your details later.</p>
     </div>
   </div>
-<!-- ONBOARDING -->
-<div class="onboarding" id="onboarding" style="display:none;">
-    <div class="step-indicator">
-        <div class="step-dot active" id="dot-0"></div>
-        <div class="step-dot" id="dot-1"></div>
-        <div class="step-dot" id="dot-2"></div>
-        <div class="step-dot" id="dot-3"></div>
-    </div>
 
-    <!-- STEP 0: LANGUAGE -->
-    <div class="onboarding-step active" id="ob-step-0">
-        <div style="font-size:56px; margin-bottom:16px;">🌍</div>
-        <h1 id="ob-title-lang">Choose Language</h1>
-        <p id="ob-sub-lang">Select your preferred language</p>
-        <div class="lang-grid">
-            <div class="lang-btn selected" onclick="selectLang('en', this)">🇬🇧 English</div>
-            <div class="lang-btn" onclick="selectLang('pt', this)">🇧🇷 Português</div>
-            <div class="lang-btn" onclick="selectLang('es', this)">🇪🇸 Español</div>
-            <div class="lang-btn" onclick="selectLang('fr', this)">🇫🇷 Français</div>
-            <div class="lang-btn" onclick="selectLang('de', this)">🇩🇪 Deutsch</div>
-        </div>
-        <button class="btn" onclick="obNext(1)" id="ob-btn-lang">Continue</button>
+  <!-- SCREEN 2: GOAL -->
+  <div class="ob2-screen" id="ob2-s2">
+    <button onclick="ob2Back(1)" class="ob2-back">←</button>
+    <h2 class="ob2-title">What's your main goal?</h2>
+    <p class="ob2-sub">This helps us build the right plan for you.</p>
+    <div class="ob2-options" id="ob2-goal-options">
+      <div class="ob2-option" onclick="ob2Select('goal','fatloss',this)">
+        <div class="ob2-option-icon">🔥</div>
+        <div><div class="ob2-option-title">Lose Fat</div><div class="ob2-option-sub">Lean down and get shredded</div></div>
+        <div class="ob2-option-check">✓</div>
+      </div>
+      <div class="ob2-option" onclick="ob2Select('goal','muscle',this)">
+        <div class="ob2-option-icon">💪</div>
+        <div><div class="ob2-option-title">Build Muscle</div><div class="ob2-option-sub">Build size and strength</div></div>
+        <div class="ob2-option-check">✓</div>
+      </div>
+      <div class="ob2-option" onclick="ob2Select('goal','hybrid',this)">
+        <div class="ob2-option-icon">⚡</div>
+        <div><div class="ob2-option-title">Hybrid / Recomposition</div><div class="ob2-option-sub">Build muscle while losing fat</div></div>
+        <div class="ob2-option-check">✓</div>
+      </div>
+      <div class="ob2-option" onclick="ob2Select('goal','fitness',this)">
+        <div class="ob2-option-icon">🏃</div>
+        <div><div class="ob2-option-title">Improve Fitness</div><div class="ob2-option-sub">Feel better and move more</div></div>
+        <div class="ob2-option-check">✓</div>
+      </div>
     </div>
+    <button onclick="ob2Next(3)" class="ob2-cta">Continue</button>
+  </div>
 
-    <!-- STEP 1: PATH -->
-    <div class="onboarding-step" id="ob-step-1">
-        <div style="font-size:56px; margin-bottom:16px;">💪</div>
-        <h1 id="ob-title-path">Welcome to PocketGyms</h1>
-        <p id="ob-sub-path">How do you want to get started?</p>
-        <div class="path-grid">
-            <div class="path-btn primary-path" onclick="obNext(2)">
-                <div class="path-btn-title" id="ob-path-setup-title">Set Up My Goals</div>
-                <div class="path-btn-sub" id="ob-path-setup-sub">Personalise your targets and get a custom plan</div>
-            </div>
-            <div class="path-btn" onclick="fastTrack()">
-                <div class="path-btn-title" id="ob-path-fast-title">Jump Straight In</div>
-                <div class="path-btn-sub" id="ob-path-fast-sub">Skip setup and start tracking now</div>
-            </div>
-        </div>
+  <!-- SCREEN 3: EXPERIENCE -->
+  <div class="ob2-screen" id="ob2-s3">
+    <button onclick="ob2Back(2)" class="ob2-back">←</button>
+    <h2 class="ob2-title">What's your training experience?</h2>
+    <p class="ob2-sub">We'll match your plan to your current level.</p>
+    <div class="ob2-options" id="ob2-exp-options">
+      <div class="ob2-option" onclick="ob2Select('experience','beginner',this)">
+        <div class="ob2-option-icon">🌱</div>
+        <div><div class="ob2-option-title">Beginner</div><div class="ob2-option-sub">New to training or getting back into it</div></div>
+        <div class="ob2-option-check">✓</div>
+      </div>
+      <div class="ob2-option" onclick="ob2Select('experience','intermediate',this)">
+        <div class="ob2-option-icon">💪</div>
+        <div><div class="ob2-option-title">Intermediate</div><div class="ob2-option-sub">Have some experience and consistent</div></div>
+        <div class="ob2-option-check">✓</div>
+      </div>
+      <div class="ob2-option" onclick="ob2Select('experience','advanced',this)">
+        <div class="ob2-option-icon">🏆</div>
+        <div><div class="ob2-option-title">Advanced</div><div class="ob2-option-sub">Very experienced and training hard</div></div>
+        <div class="ob2-option-check">✓</div>
+      </div>
     </div>
+    <button onclick="ob2Next(4)" class="ob2-cta">Continue</button>
+  </div>
 
-    <!-- STEP 2: DETAILS -->
-    <div class="onboarding-step" id="ob-step-2">
-        <div style="font-size:56px; margin-bottom:16px;">👋</div>
-        <h1 id="ob-title-details">About You</h1>
-        <p id="ob-sub-details">Tell us a bit about yourself</p>
-        <label id="lbl-name">Your First Name</label>
-        <input type="text" id="ob-name" placeholder="e.g. Ryan">
-        <label id="lbl-goal">Your Goal</label>
-        <select id="ob-goal">
-            <option value="beginner">Beginner — Learn the basics</option>
-            <option value="fatloss">Fat Loss — Lose weight</option>
-            <option value="muscle">Muscle Building — Get bigger</option>
-            <option value="fitness">General Fitness — Stay active</option>
-        </select>
-        <label id="lbl-env">Training Environment</label>
-        <select id="ob-environment">
-            <option value="gym">Gym</option>
-            <option value="home">Home</option>
-            <option value="both">Both</option>
-        </select>
-        <label id="lbl-diet">Dietary Preference</label>
-        <select id="ob-diet">
-            <option value="standard">Standard</option>
-            <option value="vegan">Vegan</option>
-            <option value="halal">Halal</option>
-        </select>
-        <button class="btn" onclick="obNext(3)" id="ob-btn-details">Next</button>
+  <!-- SCREEN 4: TRAINING DAYS -->
+  <div class="ob2-screen" id="ob2-s4">
+    <button onclick="ob2Back(3)" class="ob2-back">←</button>
+    <h2 class="ob2-title">How many days per week can you train?</h2>
+    <p class="ob2-sub">Be honest — we'll build a plan you can stick to.</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px;" id="ob2-days-options">
+      <div class="ob2-days-btn" onclick="ob2SelectDays('2-3',this)">
+        <div style="font-size:24px;font-weight:800;color:#fff;">2–3</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.6);">Days</div>
+      </div>
+      <div class="ob2-days-btn" onclick="ob2SelectDays('3-4',this)">
+        <div style="font-size:24px;font-weight:800;color:#fff;">3–4</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.6);">Days</div>
+      </div>
+      <div class="ob2-days-btn" onclick="ob2SelectDays('5+',this)">
+        <div style="font-size:24px;font-weight:800;color:#fff;">5+</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.6);">Days</div>
+      </div>
     </div>
-
-    <!-- STEP 3: STATS -->
-    <div class="onboarding-step" id="ob-step-3">
-        <div style="font-size:56px; margin-bottom:16px;">📊</div>
-        <h1 id="ob-title-stats">Your Stats</h1>
-        <p id="ob-sub-stats">We'll calculate your perfect targets</p>
-        <label id="lbl-height-unit">Height Units</label>
-        <div class="unit-toggle">
-            <div class="unit-btn selected" id="height-unit-cm" onclick="selectHeightUnit('cm')">cm</div>
-            <div class="unit-btn" id="height-unit-ft" onclick="selectHeightUnit('ft')">ft / in</div>
-        </div>
-        <div id="height-cm-input">
-            <label id="lbl-height-cm">Height (cm)</label>
-            <input type="number" id="ob-height-cm" placeholder="e.g. 175">
-        </div>
-        <div id="height-ft-input" style="display:none;">
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-                <div><label>Feet</label><input type="number" id="ob-height-ft" placeholder="5"></div>
-                <div><label>Inches</label><input type="number" id="ob-height-in" placeholder="9"></div>
-            </div>
-        </div>
-        <label id="lbl-weight-unit">Weight Units</label>
-        <div class="unit-toggle">
-            <div class="unit-btn selected" id="weight-unit-kg" onclick="selectWeightUnit('kg')">kg</div>
-            <div class="unit-btn" id="weight-unit-lbs" onclick="selectWeightUnit('lbs')">lbs</div>
-            <div class="unit-btn" id="weight-unit-st" onclick="selectWeightUnit('st')">stone</div>
-        </div>
-        <label id="lbl-current-weight">Current Weight</label>
-        <input type="number" id="ob-weight" placeholder="e.g. 80">
-        <label id="lbl-target-weight">Target Weight</label>
-        <input type="number" id="ob-target" placeholder="e.g. 75">
-        <label id="lbl-age">Age</label>
-        <input type="number" id="ob-age" placeholder="e.g. 25">
-        <label id="lbl-gender">Gender</label>
-        <select id="ob-gender">
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-        </select>
-        <label id="lbl-activity">Activity Level</label>
-        <select id="ob-activity">
-            <option value="1.2">Sedentary</option>
-            <option value="1.375">Lightly Active</option>
-            <option value="1.55" selected>Moderately Active</option>
-            <option value="1.725">Very Active</option>
-        </select>
-        <button class="btn" onclick="completeOnboarding()" id="ob-btn-stats">Let's Go 🚀</button>
-
+    <div style="background:rgba(255,214,10,0.15);border:1px solid rgba(255,214,10,0.3);border-radius:12px;padding:12px 14px;margin-bottom:24px;display:flex;gap:10px;">
+      <span style="font-size:18px;">🔥</span>
+      <span style="font-size:13px;color:rgba(255,255,255,0.8);" id="ob2-days-tip">3 days per week is a great start. Consistency is key!</span>
     </div>
+    <!-- Optional details -->
+    <p style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;">Optional details</p>
+    <p style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:10px;">Add your stats for better personalisation.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+      <div>
+        <label style="color:rgba(255,255,255,0.6);font-size:11px;">Weight (kg)</label>
+        <input type="number" id="ob2-weight" placeholder="75" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:10px;padding:10px;width:100%;font-size:14px;">
+      </div>
+      <div>
+        <label style="color:rgba(255,255,255,0.6);font-size:11px;">Height (cm)</label>
+        <input type="number" id="ob2-height" placeholder="175" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:10px;padding:10px;width:100%;font-size:14px;">
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+      <div>
+        <label style="color:rgba(255,255,255,0.6);font-size:11px;">Age</label>
+        <input type="number" id="ob2-age" placeholder="25" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:10px;padding:10px;width:100%;font-size:14px;">
+      </div>
+      <div>
+        <label style="color:rgba(255,255,255,0.6);font-size:11px;">Gender</label>
+        <select id="ob2-gender" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:10px;padding:10px;width:100%;font-size:14px;">
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-bottom:24px;">
+      <label style="color:rgba(255,255,255,0.6);font-size:11px;">First name</label>
+      <input type="text" id="ob2-name" placeholder="e.g. Ryan" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:10px;padding:10px;width:100%;font-size:14px;">
+    </div>
+    <button onclick="ob2Complete()" class="ob2-cta">Continue</button>
+    <button onclick="ob2Skip()" style="width:100%;background:transparent;color:rgba(255,255,255,0.5);border:none;padding:12px;font-size:13px;cursor:pointer;text-decoration:underline;margin-top:4px;">Skip this step</button>
+  </div>
+
+  <!-- SCREEN 5: ALL SET -->
+  <div class="ob2-screen" id="ob2-s5">
+    <div style="text-align:center;padding:40px 24px;">
+      <div style="font-size:64px;margin-bottom:20px;">🎯</div>
+      <h1 style="font-size:28px;font-weight:800;color:#fff;margin-bottom:8px;">You're all set!</h1>
+      <p style="font-size:15px;color:rgba(255,255,255,0.7);margin-bottom:32px;">Your personalised plan is ready.<br>Let's crush your goals together.</p>
+      <div style="background:rgba(255,255,255,0.08);border-radius:16px;padding:16px;margin-bottom:24px;text-align:left;" id="ob2-summary">
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.1);">
+          <span style="color:rgba(255,255,255,0.6);font-size:13px;">Goal</span>
+          <span style="color:#FFD60A;font-size:13px;font-weight:700;" id="ob2-sum-goal">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.1);">
+          <span style="color:rgba(255,255,255,0.6);font-size:13px;">Plan</span>
+          <span style="color:#FFD60A;font-size:13px;font-weight:700;" id="ob2-sum-plan">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;">
+          <span style="color:rgba(255,255,255,0.6);font-size:13px;">Start Date</span>
+          <span style="color:#FFD60A;font-size:13px;font-weight:700;">Today</span>
+        </div>
+      </div>
+      <button onclick="ob2GoToDashboard()" style="width:100%;background:#FFD60A;color:#111;border:none;border-radius:16px;padding:18px;font-size:16px;font-weight:800;cursor:pointer;">Go to Dashboard →</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- SLEEP LOG MODAL -->
+<div id="sleep-modal" style="display:none;position:fixed;inset:0;z-index:50000;background:rgba(0,0,0,0.6);display:none;align-items:flex-end;justify-content:center;">
+  <div style="background:var(--card);border-radius:24px 24px 0 0;padding:24px;width:100%;max-width:520px;">
+    <div style="width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px;"></div>
+    <h3 style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:6px;">Log Sleep</h3>
+    <p style="font-size:13px;color:var(--label-secondary);margin-bottom:16px;">How many hours did you sleep last night?</p>
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+      <button onclick="setSleepQuick(6)" class="sleep-quick-btn">6h</button>
+      <button onclick="setSleepQuick(6.5)" class="sleep-quick-btn">6.5h</button>
+      <button onclick="setSleepQuick(7)" class="sleep-quick-btn">7h</button>
+      <button onclick="setSleepQuick(7.5)" class="sleep-quick-btn">7.5h</button>
+      <button onclick="setSleepQuick(8)" class="sleep-quick-btn">8h</button>
+      <button onclick="setSleepQuick(8.5)" class="sleep-quick-btn">8.5h</button>
+      <button onclick="setSleepQuick(9)" class="sleep-quick-btn">9h</button>
+    </div>
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:6px;">CUSTOM (hours)</label>
+    <input type="number" id="sleep-input" placeholder="e.g. 7.5" step="0.5" min="0" max="24" style="margin-bottom:16px;">
+    <div style="display:flex;gap:10px;">
+      <button onclick="closeSleepModal()" style="flex:1;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:14px;font-size:14px;font-weight:700;color:var(--text);cursor:pointer;">Cancel</button>
+      <button onclick="saveSleep()" style="flex:2;background:#FFD60A;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:800;color:#111;cursor:pointer;">Save Sleep</button>
+    </div>
+  </div>
 </div>
 
 <!-- HEADER -->
 <div class="header" style="display:none;">
-    <h1>POCKETGYMS</h1>
-    <span class="header-greeting" id="header-greeting"></span>
+  <h1>POCKETGYMS</h1>
+  <span class="header-greeting" id="header-greeting"></span>
 </div>
 
-<!-- HOME SCREEN -->
+<!-- ═══════════════════════════════════════════════════════
+     HOME SCREEN V2
+═══════════════════════════════════════════════════════ -->
 <div class="screen active" id="screen-home" style="display:none;">
 
-    <!-- Greeting -->
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;padding-top:4px;">
-      <div>
-        <h1 style="font-size:22px;font-weight:800;color:var(--text);letter-spacing:-0.3px;" id="home-hero-title">Good morning 👋</h1>
-        <p style="font-size:13px;color:var(--label-secondary);margin-top:3px;" id="home-hero-sub">Let's crush your goals today.</p>
-      </div>
-      <button onclick="showNotifications()" style="width:38px;height:38px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-      </button>
-    </div>
-  
-    <!-- Today's Overview -->
-    <div class="card" style="margin-bottom:12px;">
-      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:12px;">TODAY'S OVERVIEW</p>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
-        <div style="background:var(--bg);border-radius:10px;padding:10px 6px;text-align:center;">
-          <div style="font-size:16px;margin-bottom:4px;">🔥</div>
-          <div style="font-size:15px;font-weight:800;color:var(--text);line-height:1;" id="ov-calories">0</div>
-          <div style="font-size:10px;color:var(--label-secondary);margin-top:2px;">Calories</div>
-          <div style="font-size:10px;color:var(--label-secondary);margin-top:1px;" id="ov-cal-goal">goal —</div>
-          <div style="height:3px;background:var(--border);border-radius:2px;margin-top:6px;"><div id="ov-bar-cal" style="height:100%;border-radius:2px;background:#f5c842;width:0%;"></div></div>
-        </div>
-        <div style="background:var(--bg);border-radius:10px;padding:10px 6px;text-align:center;">
-          <div style="font-size:16px;margin-bottom:4px;">👟</div>
-          <div style="font-size:15px;font-weight:800;color:var(--text);line-height:1;" id="ov-steps">0</div>
-          <div style="font-size:10px;color:var(--label-secondary);margin-top:2px;">Steps</div>
-          <div style="font-size:10px;color:var(--label-secondary);margin-top:1px;">goal 10k</div>
-          <div style="height:3px;background:var(--border);border-radius:2px;margin-top:6px;"><div id="ov-bar-steps" style="height:100%;border-radius:2px;background:#22c55e;width:0%;"></div></div>
-        </div>
-        <div style="background:var(--bg);border-radius:10px;padding:10px 6px;text-align:center;">
-          <div style="font-size:16px;margin-bottom:4px;">⚡</div>
-          <div style="font-size:15px;font-weight:800;color:var(--text);line-height:1;" id="ov-active-min">0</div>
-          <div style="font-size:10px;color:var(--label-secondary);margin-top:2px;">Active min</div>
-          <div style="font-size:10px;color:var(--label-secondary);margin-top:1px;">goal 60</div>
-          <div style="height:3px;background:var(--border);border-radius:2px;margin-top:6px;"><div id="ov-bar-active" style="height:100%;border-radius:2px;background:#6366f1;width:0%;"></div></div>
-        </div>
-        <div style="background:var(--bg);border-radius:10px;padding:10px 6px;text-align:center;">
-          <div style="font-size:16px;margin-bottom:4px;">🌙</div>
-          <div style="font-size:15px;font-weight:800;color:var(--text);line-height:1;" id="ov-sleep">—</div>
-          <div style="font-size:10px;color:var(--label-secondary);margin-top:2px;">Sleep</div>
-          <div style="font-size:10px;color:var(--label-secondary);margin-top:1px;">goal 8h</div>
-          <div style="height:3px;background:var(--border);border-radius:2px;margin-top:6px;"><div id="ov-bar-sleep" style="height:100%;border-radius:2px;background:#a855f7;width:0%;"></div></div>
-        </div>
-      </div>
-    </div>
-  
-    <!-- Today's Workout -->
-    <div class="card" style="margin-bottom:12px;padding:0;overflow:hidden;">
-      <div style="padding:14px 16px 12px;">
-        <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:8px;">TODAY'S WORKOUT</p>
-        <h3 style="font-size:22px;font-weight:800;color:var(--text);margin-bottom:6px;" id="home-workout-title">Push Day</h3>
-        <span id="home-workout-focus-tag" style="display:inline-block;background:#f5c842;color:#111;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:6px;">Primary Focus</span>
-        <p style="font-size:12px;color:var(--label-secondary);margin-bottom:8px;" id="home-workout-muscles">Chest, Shoulders, Triceps</p>
-        <div style="display:flex;gap:14px;font-size:12px;color:var(--label-secondary);">
-          <span id="home-workout-duration">⏱ 45–60 min</span>
-          <span id="home-workout-kcal">🔥 ~480 kcal</span>
-        </div>
-      </div>
-      <div style="display:flex;gap:10px;padding:0 16px 12px;">
-        <button onclick="showScreen('screen-train')" style="flex:1;background:#f5c842;border:none;border-radius:12px;padding:14px 16px;font-size:14px;font-weight:800;color:#111;cursor:pointer;display:flex;align-items:center;justify-content:space-between;">
-          <div style="width:28px;height:28px;background:#111;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="#f5c842"><polygon points="2,1 9,5 2,9"/></svg>
-          </div>
-          <span style="flex:1;text-align:center;">Start Workout</span>
-        </button>
-        <button onclick="showScreen('screen-train')" style="background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;font-size:13px;font-weight:700;color:var(--text);cursor:pointer;white-space:nowrap;">View Plan</button>
-      </div>
-      <button onclick="logRestDay()" style="width:calc(100% - 32px);margin:0 16px 14px;display:block;background:none;border:1.5px solid var(--border);border-radius:12px;padding:11px;font-size:12px;font-weight:700;color:var(--label-secondary);cursor:pointer;text-align:center;letter-spacing:0.3px;">LOG A REST DAY</button>
-    </div>
-  
-    <!-- Daily Habits -->
-    <div class="card" style="margin-bottom:12px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-        <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">DAILY HABITS</p>
-        <span style="font-size:12px;color:var(--label-secondary);cursor:pointer;">Edit</span>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
-        <!-- Water -->
-        <div style="text-align:center;">
-          <div style="width:54px;height:54px;margin:0 auto 6px;position:relative;">
-            <svg width="54" height="54" viewBox="0 0 54 54" style="transform:rotate(-90deg);">
-              <circle cx="27" cy="27" r="22" fill="none" stroke="var(--border)" stroke-width="4"/>
-              <circle cx="27" cy="27" r="22" fill="none" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" stroke-dasharray="138.23" id="hab-ring-water" stroke-dashoffset="138.23"/>
-            </svg>
-            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:16px;">💧</div>
-          </div>
-          <div style="font-size:11px;font-weight:700;color:var(--text);">Water</div>
-          <div style="font-size:10px;color:var(--label-secondary);margin-top:1px;" id="hab-val-water">0 / 3L</div>
-          <div style="font-size:9px;color:#38bdf8;font-weight:600;margin-top:2px;" id="hab-nudge-water">Log water</div>
-        </div>
-        <!-- Nutrition -->
-        <div style="text-align:center;">
-          <div style="width:54px;height:54px;margin:0 auto 6px;position:relative;">
-            <svg width="54" height="54" viewBox="0 0 54 54" style="transform:rotate(-90deg);">
-              <circle cx="27" cy="27" r="22" fill="none" stroke="var(--border)" stroke-width="4"/>
-              <circle cx="27" cy="27" r="22" fill="none" stroke="#22c55e" stroke-width="4" stroke-linecap="round" stroke-dasharray="138.23" id="hab-ring-nutrition" stroke-dashoffset="138.23"/>
-            </svg>
-            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:16px;">🥗</div>
-          </div>
-          <div style="font-size:11px;font-weight:700;color:var(--text);">Nutrition</div>
-          <div style="font-size:10px;color:var(--label-secondary);margin-top:1px;" id="hab-val-nutrition">On Track</div>
-          <div style="font-size:9px;color:#22c55e;font-weight:600;margin-top:2px;" id="hab-nudge-nutrition">Log food</div>
-        </div>
-        <!-- Move -->
-        <div style="text-align:center;">
-          <div style="width:54px;height:54px;margin:0 auto 6px;position:relative;">
-            <svg width="54" height="54" viewBox="0 0 54 54" style="transform:rotate(-90deg);">
-              <circle cx="27" cy="27" r="22" fill="none" stroke="var(--border)" stroke-width="4"/>
-              <circle cx="27" cy="27" r="22" fill="none" stroke="#f5c842" stroke-width="4" stroke-linecap="round" stroke-dasharray="138.23" id="hab-ring-move" stroke-dashoffset="138.23"/>
-            </svg>
-            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:16px;">🏃</div>
-          </div>
-          <div style="font-size:11px;font-weight:700;color:var(--text);">Move</div>
-          <div style="font-size:10px;color:var(--label-secondary);margin-top:1px;" id="hab-val-move">0 / 10k</div>
-          <div style="font-size:9px;color:#f5c842;font-weight:600;margin-top:2px;" id="hab-nudge-move">Log steps</div>
-        </div>
-        <!-- Sleep -->
-        <div style="text-align:center;">
-          <div style="width:54px;height:54px;margin:0 auto 6px;position:relative;">
-            <svg width="54" height="54" viewBox="0 0 54 54" style="transform:rotate(-90deg);">
-              <circle cx="27" cy="27" r="22" fill="none" stroke="var(--border)" stroke-width="4"/>
-              <circle cx="27" cy="27" r="22" fill="none" stroke="#a855f7" stroke-width="4" stroke-linecap="round" stroke-dasharray="138.23" id="hab-ring-sleep" stroke-dashoffset="138.23"/>
-            </svg>
-            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:16px;">🌙</div>
-          </div>
-          <div style="font-size:11px;font-weight:700;color:var(--text);">Sleep</div>
-          <div style="font-size:10px;color:var(--label-secondary);margin-top:1px;" id="hab-val-sleep">— / 8h</div>
-          <div style="font-size:9px;color:#a855f7;font-weight:600;margin-top:2px;" id="hab-nudge-sleep">Log sleep</div>
-        </div>
-      </div>
-    </div>
-  
-    <!-- Nutrition Summary -->
-    <div class="card" style="margin-bottom:12px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-        <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">NUTRITION SUMMARY</p>
-        <span onclick="showScreen('screen-calories')" style="font-size:12px;color:var(--label-secondary);cursor:pointer;">View Log</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:16px;">
-        <div style="position:relative;flex-shrink:0;">
-          <svg width="80" height="80" viewBox="0 0 80 80" style="transform:rotate(-90deg);">
-            <circle cx="40" cy="40" r="32" fill="none" stroke="var(--border)" stroke-width="7"/>
-            <circle cx="40" cy="40" r="32" fill="none" stroke="#f5c842" stroke-width="7" stroke-linecap="round" stroke-dasharray="201.06" id="nut-ring" stroke-dashoffset="201.06"/>
-          </svg>
-          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
-            <span style="font-size:14px;font-weight:800;color:var(--text);display:block;line-height:1;" id="nut-ring-val">0</span>
-            <span style="font-size:10px;color:var(--label-secondary);" id="nut-ring-goal">/ — kcal</span>
-          </div>
-        </div>
-        <div style="flex:1;">
-          <div style="margin-bottom:8px;">
-            <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;">
-              <span style="font-weight:600;color:var(--text);">Protein</span>
-              <span style="color:var(--label-secondary);" id="nut-sum-protein">0 / —g</span>
-            </div>
-            <div style="height:5px;background:var(--border);border-radius:3px;"><div id="nut-bar-protein" style="height:100%;border-radius:3px;background:#22c55e;width:0%;"></div></div>
-          </div>
-          <div style="margin-bottom:8px;">
-            <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;">
-              <span style="font-weight:600;color:var(--text);">Carbs</span>
-              <span style="color:var(--label-secondary);" id="nut-sum-carbs">0 / —g</span>
-            </div>
-            <div style="height:5px;background:var(--border);border-radius:3px;"><div id="nut-bar-carbs" style="height:100%;border-radius:3px;background:#f5c842;width:0%;"></div></div>
-          </div>
-          <div>
-            <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;">
-              <span style="font-weight:600;color:var(--text);">Fats</span>
-              <span style="color:var(--label-secondary);" id="nut-sum-fats">0 / —g</span>
-            </div>
-            <div style="height:5px;background:var(--border);border-radius:3px;"><div id="nut-bar-fats" style="height:100%;border-radius:3px;background:#6366f1;width:0%;"></div></div>
-          </div>
-        </div>
-      </div>
-      <p style="font-size:11px;font-weight:700;color:#f5c842;margin-top:10px;" id="nut-remaining-label"></p>
-    </div>
-  
-    <!-- Progress Snapshot -->
-    <div class="card" style="margin-bottom:12px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-        <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">PROGRESS SNAPSHOT</p>
-        <span onclick="showScreen('screen-progress')" style="font-size:12px;color:var(--label-secondary);cursor:pointer;">See More</span>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
-        <div style="background:var(--bg);border-radius:10px;padding:12px;text-align:center;">
-          <div style="font-size:18px;margin-bottom:4px;">⚖️</div>
-          <div style="font-size:16px;font-weight:800;color:var(--text);" id="snap-weight">—</div>
-          <div style="font-size:10px;color:var(--label-secondary);margin-top:2px;">Weight</div>
-          <div style="font-size:10px;font-weight:700;margin-top:4px;" id="snap-weight-delta"></div>
-        </div>
-        <div style="background:var(--bg);border-radius:10px;padding:12px;text-align:center;">
-          <div style="font-size:18px;margin-bottom:4px;">💪</div>
-          <div style="font-size:16px;font-weight:800;color:var(--text);" id="snap-strength">—</div>
-          <div style="font-size:10px;color:var(--label-secondary);margin-top:2px;">Strength</div>
-          <div style="font-size:10px;font-weight:700;margin-top:4px;" id="snap-strength-delta"></div>
-        </div>
-        <div style="background:var(--bg);border-radius:10px;padding:12px;text-align:center;">
-          <div style="font-size:18px;margin-bottom:4px;">🎯</div>
-          <div style="font-size:16px;font-weight:800;color:var(--text);" id="snap-consistency">—</div>
-          <div style="font-size:10px;color:var(--label-secondary);margin-top:2px;">Consistency</div>
-          <div style="font-size:10px;font-weight:700;margin-top:4px;" id="snap-consistency-delta"></div>
-        </div>
-      </div>
-    </div>
-  
-    <!-- Streak -->
-    <div style="background:#111;border-radius:16px;padding:16px;margin-bottom:12px;">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
-        <div style="width:38px;height:38px;background:#f5c842;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🔥</div>
-        <div>
-          <div style="font-size:16px;font-weight:800;color:#fff;" id="streak-title">0 Day Streak</div>
-          <div style="font-size:12px;color:#888;" id="streak-subtitle">Start your streak today!</div>
-        </div>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;" id="streak-dots-row"></div>
-    </div>
-  
-    <!-- Upcoming -->
-    <div class="card" style="margin-bottom:12px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">UPCOMING</p>
-        <span onclick="showScreen('screen-train')" style="font-size:12px;color:#f5c842;font-weight:700;cursor:pointer;">View Calendar</span>
-      </div>
-      <div id="upcoming-list">
-        <p style="font-size:13px;color:var(--label-secondary);text-align:center;padding:12px 0;">No upcoming sessions scheduled.</p>
-      </div>
-    </div>
-  
+  <!-- Header -->
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;padding-top:4px;">
+    <span style="font-size:13px;font-weight:800;letter-spacing:2px;color:var(--text);opacity:0.5;">POCKETGYMS</span>
+    <button onclick="showNotifications()" style="position:relative;width:36px;height:36px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <div style="position:absolute;top:6px;right:6px;width:8px;height:8px;background:#FF3B30;border-radius:50%;border:1.5px solid var(--bg);"></div>
+    </button>
   </div>
 
-<!-- TRAIN SCREEN -->
+  <!-- Greeting -->
+  <div style="margin-bottom:20px;">
+    <h1 style="font-size:26px;font-weight:800;color:var(--text);letter-spacing:-0.5px;" id="home-hero-title">Good morning 👋</h1>
+    <p style="font-size:14px;color:var(--label-secondary);margin-top:3px;" id="home-hero-sub">Let's crush your goals today.</p>
+  </div>
+
+  <!-- DAILY SCORE CARD (hero) -->
+  <div class="card home-score-card" style="margin-bottom:14px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
+      <div>
+        <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:6px;">DAILY SCORE</p>
+        <div style="display:flex;align-items:baseline;gap:4px;">
+          <span style="font-size:52px;font-weight:800;color:var(--text);line-height:1;" id="home-daily-score">0</span>
+          <span style="font-size:20px;font-weight:700;color:var(--label-secondary);">/100</span>
+        </div>
+        <p style="font-size:13px;color:var(--label-secondary);margin-top:4px;" id="home-score-msg">Start tracking to build your score!</p>
+      </div>
+      <!-- Score ring -->
+      <div style="position:relative;width:80px;height:80px;flex-shrink:0;">
+        <svg width="80" height="80" viewBox="0 0 80 80" style="transform:rotate(-90deg);">
+          <circle cx="40" cy="40" r="32" fill="none" stroke="var(--border)" stroke-width="8"/>
+          <circle cx="40" cy="40" r="32" fill="none" stroke="#FFD60A" stroke-width="8" stroke-linecap="round" stroke-dasharray="201.06" id="home-score-ring" stroke-dashoffset="201.06"/>
+        </svg>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:18px;">📈</div>
+      </div>
+    </div>
+    <!-- 4 metric chips -->
+    <div style="height:1px;background:var(--border);margin-bottom:14px;"></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;">
+      <!-- Workout -->
+      <div style="text-align:center;padding:8px 4px;" onclick="showScreen('screen-train')" style="cursor:pointer;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 4px;display:block;color:var(--text);opacity:0.7;"><path d="M14.5 14h.5a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-.5M9.5 14H9a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h.5M4 12h16M14.5 10v4M9.5 10v4"/></svg>
+        <div style="font-size:9px;font-weight:700;letter-spacing:0.5px;color:var(--label-secondary);text-transform:uppercase;">WORKOUT</div>
+        <div style="font-size:11px;font-weight:700;color:#22c55e;margin-top:1px;" id="home-chip-workout">—</div>
+      </div>
+      <!-- Steps -->
+      <div style="text-align:center;padding:8px 4px;" onclick="showScreen('screen-train')" style="cursor:pointer;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" style="margin:0 auto 4px;display:block;color:var(--text);opacity:0.7;"><path d="M4 16c0 2 1.5 3 3.5 3s3.5-1 3.5-3V8c0-2 1.5-3 3.5-3s3.5 1 3.5 3"/><circle cx="7.5" cy="5" r="1"/><circle cx="16.5" cy="19" r="1"/></svg>
+        <div style="font-size:9px;font-weight:700;letter-spacing:0.5px;color:var(--label-secondary);text-transform:uppercase;">STEPS</div>
+        <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:1px;" id="home-chip-steps">0</div>
+        <div style="font-size:9px;color:var(--label-secondary);" id="home-chip-steps-goal">/10,000</div>
+      </div>
+      <!-- Protein -->
+      <div style="text-align:center;padding:8px 4px;" onclick="showScreen('screen-calories')" style="cursor:pointer;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" style="margin:0 auto 4px;display:block;color:var(--text);opacity:0.7;"><path d="M3 2v7c0 1.1.9 2 2 2h0"/><path d="M9 2v20"/><path d="M14 2v5a3 3 0 0 0 6 0V2"/><path d="M20 22v-8"/></svg>
+        <div style="font-size:9px;font-weight:700;letter-spacing:0.5px;color:var(--label-secondary);text-transform:uppercase;">PROTEIN</div>
+        <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:1px;" id="home-chip-protein">0g</div>
+        <div style="font-size:9px;color:var(--label-secondary);" id="home-chip-protein-goal">/150g</div>
+      </div>
+      <!-- Sleep -->
+      <div style="text-align:center;padding:8px 4px;cursor:pointer;" onclick="openSleepModal()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" style="margin:0 auto 4px;display:block;color:var(--text);opacity:0.7;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <div style="font-size:9px;font-weight:700;letter-spacing:0.5px;color:var(--label-secondary);text-transform:uppercase;">SLEEP</div>
+        <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:1px;" id="home-chip-sleep">—</div>
+        <div style="font-size:9px;color:var(--label-secondary);">/8h</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TODAY'S PLAN CARD -->
+  <div class="card" style="margin-bottom:14px;padding:0;overflow:hidden;">
+    <div style="padding:16px 16px 0;">
+      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:8px;">TODAY'S PLAN</p>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+        <div style="flex:1;">
+          <h3 style="font-size:24px;font-weight:800;color:var(--text);margin-bottom:6px;" id="home-workout-title">Push Day</h3>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <span id="home-workout-focus-tag" style="display:inline-block;background:#FFD60A;color:#111;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;">Primary</span>
+          </div>
+          <p style="font-size:12px;color:var(--label-secondary);margin-bottom:6px;" id="home-workout-muscles">Chest, Shoulders, Triceps</p>
+          <div style="display:flex;gap:12px;font-size:12px;color:var(--label-secondary);">
+            <span>⏱ 45–60 min</span>
+            <span>🔥 ~480 kcal</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Buttons -->
+    <div style="padding:14px 16px 12px;">
+      <button onclick="showScreen('screen-train')" style="width:100%;background:#FFD60A;border:none;border-radius:16px;padding:16px;font-size:15px;font-weight:800;color:#111;cursor:pointer;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="width:32px;height:32px;background:#111;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="12" height="12" viewBox="0 0 10 10" fill="#FFD60A"><polygon points="2,1 9,5 2,9"/></svg>
+        </div>
+        <span style="flex:1;text-align:center;font-size:15px;font-weight:800;">Start Workout</span>
+        <div style="width:32px;"></div>
+      </button>
+      <div style="display:flex;gap:10px;">
+        <button onclick="showScreen('screen-train')" style="flex:1;background:#fff;border:1px solid rgba(0,0,0,0.10);border-radius:14px;padding:13px;font-size:13px;font-weight:700;color:#111;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          View Plan
+        </button>
+        <button onclick="logRestDay()" style="flex:1;background:transparent;border:1px dashed rgba(0,0,0,0.14);border-radius:14px;padding:13px;font-size:13px;font-weight:700;color:#6E6E73;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          Log Rest Day
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEKLY SUMMARY -->
+  <div class="card" style="margin-bottom:14px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">WEEKLY SUMMARY</p>
+      <span style="font-size:13px;font-weight:800;color:var(--text);" id="home-weekly-consistency">67%<span style="font-size:10px;font-weight:600;color:var(--label-secondary);"> Consistency</span></span>
+    </div>
+    <p style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px;" id="home-weekly-text">0 of 0 workouts completed</p>
+    <!-- Bar chart M-S -->
+    <div style="display:flex;gap:6px;align-items:flex-end;height:50px;" id="home-weekly-bars"></div>
+    <div style="display:flex;gap:6px;margin-top:6px;" id="home-weekly-labels">
+      <div style="flex:1;text-align:center;font-size:10px;font-weight:700;color:var(--label-secondary);">M</div>
+      <div style="flex:1;text-align:center;font-size:10px;font-weight:700;color:var(--label-secondary);">T</div>
+      <div style="flex:1;text-align:center;font-size:10px;font-weight:700;color:var(--label-secondary);">W</div>
+      <div style="flex:1;text-align:center;font-size:10px;font-weight:700;color:var(--label-secondary);">T</div>
+      <div style="flex:1;text-align:center;font-size:10px;font-weight:700;color:var(--label-secondary);">F</div>
+      <div style="flex:1;text-align:center;font-size:10px;font-weight:700;color:var(--label-secondary);">S</div>
+      <div style="flex:1;text-align:center;font-size:10px;font-weight:700;color:var(--label-secondary);">S</div>
+    </div>
+  </div>
+
+  <!-- MACROS SNAPSHOT -->
+  <div class="card" style="margin-bottom:14px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">MACROS</p>
+      <span onclick="showScreen('screen-calories')" style="font-size:12px;color:var(--label-secondary);cursor:pointer;">Learn more</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <!-- Donut -->
+      <div style="position:relative;flex-shrink:0;">
+        <svg width="80" height="80" viewBox="0 0 80 80">
+          <circle cx="40" cy="40" r="30" fill="none" stroke="var(--border)" stroke-width="14"/>
+          <circle cx="40" cy="40" r="30" fill="none" stroke="#6366f1" stroke-width="14" stroke-dasharray="188.5" id="home-macro-protein" stroke-dashoffset="188.5" style="transform:rotate(-90deg);transform-origin:40px 40px;"/>
+          <circle cx="40" cy="40" r="30" fill="none" stroke="#22c55e" stroke-width="14" stroke-dasharray="188.5" id="home-macro-carbs" stroke-dashoffset="188.5" style="transform:rotate(-90deg);transform-origin:40px 40px;"/>
+          <circle cx="40" cy="40" r="30" fill="none" stroke="#FF9F0A" stroke-width="14" stroke-dasharray="188.5" id="home-macro-fats" stroke-dashoffset="188.5" style="transform:rotate(-90deg);transform-origin:40px 40px;"/>
+        </svg>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
+          <div style="font-size:11px;font-weight:700;color:#22c55e;" id="home-kcal-left-label"></div>
+        </div>
+      </div>
+      <!-- Legend -->
+      <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#6366f1;"></div><span style="font-size:13px;color:var(--text);">Protein</span></div>
+          <span style="font-size:13px;font-weight:700;color:var(--text);" id="home-macro-p-val">0g</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#22c55e;"></div><span style="font-size:13px;color:var(--text);">Carbs</span></div>
+          <span style="font-size:13px;font-weight:700;color:var(--text);" id="home-macro-c-val">0g</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#FF9F0A;"></div><span style="font-size:13px;color:var(--text);">Fats</span></div>
+          <span style="font-size:13px;font-weight:700;color:var(--text);" id="home-macro-f-val">0g</span>
+        </div>
+        <p style="font-size:12px;font-weight:700;color:#22c55e;" id="home-kcal-left"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEPS GOAL -->
+  <div class="card" style="margin-bottom:14px;">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <!-- Steps ring -->
+      <div style="position:relative;flex-shrink:0;">
+        <svg width="64" height="64" viewBox="0 0 64 64" style="transform:rotate(-90deg);">
+          <circle cx="32" cy="32" r="26" fill="none" stroke="var(--border)" stroke-width="7"/>
+          <circle cx="32" cy="32" r="26" fill="none" stroke="#30D158" stroke-width="7" stroke-linecap="round" stroke-dasharray="163.36" id="home-steps-ring" stroke-dashoffset="163.36"/>
+        </svg>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:18px;">👟</div>
+      </div>
+      <div style="flex:1;">
+        <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:4px;">STEPS GOAL</p>
+        <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:4px;">
+          <span style="font-size:22px;font-weight:800;color:var(--text);" id="home-steps-big">0</span>
+          <span style="font-size:13px;color:var(--label-secondary);" id="home-steps-big-goal">/10,000 steps</span>
+        </div>
+        <div style="height:5px;background:var(--border);border-radius:3px;margin-bottom:4px;"><div id="home-steps-bar" style="height:100%;background:#30D158;border-radius:3px;width:0%;transition:width 0.5s;"></div></div>
+        <p style="font-size:12px;color:var(--label-secondary);" id="home-steps-left">Log steps to track progress</p>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </div>
+  </div>
+
+  <!-- RECOVERY -->
+  <div class="card" style="margin-bottom:14px;">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <!-- Recovery ring -->
+      <div style="position:relative;flex-shrink:0;">
+        <svg width="64" height="64" viewBox="0 0 64 64" style="transform:rotate(-90deg);">
+          <circle cx="32" cy="32" r="26" fill="none" stroke="var(--border)" stroke-width="7"/>
+          <circle cx="32" cy="32" r="26" fill="none" stroke="#30D158" stroke-width="7" stroke-linecap="round" stroke-dasharray="163.36" id="home-recovery-ring" stroke-dashoffset="40.84"/>
+        </svg>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
+          <div style="font-size:13px;font-weight:800;color:var(--text);" id="home-recovery-pct">75%</div>
+        </div>
+      </div>
+      <div style="flex:1;">
+        <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:4px;">RECOVERY</p>
+        <p style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;" id="home-recovery-label">Good recovery</p>
+        <p style="font-size:12px;color:var(--label-secondary);" id="home-recovery-sub">Your body is ready to perform.</p>
+        <div style="display:flex;gap:12px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
+          <div style="text-align:center;">
+            <div style="font-size:11px;color:var(--label-secondary);">❤️ HR</div>
+            <div style="font-size:12px;font-weight:700;color:var(--text);" id="home-resting-hr">—</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:11px;color:var(--label-secondary);">〰️ HRV</div>
+            <div style="font-size:12px;font-weight:700;color:var(--text);" id="home-hrv">—</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:11px;color:var(--label-secondary);">🌙 Sleep</div>
+            <div style="font-size:12px;font-weight:700;color:var(--text);" id="home-recovery-sleep">—</div>
+          </div>
+        </div>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </div>
+  </div>
+
+  <!-- UP NEXT -->
+  <div class="card" style="margin-bottom:14px;">
+    <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:12px;">UP NEXT</p>
+    <div id="home-up-next">
+      <p style="font-size:13px;color:var(--label-secondary);padding:8px 0;">Schedule workouts to see upcoming sessions.</p>
+    </div>
+  </div>
+
+  <!-- Hidden compat elements -->
+  <div style="display:none;">
+    <span id="home-hero-title-compat"></span>
+    <span id="home-hero-sub-compat"></span>
+    <span id="today-score"></span>
+    <span id="home-score-ring-progress"></span>
+    <span id="home-stat-workout"></span>
+    <span id="home-steps"></span>
+    <span id="home-protein"></span>
+    <span id="home-sleep"></span>
+    <span id="home-show-calories"></span>
+    <span id="home-protein-detail"></span>
+    <span id="home-carbs"></span>
+    <span id="home-fats"></span>
+    <span id="home-steps-detail"></span>
+    <span id="home-water-detail"></span>
+    <span id="home-cal-remaining"></span>
+    <div id="home-bar-calories"></div>
+    <div id="home-bar-protein"></div>
+    <div id="home-bar-carbs"></div>
+    <div id="home-bar-fat"></div>
+    <div id="home-bar-steps"></div>
+    <div id="home-bar-water"></div>
+    <span id="home-phase-name"></span>
+    <span id="home-days-training"></span>
+    <div id="home-prog-bar"></div>
+    <span id="home-prog-pct"></span>
+    <span id="home-current-weight"></span>
+    <span id="home-target-weight"></span>
+    <span id="home-weight-change"></span>
+    <div id="badges-display"></div>
+    <div id="streak-bar"></div>
+    <span id="streak-count">0</span>
+    <span id="streak-record"></span>
+    <div id="coach-prompts"></div>
+    <span id="daily-quote"></span>
+    <div id="upcoming-list"></div>
+    <span id="snap-weight"></span>
+    <span id="snap-weight-delta"></span>
+    <span id="snap-strength"></span>
+    <span id="snap-strength-delta"></span>
+    <span id="snap-consistency"></span>
+    <span id="snap-consistency-delta"></span>
+    <span id="streak-title"></span>
+    <span id="streak-subtitle"></span>
+    <div id="streak-dots-row"></div>
+    <span id="nut-ring-val"></span>
+    <span id="nut-ring-goal"></span>
+    <span id="nut-remaining-label"></span>
+    <div id="nut-bar-protein"></div>
+    <div id="nut-bar-carbs"></div>
+    <div id="nut-bar-fats"></div>
+    <span id="nut-sum-protein"></span>
+    <span id="nut-sum-carbs"></span>
+    <span id="nut-sum-fats"></span>
+    <div id="nut-ring"></div>
+    <div id="hab-ring-water"></div>
+    <div id="hab-ring-nutrition"></div>
+    <div id="hab-ring-move"></div>
+    <div id="hab-ring-sleep"></div>
+    <span id="hab-val-water"></span>
+    <span id="hab-val-nutrition"></span>
+    <span id="hab-val-move"></span>
+    <span id="hab-val-sleep"></span>
+    <span id="hab-nudge-water"></span>
+    <span id="hab-nudge-nutrition"></span>
+    <span id="hab-nudge-move"></span>
+    <span id="hab-nudge-sleep"></span>
+    <span id="ov-calories"></span>
+    <span id="ov-steps"></span>
+    <span id="ov-active-min"></span>
+    <span id="ov-sleep"></span>
+    <span id="ov-cal-goal"></span>
+    <div id="ov-bar-cal"></div>
+    <div id="ov-bar-steps"></div>
+    <div id="ov-bar-active"></div>
+    <div id="ov-bar-sleep"></div>
+    <span id="next-workout-title"></span>
+    <span id="next-workout-meta"></span>
+    <span id="home-workout-duration"></span>
+    <span id="home-workout-kcal"></span>
+    <span id="home-workout-badge"></span>
+    <span id="txt-workout-primary-badge"></span>
+    <span id="txt-start-workout"></span>
+    <span id="txt-log-rest-day"></span>
+    <span id="txt-todays-workout"></span>
+    <span id="home-workout-badge-tag"></span>
+    <div id="home-weekly-card"></div>
+    <span id="home-stat-ico"></span>
+    <span id="home-score-big"></span>
+    <span id="home-score-slash"></span>
+    <span id="home-score-caption"></span>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     TRAIN SCREEN
+═══════════════════════════════════════════════════════ -->
 <div class="screen" id="screen-train" style="display:none;">
 
   <!-- TOP NAV -->
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-top:4px;">
     <h1 style="font-size:22px;font-weight:800;color:var(--text);">TRAIN</h1>
     <button onclick="showTrainSection('create')" style="width:36px;height:36px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
     </button>
   </div>
 
   <!-- TAB BAR -->
   <div style="display:flex;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:16px;gap:2px;">
-    <button onclick="switchTrainTab('program')" id="train-tab-program" style="flex:1;padding:8px;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;background:#f5c842;color:#111;">Program</button>
+    <button onclick="switchTrainTab('program')" id="train-tab-program" style="flex:1;padding:8px;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;background:#FFD60A;color:#111;">Program</button>
     <button onclick="switchTrainTab('exercises')" id="train-tab-exercises" style="flex:1;padding:8px;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">Exercises</button>
     <button onclick="switchTrainTab('workouts')" id="train-tab-workouts" style="flex:1;padding:8px;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">Workouts</button>
   </div>
 
-  <!-- ══ PROGRAM TAB ══ -->
+  <!-- PROGRAM TAB -->
   <div id="train-panel-program">
-
-    <!-- Current Program Card -->
+    <!-- Current Program -->
     <div style="background:#111;border-radius:16px;padding:16px;margin-bottom:12px;">
-      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:#f5c842;margin-bottom:6px;">CURRENT PROGRAM</p>
+      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:#FFD60A;margin-bottom:6px;">CURRENT PROGRAM</p>
       <div style="display:flex;justify-content:space-between;align-items:center;">
         <div>
           <h2 style="font-size:20px;font-weight:800;color:#fff;margin-bottom:4px;" id="train-program-name">Hybrid Athlete</h2>
-          <p style="font-size:13px;color:#888;" id="train-program-phase-label">Phase 1 · Week 1 of 8</p>
+          <p style="font-size:13px;color:#888;" id="train-program-phase-label">Week 1 of 8</p>
         </div>
         <div style="position:relative;width:64px;height:64px;">
           <svg width="64" height="64" viewBox="0 0 64 64" style="transform:rotate(-90deg);">
             <circle cx="32" cy="32" r="26" fill="none" stroke="#333" stroke-width="6"/>
-            <circle cx="32" cy="32" r="26" fill="none" stroke="#f5c842" stroke-width="6" stroke-linecap="round" stroke-dasharray="163.36" id="train-prog-ring" stroke-dashoffset="163.36"/>
+            <circle cx="32" cy="32" r="26" fill="none" stroke="#FFD60A" stroke-width="6" stroke-linecap="round" stroke-dasharray="163.36" id="train-prog-ring" stroke-dashoffset="163.36"/>
           </svg>
           <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
             <span style="font-size:13px;font-weight:800;color:#fff;" id="train-prog-pct">0%</span>
-            <span style="font-size:9px;color:#888;display:block;">Complete</span>
+            <span style="font-size:9px;color:#888;display:block;">Done</span>
           </div>
         </div>
       </div>
-      <!-- Phase Pills -->
-      <div style="display:flex;gap:8px;margin-top:14px;">
-        <button onclick="selectPhase(1)" id="train-phase-1" style="padding:6px 16px;border-radius:20px;border:none;font-size:12px;font-weight:700;cursor:pointer;background:#f5c842;color:#111;">Phase 1</button>
-        <button onclick="selectPhase(2)" id="train-phase-2" style="padding:6px 16px;border-radius:20px;border:1.5px solid #333;font-size:12px;font-weight:700;cursor:pointer;background:transparent;color:#888;">Phase 2</button>
-        <button onclick="selectPhase(3)" id="train-phase-3" style="padding:6px 16px;border-radius:20px;border:1.5px solid #333;font-size:12px;font-weight:700;cursor:pointer;background:transparent;color:#888;">Phase 3</button>
+      <!-- Progress bar -->
+      <div style="margin-top:12px;">
+        <div style="height:4px;background:#333;border-radius:2px;overflow:hidden;">
+          <div id="train-week-progress-fill" style="height:100%;background:#FFD60A;width:0%;border-radius:2px;transition:width 0.5s;"></div>
+        </div>
+        <p style="font-size:11px;color:#888;margin-top:4px;" id="train-week-progress-label">0% · Week 1 of 8</p>
       </div>
     </div>
 
-    <!-- This Week -->
+    <!-- Weekly Overview -->
     <div class="card" style="margin-bottom:12px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">THIS WEEK</p>
         <span style="font-size:12px;color:var(--label-secondary);" id="train-week-count">0 of 0 Workouts</span>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:12px;" id="train-week-dots"></div>
-      <div style="font-size:11px;color:var(--label-secondary);display:flex;gap:12px;">
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:10px;" id="train-week-dots"></div>
+      <div style="display:flex;gap:12px;font-size:11px;color:var(--label-secondary);">
         <span>🟢 Completed</span>
         <span>🟡 Today</span>
         <span>⚪ Upcoming</span>
@@ -465,53 +637,29 @@
     <div class="card" style="margin-bottom:12px;padding:0;overflow:hidden;" id="train-today-card">
       <div style="padding:14px 16px 0;">
         <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:8px;">TODAY'S WORKOUT</p>
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-          <div>
-            <h3 style="font-size:22px;font-weight:800;color:var(--text);margin-bottom:6px;" id="train-today-title">Push Day</h3>
-            <span style="display:inline-block;background:#f5c842;color:#111;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:6px;" id="train-today-focus-tag">Primary</span>
-            <div style="font-size:12px;color:var(--label-secondary);display:flex;gap:12px;margin-top:4px;">
-              <span>⏱ 45–60 min</span>
-              <span>🔥 ~480 kcal</span>
-            </div>
-          </div>
-          <!-- CSS muscle diagram -->
-          <div id="train-muscle-svg" style="width:60px;height:80px;flex-shrink:0;">
-            <svg width="60" height="80" viewBox="0 0 60 80" fill="none">
-              <circle cx="30" cy="8" r="6" fill="var(--border)"/>
-              <rect x="22" y="15" width="16" height="20" rx="4" fill="var(--border)"/>
-              <!-- chest highlight -->
-              <rect x="18" y="16" width="10" height="10" rx="3" fill="#f5c842" opacity="0.8" id="train-muscle-chest"/>
-              <rect x="32" y="16" width="10" height="10" rx="3" fill="#f5c842" opacity="0.8" id="train-muscle-chest2"/>
-              <!-- shoulders -->
-              <ellipse cx="14" cy="18" rx="5" ry="6" fill="var(--border)" id="train-muscle-shoulder-l"/>
-              <ellipse cx="46" cy="18" rx="5" ry="6" fill="var(--border)" id="train-muscle-shoulder-r"/>
-              <!-- arms -->
-              <rect x="8" y="22" width="6" height="16" rx="3" fill="var(--border)"/>
-              <rect x="46" y="22" width="6" height="16" rx="3" fill="var(--border)"/>
-              <!-- legs -->
-              <rect x="22" y="37" width="7" height="22" rx="3" fill="var(--border)"/>
-              <rect x="31" y="37" width="7" height="22" rx="3" fill="var(--border)"/>
-              <rect x="22" y="60" width="7" height="18" rx="3" fill="var(--border)"/>
-              <rect x="31" y="60" width="7" height="18" rx="3" fill="var(--border)"/>
-            </svg>
-          </div>
+        <h3 style="font-size:22px;font-weight:800;color:var(--text);margin-bottom:6px;" id="train-today-title">Push Day</h3>
+        <span id="train-today-focus-tag" style="display:inline-block;background:#FFD60A;color:#111;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:8px;">Primary</span>
+        <p style="font-size:12px;color:var(--label-secondary);margin-bottom:8px;" id="train-today-muscles">Chest, Shoulders, Triceps</p>
+        <div style="display:flex;gap:12px;font-size:12px;color:var(--label-secondary);">
+          <span>⏱ 45–60 min</span><span>🔥 ~480 kcal</span>
         </div>
       </div>
-      <!-- Focus -->
-      <div style="margin:12px 16px;padding:10px 12px;background:var(--bg);border-radius:10px;">
+      <div style="margin:10px 16px;padding:10px 12px;background:var(--bg);border-radius:10px;">
         <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:4px;">FOCUS</p>
-        <p style="font-size:13px;color:var(--text);font-weight:600;" id="train-today-muscles">Chest, Shoulders, Triceps</p>
+        <p style="font-size:13px;color:var(--text);font-weight:600;" id="train-today-muscles2">Chest, Shoulders, Triceps</p>
       </div>
-      <!-- Exercise list preview -->
       <div style="padding:0 16px;" id="train-exercise-preview"></div>
-      <!-- Buttons -->
       <div style="padding:14px 16px;">
-        <button onclick="startTodayWorkout()" style="width:100%;background:#f5c842;border:none;border-radius:12px;padding:16px;font-size:15px;font-weight:800;color:#111;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">
+        <button onclick="startTodayWorkout()" style="width:100%;background:#FFD60A;border:none;border-radius:14px;padding:16px;font-size:15px;font-weight:800;color:#111;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;">
           <div style="width:30px;height:30px;background:#111;border-radius:50%;display:flex;align-items:center;justify-content:center;">
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="#f5c842"><polygon points="2,1 9,5 2,9"/></svg>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="#FFD60A"><polygon points="2,1 9,5 2,9"/></svg>
           </div>
           START WORKOUT
         </button>
+        <div style="display:flex;gap:10px;">
+          <button onclick="switchTrainTab('workouts')" style="flex:1;background:#fff;border:1px solid rgba(0,0,0,0.1);border-radius:12px;padding:11px;font-size:13px;font-weight:700;color:#111;cursor:pointer;">View Workout</button>
+          <button onclick="logRestDay()" style="flex:1;background:transparent;border:1px dashed rgba(0,0,0,0.14);border-radius:12px;padding:11px;font-size:13px;font-weight:700;color:#6E6E73;cursor:pointer;">Log Rest Day</button>
+        </div>
       </div>
     </div>
 
@@ -521,38 +669,38 @@
       <div id="train-up-next"></div>
     </div>
 
-    <!-- Steps + Cardio quick access -->
+    <!-- Cardio + Steps -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
       <div class="card" style="padding:14px;cursor:pointer;" onclick="showTrainSection('cardio')">
         <div style="font-size:20px;margin-bottom:6px;">🏃</div>
         <div style="font-size:13px;font-weight:700;color:var(--text);">Cardio</div>
         <div style="font-size:11px;color:var(--label-secondary);">Log a session</div>
       </div>
-      <div class="card" style="padding:14px;" id="steps-quick-card">
-        <div style="font-size:20px;margin-bottom:6px;">👟</div>
+      <div class="card" style="padding:14px;">
+        <div style="font-size:20px;margin-bottom:4px;">👟</div>
         <div style="font-size:13px;font-weight:700;color:var(--text);">Steps</div>
-        <div style="font-size:11px;color:var(--label-secondary);" id="steps-quick-val">0 / 8,000</div>
-        <input type="number" id="input-steps-train" placeholder="Log steps" style="margin-top:8px;font-size:12px;padding:6px 8px;width:100%;">
-        <button onclick="saveStepsTrain()" style="width:100%;margin-top:6px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px;font-size:12px;font-weight:700;color:var(--text);cursor:pointer;">Save</button>
+        <div style="font-size:11px;color:var(--label-secondary);margin-bottom:6px;" id="steps-display-train">0 / 8,000</div>
+        <div style="height:3px;background:var(--border);border-radius:2px;margin-bottom:6px;"><div id="steps-bar-train" style="height:100%;background:#30D158;border-radius:2px;width:0%;"></div></div>
+        <input type="number" id="input-steps-train" placeholder="Log steps" style="margin-bottom:6px;font-size:12px;padding:6px 8px;">
+        <button onclick="saveStepsTrain()" style="width:100%;background:#FFD60A;border:none;border-radius:8px;padding:7px;font-size:12px;font-weight:700;color:#111;cursor:pointer;">Save</button>
       </div>
     </div>
 
     <button onclick="logRestDay()" style="width:100%;background:none;border:1.5px solid var(--border);border-radius:12px;padding:13px;font-size:13px;font-weight:700;color:var(--label-secondary);cursor:pointer;margin-bottom:12px;">LOG A REST DAY</button>
-
   </div>
 
-  <!-- ══ EXERCISES TAB ══ -->
+  <!-- EXERCISES TAB -->
   <div id="train-panel-exercises" style="display:none;">
     <input type="text" id="exercise-search" placeholder="Search exercises..." oninput="filterExerciseLibrary()" style="margin-bottom:12px;">
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;" id="exercise-lib-filters"></div>
     <div id="exercise-library-list"></div>
   </div>
 
-  <!-- ══ WORKOUTS TAB ══ -->
+  <!-- WORKOUTS TAB -->
   <div id="train-panel-workouts" style="display:none;">
-    <button onclick="showTrainSection('create')" style="width:100%;background:#f5c842;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:800;color:#111;cursor:pointer;margin-bottom:14px;">+ Create New Workout</button>
+    <button onclick="showTrainSection('create')" style="width:100%;background:#FFD60A;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:800;color:#111;cursor:pointer;margin-bottom:14px;">+ Create New Workout</button>
     <div style="display:flex;gap:8px;margin-bottom:14px;">
-      <button onclick="switchWorkoutsTab('my')" id="wt-tab-my" style="flex:1;padding:9px;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;background:#f5c842;color:#111;">My Workouts</button>
+      <button onclick="switchWorkoutsTab('my')" id="wt-tab-my" style="flex:1;padding:9px;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;background:#FFD60A;color:#111;">My Workouts</button>
       <button onclick="switchWorkoutsTab('templates')" id="wt-tab-templates" style="flex:1;padding:9px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">Templates</button>
     </div>
     <div id="train-panel-my-workouts">
@@ -564,7 +712,7 @@
     </div>
   </div>
 
-  <!-- ══ CREATE WORKOUT FLOW ══ -->
+  <!-- CREATE WORKOUT -->
   <div id="train-create" style="display:none;">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
       <button onclick="showTrainSection('menu')" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text);">✕</button>
@@ -573,29 +721,17 @@
     </div>
     <div class="card" style="margin-bottom:12px;">
       <label style="font-size:12px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:6px;">WORKOUT NAME</label>
-      <input type="text" id="routine-name" placeholder="e.g. Upper Body Strength" style="font-size:16px;font-weight:700;">
-      <label style="font-size:12px;font-weight:700;color:var(--label-secondary);display:block;margin:14px 0 8px;">MUSCLE FOCUS</label>
+      <input type="text" id="routine-name" placeholder="e.g. Upper Body Strength">
+      <label style="font-size:12px;font-weight:700;color:var(--label-secondary);display:block;margin:12px 0 8px;">MUSCLE FOCUS</label>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;" id="create-focus-grid">
-        <div onclick="selectCreateFocus('Push',this)" style="border:1.5px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
-          <div style="font-size:20px;margin-bottom:4px;">💪</div><div style="font-size:12px;font-weight:700;color:var(--text);">Push</div>
-        </div>
-        <div onclick="selectCreateFocus('Pull',this)" style="border:1.5px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
-          <div style="font-size:20px;margin-bottom:4px;">🏋️</div><div style="font-size:12px;font-weight:700;color:var(--text);">Pull</div>
-        </div>
-        <div onclick="selectCreateFocus('Legs',this)" style="border:1.5px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
-          <div style="font-size:20px;margin-bottom:4px;">🦵</div><div style="font-size:12px;font-weight:700;color:var(--text);">Legs</div>
-        </div>
-        <div onclick="selectCreateFocus('Upper Body',this)" style="border:1.5px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
-          <div style="font-size:20px;margin-bottom:4px;">🔝</div><div style="font-size:12px;font-weight:700;color:var(--text);">Upper Body</div>
-        </div>
-        <div onclick="selectCreateFocus('Lower Body',this)" style="border:1.5px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
-          <div style="font-size:20px;margin-bottom:4px;">⬇️</div><div style="font-size:12px;font-weight:700;color:var(--text);">Lower Body</div>
-        </div>
-        <div onclick="selectCreateFocus('Full Body',this)" style="border:1.5px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
-          <div style="font-size:20px;margin-bottom:4px;">⚡</div><div style="font-size:12px;font-weight:700;color:var(--text);">Full Body</div>
-        </div>
+        <div onclick="selectCreateFocus('Push',this)" style="border:1.5px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;"><div style="font-size:18px;margin-bottom:3px;">💪</div><div style="font-size:11px;font-weight:700;color:var(--text);">Push</div></div>
+        <div onclick="selectCreateFocus('Pull',this)" style="border:1.5px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;"><div style="font-size:18px;margin-bottom:3px;">🏋️</div><div style="font-size:11px;font-weight:700;color:var(--text);">Pull</div></div>
+        <div onclick="selectCreateFocus('Legs',this)" style="border:1.5px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;"><div style="font-size:18px;margin-bottom:3px;">🦵</div><div style="font-size:11px;font-weight:700;color:var(--text);">Legs</div></div>
+        <div onclick="selectCreateFocus('Upper Body',this)" style="border:1.5px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;"><div style="font-size:18px;margin-bottom:3px;">🔝</div><div style="font-size:11px;font-weight:700;color:var(--text);">Upper</div></div>
+        <div onclick="selectCreateFocus('Lower Body',this)" style="border:1.5px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;"><div style="font-size:18px;margin-bottom:3px;">⬇️</div><div style="font-size:11px;font-weight:700;color:var(--text);">Lower</div></div>
+        <div onclick="selectCreateFocus('Full Body',this)" style="border:1.5px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;"><div style="font-size:18px;margin-bottom:3px;">⚡</div><div style="font-size:11px;font-weight:700;color:var(--text);">Full Body</div></div>
       </div>
-      <label style="font-size:12px;font-weight:700;color:var(--label-secondary);display:block;margin:14px 0 8px;">SCHEDULE DAYS</label>
+      <label style="font-size:12px;font-weight:700;color:var(--label-secondary);display:block;margin:12px 0 8px;">SCHEDULE DAYS</label>
       <div style="display:flex;gap:6px;" id="create-schedule-days">
         <button onclick="toggleScheduleDay(this,'Monday')" style="flex:1;padding:8px 0;border:1.5px solid var(--border);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">M</button>
         <button onclick="toggleScheduleDay(this,'Tuesday')" style="flex:1;padding:8px 0;border:1.5px solid var(--border);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">T</button>
@@ -606,72 +742,61 @@
         <button onclick="toggleScheduleDay(this,'Sunday')" style="flex:1;padding:8px 0;border:1.5px solid var(--border);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">S</button>
       </div>
     </div>
-    <!-- Add Exercises -->
     <div class="card" style="margin-bottom:12px;">
       <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:10px;">ADD EXERCISES</p>
       <input type="text" id="create-ex-search" placeholder="Search exercises..." oninput="filterCreateExercises()" style="margin-bottom:10px;">
       <div class="filter-bar" id="create-category-filter" style="margin-bottom:10px;"></div>
       <div id="create-exercise-tags" style="margin-bottom:10px;"></div>
-      <label style="font-size:12px;font-weight:600;color:var(--label-secondary);display:block;margin-bottom:6px;">Custom exercise</label>
       <div style="display:flex;gap:8px;">
         <input type="text" id="create-custom-ex" placeholder="e.g. Hip Hinge" style="flex:1;">
-        <button onclick="addCustomToSelection()" style="background:#f5c842;border:none;border-radius:10px;padding:10px 14px;font-weight:700;font-size:13px;color:#111;cursor:pointer;">Add</button>
+        <button onclick="addCustomToSelection()" style="background:#FFD60A;border:none;border-radius:10px;padding:10px 14px;font-weight:700;font-size:13px;color:#111;cursor:pointer;">Add</button>
       </div>
     </div>
-    <!-- Selected exercises -->
-    <div class="card" style="margin-bottom:12px;" id="create-selection-card">
-      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:10px;">EXERCISES <span id="create-ex-count" style="color:#f5c842;">0</span></p>
+    <div class="card" style="margin-bottom:12px;">
+      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:10px;">EXERCISES <span id="create-ex-count" style="color:#FFD60A;">0</span></p>
       <div id="routine-selection-list"></div>
     </div>
-    <button onclick="saveRoutine()" style="width:100%;background:#f5c842;border:none;border-radius:12px;padding:16px;font-size:15px;font-weight:800;color:#111;cursor:pointer;margin-bottom:20px;">Save Workout</button>
+    <button onclick="saveRoutine()" style="width:100%;background:#FFD60A;border:none;border-radius:12px;padding:16px;font-size:15px;font-weight:800;color:#111;cursor:pointer;margin-bottom:20px;">Save Workout</button>
   </div>
 
-  <!-- ══ ACTIVE WORKOUT ══ -->
+  <!-- ACTIVE WORKOUT -->
   <div id="train-active" style="display:none;">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
       <button onclick="confirmEndWorkout()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text);">←</button>
       <h2 style="font-size:16px;font-weight:800;color:var(--text);" id="active-workout-title">PUSH DAY</h2>
-      <button onclick="saveWorkout()" style="background:none;border:none;font-size:14px;font-weight:700;color:#f5c842;cursor:pointer;">Finish</button>
+      <button onclick="saveWorkout()" style="background:none;border:none;font-size:14px;font-weight:700;color:#FFD60A;cursor:pointer;">Finish</button>
     </div>
-    <!-- Timer bar -->
-    <div style="background:#f5c842;border-radius:12px;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;" id="workout-timer-bar">
+    <div style="background:#FFD60A;border-radius:12px;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;" id="workout-timer-bar">
       <span style="font-size:11px;font-weight:700;color:#111;">WORKOUT TIME</span>
       <span style="font-size:18px;font-weight:800;color:#111;" id="workout-timer">00:00</span>
     </div>
-    <!-- Rest timer -->
     <div id="rest-timer" style="display:none;background:#111;border-radius:16px;padding:20px;text-align:center;margin-bottom:12px;position:relative;">
       <button onclick="stopTimer()" style="position:absolute;top:12px;right:12px;background:none;border:none;color:#888;font-size:18px;cursor:pointer;">✕</button>
       <p style="font-size:11px;font-weight:700;letter-spacing:1px;color:#888;margin-bottom:8px;">REST TIMER</p>
       <div style="font-size:48px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums;" id="rest-count">60</div>
       <div style="display:flex;gap:8px;justify-content:center;margin-top:12px;">
         <button onclick="adjustRestTimer(30)" style="background:#222;border:none;border-radius:8px;padding:8px 16px;color:#fff;font-weight:700;cursor:pointer;">+30s</button>
-        <button onclick="stopTimer()" style="background:#f5c842;border:none;border-radius:8px;padding:8px 16px;color:#111;font-weight:700;cursor:pointer;">Skip Rest</button>
+        <button onclick="adjustRestTimer(60)" style="background:#222;border:none;border-radius:8px;padding:8px 16px;color:#fff;font-weight:700;cursor:pointer;">+60s</button>
+        <button onclick="stopTimer()" style="background:#FFD60A;border:none;border-radius:8px;padding:8px 16px;color:#111;font-weight:700;cursor:pointer;">Skip Rest</button>
       </div>
     </div>
-    <!-- Add exercise picker -->
     <div class="card" id="exercise-picker" style="margin-bottom:12px;">
       <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:10px;">ADD EXERCISE</p>
       <div class="filter-bar" id="active-category-filter" style="margin-bottom:8px;"></div>
       <div id="exercise-tags" style="margin-bottom:8px;"></div>
       <div style="display:flex;gap:8px;">
         <input type="text" id="custom-exercise" placeholder="Custom exercise..." style="flex:1;">
-        <button onclick="addExercise()" style="background:#f5c842;border:none;border-radius:10px;padding:10px 14px;font-weight:700;font-size:13px;color:#111;cursor:pointer;">Add</button>
+        <button onclick="addExercise()" style="background:#FFD60A;border:none;border-radius:10px;padding:10px 14px;font-weight:700;font-size:13px;color:#111;cursor:pointer;">Add</button>
       </div>
     </div>
     <div id="exercise-log" style="margin-bottom:80px;"></div>
-    <!-- Fixed bottom save -->
     <div style="position:fixed;bottom:80px;left:0;right:0;padding:0 16px;display:none;" id="save-btn-wrap">
-      <button onclick="saveWorkout()" style="width:100%;background:#f5c842;border:none;border-radius:12px;padding:16px;font-size:15px;font-weight:800;color:#111;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">
-        <div style="width:28px;height:28px;background:#111;border-radius:50%;display:flex;align-items:center;justify-content:center;">
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="#f5c842"><polygon points="2,1 9,5 2,9"/></svg>
-        </div>
-        SAVE WORKOUT
-      </button>
+      <button onclick="saveWorkout()" style="width:100%;background:#FFD60A;border:none;border-radius:12px;padding:16px;font-size:15px;font-weight:800;color:#111;cursor:pointer;">SAVE WORKOUT</button>
     </div>
     <button id="save-btn" style="display:none;" onclick="saveWorkout()"></button>
   </div>
 
-  <!-- ══ CARDIO ══ -->
+  <!-- CARDIO -->
   <div id="train-cardio" style="display:none;">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
       <button onclick="showTrainSection('menu')" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text);">←</button>
@@ -689,17 +814,17 @@
     </div>
   </div>
 
-  <!-- ══ CARDIO ACTIVE ══ -->
+  <!-- CARDIO ACTIVE -->
   <div id="train-cardio-active" style="display:none;">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
       <button onclick="showTrainSection('cardio')" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text);">←</button>
       <h2 style="font-size:18px;font-weight:800;color:var(--text);" id="cardio-type-title">RUNNING</h2>
     </div>
     <div class="card" style="margin-bottom:12px;text-align:center;">
-      <button id="cardio-start-btn" onclick="startCardioTimer()" style="background:#f5c842;border:none;border-radius:12px;padding:14px 32px;font-size:15px;font-weight:800;color:#111;cursor:pointer;margin-bottom:12px;">▶ Start Session</button>
+      <button id="cardio-start-btn" onclick="startCardioTimer()" style="background:#FFD60A;border:none;border-radius:12px;padding:14px 32px;font-size:15px;font-weight:800;color:#111;cursor:pointer;margin-bottom:12px;">▶ Start Session</button>
       <div id="cardio-timer-bar" style="display:none;margin-bottom:12px;">
         <div style="font-size:11px;font-weight:700;color:var(--label-secondary);margin-bottom:4px;">SESSION TIME</div>
-        <div style="font-size:40px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;" id="cardio-timer">00:00</div>
+        <div style="font-size:40px;font-weight:800;color:var(--text);" id="cardio-timer">00:00</div>
         <button onclick="stopCardioTimer()" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 20px;font-weight:700;cursor:pointer;margin-top:8px;color:var(--text);">Stop</button>
       </div>
     </div>
@@ -716,11 +841,11 @@
       </select>
       <label style="font-size:12px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:6px;">NOTES</label>
       <input type="text" id="cardio-notes" placeholder="How did it feel?" style="margin-bottom:16px;">
-      <button onclick="saveCardio()" style="width:100%;background:#f5c842;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:800;color:#111;cursor:pointer;">Save Cardio</button>
+      <button onclick="saveCardio()" style="width:100%;background:#FFD60A;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:800;color:#111;cursor:pointer;">Save Cardio</button>
     </div>
   </div>
 
-  <!-- ══ QUICK WORKOUT (kept for compatibility) ══ -->
+  <!-- QUICK WORKOUT (compat) -->
   <div id="train-quick" style="display:none;">
     <button onclick="showTrainSection('menu')" style="background:none;border:none;color:var(--text);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:16px;">← Back</button>
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
@@ -731,65 +856,74 @@
     </div>
   </div>
 
+  <!-- Compat elements -->
+  <div style="display:none;">
+    <div id="train-menu"></div>
+    <div id="train-routines"></div>
+    <div id="train-week-list"></div>
+    <span id="train-program-title"></span>
+    <div class="train-phase-tabs"><span id="train-phase-tab-1"></span><span id="train-phase-tab-2"></span><span id="train-phase-tab-3"></span></div>
+    <div id="previous-workout-summary"></div>
+  </div>
+
 </div>
 
-<!-- NUTRITION SCREEN -->
+<!-- ═══════════════════════════════════════════════════════
+     NUTRITION SCREEN
+═══════════════════════════════════════════════════════ -->
 <div class="screen" id="screen-calories" style="display:none;">
 
-  <!-- Header -->
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-top:4px;">
     <h1 style="font-size:22px;font-weight:800;color:var(--text);">NUTRITION</h1>
     <button style="width:36px;height:36px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
     </button>
   </div>
 
   <!-- Date Nav -->
-  <div style="display:flex;align-items:center;justify-content:center;gap:20px;margin-bottom:16px;">
-    <button onclick="nutritionDayShift(-1)" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--text);padding:4px 10px;">‹</button>
+  <div style="display:flex;align-items:center;justify-content:center;gap:20px;margin-bottom:12px;">
+    <button onclick="nutritionDayShift(-1)" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--text);">‹</button>
     <button onclick="nutritionJumpToday()" id="nut-date-nav-label" style="background:none;border:none;font-size:16px;font-weight:700;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px;">Today <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
-    <button onclick="nutritionDayShift(1)" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--text);padding:4px 10px;">›</button>
+    <button onclick="nutritionDayShift(1)" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--text);">›</button>
   </div>
   <p style="font-size:12px;color:var(--label-secondary);text-align:center;margin-bottom:16px;" id="cal-date"></p>
 
-  <!-- Calorie Target Card -->
+  <!-- Calorie Target -->
   <div class="card" style="margin-bottom:12px;">
     <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:14px;">CALORIE TARGET</p>
     <div style="display:flex;align-items:center;gap:20px;">
-      <!-- Ring -->
       <div style="position:relative;flex-shrink:0;">
         <svg width="110" height="110" viewBox="0 0 110 110" style="transform:rotate(-90deg);">
           <circle cx="55" cy="55" r="44" fill="none" stroke="var(--border)" stroke-width="10"/>
-          <circle cx="55" cy="55" r="44" fill="none" stroke="#f5c842" stroke-width="10" stroke-linecap="round" stroke-dasharray="276.46" id="nut-cal-ring" stroke-dashoffset="276.46"/>
+          <circle cx="55" cy="55" r="44" fill="none" stroke="#FFD60A" stroke-width="10" stroke-linecap="round" stroke-dasharray="276.46" id="nut-cal-ring" stroke-dashoffset="276.46"/>
         </svg>
         <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
-          <div style="font-size:16px;font-weight:800;color:var(--text);line-height:1;" id="nut-hero-calories">0</div>
+          <div style="font-size:18px;font-weight:800;color:var(--text);line-height:1;" id="nut-hero-calories">0</div>
           <div style="font-size:10px;color:var(--label-secondary);margin-top:2px;" id="nut-ring-goal">/ 2,000 kcal</div>
-          <div style="font-size:11px;font-weight:700;color:#f5c842;margin-top:2px;" id="nut-cal-remaining"></div>
+          <div style="font-size:11px;font-weight:700;color:#FFD60A;margin-top:2px;" id="nut-cal-remaining"></div>
         </div>
       </div>
-      <!-- Macros -->
       <div style="flex:1;">
         <div style="margin-bottom:10px;">
           <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">
             <span style="font-weight:700;color:var(--text);">PROTEIN</span>
             <span style="color:var(--label-secondary);" id="nut-pill-protein">0 / 150g</span>
           </div>
-          <div style="height:6px;background:var(--border);border-radius:3px;"><div id="nut-pill-bar-protein" style="height:100%;border-radius:3px;background:#22c55e;width:0%;"></div></div>
+          <div style="height:6px;background:var(--border);border-radius:3px;"><div id="nut-pill-bar-protein" style="height:100%;border-radius:3px;background:#6366f1;width:0%;"></div></div>
         </div>
         <div style="margin-bottom:10px;">
           <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">
             <span style="font-weight:700;color:var(--text);">CARBS</span>
             <span style="color:var(--label-secondary);" id="nut-pill-carbs">0 / 250g</span>
           </div>
-          <div style="height:6px;background:var(--border);border-radius:3px;"><div id="nut-pill-bar-carbs" style="height:100%;border-radius:3px;background:#f5c842;width:0%;"></div></div>
+          <div style="height:6px;background:var(--border);border-radius:3px;"><div id="nut-pill-bar-carbs" style="height:100%;border-radius:3px;background:#22c55e;width:0%;"></div></div>
         </div>
         <div>
           <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">
             <span style="font-weight:700;color:var(--text);">FATS</span>
             <span style="color:var(--label-secondary);" id="nut-pill-fats">0 / 70g</span>
           </div>
-          <div style="height:6px;background:var(--border);border-radius:3px;"><div id="nut-pill-bar-fats" style="height:100%;border-radius:3px;background:#6366f1;width:0%;"></div></div>
+          <div style="height:6px;background:var(--border);border-radius:3px;"><div id="nut-pill-bar-fats" style="height:100%;border-radius:3px;background:#FF9F0A;width:0%;"></div></div>
         </div>
       </div>
     </div>
@@ -802,16 +936,14 @@
       <span style="font-size:12px;color:var(--label-secondary);cursor:pointer;">Learn more</span>
     </div>
     <div style="display:flex;align-items:center;gap:20px;">
-      <!-- Donut -->
       <div style="position:relative;flex-shrink:0;">
         <svg width="80" height="80" viewBox="0 0 80 80">
           <circle cx="40" cy="40" r="30" fill="none" stroke="var(--border)" stroke-width="14"/>
           <circle cx="40" cy="40" r="30" fill="none" stroke="#6366f1" stroke-width="14" stroke-dasharray="188.5" id="macro-ring-protein" stroke-dashoffset="188.5" style="transform:rotate(-90deg);transform-origin:40px 40px;"/>
           <circle cx="40" cy="40" r="30" fill="none" stroke="#22c55e" stroke-width="14" stroke-dasharray="188.5" id="macro-ring-carbs" stroke-dashoffset="188.5" style="transform:rotate(-90deg);transform-origin:40px 40px;"/>
-          <circle cx="40" cy="40" r="30" fill="none" stroke="#f5c842" stroke-width="14" stroke-dasharray="188.5" id="macro-ring-fats" stroke-dashoffset="188.5" style="transform:rotate(-90deg);transform-origin:40px 40px;"/>
+          <circle cx="40" cy="40" r="30" fill="none" stroke="#FF9F0A" stroke-width="14" stroke-dasharray="188.5" id="macro-ring-fats" stroke-dashoffset="188.5" style="transform:rotate(-90deg);transform-origin:40px 40px;"/>
         </svg>
       </div>
-      <!-- Legend -->
       <div style="flex:1;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
           <div style="display:flex;align-items:center;gap:6px;"><div style="width:10px;height:10px;border-radius:50%;background:#6366f1;"></div><span style="font-size:13px;color:var(--text);">Protein</span></div>
@@ -822,7 +954,7 @@
           <span style="font-size:13px;font-weight:700;color:var(--text);" id="macro-legend-carbs">0g (0%)</span>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center;">
-          <div style="display:flex;align-items:center;gap:6px;"><div style="width:10px;height:10px;border-radius:50%;background:#f5c842;"></div><span style="font-size:13px;color:var(--text);">Fats</span></div>
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:10px;height:10px;border-radius:50%;background:#FF9F0A;"></div><span style="font-size:13px;color:var(--text);">Fats</span></div>
           <span style="font-size:13px;font-weight:700;color:var(--text);" id="macro-legend-fats">0g (0%)</span>
         </div>
       </div>
@@ -832,11 +964,11 @@
   <!-- Meals -->
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
     <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">MEALS</p>
-    <button onclick="addMeal()" style="background:#f5c842;border:none;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:700;color:#111;cursor:pointer;">+ Add Meal</button>
+    <button onclick="addMeal()" style="background:#FFD60A;border:none;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:700;color:#111;cursor:pointer;">+ Add Meal</button>
   </div>
   <div id="meals-container" class="meals-container" style="margin-bottom:12px;"></div>
 
-  <!-- Water Intake -->
+  <!-- Water -->
   <div class="card" style="margin-bottom:12px;">
     <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:12px;">WATER INTAKE</p>
     <div style="display:flex;align-items:center;gap:14px;">
@@ -844,16 +976,35 @@
       <div style="flex:1;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
           <span style="font-size:22px;font-weight:800;color:var(--text);" id="show-water">0 <span style="font-size:14px;font-weight:500;color:var(--label-secondary);">/ 3L</span></span>
-          <button onclick="addWaterQuick()" style="width:34px;height:34px;border-radius:50%;background:#f5c842;border:none;font-size:20px;font-weight:700;color:#111;cursor:pointer;display:flex;align-items:center;justify-content:center;">+</button>
+          <button onclick="addWaterQuick()" style="width:34px;height:34px;border-radius:50%;background:#FFD60A;border:none;font-size:20px;font-weight:700;color:#111;cursor:pointer;display:flex;align-items:center;justify-content:center;">+</button>
         </div>
         <div id="nut-water-dots" style="display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap;"></div>
         <div style="height:5px;background:var(--border);border-radius:3px;"><div id="bar-water" style="height:100%;border-radius:3px;background:#38bdf8;width:0%;"></div></div>
       </div>
     </div>
     <div style="display:flex;gap:8px;margin-top:12px;">
-      <input type="number" id="input-water" placeholder="e.g. 0.5" step="0.25" style="flex:1;">
-      <button onclick="saveWater()" style="background:#f5c842;border:none;border-radius:10px;padding:10px 16px;font-weight:700;font-size:13px;color:#111;cursor:pointer;">Save</button>
+      <button onclick="addWaterAmount(0.25)" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:9px;font-size:12px;font-weight:700;color:var(--text);cursor:pointer;">+250ml</button>
+      <button onclick="addWaterAmount(0.5)" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:9px;font-size:12px;font-weight:700;color:var(--text);cursor:pointer;">+500ml</button>
+      <button onclick="addWaterAmount(1)" style="flex:1;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:9px;font-size:12px;font-weight:700;color:var(--text);cursor:pointer;">+1L</button>
     </div>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <input type="number" id="input-water" placeholder="e.g. 0.5" step="0.25" style="flex:1;">
+      <button onclick="saveWater()" style="background:#FFD60A;border:none;border-radius:10px;padding:10px 16px;font-weight:700;font-size:13px;color:#111;cursor:pointer;">Save</button>
+    </div>
+  </div>
+
+  <!-- Supplements -->
+  <div class="card" style="margin-bottom:12px;" id="supplements-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">SUPPLEMENTS</p>
+      <button onclick="openSupplementPickerModal()" style="background:#FFD60A;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;color:#111;cursor:pointer;">+ Add</button>
+    </div>
+    <div id="supplement-list" class="supplement-list"></div>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <input type="text" id="custom-supplement-input" placeholder="Add custom supplement" style="flex:1;">
+      <button onclick="addCustomSupplement()" style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:13px;font-weight:700;color:var(--text);cursor:pointer;">Add</button>
+    </div>
+    <button onclick="clearAllSupplements()" style="width:100%;background:none;border:none;color:var(--label-secondary);font-size:12px;font-weight:600;cursor:pointer;padding:8px;margin-top:4px;">Clear all supplements</button>
   </div>
 
   <!-- Nutrition Insights -->
@@ -874,38 +1025,27 @@
     <div style="display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;" id="meal-ideas-row"></div>
   </div>
 
-  <!-- Supplements -->
-  <div class="card" style="margin-bottom:12px;" id="supplements-card">
-    <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:12px;">SUPPLEMENTS</p>
-    <div id="supplement-list" class="supplement-list"></div>
-    <div style="display:flex;gap:8px;margin-top:10px;">
-      <button onclick="openSupplementPickerModal()" style="flex:1;background:#f5c842;border:none;border-radius:10px;padding:11px;font-size:13px;font-weight:700;color:#111;cursor:pointer;">Add Supplement</button>
-      <button onclick="clearAllSupplements()" style="background:none;border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;font-size:13px;font-weight:700;color:var(--label-secondary);cursor:pointer;">Clear</button>
-    </div>
-    <div style="display:flex;gap:8px;margin-top:8px;">
-      <input type="text" id="custom-supplement-input" placeholder="Add custom supplement" style="flex:1;">
-      <button onclick="addCustomSupplement()" style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:13px;font-weight:700;color:var(--text);cursor:pointer;">Add</button>
-    </div>
-  </div>
-
-  <!-- Hidden elements kept for JS compatibility -->
+  <!-- Hidden compat -->
   <div style="display:none;">
     <span id="nut-show-calories"></span>
     <span id="show-protein"></span>
     <span id="show-carbs"></span>
     <span id="show-fat"></span>
     <span id="show-steps"></span>
-    <span id="bar-protein"></span>
-    <span id="bar-carbs"></span>
-    <span id="bar-fat"></span>
-    <span id="bar-steps"></span>
-    <span id="nut-bar-calories"></span>
+    <div id="bar-protein"></div>
+    <div id="bar-carbs"></div>
+    <div id="bar-fat"></div>
+    <div id="bar-steps"></div>
+    <div id="nut-bar-calories"></div>
     <span id="cal-status"></span>
+    <span id="txt-add-supplement"></span>
+    <span id="txt-clear-all-supplements"></span>
+    <span id="txt-supplements"></span>
   </div>
 
 </div>
 
-<!-- Supplement picker modal — kept exactly as is -->
+<!-- Supplement picker modal -->
 <div id="supplement-picker-modal" class="supplement-picker-modal" style="display:none;" aria-hidden="true">
   <div class="supplement-picker-backdrop" onclick="closeSupplementPickerModal()"></div>
   <div class="supplement-picker-sheet" role="dialog" aria-labelledby="txt-add-supplement-modal-title">
@@ -917,57 +1057,59 @@
   </div>
 </div>
 
-<!-- Food modal — kept exactly as is -->
-<div id="food-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:var(--bg); z-index:9998; padding:20px; overflow-y:auto; padding-bottom:110px;">
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-    <h2 style="color:var(--text); font-size:18px; font-weight:800;" id="food-modal-title">Add Food</h2>
-    <button onclick="closeFoodModal()" style="background:none; border:none; color:var(--text); font-size:24px; cursor:pointer;">✕</button>
+<!-- Food modal -->
+<div id="food-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:9998;padding:20px;overflow-y:auto;padding-bottom:110px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+    <h2 style="color:var(--text);font-size:18px;font-weight:800;" id="food-modal-title">Add Food</h2>
+    <button onclick="closeFoodModal()" style="background:none;border:none;color:var(--text);font-size:24px;cursor:pointer;">✕</button>
   </div>
   <div id="food-modal-totals" style="color:var(--label-secondary);font-size:13px;margin-bottom:12px;line-height:1.4;"></div>
   <div class="filter-bar" id="food-filter-bar">
-    <button class="filter-btn active" onclick="setFoodFilter('all', this)">All</button>
-    <button class="filter-btn" onclick="setFoodFilter('protein', this)">Protein</button>
-    <button class="filter-btn" onclick="setFoodFilter('carbs', this)">Carbs</button>
-    <button class="filter-btn" onclick="setFoodFilter('fats', this)">Fats</button>
-    <button class="filter-btn" onclick="setFoodFilter('veg', this)">Veg</button>
-    <button class="filter-btn" onclick="setFoodFilter('dairy', this)">Dairy</button>
-    <button class="filter-btn" onclick="setFoodFilter('snacks', this)">Snacks</button>
-    <button class="filter-btn" onclick="setFoodFilter('drinks', this)">Drinks</button>
+    <button class="filter-btn active" onclick="setFoodFilter('all',this)">All</button>
+    <button class="filter-btn" onclick="setFoodFilter('protein',this)">Protein</button>
+    <button class="filter-btn" onclick="setFoodFilter('carbs',this)">Carbs</button>
+    <button class="filter-btn" onclick="setFoodFilter('fats',this)">Fats</button>
+    <button class="filter-btn" onclick="setFoodFilter('veg',this)">Veg</button>
+    <button class="filter-btn" onclick="setFoodFilter('dairy',this)">Dairy</button>
+    <button class="filter-btn" onclick="setFoodFilter('snacks',this)">Snacks</button>
+    <button class="filter-btn" onclick="setFoodFilter('drinks',this)">Drinks</button>
   </div>
   <input type="text" id="food-search" placeholder="Search..." oninput="filterFoods()" style="margin-bottom:12px;">
   <div id="food-list"></div>
-  <div id="food-portion" style="display:none; position:fixed; bottom:0; left:0; right:0; background:var(--card); border-radius:20px 20px 0 0; padding:20px; border-top:2px solid var(--border); z-index:9999;">
+  <div id="food-portion" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-radius:20px 20px 0 0;padding:20px;border-top:2px solid var(--border);z-index:9999;">
     <div style="width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px;"></div>
-    <div style="font-weight:700; color:var(--text); margin-bottom:12px; font-size:16px;" id="food-portion-label"></div>
+    <div style="font-weight:700;color:var(--text);margin-bottom:12px;font-size:16px;" id="food-portion-label"></div>
     <label>Portion (g or ml)</label>
     <input type="number" id="food-portion-amount" placeholder="e.g. 150" value="100" oninput="updatePortionPreview()" inputmode="numeric">
-    <div id="food-portion-preview" style="color:var(--label-secondary); font-size:13px; margin-bottom:12px; background:var(--bg); padding:8px; border-radius:8px; border:1px solid var(--border);"></div>
+    <div id="food-portion-preview" style="color:var(--label-secondary);font-size:13px;margin-bottom:12px;background:var(--bg);padding:8px;border-radius:8px;border:1px solid var(--border);"></div>
     <button class="btn btn-accent-yellow" onclick="addFoodEntry()">Add to Meal</button>
     <button class="btn-outline" onclick="document.getElementById('food-portion').style.display='none'">Cancel</button>
   </div>
 </div>
-<!-- PROGRESS SCREEN -->
+
+<!-- ═══════════════════════════════════════════════════════
+     PROGRESS SCREEN
+═══════════════════════════════════════════════════════ -->
 <div class="screen" id="screen-progress" style="display:none;">
 
-  <!-- Header -->
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-top:4px;">
     <h1 style="font-size:22px;font-weight:800;color:var(--text);">PROGRESS</h1>
     <button style="width:36px;height:36px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
     </button>
   </div>
 
   <!-- Time Filter -->
   <div style="display:flex;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:16px;gap:2px;">
     <button onclick="setProgressFilter('1W',this)" class="prog-filter-btn" style="flex:1;padding:8px 0;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">1W</button>
-    <button onclick="setProgressFilter('1M',this)" class="prog-filter-btn" style="flex:1;padding:8px 0;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;background:#f5c842;color:#111;">1M</button>
+    <button onclick="setProgressFilter('1M',this)" class="prog-filter-btn" style="flex:1;padding:8px 0;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;background:#FFD60A;color:#111;">1M</button>
     <button onclick="setProgressFilter('3M',this)" class="prog-filter-btn" style="flex:1;padding:8px 0;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">3M</button>
     <button onclick="setProgressFilter('6M',this)" class="prog-filter-btn" style="flex:1;padding:8px 0;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">6M</button>
     <button onclick="setProgressFilter('1Y',this)" class="prog-filter-btn" style="flex:1;padding:8px 0;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">1Y</button>
     <button onclick="setProgressFilter('All',this)" class="prog-filter-btn" style="flex:1;padding:8px 0;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">ALL</button>
   </div>
 
-  <!-- Overview Stats -->
+  <!-- Overview -->
   <div class="card" style="margin-bottom:12px;">
     <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:14px;">OVERVIEW</p>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
@@ -1005,15 +1147,14 @@
       <span style="font-size:12px;font-weight:700;color:#22c55e;" id="prog-weight-change-label"></span>
     </div>
     <canvas id="weight-chart" style="width:100%;height:160px;"></canvas>
-    <!-- Weekly check-in hidden but kept for JS compat -->
     <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
       <p style="font-size:11px;font-weight:700;color:var(--label-secondary);margin-bottom:10px;">LOG THIS WEEK'S WEIGHT</p>
       <div style="display:flex;gap:8px;">
         <input type="number" id="checkin-weight" placeholder="e.g. 80 kg" style="flex:1;">
-        <button onclick="saveCheckin()" style="background:#f5c842;border:none;border-radius:10px;padding:10px 16px;font-weight:700;font-size:13px;color:#111;cursor:pointer;">Save</button>
+        <button onclick="saveCheckin()" style="background:#FFD60A;border:none;border-radius:10px;padding:10px 16px;font-weight:700;font-size:13px;color:#111;cursor:pointer;">Save</button>
       </div>
-      <input type="number" id="checkin-energy" placeholder="Energy (1-10)" style="margin-top:8px;display:none;">
-      <input type="text" id="checkin-notes" placeholder="Notes" style="margin-top:8px;display:none;">
+      <input type="number" id="checkin-energy" placeholder="Energy (1-10)" style="display:none;">
+      <input type="text" id="checkin-notes" placeholder="Notes" style="display:none;">
     </div>
     <div id="checkin-history" style="margin-top:8px;"></div>
   </div>
@@ -1024,9 +1165,7 @@
       <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">STRENGTH PROGRESS</p>
       <span style="font-size:12px;color:var(--label-secondary);cursor:pointer;">See all</span>
     </div>
-    <div id="prog-strength-list">
-      <p style="font-size:13px;color:var(--label-secondary);text-align:center;padding:12px 0;">Log workouts to track strength.</p>
-    </div>
+    <div id="prog-strength-list"><p style="font-size:13px;color:var(--label-secondary);text-align:center;padding:12px 0;">Log workouts to track strength.</p></div>
   </div>
 
   <!-- Muscle Groups -->
@@ -1036,65 +1175,66 @@
       <span style="font-size:12px;color:var(--label-secondary);cursor:pointer;">See all</span>
     </div>
     <div style="display:flex;align-items:center;gap:16px;">
-      <!-- Front/back body SVG -->
       <div style="display:flex;gap:8px;flex-shrink:0;">
         <svg width="60" height="110" viewBox="0 0 60 110" fill="none">
           <circle cx="30" cy="8" r="7" fill="var(--border)"/>
           <rect x="18" y="16" width="24" height="26" rx="5" fill="var(--border)"/>
-          <rect x="19" y="17" width="10" height="12" rx="3" fill="#f5c842" opacity="0.8" id="mg-chest-l"/>
-          <rect x="31" y="17" width="10" height="12" rx="3" fill="#f5c842" opacity="0.8" id="mg-chest-r"/>
-          <ellipse cx="12" cy="22" rx="6" ry="8" fill="var(--border)" id="mg-shoulder-l"/>
-          <ellipse cx="48" cy="22" rx="6" ry="8" fill="var(--border)" id="mg-shoulder-r"/>
-          <rect x="5" y="28" width="8" height="18" rx="4" fill="var(--border)" id="mg-arm-l"/>
-          <rect x="47" y="28" width="8" height="18" rx="4" fill="var(--border)" id="mg-arm-r"/>
-          <rect x="20" y="44" width="9" height="28" rx="4" fill="#f5c842" opacity="0.7" id="mg-quad-l"/>
-          <rect x="31" y="44" width="9" height="28" rx="4" fill="#f5c842" opacity="0.7" id="mg-quad-r"/>
-          <rect x="20" y="74" width="9" height="24" rx="4" fill="var(--border)" id="mg-calf-l"/>
-          <rect x="31" y="74" width="9" height="24" rx="4" fill="var(--border)" id="mg-calf-r"/>
-          <rect x="21" y="32" width="18" height="10" rx="3" fill="var(--border)" id="mg-core"/>
-        </svg>
-        <svg width="60" height="110" viewBox="0 0 60 110" fill="none">
-          <circle cx="30" cy="8" r="7" fill="var(--border)"/>
-          <rect x="18" y="16" width="24" height="26" rx="5" fill="var(--border)"/>
-          <rect x="19" y="17" width="22" height="14" rx="3" fill="#f5c842" opacity="0.6" id="mg-back"/>
+          <rect x="19" y="17" width="10" height="12" rx="3" fill="#FFD60A" opacity="0.8"/>
+          <rect x="31" y="17" width="10" height="12" rx="3" fill="#FFD60A" opacity="0.8"/>
           <ellipse cx="12" cy="22" rx="6" ry="8" fill="var(--border)"/>
           <ellipse cx="48" cy="22" rx="6" ry="8" fill="var(--border)"/>
           <rect x="5" y="28" width="8" height="18" rx="4" fill="var(--border)"/>
           <rect x="47" y="28" width="8" height="18" rx="4" fill="var(--border)"/>
-          <rect x="20" y="44" width="9" height="28" rx="4" fill="#f5c842" opacity="0.5" id="mg-glute-l"/>
-          <rect x="31" y="44" width="9" height="28" rx="4" fill="#f5c842" opacity="0.5" id="mg-glute-r"/>
+          <rect x="20" y="44" width="9" height="28" rx="4" fill="#FFD60A" opacity="0.7"/>
+          <rect x="31" y="44" width="9" height="28" rx="4" fill="#FFD60A" opacity="0.7"/>
+          <rect x="20" y="74" width="9" height="24" rx="4" fill="var(--border)"/>
+          <rect x="31" y="74" width="9" height="24" rx="4" fill="var(--border)"/>
+        </svg>
+        <svg width="60" height="110" viewBox="0 0 60 110" fill="none">
+          <circle cx="30" cy="8" r="7" fill="var(--border)"/>
+          <rect x="18" y="16" width="24" height="26" rx="5" fill="var(--border)"/>
+          <rect x="19" y="17" width="22" height="14" rx="3" fill="#FFD60A" opacity="0.6"/>
+          <ellipse cx="12" cy="22" rx="6" ry="8" fill="var(--border)"/>
+          <ellipse cx="48" cy="22" rx="6" ry="8" fill="var(--border)"/>
+          <rect x="5" y="28" width="8" height="18" rx="4" fill="var(--border)"/>
+          <rect x="47" y="28" width="8" height="18" rx="4" fill="var(--border)"/>
+          <rect x="20" y="44" width="9" height="28" rx="4" fill="#FFD60A" opacity="0.5"/>
+          <rect x="31" y="44" width="9" height="28" rx="4" fill="#FFD60A" opacity="0.5"/>
           <rect x="20" y="74" width="9" height="24" rx="4" fill="var(--border)"/>
           <rect x="31" y="74" width="9" height="24" rx="4" fill="var(--border)"/>
         </svg>
       </div>
-      <!-- Muscle list -->
-      <div style="flex:1;" id="muscle-group-list">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#22c55e;"></div><span style="font-size:12px;color:var(--text);">Chest</span></div>
-          <span style="font-size:12px;font-weight:700;color:var(--text);" id="mg-pct-chest">—</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#f5c842;"></div><span style="font-size:12px;color:var(--text);">Back</span></div>
-          <span style="font-size:12px;font-weight:700;color:var(--text);" id="mg-pct-back">—</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#f5c842;"></div><span style="font-size:12px;color:var(--text);">Legs</span></div>
-          <span style="font-size:12px;font-weight:700;color:var(--text);" id="mg-pct-legs">—</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#f97316;"></div><span style="font-size:12px;color:var(--text);">Shoulders</span></div>
-          <span style="font-size:12px;font-weight:700;color:var(--text);" id="mg-pct-shoulders">—</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#f97316;"></div><span style="font-size:12px;color:var(--text);">Arms</span></div>
-          <span style="font-size:12px;font-weight:700;color:var(--text);" id="mg-pct-arms">—</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#a855f7;"></div><span style="font-size:12px;color:var(--text);">Core</span></div>
-          <span style="font-size:12px;font-weight:700;color:var(--text);" id="mg-pct-core">—</span>
-        </div>
+      <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#22c55e;"></div><span style="font-size:12px;color:var(--text);">Chest</span></div><span style="font-size:12px;font-weight:700;color:var(--text);" id="mg-pct-chest">—</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#FFD60A;"></div><span style="font-size:12px;color:var(--text);">Back</span></div><span style="font-size:12px;font-weight:700;color:var(--text);" id="mg-pct-back">—</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#FFD60A;"></div><span style="font-size:12px;color:var(--text);">Legs</span></div><span style="font-size:12px;font-weight:700;color:var(--text);" id="mg-pct-legs">—</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#f97316;"></div><span style="font-size:12px;color:var(--text);">Shoulders</span></div><span style="font-size:12px;font-weight:700;color:var(--text);" id="mg-pct-shoulders">—</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#f97316;"></div><span style="font-size:12px;color:var(--text);">Arms</span></div><span style="font-size:12px;font-weight:700;color:var(--text);" id="mg-pct-arms">—</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;"><div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#a855f7;"></div><span style="font-size:12px;color:var(--text);">Core</span></div><span style="font-size:12px;font-weight:700;color:var(--text);" id="mg-pct-core">—</span></div>
       </div>
     </div>
+  </div>
+
+  <!-- Measurements -->
+  <div class="card" style="margin-bottom:12px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">MEASUREMENTS</p>
+      <span style="font-size:12px;color:var(--label-secondary);cursor:pointer;">See all</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;" id="prog-measurements-grid">
+      <div style="background:var(--bg);border-radius:10px;padding:10px;text-align:center;"><div style="font-size:10px;color:var(--label-secondary);margin-bottom:4px;">Chest</div><div style="font-size:16px;font-weight:800;color:var(--text);" id="prog-meas-chest">—</div></div>
+      <div style="background:var(--bg);border-radius:10px;padding:10px;text-align:center;"><div style="font-size:10px;color:var(--label-secondary);margin-bottom:4px;">Waist</div><div style="font-size:16px;font-weight:800;color:var(--text);" id="prog-meas-waist">—</div></div>
+      <div style="background:var(--bg);border-radius:10px;padding:10px;text-align:center;"><div style="font-size:10px;color:var(--label-secondary);margin-bottom:4px;">Arms</div><div style="font-size:16px;font-weight:800;color:var(--text);" id="prog-meas-arms">—</div></div>
+    </div>
+    <p style="font-size:11px;font-weight:700;color:var(--label-secondary);margin-bottom:10px;">LOG MEASUREMENTS</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+      <div><label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Chest (cm)</label><input type="number" id="meas-chest" placeholder="—"></div>
+      <div><label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Waist (cm)</label><input type="number" id="meas-waist" placeholder="—"></div>
+      <div><label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Hips (cm)</label><input type="number" id="meas-hips" placeholder="—"></div>
+      <div><label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Arms (cm)</label><input type="number" id="meas-arms" placeholder="—"></div>
+      <div><label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Legs (cm)</label><input type="number" id="meas-legs" placeholder="—"></div>
+    </div>
+    <button onclick="saveMeasurements()" style="width:100%;background:#FFD60A;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:800;color:#111;cursor:pointer;">Save Measurements</button>
   </div>
 
   <!-- Progress Photos -->
@@ -1104,10 +1244,10 @@
       <span style="font-size:12px;color:var(--label-secondary);cursor:pointer;">See all</span>
     </div>
     <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;">
-      <div class="progress-photo-placeholder" style="flex-shrink:0;width:80px;height:100px;border-radius:10px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;">📷</div>
-      <div class="progress-photo-placeholder" style="flex-shrink:0;width:80px;height:100px;border-radius:10px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;">📷</div>
-      <div class="progress-photo-placeholder" style="flex-shrink:0;width:80px;height:100px;border-radius:10px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;">📷</div>
-      <div class="progress-photo-placeholder" style="flex-shrink:0;width:80px;height:100px;border-radius:10px;background:var(--bg);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;">+</div>
+      <div style="flex-shrink:0;width:80px;height:100px;border-radius:10px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;">📷</div>
+      <div style="flex-shrink:0;width:80px;height:100px;border-radius:10px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;">📷</div>
+      <div style="flex-shrink:0;width:80px;height:100px;border-radius:10px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;">📷</div>
+      <div style="flex-shrink:0;width:80px;height:100px;border-radius:10px;background:var(--bg);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;">+</div>
     </div>
   </div>
 
@@ -1118,7 +1258,6 @@
       <span style="font-size:12px;color:var(--label-secondary);cursor:pointer;">See calendar</span>
     </div>
     <div style="display:flex;align-items:center;gap:20px;">
-      <!-- Ring -->
       <div style="position:relative;flex-shrink:0;">
         <svg width="80" height="80" viewBox="0 0 80 80" style="transform:rotate(-90deg);">
           <circle cx="40" cy="40" r="32" fill="none" stroke="var(--border)" stroke-width="8"/>
@@ -1129,21 +1268,14 @@
           <div style="font-size:9px;color:var(--label-secondary);">This month</div>
         </div>
       </div>
-      <!-- Calendar dots -->
       <div style="flex:1;">
         <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:6px;">
-          <div style="font-size:9px;color:var(--label-secondary);text-align:center;">M</div>
-          <div style="font-size:9px;color:var(--label-secondary);text-align:center;">T</div>
-          <div style="font-size:9px;color:var(--label-secondary);text-align:center;">W</div>
-          <div style="font-size:9px;color:var(--label-secondary);text-align:center;">T</div>
-          <div style="font-size:9px;color:var(--label-secondary);text-align:center;">F</div>
-          <div style="font-size:9px;color:var(--label-secondary);text-align:center;">S</div>
-          <div style="font-size:9px;color:var(--label-secondary);text-align:center;">S</div>
+          <div style="font-size:9px;color:var(--label-secondary);text-align:center;">M</div><div style="font-size:9px;color:var(--label-secondary);text-align:center;">T</div><div style="font-size:9px;color:var(--label-secondary);text-align:center;">W</div><div style="font-size:9px;color:var(--label-secondary);text-align:center;">T</div><div style="font-size:9px;color:var(--label-secondary);text-align:center;">F</div><div style="font-size:9px;color:var(--label-secondary);text-align:center;">S</div><div style="font-size:9px;color:var(--label-secondary);text-align:center;">S</div>
         </div>
         <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;" id="consistency-calendar"></div>
         <div style="display:flex;gap:10px;margin-top:8px;">
           <div style="display:flex;align-items:center;gap:4px;"><div style="width:8px;height:8px;border-radius:50%;background:#22c55e;"></div><span style="font-size:10px;color:var(--label-secondary);">Completed</span></div>
-          <div style="display:flex;align-items:center;gap:4px;"><div style="width:8px;height:8px;border-radius:50%;background:#f5c842;"></div><span style="font-size:10px;color:var(--label-secondary);">Partial</span></div>
+          <div style="display:flex;align-items:center;gap:4px;"><div style="width:8px;height:8px;border-radius:50%;background:#FFD60A;"></div><span style="font-size:10px;color:var(--label-secondary);">Partial</span></div>
           <div style="display:flex;align-items:center;gap:4px;"><div style="width:8px;height:8px;border-radius:50%;background:var(--border);"></div><span style="font-size:10px;color:var(--label-secondary);">Missed</span></div>
         </div>
       </div>
@@ -1156,80 +1288,55 @@
     <div id="pb-list"><p style="font-size:13px;color:var(--label-secondary);">Log workouts to track PBs.</p></div>
   </div>
 
-  <!-- Body Measurements -->
-  <div class="card" style="margin-bottom:12px;">
-    <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:12px;">BODY MEASUREMENTS</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
-      <div><label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Chest (cm)</label><input type="number" id="meas-chest" placeholder="—"></div>
-      <div><label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Waist (cm)</label><input type="number" id="meas-waist" placeholder="—"></div>
-      <div><label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Hips (cm)</label><input type="number" id="meas-hips" placeholder="—"></div>
-      <div><label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Arms (cm)</label><input type="number" id="meas-arms" placeholder="—"></div>
-      <div><label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Legs (cm)</label><input type="number" id="meas-legs" placeholder="—"></div>
-    </div>
-    <button onclick="saveMeasurements()" style="width:100%;background:#f5c842;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:800;color:#111;cursor:pointer;">Save Measurements</button>
-  </div>
-
-  <!-- Current Phase (hidden, kept for JS compat) -->
-  <div style="display:none;">
-    <span id="prog-phase-name"></span>
-    <span id="prog-days-training"></span>
-    <span id="prog-weight-to-go"></span>
-    <span id="prog-bar"></span>
-    <span id="prog-pct"></span>
-    <span id="workouts-count"></span>
-    <span id="cardio-count"></span>
-    <span id="progress-strength-ex-name"></span>
-    <span id="progress-strength-ex-val"></span>
-    <span id="supplement-log-grid"></span>
-    <div id="phase-history-card"></div>
-    <div id="phase-history-list"></div>
-  </div>
-
   <!-- Workout History -->
   <div class="card" style="margin-bottom:12px;">
     <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:12px;">WORKOUT HISTORY</p>
     <div id="history-list"><p style="font-size:13px;color:var(--label-secondary);">No sessions logged yet.</p></div>
   </div>
 
+  <!-- Hidden compat -->
+  <div style="display:none;">
+    <span id="prog-phase-name"></span><span id="prog-days-training"></span><span id="prog-weight-to-go"></span>
+    <div id="prog-bar"></div><span id="prog-pct"></span><span id="workouts-count"></span><span id="cardio-count"></span>
+    <span id="progress-strength-ex-name"></span><span id="progress-strength-ex-val"></span>
+    <div id="supplement-log-grid"></div><div id="phase-history-card"></div><div id="phase-history-list"></div>
+  </div>
+
 </div>
-<!-- PROFILE SCREEN -->
+
+<!-- ═══════════════════════════════════════════════════════
+     PROFILE SCREEN
+═══════════════════════════════════════════════════════ -->
 <div class="screen" id="screen-profile" style="display:none;">
 
-  <!-- Header -->
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-top:4px;">
     <h1 style="font-size:22px;font-weight:800;color:var(--text);">PROFILE</h1>
     <button onclick="document.getElementById('profile-section-details').scrollIntoView({behavior:'smooth'})" style="width:36px;height:36px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M15 5l1 1M9 5l-1 1"/></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
     </button>
   </div>
 
   <!-- Profile Hero -->
   <div class="card" style="margin-bottom:12px;">
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
-      <!-- Avatar -->
       <div style="position:relative;flex-shrink:0;">
-        <div id="profile-hero-avatar" style="width:72px;height:72px;border-radius:50%;background:#f5c842;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#111;">PG</div>
+        <div id="profile-hero-avatar" style="width:72px;height:72px;border-radius:50%;background:#FFD60A;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#111;">PG</div>
         <div style="position:absolute;bottom:0;right:0;width:22px;height:22px;background:var(--card);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;">📷</div>
       </div>
-      <!-- Name + goal -->
       <div style="flex:1;">
         <h2 style="font-size:20px;font-weight:800;color:var(--text);margin-bottom:2px;" id="profile-hero-name">Athlete</h2>
         <p style="font-size:13px;color:var(--label-secondary);margin-bottom:6px;" id="profile-hero-goal">Hybrid Athlete</p>
-        <span style="display:inline-block;background:rgba(245,200,66,0.15);color:#f5c842;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;border:1px solid rgba(245,200,66,0.3);" id="profile-level-badge">Level 1</span>
+        <span style="display:inline-block;background:rgba(255,214,10,0.15);color:#FFD60A;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;border:1px solid rgba(255,214,10,0.3);" id="profile-level-badge">Level 1</span>
       </div>
-      <!-- Level badge -->
-      <div style="width:50px;height:50px;background:#111;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px solid #f5c842;flex-shrink:0;">
-        <span style="font-size:18px;font-weight:800;color:#f5c842;line-height:1;" id="profile-level-num">1</span>
-        <span style="font-size:8px;color:#f5c842;font-weight:700;">LEVEL</span>
+      <div style="width:50px;height:50px;background:#111;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px solid #FFD60A;flex-shrink:0;">
+        <span style="font-size:18px;font-weight:800;color:#FFD60A;line-height:1;" id="profile-level-num">1</span>
+        <span style="font-size:8px;color:#FFD60A;font-weight:700;">LEVEL</span>
       </div>
     </div>
-    <!-- XP Bar -->
-    <div style="margin-bottom:6px;">
-      <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden;">
-        <div id="profile-xp-fill" style="height:100%;background:#f5c842;border-radius:4px;width:0%;transition:width 0.5s;"></div>
-      </div>
-      <p style="font-size:11px;color:var(--label-secondary);margin-top:4px;" id="profile-xp-label">0 / 1,000 XP</p>
+    <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin-bottom:4px;">
+      <div id="profile-xp-fill" style="height:100%;background:#FFD60A;border-radius:4px;width:0%;transition:width 0.5s;"></div>
     </div>
+    <p style="font-size:11px;color:var(--label-secondary);" id="profile-xp-label">0 / 1,000 XP</p>
   </div>
 
   <!-- Current Status -->
@@ -1237,13 +1344,13 @@
     <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:#888;margin-bottom:8px;">CURRENT STATUS</p>
     <div style="display:flex;justify-content:space-between;align-items:flex-end;">
       <div>
-        <div style="font-size:28px;font-weight:800;color:#f5c842;" id="profile-status-rank">—</div>
+        <div style="font-size:28px;font-weight:800;color:#FFD60A;" id="profile-status-rank">Top 50%</div>
         <div style="font-size:13px;color:#888;margin-top:2px;">of users this month</div>
-        <div style="font-size:12px;font-weight:700;color:#22c55e;margin-top:6px;" id="profile-status-delta">↑ Keep going!</div>
+        <div style="font-size:12px;font-weight:700;color:#22c55e;margin-top:6px;">↑ Keep going!</div>
       </div>
       <svg width="100" height="50" viewBox="0 0 100 50" fill="none">
-        <polyline points="0,45 20,38 40,30 60,18 80,10 100,2" fill="none" stroke="#f5c842" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="100" cy="2" r="4" fill="#f5c842"/>
+        <polyline points="0,45 20,38 40,30 60,18 80,10 100,2" fill="none" stroke="#FFD60A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="100" cy="2" r="4" fill="#FFD60A"/>
       </svg>
     </div>
   </div>
@@ -1254,34 +1361,16 @@
       <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">ACHIEVEMENTS</p>
       <span style="font-size:12px;color:var(--label-secondary);cursor:pointer;">See all</span>
     </div>
-    <div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;" id="profile-hex-badges">
-      <!-- rendered by JS -->
-    </div>
+    <div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;" id="profile-hex-badges"></div>
   </div>
 
   <!-- Key Stats -->
   <div class="card" style="margin-bottom:12px;">
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center;">
-      <div>
-        <div style="font-size:18px;margin-bottom:4px;">📅</div>
-        <div style="font-size:18px;font-weight:800;color:var(--text);" id="profile-stat-workouts">0</div>
-        <div style="font-size:10px;color:var(--label-secondary);line-height:1.3;">Workouts<br>Completed</div>
-      </div>
-      <div>
-        <div style="font-size:18px;margin-bottom:4px;">🔥</div>
-        <div style="font-size:18px;font-weight:800;color:var(--text);" id="profile-stat-calories">0</div>
-        <div style="font-size:10px;color:var(--label-secondary);line-height:1.3;">Calories<br>Burned</div>
-      </div>
-      <div>
-        <div style="font-size:18px;margin-bottom:4px;">⏱</div>
-        <div style="font-size:18px;font-weight:800;color:var(--text);" id="profile-stat-time">0h</div>
-        <div style="font-size:10px;color:var(--label-secondary);line-height:1.3;">Training<br>Time</div>
-      </div>
-      <div>
-        <div style="font-size:18px;margin-bottom:4px;">🏆</div>
-        <div style="font-size:18px;font-weight:800;color:var(--text);" id="profile-stat-achievements">0</div>
-        <div style="font-size:10px;color:var(--label-secondary);line-height:1.3;">Personal<br>Records</div>
-      </div>
+      <div><div style="font-size:18px;margin-bottom:4px;">📅</div><div style="font-size:18px;font-weight:800;color:var(--text);" id="profile-stat-workouts">0</div><div style="font-size:10px;color:var(--label-secondary);line-height:1.3;">Workouts<br>Completed</div></div>
+      <div><div style="font-size:18px;margin-bottom:4px;">🔥</div><div style="font-size:18px;font-weight:800;color:var(--text);" id="profile-stat-calories">0</div><div style="font-size:10px;color:var(--label-secondary);line-height:1.3;">Calories<br>Burned</div></div>
+      <div><div style="font-size:18px;margin-bottom:4px;">⏱</div><div style="font-size:18px;font-weight:800;color:var(--text);" id="profile-stat-time">0h</div><div style="font-size:10px;color:var(--label-secondary);line-height:1.3;">Training<br>Time</div></div>
+      <div><div style="font-size:18px;margin-bottom:4px;">🏆</div><div style="font-size:18px;font-weight:800;color:var(--text);" id="profile-stat-achievements">0</div><div style="font-size:10px;color:var(--label-secondary);line-height:1.3;">Personal<br>Records</div></div>
     </div>
   </div>
 
@@ -1291,9 +1380,7 @@
       <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">RECENT PRS</p>
       <span onclick="showScreen('screen-progress')" style="font-size:12px;color:var(--label-secondary);cursor:pointer;">See all</span>
     </div>
-    <div id="profile-prs-list">
-      <p style="font-size:13px;color:var(--label-secondary);text-align:center;padding:12px 0;">Log workouts to track PRs.</p>
-    </div>
+    <div id="profile-prs-list"><p style="font-size:13px;color:var(--label-secondary);text-align:center;padding:12px 0;">Log workouts to track PRs.</p></div>
   </div>
 
   <!-- Account & Settings -->
@@ -1327,8 +1414,8 @@
   </div>
 
   <!-- Premium -->
-  <div style="background:rgba(245,200,66,0.08);border:1.5px solid rgba(245,200,66,0.3);border-radius:16px;padding:16px;margin-bottom:12px;display:flex;align-items:center;gap:14px;cursor:pointer;">
-    <div style="width:44px;height:44px;background:#f5c842;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">👑</div>
+  <div style="background:rgba(255,214,10,0.08);border:1.5px solid rgba(255,214,10,0.3);border-radius:16px;padding:16px;margin-bottom:12px;display:flex;align-items:center;gap:14px;cursor:pointer;">
+    <div style="width:44px;height:44px;background:#FFD60A;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">👑</div>
     <div style="flex:1;">
       <div style="font-size:14px;font-weight:800;color:var(--text);">POCKETGYMS PREMIUM</div>
       <div style="font-size:12px;color:var(--label-secondary);margin-top:2px;">Unlock all features and take your results to the next level.</div>
@@ -1336,34 +1423,22 @@
     <div style="color:var(--label-secondary);font-size:18px;">›</div>
   </div>
 
-  <!-- Personal Details (hidden section, scrolled to) -->
+  <!-- Personal Details -->
   <div class="card" style="margin-bottom:12px;" id="profile-section-details">
     <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:14px;">PERSONAL INFORMATION</p>
-    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Name</label>
-    <input type="text" id="set-name" placeholder="Your name" style="margin-bottom:10px;">
-    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Age</label>
-    <input type="number" id="set-age" placeholder="e.g. 25" style="margin-bottom:10px;">
-    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Gender</label>
-    <select id="set-gender" style="margin-bottom:10px;"><option value="male">Male</option><option value="female">Female</option></select>
-    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Height (cm)</label>
-    <input type="number" id="set-height" placeholder="e.g. 175" style="margin-bottom:10px;">
-    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Current Weight (kg)</label>
-    <input type="number" id="set-weight" placeholder="e.g. 80" style="margin-bottom:10px;">
-    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Target Weight (kg)</label>
-    <input type="number" id="set-target-weight" placeholder="e.g. 75" style="margin-bottom:10px;">
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Name</label><input type="text" id="set-name" placeholder="Your name" style="margin-bottom:10px;">
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Age</label><input type="number" id="set-age" placeholder="e.g. 25" style="margin-bottom:10px;">
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Gender</label><select id="set-gender" style="margin-bottom:10px;"><option value="male">Male</option><option value="female">Female</option></select>
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Height (cm)</label><input type="number" id="set-height" placeholder="e.g. 175" style="margin-bottom:10px;">
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Current Weight (kg)</label><input type="number" id="set-weight" placeholder="e.g. 80" style="margin-bottom:10px;">
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Target Weight (kg)</label><input type="number" id="set-target-weight" placeholder="e.g. 75" style="margin-bottom:10px;">
     <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Activity Level</label>
     <select id="set-activity" style="margin-bottom:10px;">
-      <option value="1.2">Sedentary</option>
-      <option value="1.375">Lightly Active</option>
-      <option value="1.55" selected>Moderately Active</option>
-      <option value="1.725">Very Active</option>
+      <option value="1.2">Sedentary</option><option value="1.375">Lightly Active</option><option value="1.55" selected>Moderately Active</option><option value="1.725">Very Active</option>
     </select>
     <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Goal</label>
     <select id="set-goal" style="margin-bottom:10px;">
-      <option value="beginner">Beginner</option>
-      <option value="fatloss">Fat Loss</option>
-      <option value="muscle">Muscle Building</option>
-      <option value="fitness">General Fitness</option>
+      <option value="beginner">Beginner</option><option value="fatloss">Fat Loss</option><option value="muscle">Muscle Building</option><option value="fitness">General Fitness</option>
     </select>
     <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Training Environment</label>
     <select id="set-environment" style="margin-bottom:10px;"><option value="gym">Gym</option><option value="home">Home</option><option value="both">Both</option></select>
@@ -1373,56 +1448,42 @@
     <select id="set-units" style="margin-bottom:10px;"><option value="kg">kg / km</option><option value="lbs">lbs / miles</option></select>
     <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Language</label>
     <select id="set-language" onchange="selectedLang=this.value;applyTranslations();" style="margin-bottom:14px;">
-      <option value="en">🇬🇧 English</option>
-      <option value="pt">🇧🇷 Português</option>
-      <option value="es">🇪🇸 Español</option>
-      <option value="fr">🇫🇷 Français</option>
-      <option value="de">🇩🇪 Deutsch</option>
+      <option value="en">🇬🇧 English</option><option value="pt">🇧🇷 Português</option><option value="es">🇪🇸 Español</option><option value="fr">🇫🇷 Français</option><option value="de">🇩🇪 Deutsch</option>
     </select>
-    <button onclick="saveProfileSettings()" style="width:100%;background:#f5c842;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:800;color:#111;cursor:pointer;">Save & Update</button>
+    <button onclick="saveProfileSettings()" style="width:100%;background:#FFD60A;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:800;color:#111;cursor:pointer;">Save & Update</button>
     <p id="settings-save-msg" style="display:none;color:#22c55e;font-size:12px;font-weight:700;margin-top:6px;text-align:center;">Saved!</p>
   </div>
 
   <!-- Transformation Phase -->
   <div class="card" style="margin-bottom:12px;" id="profile-section-plans">
     <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:14px;">MY TRANSFORMATION PHASE</p>
-    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Phase Name</label>
-    <input type="text" id="set-phase-name" placeholder="e.g. Summer Cut" style="margin-bottom:10px;">
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Phase Name</label><input type="text" id="set-phase-name" placeholder="e.g. Summer Cut" style="margin-bottom:10px;">
     <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Duration</label>
     <select id="set-phase-duration" style="margin-bottom:10px;">
-      <option value="28">4 Weeks</option>
-      <option value="42">6 Weeks</option>
-      <option value="56" selected>8 Weeks</option>
-      <option value="70">10 Weeks</option>
-      <option value="84">12 Weeks</option>
+      <option value="28">4 Weeks</option><option value="42">6 Weeks</option><option value="56" selected>8 Weeks</option><option value="70">10 Weeks</option><option value="84">12 Weeks</option>
     </select>
     <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Training Days Per Week</label>
     <input type="number" id="set-training-days" placeholder="e.g. 4" min="1" max="7" style="margin-bottom:14px;">
-    <button onclick="savePhaseSettings()" style="width:100%;background:#f5c842;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:800;color:#111;cursor:pointer;">Save Phase</button>
+    <button onclick="savePhaseSettings()" style="width:100%;background:#FFD60A;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:800;color:#111;cursor:pointer;">Save Phase</button>
     <p id="phase-save-msg" style="display:none;color:#22c55e;font-size:12px;font-weight:700;margin-top:6px;text-align:center;">Phase saved!</p>
   </div>
 
-  <!-- Calculated Targets (hidden until saved) -->
+  <!-- Calculated Targets -->
   <div class="card" id="tdee-result" style="display:none;margin-bottom:12px;">
     <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:12px;">YOUR CALCULATED TARGETS</p>
     <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span style="font-size:13px;color:var(--label-secondary);">TDEE</span><span style="font-size:13px;font-weight:700;color:var(--text);" id="tdee-value">—</span></div>
     <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span style="font-size:13px;color:var(--label-secondary);">Calorie Target</span><span style="font-size:13px;font-weight:700;color:var(--text);" id="cal-target-value">—</span></div>
     <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span style="font-size:13px;color:var(--label-secondary);">Protein Target</span><span style="font-size:13px;font-weight:700;color:var(--text);" id="protein-target-value">—</span></div>
     <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:13px;color:var(--label-secondary);">Steps Target</span><span style="font-size:13px;font-weight:700;color:var(--text);">8,000 steps</span></div>
-    <button onclick="saveSettings()" style="width:100%;background:#f5c842;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:800;color:#111;cursor:pointer;margin-top:12px;">Save & Calculate Targets</button>
+    <button onclick="saveSettings()" style="width:100%;background:#FFD60A;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:800;color:#111;cursor:pointer;margin-top:12px;">Save & Calculate Targets</button>
   </div>
 
   <!-- Plates Calculator -->
   <div class="card" style="margin-bottom:12px;">
     <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:12px;">PLATES CALCULATOR</p>
-    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Target Weight (kg)</label>
-    <input type="number" id="plates-weight" placeholder="e.g. 100" style="margin-bottom:10px;">
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Target Weight (kg)</label><input type="number" id="plates-weight" placeholder="e.g. 100" style="margin-bottom:10px;">
     <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Bar Weight</label>
-    <select id="plates-bar" style="margin-bottom:14px;">
-      <option value="20">20kg Standard</option>
-      <option value="15">15kg Women's</option>
-      <option value="10">10kg Short</option>
-    </select>
+    <select id="plates-bar" style="margin-bottom:14px;"><option value="20">20kg Standard</option><option value="15">15kg Women's</option><option value="10">10kg Short</option></select>
     <button onclick="calculatePlates()" style="width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:13px;font-size:14px;font-weight:700;color:var(--text);cursor:pointer;">Calculate Plates</button>
     <div id="plates-result" style="display:none;margin-top:12px;"></div>
   </div>
@@ -1444,10 +1505,10 @@
     <button onclick="signOut()" style="width:100%;background:none;border:1.5px solid #ef4444;border-radius:12px;padding:13px;font-size:14px;font-weight:700;color:#ef4444;cursor:pointer;" id="sign-out-btn">Sign Out</button>
   </div>
 
-  <!-- Reset -->
+  <!-- Danger Zone -->
   <div class="card" style="margin-bottom:12px;">
     <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:8px;">DANGER ZONE</p>
-    <p style="font-size:12px;color:var(--label-secondary);margin-bottom:10px;">Permanently delete all your data. Cannot be undone.</p>
+    <p style="font-size:12px;color:var(--label-secondary);margin-bottom:10px;">Permanently delete all your data.</p>
     <input type="text" id="reset-confirm-input" placeholder="Type RESET to confirm" oninput="handleResetConfirmInput()" style="margin-bottom:8px;">
     <button type="button" id="reset-all-data-btn" onclick="resetAllData()" disabled style="width:100%;background:none;border:1.5px solid #ef4444;border-radius:12px;padding:13px;font-size:14px;font-weight:700;color:#ef4444;cursor:pointer;opacity:0.5;">🗑 Reset All Data</button>
   </div>
@@ -1464,31 +1525,43 @@
 
 <!-- NAV -->
 <div class="nav" style="display:none;">
-    <div class="nav-inner">
+  <div class="nav-inner">
     <div class="nav-item active" onclick="showScreen('screen-home')" id="nav-home">
-        <span class="nav-item-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V20a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 20V9.5z"/><path d="M9.5 21.5V12h5v9.5"/></svg></span>
-        <span id="nav-txt-home">Home</span>
+      <span class="nav-item-icon-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5V20a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 20V9.5z"/><path d="M9.5 21.5V12h5v9.5"/></svg>
+      </span>
+      <span id="nav-txt-home">Home</span>
     </div>
     <div class="nav-item" onclick="showScreen('screen-train')" id="nav-train">
-        <span class="nav-item-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 14h.5a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-.5"/><path d="M9.5 14H9a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h.5"/><path d="M4 12h16"/><path d="M14.5 10v4M9.5 10v4"/></svg></span>
-        <span id="nav-txt-train">Train</span>
+      <span class="nav-item-icon-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 5h2M16 5h2M6 19h2M16 19h2M8 5v14M16 5v14M8 12h8"/><circle cx="4" cy="5" r="1.5"/><circle cx="20" cy="5" r="1.5"/><circle cx="4" cy="19" r="1.5"/><circle cx="20" cy="19" r="1.5"/></svg>
+      </span>
+      <span id="nav-txt-train">Train</span>
     </div>
     <div class="nav-item" onclick="showScreen('screen-calories')" id="nav-calories">
-        <span class="nav-item-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h0"/><path d="M9 2v20"/><path d="M14 2v5a3 3 0 0 0 6 0V2"/><path d="M20 22v-8"/></svg></span>
-        <span id="nav-txt-nutrition">Nutrition</span>
+      <span class="nav-item-icon-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C7 2 4 6 4 10c0 5 4 8 8 10 4-2 8-5 8-10 0-4-3-8-8-8z"/><path d="M12 8v4M12 14v.01"/></svg>
+      </span>
+      <span id="nav-txt-nutrition">Nutrition</span>
     </div>
     <div class="nav-item" onclick="showScreen('screen-progress')" id="nav-progress">
-        <span class="nav-item-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="12" width="4.5" height="8" rx="1"/><rect x="9.25" y="8" width="4.5" height="12" rx="1"/><rect x="15.5" y="4" width="4.5" height="16" rx="1"/></svg></span>
-        <span id="nav-txt-progress">Progress</span>
+      <span class="nav-item-icon-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="12" width="4.5" height="8" rx="1"/><rect x="9.25" y="8" width="4.5" height="12" rx="1"/><rect x="15.5" y="4" width="4.5" height="16" rx="1"/></svg>
+      </span>
+      <span id="nav-txt-progress">Progress</span>
     </div>
     <div class="nav-item" onclick="showScreen('screen-profile')" id="nav-profile">
-        <span class="nav-item-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20.5v-.5a7 7 0 0 1 14 0v.5"/></svg></span>
-        <span id="nav-txt-profile">Profile</span>
+      <span class="nav-item-icon-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20.5v-.5a7 7 0 0 1 14 0v.5"/></svg>
+      </span>
+      <span id="nav-txt-profile">Profile</span>
     </div>
-    </div>
+  </div>
 </div>
 
 <div id="toast" style="display:none;"></div>
 
 </body>
+</html>
+
 </html>

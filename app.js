@@ -2070,6 +2070,130 @@ async function updateHome() {
     updateStreakSection();
     updateUpcoming();
     updateNutritionTab(cals, protein, carbs, fats, calTarget, proteinTarget);
+
+    // Greeting
+    const hour = new Date().getHours();
+    const greetingEl = document.getElementById('home-hero-title');
+    if (greetingEl) {
+      const name = settings.name || 'Athlete';
+      let greeting = 'Good morning 👋';
+      if (hour >= 12 && hour < 17) greeting = 'Good afternoon 👋';
+      else if (hour >= 17 && hour < 20) greeting = 'Good evening 👋';
+      else if (hour >= 20) greeting = 'Good night 👋';
+      greetingEl.textContent = greeting;
+    }
+    const subEl = document.getElementById('home-hero-sub');
+    if (subEl) subEl.textContent = `Let's crush your goals today, ${settings.name || 'Athlete'}.`;
+
+    // Daily Score (Workout 25 + Cals 25 + Steps 25 + Protein 25)
+    const todayWorkoutDone = workoutHistory.some(w => w.date === new Date().toLocaleDateString('en-GB') && w.type !== 'rest');
+    const workoutScore = todayWorkoutDone ? 25 : 0;
+    const calsScore = cals >= calTarget * 0.8 ? 25 : Math.round((cals / calTarget) * 25);
+    const stepsScore = steps >= (settings.stepsTarget || 8000) ? 25 : Math.round((steps / (settings.stepsTarget || 8000)) * 25);
+    const proteinScore = protein >= proteinTarget * 0.8 ? 25 : Math.round((protein / proteinTarget) * 25);
+    const dailyScore = Math.min(100, workoutScore + calsScore + stepsScore + proteinScore);
+    setText('home-daily-score', dailyScore);
+    const scoreMessages = ['Start tracking to build your score!', 'Good start — keep going!', 'Almost halfway there!', 'Strong progress today!', 'Nearly perfect day!', "You're absolutely smashing it! 🔥"];
+    const msgIdx = Math.floor(dailyScore / 20);
+    setText('home-score-msg', scoreMessages[Math.min(msgIdx, scoreMessages.length - 1)]);
+    const scoreRing = document.getElementById('home-score-ring');
+    if (scoreRing) scoreRing.setAttribute('stroke-dashoffset', 201.06 - (dailyScore / 100) * 201.06);
+
+    // Chips
+    setText('home-chip-workout', todayWorkoutDone ? '✓ Done' : '—');
+    setText('home-chip-steps', steps.toLocaleString());
+    setText('home-chip-steps-goal', `/${(settings.stepsTarget || 8000).toLocaleString()}`);
+    setText('home-chip-protein', Math.round(protein) + 'g');
+    setText('home-chip-protein-goal', `/${proteinTarget}g`);
+    const nd2 = PG.state?.todayNutrition || {};
+    const sleepH = nd2.sleep_hours ? parseFloat(nd2.sleep_hours) : NaN;
+    setText('home-chip-sleep', Number.isFinite(sleepH) && sleepH > 0 ? `${sleepH}h` : '—');
+
+    // Home macros donut
+    const macroTotal = (protein * 4) + (carbs * 4) + (fats * 9);
+    const pPct = macroTotal > 0 ? (protein * 4) / macroTotal : 0;
+    const cPct = macroTotal > 0 ? (carbs * 4) / macroTotal : 0;
+    const fPct = macroTotal > 0 ? (fats * 9) / macroTotal : 0;
+    const mCirc = 188.5;
+    const pArc = pPct * mCirc; const cArc = cPct * mCirc; const fArc = fPct * mCirc;
+    const mpRing = document.getElementById('home-macro-protein');
+    const mcRing = document.getElementById('home-macro-carbs');
+    const mfRing = document.getElementById('home-macro-fats');
+    if (mpRing) { mpRing.setAttribute('stroke-dasharray', `${pArc} ${mCirc - pArc}`); mpRing.setAttribute('stroke-dashoffset', '0'); }
+    if (mcRing) { mcRing.setAttribute('stroke-dasharray', `${cArc} ${mCirc - cArc}`); mcRing.setAttribute('stroke-dashoffset', -pArc); }
+    if (mfRing) { mfRing.setAttribute('stroke-dasharray', `${fArc} ${mCirc - fArc}`); mfRing.setAttribute('stroke-dashoffset', -(pArc + cArc)); }
+    setText('home-macro-p-val', Math.round(protein) + 'g');
+    setText('home-macro-c-val', Math.round(carbs) + 'g');
+    setText('home-macro-f-val', Math.round(fats) + 'g');
+    const kcalLeft = Math.max(0, calTarget - cals);
+    setText('home-kcal-left', kcalLeft > 0 ? `${Math.round(kcalLeft)} kcal left` : 'Goal reached! 🎉');
+    setText('home-kcal-left-label', kcalLeft > 0 ? `${Math.round(kcalLeft)}` : '🎉');
+
+    // Steps ring
+    const stepsTarget2 = settings.stepsTarget || 8000;
+    const stepsPct = Math.min(1, steps / stepsTarget2);
+    const stepsRing = document.getElementById('home-steps-ring');
+    if (stepsRing) stepsRing.setAttribute('stroke-dashoffset', 163.36 - stepsPct * 163.36);
+    setText('home-steps-big', steps.toLocaleString());
+    setText('home-steps-big-goal', `/${stepsTarget2.toLocaleString()} steps`);
+    setBar('home-steps-bar', stepsPct * 100);
+    setText('home-steps-left', steps >= stepsTarget2 ? '✓ Goal reached!' : `${(stepsTarget2 - steps).toLocaleString()} steps to go`);
+
+    // Recovery ring (simulated from sleep)
+    const sleepRaw2 = nd2.sleep_hours ? parseFloat(nd2.sleep_hours) : 0;
+    const recoveryPct = sleepRaw2 > 0 ? Math.min(1, sleepRaw2 / 8) : 0.75;
+    const recoveryRing = document.getElementById('home-recovery-ring');
+    if (recoveryRing) recoveryRing.setAttribute('stroke-dashoffset', 163.36 - recoveryPct * 163.36);
+    const recoveryScore = Math.round(recoveryPct * 100);
+    setText('home-recovery-pct', recoveryScore + '%');
+    setText('home-recovery-label', recoveryScore >= 80 ? 'Great recovery' : recoveryScore >= 60 ? 'Good recovery' : 'Rest up tonight');
+    setText('home-recovery-sub', recoveryScore >= 80 ? 'Your body is ready to perform.' : 'Prioritise sleep and hydration.');
+    setText('home-recovery-sleep', sleepRaw2 > 0 ? `${sleepRaw2}h` : '—');
+
+    // Weekly summary bars
+    const homeWeeklyBars = document.getElementById('home-weekly-bars');
+    if (homeWeeklyBars) {
+      const now2 = new Date();
+      const dow2 = now2.getDay();
+      const mondayOffset2 = dow2 === 0 ? -6 : 1 - dow2;
+      let weekDone = 0;
+      const bars = [];
+      for (let i = 0; i < 7; i++) {
+        const d2 = new Date(now2);
+        d2.setDate(now2.getDate() + mondayOffset2 + i);
+        const ds2 = d2.toLocaleDateString('en-GB');
+        const done2 = !!(workoutHistory.find(w => w.date === ds2) || cardioHistory.find(c => c.date === ds2));
+        if (done2) weekDone++;
+        const isToday2 = i === (dow2 === 0 ? 6 : dow2 - 1);
+        const h = done2 ? 40 : isToday2 ? 24 : Math.floor(Math.random() * 16) + 8;
+        const color = done2 ? '#22c55e' : isToday2 ? '#FFD60A' : 'var(--border)';
+        bars.push(`<div style="flex:1;height:${h}px;background:${color};border-radius:4px;align-self:flex-end;"></div>`);
+      }
+      homeWeeklyBars.innerHTML = bars.join('');
+      const totalScheduled2 = (Array.isArray(savedRoutines) ? savedRoutines : []).reduce((a, r) => a + (r.scheduled_days ? r.scheduled_days.length : 0), 0);
+      const consistency2 = totalScheduled2 > 0 ? Math.round((weekDone / Math.min(totalScheduled2, 7)) * 100) : 0;
+      setText('home-weekly-consistency', consistency2 + '%');
+      setText('home-weekly-text', `${weekDone} of ${Math.min(totalScheduled2, 7)} workouts completed`);
+    }
+
+    // Home today's plan card
+    const days3 = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const today3 = days3[new Date().getDay()];
+    const scheduledToday = (Array.isArray(savedRoutines) ? savedRoutines : []).find(r => r.scheduled_days && r.scheduled_days.includes(today3));
+    if (scheduledToday) {
+      setText('home-workout-title', scheduledToday.name);
+      setText('home-workout-muscles', getWorkoutMuscles(scheduledToday.name));
+      const focusTag = document.getElementById('home-workout-focus-tag');
+      if (focusTag) { focusTag.style.display = 'inline-block'; focusTag.textContent = scheduledToday.focus || 'Primary'; }
+    } else {
+      setText('home-workout-title', 'No workout scheduled');
+      setText('home-workout-muscles', 'Set up your plan in the Train tab');
+      const focusTag = document.getElementById('home-workout-focus-tag');
+      if (focusTag) focusTag.style.display = 'none';
+    }
+
+    // Home Up Next
+    updateUpcoming();
 }
 // ===================== PROGRESS =====================
 async function renderProgressTab() {
@@ -4240,3 +4364,70 @@ function renderProfileTab() {
       </div>`;
     }).join('');
   }
+
+function openSleepModal() {
+  const modal = document.getElementById('sleep-modal');
+  if (modal) { modal.style.display = 'flex'; }
+}
+
+function closeSleepModal() {
+  const modal = document.getElementById('sleep-modal');
+  if (modal) { modal.style.display = 'none'; }
+}
+
+function setSleepQuick(hours) {
+  const input = document.getElementById('sleep-input');
+  if (input) input.value = hours;
+}
+
+async function saveSleep() {
+  const input = document.getElementById('sleep-input');
+  const hours = parseFloat(input?.value);
+  if (!Number.isFinite(hours) || hours <= 0) {
+    showToast('Enter sleep hours', 'error', 2000);
+    return;
+  }
+  try {
+    const result = await PG.nutrition.save({ sleep_hours: hours });
+    if (result?.ok === false) throw new Error('Save failed');
+    closeSleepModal();
+    await updateHome();
+    showToast('Sleep logged!', 'success', 2000);
+  } catch(e) {
+    showToast('Save failed', 'error', 3000);
+  }
+}
+
+async function addWaterAmount(litres) {
+  try {
+    const nd = await PG.nutrition.getToday() || {};
+    const current = getWaterLitres(nd);
+    const next = Math.round((current + litres) * 100) / 100;
+    const result = await PG.nutrition.save({ water_litres: next });
+    if (result?.ok === false) throw new Error('Save failed');
+    await loadNutrition();
+    await updateHome();
+    showToast(`+${litres * 1000}ml logged`, 'success', 1400);
+  } catch(e) {
+    showToast('Save failed', 'error', 3000);
+  }
+}
+
+function showNotifications() {
+  showToast('No new notifications', 'success', 1800);
+}
+
+function getWorkoutMuscles(name) {
+  const n = (name || '').toLowerCase();
+  if (/push/.test(n)) return 'Chest, Shoulders, Triceps';
+  if (/pull/.test(n)) return 'Back, Biceps, Rear Delts';
+  if (/leg|squat/.test(n)) return 'Quads, Hamstrings, Glutes, Calves';
+  if (/upper/.test(n)) return 'Chest, Back, Shoulders, Arms';
+  if (/lower/.test(n)) return 'Quads, Hamstrings, Glutes, Calves';
+  if (/full/.test(n)) return 'Full Body';
+  if (/core|abs/.test(n)) return 'Core, Abs';
+  if (/chest/.test(n)) return 'Chest, Triceps';
+  if (/back/.test(n)) return 'Back, Biceps';
+  if (/shoulder/.test(n)) return 'Shoulders, Traps';
+  return 'Multiple Muscle Groups';
+}
