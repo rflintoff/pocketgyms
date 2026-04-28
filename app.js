@@ -2034,196 +2034,12 @@ async function addCatalogSupplementToListByIndex(idx){
     showToast(t('supplementAddedToast'),'success',1400);
 }
 
-// ===================== HOME =====================
-async function updateHome() {
-    const s=settings;const calTarget=s.calTarget||2000;const proteinTarget=s.proteinTarget||150;const stepsTarget=s.stepsTarget||8000;
-    const remainingCaloriesForMacros=Math.max(calTarget-(proteinTarget*4),0);
-    const carbsTarget=s.carbsTarget||Math.max(Math.round((remainingCaloriesForMacros*0.5)/4),0);
-    const fatTarget=s.fatTarget||Math.max(Math.round((remainingCaloriesForMacros*0.5)/9),0);
-    const greetEl=document.getElementById('header-greeting');
-    const wave=' 👋';
-    if(greetEl){
-        const h=new Date().getHours();
-        const greetKey=h<12?'greetingMorning':(h<17?'greetingAfternoon':'greetingEvening');
-        greetEl.textContent=(s.name?t(greetKey)+', '+s.name:t(greetKey))+wave;
-    }
-    const heroTitle=document.getElementById('home-hero-title');
-    const heroSub=document.getElementById('home-hero-sub');
-    if(heroTitle){
-        const h=new Date().getHours();
-        const greetKey=h<12?'greetingMorning':(h<17?'greetingAfternoon':'greetingEvening');
-        heroTitle.textContent=(s.name?t(greetKey)+', '+s.name:t(greetKey))+wave;
-    }
-    if(heroSub){heroSub.textContent='';heroSub.style.display='none';}
-    if(s.phaseName){
-        const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
-        setEl('home-phase-name',s.phaseName);
-        if(s.phaseStartDate){
-            const parts=s.phaseStartDate.split('/');const start=new Date(parts[2],parts[1]-1,parts[0]);
-            const daysDiff=Math.max(0,Math.floor((Date.now()-start)/86400000));
-            setEl('home-days-training',daysDiff+' days');
-            const totalDays=s.phaseDuration||56;const pct=Math.min(Math.round((daysDiff/totalDays)*100),100);
-            const bar=document.getElementById('home-prog-bar');if(bar)bar.style.width=pct+'%';
-            const pctEl=document.getElementById('home-prog-pct');if(pctEl)pctEl.textContent=pct+'% complete';
-            const recordEl=document.getElementById('streak-record');
-            if(recordEl){
-                const progressEntries=await PG.progress.getAll();
-                recordEl.textContent=(progressEntries?.[0]?.streakRecord||'0')+'/7';
-            }
-        }
-    }
-    const quoteEl=document.getElementById('daily-quote');
-    if(quoteEl)quoteEl.textContent='"'+getDailyQuote()+'"';
-    const currentW=Number(s.weight);
-    if(Number.isFinite(currentW)&&currentW>0){
-        const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
-        const tw=Number(s.targetWeight);
-        const hasTarget=Number.isFinite(tw)&&tw>0;
-        setEl('home-current-weight',currentW+'kg');
-        setEl('home-target-weight',hasTarget?tw+'kg':'—');
-        const diff=Math.abs(currentW-(hasTarget?tw:currentW)).toFixed(1);
-        setEl('home-weight-change',diff+'kg to go');
-    }
-    const today=new Date().toLocaleDateString('en-GB');
-    const todayMeals=meals.filter(m=>m.date===today);
-    let cals=0,protein=0,steps=0,water=0;
-    let carbs=0,fats=0;
-    todayMeals.forEach(meal=>meal.foods.forEach(f=>{cals+=f.cal;protein+=f.protein;carbs+=f.carbs;fats+=f.fat;}));
-    const nd=await PG.nutrition.getToday()||{};
-    steps=parseInt(nd.steps)||0;
-    water=getWaterLitres(nd);
-    const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
-    const setWidth=(id,pct)=>{const el=document.getElementById(id);if(el)el.style.width=pct+'%';};
-    setEl('home-show-calories',`${cals} / ${calTarget} kcal`);
-    const proteinStr=`${protein.toFixed(1)} / ${proteinTarget}g`;
-    setEl('home-protein',proteinStr);setEl('home-protein-detail',proteinStr);
-    setEl('home-carbs',`${carbs.toFixed(1)}g`);
-    setEl('home-fats',`${fats.toFixed(1)}g`);
-    const stepsStr=`${steps.toLocaleString()} / ${stepsTarget.toLocaleString()}`;
-    const waterStr=`${water.toFixed(1)} / 3L`;
-    setEl('home-steps',stepsStr);setEl('home-steps-detail',stepsStr);
-    setEl('home-water-detail',waterStr);
-    const sleepTarget=settings.sleepTargetHours||8;
-    const shRaw=nd.sleep_hours!=null?parseFloat(nd.sleep_hours):NaN;
-    let sleepStr=`— / ${sleepTarget}h`;
-    if(Number.isFinite(shRaw)&&shRaw>0){
-        const whole=Math.floor(shRaw);
-        const mins=Math.round((shRaw-whole)*60);
-        sleepStr=`${whole}h ${String(mins).padStart(2,'0')}m / ${sleepTarget}h`;
-    }
-    setEl('home-sleep',sleepStr);
-    const remC=calTarget-cals;
-    const homeRem=document.getElementById('home-cal-remaining');
-    if(homeRem){
-        if(remC>0){homeRem.textContent=remC.toLocaleString('en-GB')+' kcal left';homeRem.style.color='#10B981';}
-        else{homeRem.textContent=Math.abs(remC).toLocaleString('en-GB')+' kcal over target';homeRem.style.color='#EF4444';}
-    }
-    setWidth('home-bar-calories',Math.min((cals/calTarget)*100,100));
-    setWidth('home-bar-protein',Math.min((protein/proteinTarget)*100,100));
-    setWidth('home-bar-carbs',Math.min((carbs/Math.max(carbsTarget,1))*100,100));
-    setWidth('home-bar-fat',Math.min((fats/Math.max(fatTarget,1))*100,100));
-    setWidth('home-bar-steps',Math.min((steps/stepsTarget)*100,100));
-    setWidth('home-bar-water',Math.min((water/3)*100,100));
-    const todayWorkout=workoutHistory.find(w=>w.date===today)||cardioHistory.find(w=>w.date===today);
-    const score=Math.round(Math.min((cals/calTarget)*25,25)+Math.min((protein/proteinTarget)*25,25)+Math.min((steps/stepsTarget)*25,25)+(todayWorkout?25:0));
-    const scoreEl=document.getElementById('today-score');if(scoreEl)scoreEl.textContent=score;
-    const scoreRing=document.getElementById('home-score-ring-progress');
-    if(scoreRing){
-        const R=40;const C=2*Math.PI*R;
-        scoreRing.style.strokeDasharray=String(C);
-        scoreRing.style.strokeDashoffset=String(C*(1-Math.min(Math.max(score,0),100)/100));
-    }
-    const wChip=document.getElementById('home-stat-workout');
-    if(wChip)wChip.textContent=nd.restDay?t('workoutRestShort'):(todayWorkout?t('workoutDoneShort'):t('workoutPendingShort'));
-    const streakBar=document.getElementById('streak-bar');
-    if(streakBar){
-        const days=['M','T','W','T','F','S','S'];const now=new Date();const dow=now.getDay();let streakCount=0;
-        // Always clear first so repeat renders never append duplicates.
-        streakBar.innerHTML='';
-        const fragment=document.createDocumentFragment();
-        for(let i=0;i<7;i++){
-            const d=document.createElement('div');d.className='streak-day';
-            const dayDate=new Date(now);dayDate.setDate(now.getDate()-((dow+6-i)%7));
-            const dateStr=dayDate.toLocaleDateString('en-GB');
-            const calTarget=settings.calTarget||2000;
-            const proteinTarget=settings.proteinTarget||150;
-            const stepsTarget=settings.stepsTarget||8000;
-            const todayMealsForDate=meals.filter(m=>m.date===dateStr);
-            let dayCals=0,dayProtein=0;
-            todayMealsForDate.forEach(meal=>meal.foods.forEach(f=>{dayCals+=f.cal;dayProtein+=f.protein;}));
-            const daySteps=parseInt(nd.steps)||0;
-            const dayWater=getWaterLitres(nd);
-            const hasWorkout=workoutHistory.find(w=>w.date===dateStr)||cardioHistory.find(w=>w.date===dateStr);
-            const isRestDay=nd.restDay||false;
-            let score=0;
-            if(hasWorkout||isRestDay) score++;
-            if(dayCals>=calTarget*0.9) score++;
-            if(dayProtein>=proteinTarget*0.9) score++;
-            if(daySteps>=stepsTarget) score++;
-            if(dayWater>=2.5) score++;
-            const accomplished=score>=3;
-            if(accomplished){d.classList.add('done');streakCount++;}
-if(isRestDay){
-    d.textContent='😴';
-    d.style.fontSize='14px';
-    if(!accomplished)d.style.opacity='0.6';
-} else if(accomplished){
-    d.textContent='✓';
-} else {
-    d.textContent=days[i];
-}
-if(i===(dow===0?6:dow-1))d.classList.add('today');
-fragment.appendChild(d);
-        }
-        streakBar.appendChild(fragment);
-        const scEl=document.getElementById('streak-count');if(scEl)scEl.textContent=streakCount+'/7';
-    }
-    const prompts=[];
-    const hourNow=new Date().getHours();
-    if(!todayWorkout&&!nd.restDay)prompts.push({text:t('coachNoTrain'),type:''});
-    if(nd.restDay)prompts.push({text:'😴 Rest day — focus on nutrition and steps today',type:''});
-    if(protein<proteinTarget)prompts.push({text:t('coachProtein').replace('{x}',Math.round(proteinTarget-protein)),type:''});
-    if(cals<calTarget*0.5&&hourNow>14)prompts.push({text:t('coachCalories').replace('{x}',cals),type:''});
-    if(steps<stepsTarget)prompts.push({text:t('coachSteps').replace('{x}',stepsTarget-steps),type:''});
-    if(water<2)prompts.push({text:t('coachWater').replace('{x}',water.toFixed(1)),type:''});
-    if(prompts.length===0)prompts.push({text:t('coachPerfect'),type:'success'});
-    const coachEl=document.getElementById('coach-prompts');
-    if(coachEl)coachEl.innerHTML=prompts.map(p=>`<div class="coach-prompt ${p.type}">${p.text}</div>`).join('');
-    renderBadges();
-    const nextWorkout=getNextWorkoutSuggestion();
-    const titleEl=document.getElementById('next-workout-title');
-    const metaEl=document.getElementById('next-workout-meta');
-    if(titleEl)titleEl.textContent=nextWorkout?`${nextWorkout} ${t('workoutDaySuffix')}`:t('workoutReadyTitle');
-    const exN=getNextWorkoutExerciseCount();
-    if(metaEl)metaEl.textContent=nextWorkout?`${exN} exercises · 45–60 min`:t('homeWorkoutHint');
-    if(document.getElementById('screen-train')?.classList.contains('active'))renderTrainWeek();
-}
-
-function getNextWorkoutExerciseCount(){
-    const hint=getNextWorkoutSuggestion();
-    if(!hint)return 6;
-    let n=6;
-    if(Array.isArray(savedRoutines)){
-        const h=hint.toLowerCase();
-        const r=savedRoutines.find(x=>{
-            const nm=(x.name||'').toLowerCase();
-            const mus=(x.muscle||'').toLowerCase();
-            return nm.includes(h)||h.includes(nm)||mus===h;
-        });
-        if(r&&Array.isArray(r.exercises)&&r.exercises.length)n=r.exercises.length;
-    }
-    return n;
-}
-
-function getNextWorkoutSuggestion() {
-    if(Array.isArray(workoutHistory)&&workoutHistory.length>0){
-        const lastWorkout=workoutHistory.find(w=>w&&w.type!=='rest');
-        if(lastWorkout&&lastWorkout.muscle)return String(lastWorkout.muscle);
-    }
-    return '';
-}
-
-
+// New home tab UI
+    updateOverviewTiles(cals, steps, calTarget);
+    updateHabitRings(water, cals, calTarget, steps, nd);
+    updateNutritionSummary(cals, protein, carbs, fats, calTarget, proteinTarget);
+    updateStreakSection();
+    updateUpcoming();
 // ===================== PROGRESS =====================
 async function updateProgress() {
     const s=settings;
@@ -3337,3 +3153,150 @@ function renderWeightChart() {
         ctx.fillText(d.weight+'kg',x,h-8);
     });
 }
+
+// ── NEW HOME TAB UI HELPERS ───────────────────────────────────
+
+function updateOverviewTiles(cals, steps, calTarget) {
+    const nd = PG.state?.todayNutrition || {};
+    const sleepRaw = nd.sleep_hours != null ? parseFloat(nd.sleep_hours) : NaN;
+    const sleepStr = Number.isFinite(sleepRaw) && sleepRaw > 0
+      ? `${Math.floor(sleepRaw)}h${Math.round((sleepRaw % 1) * 60) > 0 ? Math.round((sleepRaw % 1) * 60) + 'm' : ''}`
+      : '—';
+    const activeMins = parseInt(nd.active_minutes) || 0;
+  
+    setText('ov-calories', Math.round(cals).toLocaleString());
+    setText('ov-steps', steps.toLocaleString());
+    setText('ov-active-min', activeMins);
+    setText('ov-sleep', sleepStr);
+    setText('ov-cal-goal', `goal ${Math.round(calTarget).toLocaleString()}`);
+    setBar('ov-bar-cal', (cals / calTarget) * 100);
+    setBar('ov-bar-steps', (steps / 10000) * 100);
+    setBar('ov-bar-active', (activeMins / 60) * 100);
+    setBar('ov-bar-sleep', Number.isFinite(sleepRaw) ? (sleepRaw / 8) * 100 : 0);
+  }
+  
+  function updateHabitRings(water, cals, calTarget, steps, nd) {
+    const sleepRaw = nd?.sleep_hours != null ? parseFloat(nd.sleep_hours) : 0;
+    const nutPct = Math.min(cals / calTarget, 1);
+  
+    setRing('hab-ring-water', water / 3);
+    setText('hab-val-water', `${water.toFixed(1)} / 3L`);
+    setText('hab-nudge-water', water >= 3 ? '✓ Done!' : `${(3 - water).toFixed(1)}L to go`);
+  
+    setRing('hab-ring-nutrition', nutPct);
+    setText('hab-val-nutrition', nutPct >= 0.9 ? 'On Track' : `${Math.round(cals)} kcal`);
+    setText('hab-nudge-nutrition', nutPct >= 1 ? '✓ Done!' : 'Log food');
+  
+    setRing('hab-ring-move', steps / 10000);
+    setText('hab-val-move', `${steps.toLocaleString()} / 10k`);
+    setText('hab-nudge-move', steps >= 10000 ? '✓ Done!' : `${(10000 - steps).toLocaleString()} left`);
+  
+    setRing('hab-ring-sleep', sleepRaw / 8);
+    setText('hab-val-sleep', sleepRaw > 0 ? `${sleepRaw}h / 8h` : '— / 8h');
+    setText('hab-nudge-sleep', sleepRaw >= 8 ? '✓ Done!' : sleepRaw > 0 ? `${(8 - sleepRaw).toFixed(1)}h short` : 'Log sleep');
+  }
+  
+  function updateNutritionSummary(cals, protein, carbs, fats, calGoal, protGoal) {
+    const remaining = Math.max(0, calGoal - cals);
+    setRing('nut-ring', cals / calGoal, 201.06);
+    setText('nut-ring-val', Math.round(cals).toLocaleString());
+    setText('nut-ring-goal', `/ ${Math.round(calGoal).toLocaleString()} kcal`);
+    setText('nut-sum-protein', `${Math.round(protein)} / ${Math.round(protGoal)}g`);
+    setText('nut-sum-carbs', `${Math.round(carbs)} / 250g`);
+    setText('nut-sum-fats', `${Math.round(fats)} / 70g`);
+    setBar('nut-bar-protein', (protein / protGoal) * 100);
+    setBar('nut-bar-carbs', (carbs / 250) * 100);
+    setBar('nut-bar-fats', (fats / 70) * 100);
+    setText('nut-remaining-label', remaining > 0 ? `${Math.round(remaining)} kcal remaining` : 'Goal reached! 🎉');
+  }
+  
+  function updateStreakSection() {
+    const streakCount = parseInt(document.getElementById('streak-count')?.textContent) || 0;
+    setText('streak-title', `${streakCount} Day Streak`);
+    const subs = ['Start your streak today!','Good start!','Keep going!','On a roll!','Strong week!','Unstoppable!','You\'re on fire! Keep it up.','Legendary! 🏆'];
+    setText('streak-subtitle', subs[Math.min(streakCount, subs.length - 1)]);
+    const dotsRow = document.getElementById('streak-dots-row');
+    const sourceBar = document.getElementById('streak-bar');
+    if (!dotsRow || !sourceBar) return;
+    const sourceDays = sourceBar.querySelectorAll('.streak-day');
+    const labels = ['M','T','W','T','F','S','S'];
+    dotsRow.innerHTML = labels.map((lbl, i) => {
+      const src = sourceDays[i];
+      const done = src?.classList.contains('done');
+      const isToday = src?.classList.contains('today');
+      const dotStyle = done
+        ? 'background:#f5c842;'
+        : isToday
+          ? 'border:2px solid #f5c842;background:transparent;'
+          : 'background:#222;';
+      const check = done
+        ? `<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="#111" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+        : '';
+      return `<div style="text-align:center;">
+        <div style="font-size:9px;color:#666;margin-bottom:4px;">${lbl}</div>
+        <div style="width:28px;height:28px;border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center;${dotStyle}">${check}</div>
+      </div>`;
+    }).join('');
+  }
+  
+  function updateUpcoming() {
+    const container = document.getElementById('upcoming-list');
+    if (!container) return;
+    const routines = Array.isArray(savedRoutines) ? savedRoutines : [];
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const today = new Date();
+    const todayIdx = today.getDay();
+    const upcoming = [];
+  
+    for (let i = 1; i <= 6; i++) {
+      const dayIdx = (todayIdx + i) % 7;
+      const dayName = days[dayIdx];
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
+      const scheduled = routines.filter(r => r.scheduled_days && r.scheduled_days.includes(dayName));
+      if (scheduled.length > 0) {
+        scheduled.forEach(r => upcoming.push({ name: r.name, date, dayName, daysAhead: i }));
+      } else {
+        upcoming.push({ name: 'Rest Day', date, dayName, daysAhead: i, rest: true });
+      }
+    }
+  
+    const shown = upcoming.slice(0, 3);
+    if (shown.every(s => s.rest)) {
+      container.innerHTML = '<p style="font-size:13px;color:var(--label-secondary);text-align:center;padding:12px 0;">No routines scheduled yet. Set up your plan in the Train tab.</p>';
+      return;
+    }
+  
+    container.innerHTML = shown.map((item, idx) => {
+      const label = item.daysAhead === 1 ? 'Tomorrow' : item.date.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short' });
+      const icon = item.rest
+        ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.75" stroke-linecap="round"><path d="M18 12H6M6 12l4-4M6 12l4 4"/></svg>`
+        : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 14h.5a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-.5M9.5 14H9a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h.5M4 12h16M14.5 10v4M9.5 10v4"/></svg>`;
+      const border = idx < shown.length - 1 ? 'border-bottom:1px solid var(--border);' : '';
+      return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;${border}cursor:pointer;" onclick="showScreen('screen-train')">
+        <div style="width:36px;height:36px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;">${icon}</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:700;color:var(--text);">${item.name}</div>
+          <div style="font-size:11px;color:var(--label-secondary);margin-top:1px;">${label}</div>
+        </div>
+        <div style="color:var(--label-secondary);font-size:18px;">›</div>
+      </div>`;
+    }).join('');
+  }
+  
+  // ── SHARED UTILITIES ─────────────────────────────────────────
+  function setText(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  }
+  
+  function setBar(id, pct) {
+    const el = document.getElementById(id);
+    if (el) el.style.width = Math.min(100, Math.max(0, pct || 0)) + '%';
+  }
+  
+  function setRing(id, pct, circumference) {
+    const circ = circumference || 138.23;
+    const el = document.getElementById(id);
+    if (el) el.setAttribute('stroke-dashoffset', circ - Math.min(1, Math.max(0, pct || 0)) * circ);
+  }
