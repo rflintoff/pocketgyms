@@ -4525,3 +4525,136 @@ function devToggleMode() {
   localStorage.removeItem('devMode');
   showToast('Dev mode disabled — reload', 'success', 2000);
 }
+
+// ── ONBOARDING V2 ─────────────────────────────────────────
+
+let ob2GoalSelected = '';
+let ob2ExperienceSelected = '';
+let ob2DaysSelected = '';
+
+function ob2Next(screen) {
+  document.querySelectorAll('.ob2-screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById('ob2-s' + screen);
+  if (target) target.classList.add('active');
+  // Update progress bar
+  const fill = document.getElementById('ob2-progress-fill');
+  if (fill) fill.style.width = (screen / 5 * 100) + '%';
+}
+
+function ob2Back(screen) {
+  ob2Next(screen);
+}
+
+function ob2Select(type, value, el) {
+  // Deselect all in same group
+  const group = document.getElementById('ob2-' + type + '-options');
+  if (group) {
+    group.querySelectorAll('.ob2-option').forEach(o => o.classList.remove('selected'));
+  }
+  el.classList.add('selected');
+  if (type === 'goal') ob2GoalSelected = value;
+  if (type === 'experience') ob2ExperienceSelected = value;
+}
+
+function ob2SelectDays(days, el) {
+  ob2DaysSelected = days;
+  document.querySelectorAll('#ob2-days-options .ob2-days-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  const tips = {
+    '2-3': '2–3 days is a great start. Consistency beats intensity.',
+    '3-4': '3–4 days is the sweet spot for most people.',
+    '5+': '5+ days — you\'re serious. We\'ll build you a full programme.'
+  };
+  const tip = document.getElementById('ob2-days-tip');
+  if (tip) tip.textContent = tips[days] || '';
+}
+
+async function ob2Complete() {
+  const weight = parseFloat(document.getElementById('ob2-weight')?.value) || 0;
+  const height = parseFloat(document.getElementById('ob2-height')?.value) || 0;
+  const age = parseInt(document.getElementById('ob2-age')?.value) || 25;
+  const gender = document.getElementById('ob2-gender')?.value || 'male';
+  const name = document.getElementById('ob2-name')?.value || 'Athlete';
+
+  // TDEE calculation
+  let calTarget = 2000;
+  let proteinTarget = 150;
+  let trainingDays = 4;
+
+  if (weight > 0 && height > 0) {
+    let bmr = gender === 'male'
+      ? 10 * weight + 6.25 * height - 5 * age + 5
+      : 10 * weight + 6.25 * height - 5 * age - 161;
+    const activityMap = { '2-3': 1.4, '3-4': 1.55, '5+': 1.7 };
+    const multiplier = activityMap[ob2DaysSelected] || 1.55;
+    const tdee = Math.round(bmr * multiplier);
+    const goalMap = { fatloss: tdee - 400, muscle: tdee + 250, hybrid: tdee - 200, fitness: tdee };
+    calTarget = goalMap[ob2GoalSelected] || tdee;
+    proteinTarget = Math.round(weight * 2.0);
+    trainingDays = ob2DaysSelected === '2-3' ? 3 : ob2DaysSelected === '5+' ? 5 : 4;
+  }
+
+  settings = {
+    ...settings,
+    name,
+    goal: ob2GoalSelected || 'fitness',
+    experience_level: ob2ExperienceSelected || 'beginner',
+    weight,
+    height,
+    age,
+    gender,
+    calTarget,
+    proteinTarget,
+    stepsTarget: 8000,
+    trainingDays,
+    phaseName: 'Phase 1',
+    phaseStartDate: new Date().toLocaleDateString('en-GB'),
+    phaseDuration: 56,
+    onboarded: true,
+    language: selectedLang || 'en',
+    environment: 'gym',
+    diet: 'standard',
+    units: 'kg'
+  };
+
+  await PG.profile.save(settings);
+
+  // Update summary screen
+  const goalLabels = { fatloss: 'Lose Fat', muscle: 'Build Muscle', hybrid: 'Hybrid / Recomposition', fitness: 'Improve Fitness' };
+  const planLabels = { '2-3': '3 Day Programme', '3-4': '4 Day Programme', '5+': '5 Day Programme' };
+  setText('ob2-sum-goal', goalLabels[ob2GoalSelected] || 'General Fitness');
+  setText('ob2-sum-plan', planLabels[ob2DaysSelected] || '4 Day Programme');
+
+  ob2Next(5);
+}
+
+async function ob2Skip() {
+  settings = {
+    ...settings,
+    name: 'Athlete',
+    goal: 'fitness',
+    calTarget: 2000,
+    proteinTarget: 150,
+    stepsTarget: 8000,
+    trainingDays: 4,
+    phaseName: 'Phase 1',
+    phaseStartDate: new Date().toLocaleDateString('en-GB'),
+    phaseDuration: 56,
+    onboarded: true,
+    language: selectedLang || 'en',
+    environment: 'gym',
+    diet: 'standard',
+    units: 'kg'
+  };
+  await PG.profile.save(settings);
+  ob2GoToDashboard();
+}
+
+async function ob2GoToDashboard() {
+  const onboarding = document.getElementById('onboarding');
+  if (onboarding) onboarding.style.display = 'none';
+  document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = '');
+  await loadFromStorage();
+  populateSettingsFields(settings);
+  showScreen('screen-home');
+}
