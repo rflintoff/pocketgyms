@@ -735,368 +735,731 @@
 
 <!-- NUTRITION SCREEN -->
 <div class="screen" id="screen-calories" style="display:none;">
-    <div class="card nut-hero-card">
-        <h2 id="txt-todays-nutrition" class="nut-screen-title">NUTRITION</h2>
-        <div class="nut-date-nav">
-            <button type="button" class="nut-nav-btn" onclick="nutritionDayShift(-1)" aria-label="Previous day">‹</button>
-            <button type="button" class="nut-today-mid" onclick="nutritionJumpToday()" id="nut-date-nav-label">Today</button>
-            <button type="button" class="nut-nav-btn" onclick="nutritionDayShift(1)" aria-label="Next day">›</button>
-        </div>
-        <p class="nut-cal-date-sub" id="cal-date"></p>
-        <div class="stat-row" style="margin-top:4px;"><span class="stat-label" id="txt-status">Status</span><span id="cal-status" class="stat-value">—</span></div>
-        <div class="nut-hero-calories" id="nut-hero-calories">0 / 2,000 kcal</div>
-        <p class="nut-cal-remaining" id="nut-cal-remaining"></p>
-        <div class="progress-bar-outer nut-hero-cal-bar"><div class="progress-bar-inner" id="nut-bar-calories"></div></div>
-        <div class="nut-macro-pills">
-            <div class="nut-macro-pill nut-macro-pill--protein"><span class="nut-m-pill-lbl" id="nut-lbl-protein">Protein</span><span id="nut-pill-protein" class="nut-m-pill-val">0 / 150g</span><div class="nut-m-pill-track"><span class="nut-m-pill-fill" id="nut-pill-bar-protein"></span></div></div>
-            <div class="nut-macro-pill nut-macro-pill--carbs"><span class="nut-m-pill-lbl" id="nut-lbl-carbs">Carbs</span><span id="nut-pill-carbs" class="nut-m-pill-val">0 / 250g</span><div class="nut-m-pill-track"><span class="nut-m-pill-fill" id="nut-pill-bar-carbs"></span></div></div>
-            <div class="nut-macro-pill nut-macro-pill--fats"><span class="nut-m-pill-lbl" id="nut-lbl-fats">Fats</span><span id="nut-pill-fats" class="nut-m-pill-val">0 / 70g</span><div class="nut-m-pill-track"><span class="nut-m-pill-fill" id="nut-pill-bar-fats"></span></div></div>
-        </div>
-    </div>
 
-    <div class="card">
-        <h2 id="txt-daily-totals">DAILY TOTALS</h2>
-        <div style="margin-bottom:10px;">
-            <div class="stat-row"><span class="stat-label" id="nut-txt-cal-label">Calories</span><span class="stat-value" id="nut-show-calories">0 / — kcal</span></div>
-        </div>
-        <div style="margin-bottom:10px;">
-            <div class="stat-row"><span class="stat-label" id="txt-prot-label">Protein</span><span class="stat-value" id="show-protein">0 / —g</span></div>
-            <div class="progress-bar-outer"><div class="progress-bar-inner" id="bar-protein"></div></div>
-        </div>
-        <div style="margin-bottom:10px;">
-            <div class="stat-row"><span class="stat-label" id="txt-carbs-label">Carbs</span><span class="stat-value" id="show-carbs">0g</span></div>
-            <div class="progress-bar-outer"><div class="progress-bar-inner" id="bar-carbs"></div></div>
-        </div>
-        <div style="margin-bottom:10px;">
-            <div class="stat-row"><span class="stat-label" id="txt-fat-label">Fat</span><span class="stat-value" id="show-fat">0g</span></div>
-            <div class="progress-bar-outer"><div class="progress-bar-inner" id="bar-fat"></div></div>
-        </div>
-        <div style="margin-bottom:10px;">
-            <div class="stat-row"><span class="stat-label" id="txt-steps-label">Steps</span><span class="stat-value" id="show-steps">0 / —</span></div>
-            <div class="progress-bar-outer"><div class="progress-bar-inner" id="bar-steps"></div></div>
-        </div>
-    </div>
+  <!-- Header -->
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-top:4px;">
+    <h1 style="font-size:22px;font-weight:800;color:var(--text);">NUTRITION</h1>
+    <button style="width:36px;height:36px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+    </button>
+  </div>
 
-    <div id="meals-container" class="meals-container"></div>
-    <div class="nutrition-meals-footer">
-        <button class="btn" onclick="addMeal()" id="txt-add-meal">+ Add Meal</button>
-        <button class="btn-outline" onclick="loadMealTemplate()">📋 Load Template</button>
-    </div>
+  <!-- Date Nav -->
+  <div style="display:flex;align-items:center;justify-content:center;gap:20px;margin-bottom:16px;">
+    <button onclick="nutritionDayShift(-1)" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--text);padding:4px 10px;">‹</button>
+    <button onclick="nutritionJumpToday()" id="nut-date-nav-label" style="background:none;border:none;font-size:16px;font-weight:700;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px;">Today <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+    <button onclick="nutritionDayShift(1)" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--text);padding:4px 10px;">›</button>
+  </div>
+  <p style="font-size:12px;color:var(--label-secondary);text-align:center;margin-bottom:16px;" id="cal-date"></p>
 
-    <div class="card nut-water-card">
-        <h2 id="txt-water-log">WATER</h2>
-        <div class="nut-water-row">
-            <span class="nut-water-summary" id="show-water">0 / 3L</span>
-            <div class="nut-water-dots" id="nut-water-dots"></div>
-            <button type="button" class="nut-water-plus" onclick="addWaterQuick()" aria-label="Add 250ml water">+</button>
+  <!-- Calorie Target Card -->
+  <div class="card" style="margin-bottom:12px;">
+    <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:14px;">CALORIE TARGET</p>
+    <div style="display:flex;align-items:center;gap:20px;">
+      <!-- Ring -->
+      <div style="position:relative;flex-shrink:0;">
+        <svg width="110" height="110" viewBox="0 0 110 110" style="transform:rotate(-90deg);">
+          <circle cx="55" cy="55" r="44" fill="none" stroke="var(--border)" stroke-width="10"/>
+          <circle cx="55" cy="55" r="44" fill="none" stroke="#f5c842" stroke-width="10" stroke-linecap="round" stroke-dasharray="276.46" id="nut-cal-ring" stroke-dashoffset="276.46"/>
+        </svg>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
+          <div style="font-size:20px;font-weight:800;color:var(--text);line-height:1;" id="nut-hero-calories">0</div>
+          <div style="font-size:11px;color:var(--label-secondary);margin-top:2px;" id="nut-ring-goal">/ 2,000 kcal</div>
+          <div style="font-size:11px;font-weight:700;color:#f5c842;margin-top:2px;" id="nut-cal-remaining"></div>
         </div>
-        <div class="progress-bar-outer"><div class="progress-bar-inner" id="bar-water"></div></div>
-        <label id="lbl-water">Water (litres)</label>
-        <input type="number" id="input-water" placeholder="e.g. 0.5" step="0.25">
-        <button class="btn" onclick="saveWater()" id="txt-save-sw">Save</button>
-    </div>
-  
-    <div class="card" id="supplements-card" style="display:block;">
-        <h2 id="txt-supplements">SUPPLEMENTS</h2>
-        <div id="supplement-list" class="supplement-list"></div>
-        <button type="button" class="btn btn-supplement-open" onclick="openSupplementPickerModal()" id="txt-add-supplement">Add Supplement</button>
-        <button type="button" class="btn-outline supplement-clear-all" onclick="clearAllSupplements()" id="txt-clear-all-supplements">Clear all supplements</button>
-        <div class="supplement-add-row">
-            <input type="text" id="custom-supplement-input" placeholder="Add custom supplement">
-            <button class="btn-small" onclick="addCustomSupplement()">Add</button>
+      </div>
+      <!-- Macros -->
+      <div style="flex:1;">
+        <div style="margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">
+            <span style="font-weight:700;color:var(--text);">PROTEIN</span>
+            <span style="color:var(--label-secondary);" id="nut-pill-protein">0 / 150g</span>
+          </div>
+          <div style="height:6px;background:var(--border);border-radius:3px;"><div id="nut-pill-bar-protein" style="height:100%;border-radius:3px;background:#22c55e;width:0%;"></div></div>
         </div>
+        <div style="margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">
+            <span style="font-weight:700;color:var(--text);">CARBS</span>
+            <span style="color:var(--label-secondary);" id="nut-pill-carbs">0 / 250g</span>
+          </div>
+          <div style="height:6px;background:var(--border);border-radius:3px;"><div id="nut-pill-bar-carbs" style="height:100%;border-radius:3px;background:#f5c842;width:0%;"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">
+            <span style="font-weight:700;color:var(--text);">FATS</span>
+            <span style="color:var(--label-secondary);" id="nut-pill-fats">0 / 70g</span>
+          </div>
+          <div style="height:6px;background:var(--border);border-radius:3px;"><div id="nut-pill-bar-fats" style="height:100%;border-radius:3px;background:#6366f1;width:0%;"></div></div>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <!-- Macro Breakdown -->
+  <div class="card" style="margin-bottom:12px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">MACRO BREAKDOWN</p>
+      <span style="font-size:12px;color:var(--label-secondary);cursor:pointer;">Learn more</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:20px;">
+      <!-- Donut -->
+      <div style="position:relative;flex-shrink:0;">
+        <svg width="80" height="80" viewBox="0 0 80 80">
+          <circle cx="40" cy="40" r="30" fill="none" stroke="var(--border)" stroke-width="14"/>
+          <circle cx="40" cy="40" r="30" fill="none" stroke="#6366f1" stroke-width="14" stroke-dasharray="188.5" id="macro-ring-protein" stroke-dashoffset="188.5" style="transform:rotate(-90deg);transform-origin:40px 40px;"/>
+          <circle cx="40" cy="40" r="30" fill="none" stroke="#22c55e" stroke-width="14" stroke-dasharray="188.5" id="macro-ring-carbs" stroke-dashoffset="188.5" style="transform:rotate(-90deg);transform-origin:40px 40px;"/>
+          <circle cx="40" cy="40" r="30" fill="none" stroke="#f5c842" stroke-width="14" stroke-dasharray="188.5" id="macro-ring-fats" stroke-dashoffset="188.5" style="transform:rotate(-90deg);transform-origin:40px 40px;"/>
+        </svg>
+      </div>
+      <!-- Legend -->
+      <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:10px;height:10px;border-radius:50%;background:#6366f1;"></div><span style="font-size:13px;color:var(--text);">Protein</span></div>
+          <span style="font-size:13px;font-weight:700;color:var(--text);" id="macro-legend-protein">0g (0%)</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:10px;height:10px;border-radius:50%;background:#22c55e;"></div><span style="font-size:13px;color:var(--text);">Carbs</span></div>
+          <span style="font-size:13px;font-weight:700;color:var(--text);" id="macro-legend-carbs">0g (0%)</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:10px;height:10px;border-radius:50%;background:#f5c842;"></div><span style="font-size:13px;color:var(--text);">Fats</span></div>
+          <span style="font-size:13px;font-weight:700;color:var(--text);" id="macro-legend-fats">0g (0%)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Meals -->
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+    <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">MEALS</p>
+    <button onclick="addMeal()" style="background:none;border:none;font-size:13px;font-weight:700;color:#f5c842;cursor:pointer;">+ Add Meal</button>
+  </div>
+  <div id="meals-container" class="meals-container" style="margin-bottom:12px;"></div>
+
+  <!-- Water Intake -->
+  <div class="card" style="margin-bottom:12px;">
+    <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:12px;">WATER INTAKE</p>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div style="font-size:28px;">💧</div>
+      <div style="flex:1;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <span style="font-size:22px;font-weight:800;color:var(--text);" id="show-water">0 <span style="font-size:14px;font-weight:500;color:var(--label-secondary);">/ 3L</span></span>
+          <button onclick="addWaterQuick()" style="width:34px;height:34px;border-radius:50%;background:#f5c842;border:none;font-size:20px;font-weight:700;color:#111;cursor:pointer;display:flex;align-items:center;justify-content:center;">+</button>
+        </div>
+        <div id="nut-water-dots" style="display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap;"></div>
+        <div style="height:5px;background:var(--border);border-radius:3px;"><div id="bar-water" style="height:100%;border-radius:3px;background:#38bdf8;width:0%;"></div></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <input type="number" id="input-water" placeholder="e.g. 0.5" step="0.25" style="flex:1;">
+      <button onclick="saveWater()" style="background:#f5c842;border:none;border-radius:10px;padding:10px 16px;font-weight:700;font-size:13px;color:#111;cursor:pointer;">Save</button>
+    </div>
+  </div>
+
+  <!-- Nutrition Insights -->
+  <div class="card" style="margin-bottom:12px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">NUTRITION INSIGHTS</p>
+      <span style="font-size:12px;color:var(--label-secondary);cursor:pointer;">See all</span>
+    </div>
+    <div id="nut-insights-list"></div>
+  </div>
+
+  <!-- Meal Ideas -->
+  <div style="margin-bottom:12px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">MEAL IDEAS FOR YOU</p>
+      <span style="font-size:12px;color:var(--label-secondary);cursor:pointer;">See all</span>
+    </div>
+    <div style="display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;" id="meal-ideas-row"></div>
+  </div>
+
+  <!-- Supplements -->
+  <div class="card" style="margin-bottom:12px;" id="supplements-card">
+    <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:12px;">SUPPLEMENTS</p>
+    <div id="supplement-list" class="supplement-list"></div>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button onclick="openSupplementPickerModal()" style="flex:1;background:#f5c842;border:none;border-radius:10px;padding:11px;font-size:13px;font-weight:700;color:#111;cursor:pointer;">Add Supplement</button>
+      <button onclick="clearAllSupplements()" style="background:none;border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;font-size:13px;font-weight:700;color:var(--label-secondary);cursor:pointer;">Clear</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      <input type="text" id="custom-supplement-input" placeholder="Add custom supplement" style="flex:1;">
+      <button onclick="addCustomSupplement()" style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:13px;font-weight:700;color:var(--text);cursor:pointer;">Add</button>
+    </div>
+  </div>
+
+  <!-- Hidden elements kept for JS compatibility -->
+  <div style="display:none;">
+    <span id="nut-show-calories"></span>
+    <span id="show-protein"></span>
+    <span id="show-carbs"></span>
+    <span id="show-fat"></span>
+    <span id="show-steps"></span>
+    <span id="bar-protein"></span>
+    <span id="bar-carbs"></span>
+    <span id="bar-fat"></span>
+    <span id="bar-steps"></span>
+    <span id="nut-bar-calories"></span>
+    <span id="cal-status"></span>
+  </div>
+
 </div>
 
-<!-- Supplement picker (default list) -->
+<!-- Supplement picker modal — kept exactly as is -->
 <div id="supplement-picker-modal" class="supplement-picker-modal" style="display:none;" aria-hidden="true">
-    <div class="supplement-picker-backdrop" onclick="closeSupplementPickerModal()"></div>
-    <div class="supplement-picker-sheet" role="dialog" aria-labelledby="txt-add-supplement-modal-title">
-        <div class="supplement-picker-head">
-            <h3 class="supplement-picker-title" id="txt-add-supplement-modal-title">Add supplement</h3>
-            <button type="button" class="supplement-picker-close" onclick="closeSupplementPickerModal()" aria-label="Close">✕</button>
-        </div>
-        <div id="supplement-picker-list" class="supplement-picker-list"></div>
+  <div class="supplement-picker-backdrop" onclick="closeSupplementPickerModal()"></div>
+  <div class="supplement-picker-sheet" role="dialog" aria-labelledby="txt-add-supplement-modal-title">
+    <div class="supplement-picker-head">
+      <h3 class="supplement-picker-title" id="txt-add-supplement-modal-title">Add supplement</h3>
+      <button type="button" class="supplement-picker-close" onclick="closeSupplementPickerModal()" aria-label="Close">✕</button>
     </div>
+    <div id="supplement-picker-list" class="supplement-picker-list"></div>
+  </div>
 </div>
 
-<!-- FOOD MODAL -->
+<!-- Food modal — kept exactly as is -->
 <div id="food-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:var(--bg); z-index:9998; padding:20px; overflow-y:auto; padding-bottom:110px;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-        <h2 style="color:var(--text); font-size:18px; font-weight:800;" id="food-modal-title">Add Food</h2>
-        <button onclick="closeFoodModal()" style="background:none; border:none; color:var(--text); font-size:24px; cursor:pointer;">✕</button>
-    </div>
-    <div id="food-modal-totals" style="color:var(--label-secondary);font-size:13px;margin-bottom:12px;line-height:1.4;"></div>
-    <div class="filter-bar" id="food-filter-bar">
-        <button class="filter-btn active" onclick="setFoodFilter('all', this)" id="filter-all">All</button>
-        <button class="filter-btn" onclick="setFoodFilter('protein', this)" id="filter-protein">Protein</button>
-        <button class="filter-btn" onclick="setFoodFilter('carbs', this)" id="filter-carbs">Carbs</button>
-        <button class="filter-btn" onclick="setFoodFilter('fats', this)" id="filter-fats">Fats</button>
-        <button class="filter-btn" onclick="setFoodFilter('veg', this)" id="filter-veg">Veg</button>
-        <button class="filter-btn" onclick="setFoodFilter('dairy', this)" id="filter-dairy">Dairy</button>
-        <button class="filter-btn" onclick="setFoodFilter('snacks', this)" id="filter-snacks">Snacks</button>
-        <button class="filter-btn" onclick="setFoodFilter('drinks', this)" id="filter-drinks">Drinks</button>
-    </div>
-    <input type="text" id="food-search" placeholder="Search..." oninput="filterFoods()" style="margin-bottom:12px;">
-    <div id="food-list"></div>
-    <div id="food-portion" style="display:none; position:fixed; bottom:0; left:0; right:0; background:var(--card); border-radius:20px 20px 0 0; padding:20px; border-top:2px solid var(--border); z-index:9999; box-shadow:0 -4px 20px rgba(0,0,0,0.15);">
-        <div style="width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px;"></div>
-        <div style="font-weight:700; color:var(--text); margin-bottom:12px; font-size:16px;" id="food-portion-label"></div>
-        <label id="lbl-portion">Portion (g or ml)</label>
-        <input type="number" id="food-portion-amount" placeholder="e.g. 150" value="100" oninput="updatePortionPreview()" inputmode="numeric">
-        <div id="food-portion-preview" style="color:var(--label-secondary); font-size:13px; margin-bottom:12px; background:var(--bg); padding:8px; border-radius:8px; border:1px solid var(--border);"></div>
-        <button class="btn" onclick="addFoodEntry()" id="txt-add-to-meal">Add to Meal</button>
-        <button class="btn-outline" onclick="document.getElementById('food-portion').style.display='none'">Cancel</button>
-    </div>
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+    <h2 style="color:var(--text); font-size:18px; font-weight:800;" id="food-modal-title">Add Food</h2>
+    <button onclick="closeFoodModal()" style="background:none; border:none; color:var(--text); font-size:24px; cursor:pointer;">✕</button>
+  </div>
+  <div id="food-modal-totals" style="color:var(--label-secondary);font-size:13px;margin-bottom:12px;line-height:1.4;"></div>
+  <div class="filter-bar" id="food-filter-bar">
+    <button class="filter-btn active" onclick="setFoodFilter('all', this)">All</button>
+    <button class="filter-btn" onclick="setFoodFilter('protein', this)">Protein</button>
+    <button class="filter-btn" onclick="setFoodFilter('carbs', this)">Carbs</button>
+    <button class="filter-btn" onclick="setFoodFilter('fats', this)">Fats</button>
+    <button class="filter-btn" onclick="setFoodFilter('veg', this)">Veg</button>
+    <button class="filter-btn" onclick="setFoodFilter('dairy', this)">Dairy</button>
+    <button class="filter-btn" onclick="setFoodFilter('snacks', this)">Snacks</button>
+    <button class="filter-btn" onclick="setFoodFilter('drinks', this)">Drinks</button>
+  </div>
+  <input type="text" id="food-search" placeholder="Search..." oninput="filterFoods()" style="margin-bottom:12px;">
+  <div id="food-list"></div>
+  <div id="food-portion" style="display:none; position:fixed; bottom:0; left:0; right:0; background:var(--card); border-radius:20px 20px 0 0; padding:20px; border-top:2px solid var(--border); z-index:9999;">
+    <div style="width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px;"></div>
+    <div style="font-weight:700; color:var(--text); margin-bottom:12px; font-size:16px;" id="food-portion-label"></div>
+    <label>Portion (g or ml)</label>
+    <input type="number" id="food-portion-amount" placeholder="e.g. 150" value="100" oninput="updatePortionPreview()" inputmode="numeric">
+    <div id="food-portion-preview" style="color:var(--label-secondary); font-size:13px; margin-bottom:12px; background:var(--bg); padding:8px; border-radius:8px; border:1px solid var(--border);"></div>
+    <button class="btn" onclick="addFoodEntry()">Add to Meal</button>
+    <button class="btn-outline" onclick="document.getElementById('food-portion').style.display='none'">Cancel</button>
+  </div>
 </div>
-
 <!-- PROGRESS SCREEN -->
 <div class="screen" id="screen-progress" style="display:none;">
-    <div class="card progress-filters-card">
-        <h2 class="progress-screen-heading">PROGRESS</h2>
-        <div class="progress-filter-row">
-            <button type="button" class="progress-filter-btn" data-range="1W" onclick="setProgressFilter('1W',this)">1W</button>
-            <button type="button" class="progress-filter-btn active" data-range="1M" onclick="setProgressFilter('1M',this)">1M</button>
-            <button type="button" class="progress-filter-btn" data-range="3M" onclick="setProgressFilter('3M',this)">3M</button>
-            <button type="button" class="progress-filter-btn" data-range="6M" onclick="setProgressFilter('6M',this)">6M</button>
-            <button type="button" class="progress-filter-btn" data-range="1Y" onclick="setProgressFilter('1Y',this)">1Y</button>
-            <button type="button" class="progress-filter-btn" data-range="All" onclick="setProgressFilter('All',this)">All</button>
+
+  <!-- Header -->
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-top:4px;">
+    <h1 style="font-size:22px;font-weight:800;color:var(--text);">PROGRESS</h1>
+    <button style="width:36px;height:36px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+    </button>
+  </div>
+
+  <!-- Time Filter -->
+  <div style="display:flex;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:16px;gap:2px;">
+    <button onclick="setProgressFilter('1W',this)" class="prog-filter-btn" style="flex:1;padding:8px 0;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">1W</button>
+    <button onclick="setProgressFilter('1M',this)" class="prog-filter-btn" style="flex:1;padding:8px 0;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;background:#f5c842;color:#111;">1M</button>
+    <button onclick="setProgressFilter('3M',this)" class="prog-filter-btn" style="flex:1;padding:8px 0;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">3M</button>
+    <button onclick="setProgressFilter('6M',this)" class="prog-filter-btn" style="flex:1;padding:8px 0;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">6M</button>
+    <button onclick="setProgressFilter('1Y',this)" class="prog-filter-btn" style="flex:1;padding:8px 0;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">1Y</button>
+    <button onclick="setProgressFilter('All',this)" class="prog-filter-btn" style="flex:1;padding:8px 0;border:none;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">ALL</button>
+  </div>
+
+  <!-- Overview Stats -->
+  <div class="card" style="margin-bottom:12px;">
+    <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:14px;">OVERVIEW</p>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+      <div style="text-align:center;">
+        <div style="font-size:18px;margin-bottom:4px;">⚖️</div>
+        <div style="font-size:16px;font-weight:800;color:var(--text);" id="progress-weight-current">—</div>
+        <div style="font-size:10px;color:var(--label-secondary);margin-top:2px;">Body Weight</div>
+        <div style="font-size:10px;font-weight:700;color:#22c55e;margin-top:3px;" id="progress-weight-delta"></div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:18px;margin-bottom:4px;">💪</div>
+        <div style="font-size:16px;font-weight:800;color:var(--text);" id="prog-strength-val">—</div>
+        <div style="font-size:10px;color:var(--label-secondary);margin-top:2px;">Strength</div>
+        <div style="font-size:10px;font-weight:700;color:#22c55e;margin-top:3px;" id="prog-strength-delta"></div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:18px;margin-bottom:4px;">🔥</div>
+        <div style="font-size:16px;font-weight:800;color:var(--text);" id="prog-cal-avg">—</div>
+        <div style="font-size:10px;color:var(--label-secondary);margin-top:2px;">Calories</div>
+        <div style="font-size:10px;color:var(--label-secondary);margin-top:3px;">avg/day</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:18px;margin-bottom:4px;">🎯</div>
+        <div style="font-size:16px;font-weight:800;color:var(--text);" id="prog-consistency-pct">—</div>
+        <div style="font-size:10px;color:var(--label-secondary);margin-top:2px;">Consistency</div>
+        <div style="font-size:10px;font-weight:700;color:#22c55e;margin-top:3px;" id="prog-consistency-delta"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Body Weight Graph -->
+  <div class="card" style="margin-bottom:12px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">BODY WEIGHT</p>
+      <span style="font-size:12px;font-weight:700;color:#22c55e;" id="prog-weight-change-label"></span>
+    </div>
+    <canvas id="weight-chart" style="width:100%;height:160px;"></canvas>
+    <!-- Weekly check-in hidden but kept for JS compat -->
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+      <p style="font-size:11px;font-weight:700;color:var(--label-secondary);margin-bottom:10px;">LOG THIS WEEK'S WEIGHT</p>
+      <div style="display:flex;gap:8px;">
+        <input type="number" id="checkin-weight" placeholder="e.g. 80 kg" style="flex:1;">
+        <button onclick="saveCheckin()" style="background:#f5c842;border:none;border-radius:10px;padding:10px 16px;font-weight:700;font-size:13px;color:#111;cursor:pointer;">Save</button>
+      </div>
+      <input type="number" id="checkin-energy" placeholder="Energy (1-10)" style="margin-top:8px;display:none;">
+      <input type="text" id="checkin-notes" placeholder="Notes" style="margin-top:8px;display:none;">
+    </div>
+    <div id="checkin-history" style="margin-top:8px;"></div>
+  </div>
+
+  <!-- Strength Progress -->
+  <div class="card" style="margin-bottom:12px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">STRENGTH PROGRESS</p>
+      <span style="font-size:12px;color:var(--label-secondary);cursor:pointer;">See all</span>
+    </div>
+    <div id="prog-strength-list">
+      <p style="font-size:13px;color:var(--label-secondary);text-align:center;padding:12px 0;">Log workouts to track strength.</p>
+    </div>
+  </div>
+
+  <!-- Muscle Groups -->
+  <div class="card" style="margin-bottom:12px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">MUSCLE GROUPS</p>
+      <span style="font-size:12px;color:var(--label-secondary);cursor:pointer;">See all</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <!-- Front/back body SVG -->
+      <div style="display:flex;gap:8px;flex-shrink:0;">
+        <svg width="60" height="110" viewBox="0 0 60 110" fill="none">
+          <circle cx="30" cy="8" r="7" fill="var(--border)"/>
+          <rect x="18" y="16" width="24" height="26" rx="5" fill="var(--border)"/>
+          <rect x="19" y="17" width="10" height="12" rx="3" fill="#f5c842" opacity="0.8" id="mg-chest-l"/>
+          <rect x="31" y="17" width="10" height="12" rx="3" fill="#f5c842" opacity="0.8" id="mg-chest-r"/>
+          <ellipse cx="12" cy="22" rx="6" ry="8" fill="var(--border)" id="mg-shoulder-l"/>
+          <ellipse cx="48" cy="22" rx="6" ry="8" fill="var(--border)" id="mg-shoulder-r"/>
+          <rect x="5" y="28" width="8" height="18" rx="4" fill="var(--border)" id="mg-arm-l"/>
+          <rect x="47" y="28" width="8" height="18" rx="4" fill="var(--border)" id="mg-arm-r"/>
+          <rect x="20" y="44" width="9" height="28" rx="4" fill="#f5c842" opacity="0.7" id="mg-quad-l"/>
+          <rect x="31" y="44" width="9" height="28" rx="4" fill="#f5c842" opacity="0.7" id="mg-quad-r"/>
+          <rect x="20" y="74" width="9" height="24" rx="4" fill="var(--border)" id="mg-calf-l"/>
+          <rect x="31" y="74" width="9" height="24" rx="4" fill="var(--border)" id="mg-calf-r"/>
+          <rect x="21" y="32" width="18" height="10" rx="3" fill="var(--border)" id="mg-core"/>
+        </svg>
+        <svg width="60" height="110" viewBox="0 0 60 110" fill="none">
+          <circle cx="30" cy="8" r="7" fill="var(--border)"/>
+          <rect x="18" y="16" width="24" height="26" rx="5" fill="var(--border)"/>
+          <rect x="19" y="17" width="22" height="14" rx="3" fill="#f5c842" opacity="0.6" id="mg-back"/>
+          <ellipse cx="12" cy="22" rx="6" ry="8" fill="var(--border)"/>
+          <ellipse cx="48" cy="22" rx="6" ry="8" fill="var(--border)"/>
+          <rect x="5" y="28" width="8" height="18" rx="4" fill="var(--border)"/>
+          <rect x="47" y="28" width="8" height="18" rx="4" fill="var(--border)"/>
+          <rect x="20" y="44" width="9" height="28" rx="4" fill="#f5c842" opacity="0.5" id="mg-glute-l"/>
+          <rect x="31" y="44" width="9" height="28" rx="4" fill="#f5c842" opacity="0.5" id="mg-glute-r"/>
+          <rect x="20" y="74" width="9" height="24" rx="4" fill="var(--border)"/>
+          <rect x="31" y="74" width="9" height="24" rx="4" fill="var(--border)"/>
+        </svg>
+      </div>
+      <!-- Muscle list -->
+      <div style="flex:1;" id="muscle-group-list">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#22c55e;"></div><span style="font-size:12px;color:var(--text);">Chest</span></div>
+          <span style="font-size:12px;font-weight:700;color:var(--text);" id="mg-pct-chest">—</span>
         </div>
-        <div class="progress-weight-hero">
-            <div class="progress-weight-big" id="progress-weight-current">—</div>
-            <div class="progress-weight-delta" id="progress-weight-delta"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#f5c842;"></div><span style="font-size:12px;color:var(--text);">Back</span></div>
+          <span style="font-size:12px;font-weight:700;color:var(--text);" id="mg-pct-back">—</span>
         </div>
-    </div>
-    <div class="card">
-        <h2 id="txt-weekly-checkin">WEEKLY CHECK-IN</h2>
-        <label id="lbl-checkin-weight">Weight this week (kg)</label>
-        <input type="number" id="checkin-weight" placeholder="e.g. 80">
-        <label id="lbl-checkin-energy">Energy levels (1-10)</label>
-        <input type="number" id="checkin-energy" placeholder="e.g. 7" min="1" max="10">
-        <label id="lbl-checkin-notes">Notes</label>
-        <input type="text" id="checkin-notes" placeholder="How did this week go?">
-        <button class="btn" onclick="saveCheckin()" id="txt-save-checkin">Save Check-In</button>
-
-        <div id="checkin-history"></div>
-    </div>
-
-    <div class="card">
-        <h2 id="txt-current-phase">CURRENT PHASE</h2>
-        <div class="stat-row"><span class="stat-label" id="txt-phase-name-label">Phase</span><span class="stat-value" id="prog-phase-name">—</span></div>
-        <div class="stat-row"><span class="stat-label" id="txt-days-training-prog">Days Training</span><span class="stat-value" id="prog-days-training">—</span></div>
-        <div class="stat-row"><span class="stat-label" id="txt-weight-to-go">Weight to Goal</span><span class="stat-value" id="prog-weight-to-go">—</span></div>
-        <div class="progress-bar-outer"><div class="progress-bar-inner" id="prog-bar"></div></div>
-        <p style="color:var(--label-secondary); font-size:12px; margin-top:6px;" id="prog-pct"></p>
-        <button class="btn-outline" style="margin-top:12px;" onclick="completePhase()" id="txt-complete-phase">Complete Phase & Start New</button>
-    </div>
-
-    <div class="card" id="phase-history-card" style="display:none;">
-        <h2 id="txt-phase-history">PHASE HISTORY</h2>
-        <div id="phase-history-list"></div>
-    </div>
-
-    <div class="card">
-        <h2 id="txt-consistency">CONSISTENCY</h2>
-        <div class="stat-row"><span class="stat-label" id="txt-days-logged">Days logged (last 30)</span><span class="stat-value" id="consistency-score">—</span></div>
-        <div class="stat-row"><span class="stat-label" id="txt-workouts-completed">Workouts completed</span><span class="stat-value" id="workouts-count">—</span></div>
-        <div class="stat-row"><span class="stat-label" id="txt-cardio-sessions">Cardio sessions</span><span class="stat-value" id="cardio-count">—</span></div>
-    </div>
-
-    <div class="card">
-        <h2 id="txt-personal-bests">PERSONAL BESTS</h2>
-        <div id="pb-list"><p style="color:var(--label-secondary);">Log workouts to track PBs.</p></div>
-    </div>
-
-    <div class="card progress-strength-card">
-        <h2>STRENGTH PROGRESS</h2>
-        <p class="progress-strength-ex" id="progress-strength-ex-name">Bench press</p>
-        <div class="progress-strength-val" id="progress-strength-ex-val">—</div>
-        <p class="progress-strength-note">Based on your heaviest logged set per exercise.</p>
-    </div>
-
-    <div class="card progress-photos-card">
-        <div class="progress-photos-head">
-            <h2>PHOTOS</h2>
-            <span class="progress-photos-seeall">See all</span>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#f5c842;"></div><span style="font-size:12px;color:var(--text);">Legs</span></div>
+          <span style="font-size:12px;font-weight:700;color:var(--text);" id="mg-pct-legs">—</span>
         </div>
-        <div class="progress-photos-row">
-            <div class="progress-photo-placeholder"></div>
-            <div class="progress-photo-placeholder"></div>
-            <div class="progress-photo-placeholder"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#f97316;"></div><span style="font-size:12px;color:var(--text);">Shoulders</span></div>
+          <span style="font-size:12px;font-weight:700;color:var(--text);" id="mg-pct-shoulders">—</span>
         </div>
-    </div>
-
-    <div class="card">
-        <h2>SUPPLEMENT LOG (LAST 7 DAYS)</h2>
-        <div id="supplement-log-grid"></div>
-    </div>
-
-    <div class="card">
-        <h2 id="txt-body-measurements">BODY MEASUREMENTS</h2>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
-            <div><label id="lbl-chest">Chest (cm)</label><input type="number" id="meas-chest" placeholder="—"></div>
-            <div><label id="lbl-waist">Waist (cm)</label><input type="number" id="meas-waist" placeholder="—"></div>
-            <div><label id="lbl-hips">Hips (cm)</label><input type="number" id="meas-hips" placeholder="—"></div>
-            <div><label id="lbl-arms">Arms (cm)</label><input type="number" id="meas-arms" placeholder="—"></div>
-            <div><label id="lbl-legs">Legs (cm)</label><input type="number" id="meas-legs" placeholder="—"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#f97316;"></div><span style="font-size:12px;color:var(--text);">Arms</span></div>
+          <span style="font-size:12px;font-weight:700;color:var(--text);" id="mg-pct-arms">—</span>
         </div>
-        <button class="btn" onclick="saveMeasurements()" id="txt-save-measurements">Save Measurements</button>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#a855f7;"></div><span style="font-size:12px;color:var(--text);">Core</span></div>
+          <span style="font-size:12px;font-weight:700;color:var(--text);" id="mg-pct-core">—</span>
+        </div>
+      </div>
     </div>
-    <div class="card">
-        <h2>WEIGHT TREND</h2>
-        <canvas id="weight-chart" width="320" height="180" style="width:100%;height:180px;"></canvas>
-        <p style="color:var(--label-secondary);font-size:12px;margin-top:8px;">Based on your weekly check-ins</p>
+  </div>
+
+  <!-- Progress Photos -->
+  <div class="card" style="margin-bottom:12px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">PROGRESS PHOTOS</p>
+      <span style="font-size:12px;color:var(--label-secondary);cursor:pointer;">See all</span>
     </div>
-    <div class="card">
-        <h2 id="txt-workout-history">WORKOUT HISTORY</h2>
-        <div id="history-list"><p style="color:var(--label-secondary);">No sessions logged yet.</p></div>
+    <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;">
+      <div class="progress-photo-placeholder" style="flex-shrink:0;width:80px;height:100px;border-radius:10px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;">📷</div>
+      <div class="progress-photo-placeholder" style="flex-shrink:0;width:80px;height:100px;border-radius:10px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;">📷</div>
+      <div class="progress-photo-placeholder" style="flex-shrink:0;width:80px;height:100px;border-radius:10px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;">📷</div>
+      <div class="progress-photo-placeholder" style="flex-shrink:0;width:80px;height:100px;border-radius:10px;background:var(--bg);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;">+</div>
     </div>
+  </div>
+
+  <!-- Consistency -->
+  <div class="card" style="margin-bottom:12px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">CONSISTENCY</p>
+      <span style="font-size:12px;color:var(--label-secondary);cursor:pointer;">See calendar</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:20px;">
+      <!-- Ring -->
+      <div style="position:relative;flex-shrink:0;">
+        <svg width="80" height="80" viewBox="0 0 80 80" style="transform:rotate(-90deg);">
+          <circle cx="40" cy="40" r="32" fill="none" stroke="var(--border)" stroke-width="8"/>
+          <circle cx="40" cy="40" r="32" fill="none" stroke="#22c55e" stroke-width="8" stroke-linecap="round" stroke-dasharray="201.06" id="consistency-ring" stroke-dashoffset="201.06"/>
+        </svg>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
+          <div style="font-size:16px;font-weight:800;color:var(--text);" id="consistency-score">—</div>
+          <div style="font-size:9px;color:var(--label-secondary);">This month</div>
+        </div>
+      </div>
+      <!-- Calendar dots -->
+      <div style="flex:1;">
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:6px;">
+          <div style="font-size:9px;color:var(--label-secondary);text-align:center;">M</div>
+          <div style="font-size:9px;color:var(--label-secondary);text-align:center;">T</div>
+          <div style="font-size:9px;color:var(--label-secondary);text-align:center;">W</div>
+          <div style="font-size:9px;color:var(--label-secondary);text-align:center;">T</div>
+          <div style="font-size:9px;color:var(--label-secondary);text-align:center;">F</div>
+          <div style="font-size:9px;color:var(--label-secondary);text-align:center;">S</div>
+          <div style="font-size:9px;color:var(--label-secondary);text-align:center;">S</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;" id="consistency-calendar"></div>
+        <div style="display:flex;gap:10px;margin-top:8px;">
+          <div style="display:flex;align-items:center;gap:4px;"><div style="width:8px;height:8px;border-radius:50%;background:#22c55e;"></div><span style="font-size:10px;color:var(--label-secondary);">Completed</span></div>
+          <div style="display:flex;align-items:center;gap:4px;"><div style="width:8px;height:8px;border-radius:50%;background:#f5c842;"></div><span style="font-size:10px;color:var(--label-secondary);">Partial</span></div>
+          <div style="display:flex;align-items:center;gap:4px;"><div style="width:8px;height:8px;border-radius:50%;background:var(--border);"></div><span style="font-size:10px;color:var(--label-secondary);">Missed</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Personal Bests -->
+  <div class="card" style="margin-bottom:12px;">
+    <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:12px;">PERSONAL BESTS</p>
+    <div id="pb-list"><p style="font-size:13px;color:var(--label-secondary);">Log workouts to track PBs.</p></div>
+  </div>
+
+  <!-- Body Measurements -->
+  <div class="card" style="margin-bottom:12px;">
+    <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:12px;">BODY MEASUREMENTS</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+      <div><label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Chest (cm)</label><input type="number" id="meas-chest" placeholder="—"></div>
+      <div><label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Waist (cm)</label><input type="number" id="meas-waist" placeholder="—"></div>
+      <div><label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Hips (cm)</label><input type="number" id="meas-hips" placeholder="—"></div>
+      <div><label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Arms (cm)</label><input type="number" id="meas-arms" placeholder="—"></div>
+      <div><label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Legs (cm)</label><input type="number" id="meas-legs" placeholder="—"></div>
+    </div>
+    <button onclick="saveMeasurements()" style="width:100%;background:#f5c842;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:800;color:#111;cursor:pointer;">Save Measurements</button>
+  </div>
+
+  <!-- Current Phase (hidden, kept for JS compat) -->
+  <div style="display:none;">
+    <span id="prog-phase-name"></span>
+    <span id="prog-days-training"></span>
+    <span id="prog-weight-to-go"></span>
+    <span id="prog-bar"></span>
+    <span id="prog-pct"></span>
+    <span id="workouts-count"></span>
+    <span id="cardio-count"></span>
+    <span id="progress-strength-ex-name"></span>
+    <span id="progress-strength-ex-val"></span>
+    <span id="supplement-log-grid"></span>
+    <div id="phase-history-card"></div>
+    <div id="phase-history-list"></div>
+  </div>
+
+  <!-- Workout History -->
+  <div class="card" style="margin-bottom:12px;">
+    <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:12px;">WORKOUT HISTORY</p>
+    <div id="history-list"><p style="font-size:13px;color:var(--label-secondary);">No sessions logged yet.</p></div>
+  </div>
+
 </div>
-
 <!-- PROFILE SCREEN -->
 <div class="screen" id="screen-profile" style="display:none;">
-    <div class="profile-hero-card">
-        <div class="profile-hero-top">
-            <div id="profile-hero-avatar" class="profile-hero-avatar">PG</div>
-            <div class="profile-hero-text">
-                <div class="profile-hero-name-row">
-                    <h2 id="profile-hero-name" class="profile-hero-name">Athlete</h2>
-                    <span class="profile-level-badge" id="profile-level-badge">Level 12</span>
-                </div>
-                <p id="profile-hero-goal" class="profile-hero-goal">Hybrid Athlete</p>
-            </div>
-        </div>
-        <div class="profile-xp-wrap">
-            <div class="profile-xp-track"><div class="profile-xp-fill" id="profile-xp-fill"></div></div>
-            <p id="profile-xp-label" class="profile-xp-label">0 / 4,000 XP</p>
-        </div>
-        <div class="profile-hero-stats">
-            <div class="profile-hero-stat"><span class="phs-num" id="profile-stat-workouts">0</span><span class="phs-lbl">Workouts</span></div>
-            <div class="profile-hero-stat"><span class="phs-num" id="profile-stat-streak">0</span><span class="phs-lbl">Streak</span></div>
-            <div class="profile-hero-stat"><span class="phs-num" id="profile-stat-achievements">0</span><span class="phs-lbl">Achievements</span></div>
-        </div>
-    </div>
-    <div class="card profile-achievements-card">
-        <h2 class="profile-achievements-title">Achievements</h2>
-        <div id="profile-hex-badges" class="profile-hex-row"></div>
-    </div>
-    <div class="card profile-quick-menu">
-        <button type="button" class="profile-menu-row" onclick="document.getElementById('profile-section-plans').scrollIntoView({behavior:'smooth',block:'start'})">My Plans <span class="profile-menu-chev">›</span></button>
-        <button type="button" class="profile-menu-row" onclick="document.getElementById('profile-section-details').scrollIntoView({behavior:'smooth',block:'start'})">Body Stats <span class="profile-menu-chev">›</span></button>
-        <button type="button" class="profile-menu-row" onclick="showScreen('screen-progress')">Photos <span class="profile-menu-chev">›</span></button>
-        <button type="button" class="profile-menu-row" onclick="showScreen('screen-progress')">Personal Records <span class="profile-menu-chev">›</span></button>
-        <button type="button" class="profile-menu-row" onclick="document.getElementById('profile-section-appearance').scrollIntoView({behavior:'smooth',block:'start'})">Settings <span class="profile-menu-chev">›</span></button>
-    </div>
-    <div class="card" id="profile-section-account">
-        <h2>Account</h2>
-        <p style="color:var(--label-secondary);font-size:13px;margin-bottom:6px;">Signed in as</p>
-        <p id="account-email" style="color:var(--text);font-size:15px;font-weight:700;margin-bottom:12px;">—</p>
-        <button type="button" id="sign-out-btn" class="btn btn-destructive" onclick="signOut()">Sign Out</button>
-    </div>
 
-    <div class="card" id="profile-section-details">
-        <h2 id="txt-your-details">YOUR DETAILS</h2>
-        <label id="lbl-set-name">Name</label><input type="text" id="set-name" placeholder="Your name">
-        <label id="lbl-set-age">Age</label><input type="number" id="set-age" placeholder="e.g. 25">
-        <label id="lbl-set-gender">Gender</label>
-        <select id="set-gender"><option value="male">Male</option><option value="female">Female</option></select>
-        <label id="lbl-set-height">Height (cm)</label><input type="number" id="set-height" placeholder="e.g. 175">
-        <label id="lbl-set-weight">Current Weight (kg)</label><input type="number" id="set-weight" placeholder="e.g. 80">
-        <label id="lbl-set-target">Target Weight (kg)</label><input type="number" id="set-target-weight" placeholder="e.g. 75">
-        <label id="lbl-set-activity">Activity Level</label>
-        <select id="set-activity">
-            <option value="1.2">Sedentary</option>
-            <option value="1.375">Lightly Active</option>
-            <option value="1.55" selected>Moderately Active</option>
-            <option value="1.725">Very Active</option>
-        </select>
-        <label id="lbl-set-goal">Goal</label>
-        <select id="set-goal">
-            <option value="beginner">Beginner</option>
-            <option value="fatloss">Fat Loss</option>
-            <option value="muscle">Muscle Building</option>
-            <option value="fitness">General Fitness</option>
-        </select>
-        <label id="lbl-set-env">Training Environment</label>
-        <select id="set-environment"><option value="gym">Gym</option><option value="home">Home</option><option value="both">Both</option></select>
-        <label id="lbl-set-diet">Dietary Preference</label>
-        <select id="set-diet"><option value="standard">Standard</option><option value="vegan">Vegan</option><option value="halal">Halal</option></select>
-        <label id="lbl-set-units">Units</label>
-        <select id="set-units"><option value="kg">kg / km</option><option value="lbs">lbs / miles</option></select>
-        <label id="lbl-set-lang">Language</label>
-        <select id="set-language" onchange="selectedLang=this.value; applyTranslations();">
-            <option value="en">🇬🇧 English</option>
-            <option value="pt">🇧🇷 Português</option>
-            <option value="es">🇪🇸 Español</option>
-            <option value="fr">🇫🇷 Français</option>
-            <option value="de">🇩🇪 Deutsch</option>
-        </select>
-        <button class="btn" onclick="saveProfileSettings()" id="btn-save-update" style="margin-top:6px;">Save & Update</button>
-        <p id="settings-save-msg" style="display:none;color:var(--success);font-size:12px;font-weight:700;margin-bottom:4px;">Saved!</p>
-    </div>
+  <!-- Header -->
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-top:4px;">
+    <h1 style="font-size:22px;font-weight:800;color:var(--text);">PROFILE</h1>
+    <button onclick="document.getElementById('profile-section-details').scrollIntoView({behavior:'smooth'})" style="width:36px;height:36px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/><path d="M15 5l1 1M9 5l-1 1"/></svg>
+    </button>
+  </div>
 
-    <div class="card" id="profile-section-plans">
-        <h2 id="txt-my-transformation">MY TRANSFORMATION PHASE</h2>
-        <p style="color:var(--label-secondary); font-size:13px; margin-bottom:12px;" id="txt-phase-desc">Optional: Set a goal phase to track your transformation progress.</p>
-        <label id="lbl-phase-name">Phase Name</label><input type="text" id="set-phase-name" placeholder="e.g. Summer Cut">
-        <label id="lbl-phase-duration">Duration</label>
-        <select id="set-phase-duration">
-            <option value="28">4 Weeks</option>
-            <option value="42">6 Weeks</option>
-            <option value="56" selected>8 Weeks</option>
-            <option value="70">10 Weeks</option>
-            <option value="84">12 Weeks</option>
-        </select>
-        <label id="lbl-training-days">Training Days Per Week</label>
-        <input type="number" id="set-training-days" placeholder="e.g. 4" min="1" max="7">
-        <button class="btn" onclick="savePhaseSettings()" id="btn-save-phase">Save Phase</button>
-        <p id="phase-save-msg" style="display:none;color:var(--success);font-size:12px;font-weight:700;margin-top:2px;">Phase saved!</p>
+  <!-- Profile Hero -->
+  <div class="card" style="margin-bottom:12px;">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
+      <!-- Avatar -->
+      <div style="position:relative;flex-shrink:0;">
+        <div id="profile-hero-avatar" style="width:72px;height:72px;border-radius:50%;background:#f5c842;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#111;">PG</div>
+        <div style="position:absolute;bottom:0;right:0;width:22px;height:22px;background:var(--card);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;">📷</div>
+      </div>
+      <!-- Name + goal -->
+      <div style="flex:1;">
+        <h2 style="font-size:20px;font-weight:800;color:var(--text);margin-bottom:2px;" id="profile-hero-name">Athlete</h2>
+        <p style="font-size:13px;color:var(--label-secondary);margin-bottom:6px;" id="profile-hero-goal">Hybrid Athlete</p>
+        <span style="display:inline-block;background:rgba(245,200,66,0.15);color:#f5c842;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;border:1px solid rgba(245,200,66,0.3);" id="profile-level-badge">Level 1</span>
+      </div>
+      <!-- Level badge -->
+      <div style="width:50px;height:50px;background:#111;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px solid #f5c842;flex-shrink:0;">
+        <span style="font-size:18px;font-weight:800;color:#f5c842;line-height:1;" id="profile-level-num">1</span>
+        <span style="font-size:8px;color:#f5c842;font-weight:700;">LEVEL</span>
+      </div>
     </div>
+    <!-- XP Bar -->
+    <div style="margin-bottom:6px;">
+      <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden;">
+        <div id="profile-xp-fill" style="height:100%;background:#f5c842;border-radius:4px;width:0%;transition:width 0.5s;"></div>
+      </div>
+      <p style="font-size:11px;color:var(--label-secondary);margin-top:4px;" id="profile-xp-label">0 / 1,000 XP</p>
+    </div>
+  </div>
 
-    <div class="card" id="tdee-result" style="display:none;">
-        <h2 id="txt-your-targets">YOUR CALCULATED TARGETS</h2>
-        <div class="stat-row"><span class="stat-label" id="txt-tdee">TDEE</span><span class="stat-value" id="tdee-value">—</span></div>
-        <div class="stat-row"><span class="stat-label" id="txt-cal-target">Calorie Target</span><span class="stat-value" id="cal-target-value">—</span></div>
-        <div class="stat-row"><span class="stat-label" id="txt-protein-target">Protein Target</span><span class="stat-value" id="protein-target-value">—</span></div>
-        <div class="stat-row"><span class="stat-label" id="txt-steps-target">Steps Target</span><span class="stat-value">8,000 steps</span></div>
-        <button class="btn" onclick="saveSettings()" id="txt-save-settings" style="margin-top:12px;">Save & Calculate Targets</button>
+  <!-- Current Status -->
+  <div style="background:#111;border-radius:16px;padding:16px;margin-bottom:12px;">
+    <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:#888;margin-bottom:8px;">CURRENT STATUS</p>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;">
+      <div>
+        <div style="font-size:28px;font-weight:800;color:#f5c842;" id="profile-status-rank">—</div>
+        <div style="font-size:13px;color:#888;margin-top:2px;">of users this month</div>
+        <div style="font-size:12px;font-weight:700;color:#22c55e;margin-top:6px;" id="profile-status-delta">↑ Keep going!</div>
+      </div>
+      <svg width="100" height="50" viewBox="0 0 100 50" fill="none">
+        <polyline points="0,45 20,38 40,30 60,18 80,10 100,2" fill="none" stroke="#f5c842" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="100" cy="2" r="4" fill="#f5c842"/>
+      </svg>
     </div>
+  </div>
 
-    <div class="card">
-        <h2 id="txt-plates-calc">PLATES CALCULATOR</h2>
-        <label id="lbl-plates-weight">Target Weight (kg)</label><input type="number" id="plates-weight" placeholder="e.g. 100">
-        <label id="lbl-plates-bar">Bar Weight</label>
-        <select id="plates-bar">
-            <option value="20">20kg Standard</option>
-            <option value="15">15kg Women's</option>
-            <option value="10">10kg Short</option>
-        </select>
-        <button class="btn-outline" onclick="calculatePlates()" id="txt-calc-plates">Calculate Plates</button>
-        <div class="plates-result" id="plates-result" style="display:none;"></div>
+  <!-- Achievements -->
+  <div class="card" style="margin-bottom:12px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">ACHIEVEMENTS</p>
+      <span style="font-size:12px;color:var(--label-secondary);cursor:pointer;">See all</span>
     </div>
+    <div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;" id="profile-hex-badges">
+      <!-- rendered by JS -->
+    </div>
+  </div>
 
-    <div class="card" id="profile-section-appearance">
-        <h2 id="txt-appearance">APPEARANCE</h2>
-        <div class="toggle-row">
-            <span class="toggle-label" id="txt-dark-mode">Dark Mode</span>
-            <div class="toggle-switch" id="dark-toggle" onclick="toggleTheme()"><div class="toggle-knob"></div></div>
-        </div>
+  <!-- Key Stats -->
+  <div class="card" style="margin-bottom:12px;">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center;">
+      <div>
+        <div style="font-size:18px;margin-bottom:4px;">📅</div>
+        <div style="font-size:18px;font-weight:800;color:var(--text);" id="profile-stat-workouts">0</div>
+        <div style="font-size:10px;color:var(--label-secondary);line-height:1.3;">Workouts<br>Completed</div>
+      </div>
+      <div>
+        <div style="font-size:18px;margin-bottom:4px;">🔥</div>
+        <div style="font-size:18px;font-weight:800;color:var(--text);" id="profile-stat-calories">0</div>
+        <div style="font-size:10px;color:var(--label-secondary);line-height:1.3;">Calories<br>Burned</div>
+      </div>
+      <div>
+        <div style="font-size:18px;margin-bottom:4px;">⏱</div>
+        <div style="font-size:18px;font-weight:800;color:var(--text);" id="profile-stat-time">0h</div>
+        <div style="font-size:10px;color:var(--label-secondary);line-height:1.3;">Training<br>Time</div>
+      </div>
+      <div>
+        <div style="font-size:18px;margin-bottom:4px;">🏆</div>
+        <div style="font-size:18px;font-weight:800;color:var(--text);" id="profile-stat-achievements">0</div>
+        <div style="font-size:10px;color:var(--label-secondary);line-height:1.3;">Personal<br>Records</div>
+      </div>
     </div>
+  </div>
 
-    <div class="card" style="margin-top:12px;">
-        <h2>Reset All Data</h2>
-        <p style="color:var(--label-secondary);font-size:13px;margin-bottom:12px;">This will permanently delete all your workout, nutrition and progress data. This cannot be undone.</p>
-        <label>Type RESET to confirm</label>
-        <input type="text" id="reset-confirm-input" placeholder="Type RESET" oninput="handleResetConfirmInput()">
-        <button type="button" id="reset-all-data-btn" class="btn btn-destructive" onclick="resetAllData()" disabled>🗑 Reset All Data</button>
+  <!-- Recent PRs -->
+  <div class="card" style="margin-bottom:12px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">RECENT PRS</p>
+      <span onclick="showScreen('screen-progress')" style="font-size:12px;color:var(--label-secondary);cursor:pointer;">See all</span>
     </div>
-    <div class="card" style="margin-top:12px;text-align:center;">
-        <h2>ABOUT</h2>
-        <div style="color:var(--text);font-size:15px;font-weight:700;margin-bottom:4px;">PocketGyms</div>
-        <div style="color:var(--label-secondary);font-size:13px;margin-bottom:8px;">Version 2.0</div>
-        <a href="https://privategyms.co.uk" target="_blank" style="color:var(--text);font-size:13px;font-weight:600;text-decoration:underline;display:block;margin-bottom:8px;">privategyms.co.uk</a>
-        <a href="mailto:contact@privategyms.co.uk" style="color:var(--text);font-size:13px;font-weight:600;text-decoration:underline;">contact@privategyms.co.uk</a>
+    <div id="profile-prs-list">
+      <p style="font-size:13px;color:var(--label-secondary);text-align:center;padding:12px 0;">Log workouts to track PRs.</p>
     </div>
+  </div>
+
+  <!-- Account & Settings -->
+  <div class="card" style="margin-bottom:12px;">
+    <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:12px;">ACCOUNT & SETTINGS</p>
+    <button onclick="document.getElementById('profile-section-details').scrollIntoView({behavior:'smooth'})" style="width:100%;display:flex;align-items:center;gap:12px;padding:12px 0;border:none;background:none;cursor:pointer;border-bottom:1px solid var(--border);">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);text-align:left;">Personal Information</span>
+      <span style="color:var(--label-secondary);font-size:18px;">›</span>
+    </button>
+    <button style="width:100%;display:flex;align-items:center;gap:12px;padding:12px 0;border:none;background:none;cursor:pointer;border-bottom:1px solid var(--border);">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);text-align:left;">Notifications</span>
+      <span style="color:var(--label-secondary);font-size:18px;">›</span>
+    </button>
+    <button style="width:100%;display:flex;align-items:center;gap:12px;padding:12px 0;border:none;background:none;cursor:pointer;border-bottom:1px solid var(--border);">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);text-align:left;">Connected Apps & Devices</span>
+      <span style="color:var(--label-secondary);font-size:18px;">›</span>
+    </button>
+    <button onclick="document.getElementById('profile-section-appearance').scrollIntoView({behavior:'smooth'})" style="width:100%;display:flex;align-items:center;gap:12px;padding:12px 0;border:none;background:none;cursor:pointer;border-bottom:1px solid var(--border);">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);text-align:left;">Privacy & Security</span>
+      <span style="color:var(--label-secondary);font-size:18px;">›</span>
+    </button>
+    <button style="width:100%;display:flex;align-items:center;gap:12px;padding:12px 0;border:none;background:none;cursor:pointer;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);text-align:left;">Help & Support</span>
+      <span style="color:var(--label-secondary);font-size:18px;">›</span>
+    </button>
+  </div>
+
+  <!-- Premium -->
+  <div style="background:rgba(245,200,66,0.08);border:1.5px solid rgba(245,200,66,0.3);border-radius:16px;padding:16px;margin-bottom:12px;display:flex;align-items:center;gap:14px;cursor:pointer;">
+    <div style="width:44px;height:44px;background:#f5c842;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">👑</div>
+    <div style="flex:1;">
+      <div style="font-size:14px;font-weight:800;color:var(--text);">POCKETGYMS PREMIUM</div>
+      <div style="font-size:12px;color:var(--label-secondary);margin-top:2px;">Unlock all features and take your results to the next level.</div>
+    </div>
+    <div style="color:var(--label-secondary);font-size:18px;">›</div>
+  </div>
+
+  <!-- Personal Details (hidden section, scrolled to) -->
+  <div class="card" style="margin-bottom:12px;" id="profile-section-details">
+    <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:14px;">PERSONAL INFORMATION</p>
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Name</label>
+    <input type="text" id="set-name" placeholder="Your name" style="margin-bottom:10px;">
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Age</label>
+    <input type="number" id="set-age" placeholder="e.g. 25" style="margin-bottom:10px;">
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Gender</label>
+    <select id="set-gender" style="margin-bottom:10px;"><option value="male">Male</option><option value="female">Female</option></select>
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Height (cm)</label>
+    <input type="number" id="set-height" placeholder="e.g. 175" style="margin-bottom:10px;">
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Current Weight (kg)</label>
+    <input type="number" id="set-weight" placeholder="e.g. 80" style="margin-bottom:10px;">
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Target Weight (kg)</label>
+    <input type="number" id="set-target-weight" placeholder="e.g. 75" style="margin-bottom:10px;">
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Activity Level</label>
+    <select id="set-activity" style="margin-bottom:10px;">
+      <option value="1.2">Sedentary</option>
+      <option value="1.375">Lightly Active</option>
+      <option value="1.55" selected>Moderately Active</option>
+      <option value="1.725">Very Active</option>
+    </select>
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Goal</label>
+    <select id="set-goal" style="margin-bottom:10px;">
+      <option value="beginner">Beginner</option>
+      <option value="fatloss">Fat Loss</option>
+      <option value="muscle">Muscle Building</option>
+      <option value="fitness">General Fitness</option>
+    </select>
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Training Environment</label>
+    <select id="set-environment" style="margin-bottom:10px;"><option value="gym">Gym</option><option value="home">Home</option><option value="both">Both</option></select>
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Dietary Preference</label>
+    <select id="set-diet" style="margin-bottom:10px;"><option value="standard">Standard</option><option value="vegan">Vegan</option><option value="halal">Halal</option></select>
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Units</label>
+    <select id="set-units" style="margin-bottom:10px;"><option value="kg">kg / km</option><option value="lbs">lbs / miles</option></select>
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Language</label>
+    <select id="set-language" onchange="selectedLang=this.value;applyTranslations();" style="margin-bottom:14px;">
+      <option value="en">🇬🇧 English</option>
+      <option value="pt">🇧🇷 Português</option>
+      <option value="es">🇪🇸 Español</option>
+      <option value="fr">🇫🇷 Français</option>
+      <option value="de">🇩🇪 Deutsch</option>
+    </select>
+    <button onclick="saveProfileSettings()" style="width:100%;background:#f5c842;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:800;color:#111;cursor:pointer;">Save & Update</button>
+    <p id="settings-save-msg" style="display:none;color:#22c55e;font-size:12px;font-weight:700;margin-top:6px;text-align:center;">Saved!</p>
+  </div>
+
+  <!-- Transformation Phase -->
+  <div class="card" style="margin-bottom:12px;" id="profile-section-plans">
+    <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:14px;">MY TRANSFORMATION PHASE</p>
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Phase Name</label>
+    <input type="text" id="set-phase-name" placeholder="e.g. Summer Cut" style="margin-bottom:10px;">
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Duration</label>
+    <select id="set-phase-duration" style="margin-bottom:10px;">
+      <option value="28">4 Weeks</option>
+      <option value="42">6 Weeks</option>
+      <option value="56" selected>8 Weeks</option>
+      <option value="70">10 Weeks</option>
+      <option value="84">12 Weeks</option>
+    </select>
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Training Days Per Week</label>
+    <input type="number" id="set-training-days" placeholder="e.g. 4" min="1" max="7" style="margin-bottom:14px;">
+    <button onclick="savePhaseSettings()" style="width:100%;background:#f5c842;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:800;color:#111;cursor:pointer;">Save Phase</button>
+    <p id="phase-save-msg" style="display:none;color:#22c55e;font-size:12px;font-weight:700;margin-top:6px;text-align:center;">Phase saved!</p>
+  </div>
+
+  <!-- Calculated Targets (hidden until saved) -->
+  <div class="card" id="tdee-result" style="display:none;margin-bottom:12px;">
+    <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:12px;">YOUR CALCULATED TARGETS</p>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span style="font-size:13px;color:var(--label-secondary);">TDEE</span><span style="font-size:13px;font-weight:700;color:var(--text);" id="tdee-value">—</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span style="font-size:13px;color:var(--label-secondary);">Calorie Target</span><span style="font-size:13px;font-weight:700;color:var(--text);" id="cal-target-value">—</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span style="font-size:13px;color:var(--label-secondary);">Protein Target</span><span style="font-size:13px;font-weight:700;color:var(--text);" id="protein-target-value">—</span></div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:13px;color:var(--label-secondary);">Steps Target</span><span style="font-size:13px;font-weight:700;color:var(--text);">8,000 steps</span></div>
+    <button onclick="saveSettings()" style="width:100%;background:#f5c842;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:800;color:#111;cursor:pointer;margin-top:12px;">Save & Calculate Targets</button>
+  </div>
+
+  <!-- Plates Calculator -->
+  <div class="card" style="margin-bottom:12px;">
+    <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:12px;">PLATES CALCULATOR</p>
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Target Weight (kg)</label>
+    <input type="number" id="plates-weight" placeholder="e.g. 100" style="margin-bottom:10px;">
+    <label style="font-size:11px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:4px;">Bar Weight</label>
+    <select id="plates-bar" style="margin-bottom:14px;">
+      <option value="20">20kg Standard</option>
+      <option value="15">15kg Women's</option>
+      <option value="10">10kg Short</option>
+    </select>
+    <button onclick="calculatePlates()" style="width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:13px;font-size:14px;font-weight:700;color:var(--text);cursor:pointer;">Calculate Plates</button>
+    <div id="plates-result" style="display:none;margin-top:12px;"></div>
+  </div>
+
+  <!-- Appearance -->
+  <div class="card" style="margin-bottom:12px;" id="profile-section-appearance">
+    <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:12px;">APPEARANCE</p>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:14px;font-weight:600;color:var(--text);">Dark Mode</span>
+      <div class="toggle-switch" id="dark-toggle" onclick="toggleTheme()"><div class="toggle-knob"></div></div>
+    </div>
+  </div>
+
+  <!-- Account -->
+  <div class="card" style="margin-bottom:12px;" id="profile-section-account">
+    <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:12px;">ACCOUNT</p>
+    <p style="font-size:12px;color:var(--label-secondary);margin-bottom:4px;">Signed in as</p>
+    <p id="account-email" style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:14px;">—</p>
+    <button onclick="signOut()" style="width:100%;background:none;border:1.5px solid #ef4444;border-radius:12px;padding:13px;font-size:14px;font-weight:700;color:#ef4444;cursor:pointer;" id="sign-out-btn">Sign Out</button>
+  </div>
+
+  <!-- Reset -->
+  <div class="card" style="margin-bottom:12px;">
+    <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:8px;">DANGER ZONE</p>
+    <p style="font-size:12px;color:var(--label-secondary);margin-bottom:10px;">Permanently delete all your data. Cannot be undone.</p>
+    <input type="text" id="reset-confirm-input" placeholder="Type RESET to confirm" oninput="handleResetConfirmInput()" style="margin-bottom:8px;">
+    <button type="button" id="reset-all-data-btn" onclick="resetAllData()" disabled style="width:100%;background:none;border:1.5px solid #ef4444;border-radius:12px;padding:13px;font-size:14px;font-weight:700;color:#ef4444;cursor:pointer;opacity:0.5;">🗑 Reset All Data</button>
+  </div>
+
+  <!-- About -->
+  <div class="card" style="margin-bottom:20px;text-align:center;">
+    <div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:4px;">PocketGyms</div>
+    <div style="font-size:12px;color:var(--label-secondary);margin-bottom:10px;">Version 2.0</div>
+    <a href="https://privategyms.co.uk" target="_blank" style="color:var(--text);font-size:13px;font-weight:600;text-decoration:underline;display:block;margin-bottom:6px;">privategyms.co.uk</a>
+    <a href="mailto:contact@privategyms.co.uk" style="color:var(--text);font-size:13px;font-weight:600;text-decoration:underline;">contact@privategyms.co.uk</a>
+  </div>
+
 </div>
 
 <!-- NAV -->

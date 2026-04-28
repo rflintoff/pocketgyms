@@ -1007,8 +1007,11 @@ function showScreen(id) {
     if(navMap[id])document.getElementById(navMap[id]).classList.add('active');
     if(id==='screen-home')updateHome();
     if(id==='screen-calories'){loadNutrition();renderSupplements();renderMeals();}
-    if(id==='screen-progress')updateProgress();
-    if(id==='screen-profile')void loadSettings();
+    if(id==='screen-progress')renderProgressTab();
+    if(id==='screen-profile'){
+        void loadSettings();
+        globalThis.renderProfileTab?.();
+    }
     if(id==='screen-train'){showTrainSection('menu');renderRoutinesList();updateStepsDisplay();renderTrainWeek();}
 }
 
@@ -2042,8 +2045,9 @@ async function addCatalogSupplementToListByIndex(idx){
     updateNutritionSummary(cals, protein, carbs, fats, calTarget, proteinTarget);
     updateStreakSection();
     updateUpcoming();
+    updateNutritionTab(cals, protein, carbs, fats, calTarget, proteinTarget);
 // ===================== PROGRESS =====================
-async function updateProgress() {
+async function renderProgressTab() {
     const s=settings;
     if(s.phaseName){
         const setEl=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
@@ -2110,6 +2114,10 @@ async function updateProgress() {
     setProgressFilter(progressChartRange,null);
     renderWeightChart();
     await renderSupplementHistory();
+}
+
+async function updateProgress() {
+    return renderProgressTab();
 }
 
 async function renderSupplementHistory() {
@@ -3865,4 +3873,345 @@ function adjustRestTimer(seconds) {
     const current = parseInt(el.textContent) || 0;
     el.textContent = current + seconds;
   }
-}
+}// ══ NUTRITION TAB HELPERS ════════════════════════════════════
+
+function updateNutritionTab(cals, protein, carbs, fats, calGoal, protGoal) {
+    // Calorie ring
+    const ring = document.getElementById('nut-cal-ring');
+    if (ring) ring.setAttribute('stroke-dashoffset', 276.46 - Math.min(1, cals / calGoal) * 276.46);
+    setText('nut-hero-calories', Math.round(cals).toLocaleString());
+    setText('nut-ring-goal', `/ ${Math.round(calGoal).toLocaleString()} kcal`);
+    const rem = Math.max(0, calGoal - cals);
+    const remEl = document.getElementById('nut-cal-remaining');
+    if (remEl) {
+      remEl.textContent = rem > 0 ? `${Math.round(rem)} kcal left` : 'Goal reached! 🎉';
+      remEl.style.color = rem > 0 ? '#f5c842' : '#22c55e';
+    }
+  
+    // Macro bars
+    const carbGoal = 250; const fatGoal = 70;
+    setText('nut-pill-protein', `${Math.round(protein)} / ${Math.round(protGoal)}g`);
+    setText('nut-pill-carbs', `${Math.round(carbs)} / ${carbGoal}g`);
+    setText('nut-pill-fats', `${Math.round(fats)} / ${fatGoal}g`);
+    setBar('nut-pill-bar-protein', (protein / protGoal) * 100);
+    setBar('nut-pill-bar-carbs', (carbs / carbGoal) * 100);
+    setBar('nut-pill-bar-fats', (fats / fatGoal) * 100);
+  
+    // Macro donut
+    const total = (protein * 4) + (carbs * 4) + (fats * 9);
+    const protPct = total > 0 ? Math.round((protein * 4) / total * 100) : 0;
+    const carbPct = total > 0 ? Math.round((carbs * 4) / total * 100) : 0;
+    const fatPct = total > 0 ? Math.round((fats * 9) / total * 100) : 0;
+    const circ = 188.5;
+    const protArc = (protPct / 100) * circ;
+    const carbArc = (carbPct / 100) * circ;
+    const fatArc = (fatPct / 100) * circ;
+    const protRing = document.getElementById('macro-ring-protein');
+    const carbRing = document.getElementById('macro-ring-carbs');
+    const fatRing = document.getElementById('macro-ring-fats');
+    if (protRing) { protRing.setAttribute('stroke-dasharray', `${protArc} ${circ - protArc}`); protRing.setAttribute('stroke-dashoffset', '0'); }
+    if (carbRing) { carbRing.setAttribute('stroke-dasharray', `${carbArc} ${circ - carbArc}`); carbRing.setAttribute('stroke-dashoffset', -protArc); }
+    if (fatRing) { fatRing.setAttribute('stroke-dasharray', `${fatArc} ${circ - fatArc}`); fatRing.setAttribute('stroke-dashoffset', -(protArc + carbArc)); }
+    setText('macro-legend-protein', `${Math.round(protein)}g (${protPct}%)`);
+    setText('macro-legend-carbs', `${Math.round(carbs)}g (${carbPct}%)`);
+    setText('macro-legend-fats', `${Math.round(fats)}g (${fatPct}%)`);
+  
+    // Insights
+    renderNutritionInsights(cals, protein, carbs, fats, calGoal, protGoal);
+  
+    // Meal ideas
+    renderMealIdeas(protGoal);
+  }
+  
+  function renderNutritionInsights(cals, protein, carbs, fats, calGoal, protGoal) {
+    const container = document.getElementById('nut-insights-list');
+    if (!container) return;
+    const insights = [];
+    if (protein >= protGoal * 0.9) insights.push({ icon: '⚡', color: '#f5c842', title: 'Great protein intake!', sub: "You're hitting your target consistently." });
+    else insights.push({ icon: '💪', color: '#6366f1', title: `Need ${Math.round(protGoal - protein)}g more protein`, sub: 'Add a protein source to your next meal.' });
+    const rem = calGoal - cals;
+    if (rem > 0) insights.push({ icon: '🔥', color: '#f5c842', title: 'Calories balance', sub: `You're ${Math.round(rem)} kcal under your target.` });
+    else insights.push({ icon: '⚠️', color: '#ef4444', title: 'Over calorie target', sub: `${Math.round(Math.abs(rem))} kcal over today.` });
+    insights.push({ icon: '🌿', color: '#22c55e', title: 'Keep it up!', sub: 'Consistency is the key to results.' });
+    container.innerHTML = insights.map(ins => `
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
+        <div style="width:36px;height:36px;border-radius:50%;background:${ins.color}22;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">${ins.icon}</div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--text);">${ins.title}</div>
+          <div style="font-size:11px;color:var(--label-secondary);margin-top:2px;">${ins.sub}</div>
+        </div>
+      </div>
+    `).join('').replace(/border-bottom[^;]+;(?=[^<]*<\/div>\s*$)/, '');
+  }
+  
+  function renderMealIdeas(protGoal) {
+    const container = document.getElementById('meal-ideas-row');
+    if (!container || container.hasChildNodes()) return;
+    const ideas = [
+      { name: 'High Protein Chicken Bowl', kcal: 542, emoji: '🍗' },
+      { name: 'Salmon & Rice Bowl', kcal: 632, emoji: '🍣' },
+      { name: 'Protein Smoothie', kcal: 328, emoji: '🥤' },
+      { name: 'Greek Omelette', kcal: 380, emoji: '🍳' },
+      { name: 'Tuna Pasta', kcal: 490, emoji: '🍝' },
+    ];
+    container.innerHTML = ideas.map(idea => `
+      <div style="flex-shrink:0;width:130px;cursor:pointer;">
+        <div style="width:130px;height:100px;border-radius:12px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:40px;margin-bottom:6px;border:1px solid var(--border);">${idea.emoji}</div>
+        <div style="font-size:12px;font-weight:700;color:var(--text);line-height:1.3;">${idea.name}</div>
+        <div style="font-size:11px;color:var(--label-secondary);margin-top:2px;">${idea.kcal} kcal</div>
+      </div>
+    `).join('');
+  }
+  // ══ PROGRESS TAB HELPERS ═════════════════════════════════════
+
+function setProgressInsightsFilter(range, btn) {
+    document.querySelectorAll('.prog-filter-btn').forEach(b => {
+      b.style.background = 'transparent';
+      b.style.color = 'var(--label-secondary)';
+    });
+    if (btn) {
+      btn.style.background = '#f5c842';
+      btn.style.color = '#111';
+    }
+    renderProgressOverviewTab(range);
+  }
+  
+  function renderProgressOverviewTab(range) {
+    range = range || '1M';
+    renderOverviewStats();
+    renderStrengthProgress();
+    renderMuscleGroups();
+    renderConsistencyCalendar();
+  }
+  
+  function renderOverviewStats() {
+    const logs = Array.isArray(progressLogs) ? progressLogs : [];
+    const units = (settings || {}).units || 'kg';
+    if (logs.length > 0) {
+      const latest = logs[logs.length - 1];
+      const prev = logs.length > 1 ? logs[0] : null;
+      setText('progress-weight-current', `${latest.weight}${units}`);
+      if (prev) {
+        const diff = (latest.weight - prev.weight).toFixed(1);
+        const el = document.getElementById('progress-weight-delta');
+        if (el) {
+          el.textContent = `${diff > 0 ? '↑' : '↓'} ${Math.abs(diff)}${units}`;
+          el.style.color = diff > 0 ? '#ef4444' : '#22c55e';
+        }
+        const changeLabel = document.getElementById('prog-weight-change-label');
+        if (changeLabel) {
+          changeLabel.textContent = `${diff > 0 ? '↑' : '↓'} ${Math.abs(diff)}${units}`;
+          changeLabel.style.color = diff > 0 ? '#ef4444' : '#22c55e';
+        }
+      }
+    }
+  
+    // Consistency
+    const last30 = (workoutHistory || []).filter(w => {
+      const d = new Date(w.date?.split('/').reverse().join('-') || w.created_at);
+      return (Date.now() - d) < 30 * 86400000;
+    });
+    const pct = Math.round(last30.length / 30 * 100);
+    setText('prog-consistency-pct', `${pct}%`);
+    setText('consistency-score', `${pct}%`);
+    const ring = document.getElementById('consistency-ring');
+    if (ring) ring.setAttribute('stroke-dashoffset', 201.06 - (pct / 100) * 201.06);
+  
+    // Strength
+    const pbs = personalBests || {};
+    const pbKeys = Object.keys(pbs);
+    if (pbKeys.length > 0) {
+      const top = pbs[pbKeys[0]];
+      setText('prog-strength-val', `${top.weight}${(settings||{}).units||'kg'}`);
+    }
+  
+    // Avg calories
+    const today = new Date();
+    const recentMeals = (meals || []).filter(m => {
+      const parts = (m.date || '').split('/');
+      if (parts.length < 3) return false;
+      const d = new Date(parts[2], parts[1]-1, parts[0]);
+      return (Date.now() - d) < 30 * 86400000;
+    });
+    if (recentMeals.length > 0) {
+      let totalCal = 0;
+      recentMeals.forEach(m => m.foods?.forEach(f => totalCal += (f.cal || 0)));
+      setText('prog-cal-avg', Math.round(totalCal / 30).toLocaleString());
+    }
+  }
+  
+  function renderStrengthProgress() {
+    const container = document.getElementById('prog-strength-list');
+    if (!container) return;
+    const pbs = personalBests || {};
+    const keys = Object.keys(pbs).slice(0, 5);
+    if (keys.length === 0) {
+      container.innerHTML = '<p style="font-size:13px;color:var(--label-secondary);text-align:center;padding:12px 0;">Log workouts to track strength.</p>';
+      return;
+    }
+    const units = (settings || {}).units || 'kg';
+    container.innerHTML = keys.map((name, idx) => {
+      const pb = pbs[name];
+      const isLast = idx === keys.length - 1;
+      return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;${isLast ? '' : 'border-bottom:1px solid var(--border);'}">
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:700;color:var(--text);">${name}</div>
+        </div>
+        <div style="font-size:18px;font-weight:800;color:var(--text);">${pb.weight}<span style="font-size:12px;font-weight:500;color:var(--label-secondary);">${units}</span></div>
+        <div style="font-size:11px;font-weight:700;color:#22c55e;min-width:40px;text-align:right;">↑ PB</div>
+        <svg width="50" height="24" viewBox="0 0 50 24"><polyline points="0,20 12,16 25,10 38,6 50,2" fill="none" stroke="#f5c842" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>`;
+    }).join('');
+  }
+  
+  function renderMuscleGroups() {
+    const history = workoutHistory || [];
+    const last30 = history.filter(w => {
+      const parts = (w.date || '').split('/');
+      if (parts.length < 3) return false;
+      const d = new Date(parts[2], parts[1]-1, parts[0]);
+      return (Date.now() - d) < 30 * 86400000;
+    });
+    const groups = { chest: 0, back: 0, legs: 0, shoulders: 0, arms: 0, core: 0 };
+    last30.forEach(w => {
+      const m = (w.muscle || '').toLowerCase();
+      if (/push|chest|tricep/.test(m)) groups.chest++;
+      if (/pull|back|bicep|row/.test(m)) groups.back++;
+      if (/leg|squat|hinge|glute|hamstring/.test(m)) groups.legs++;
+      if (/shoulder/.test(m)) groups.shoulders++;
+      if (/arm|bicep|tricep/.test(m)) groups.arms++;
+      if (/core|abs/.test(m)) groups.core++;
+    });
+    const max = Math.max(...Object.values(groups), 1);
+    Object.entries(groups).forEach(([key, val]) => {
+      const pct = max > 0 ? Math.round((val / max) * 100) : 0;
+      setText(`mg-pct-${key}`, pct > 0 ? `${pct}%` : '—');
+    });
+  }
+  
+  function renderConsistencyCalendar() {
+    const container = document.getElementById('consistency-calendar');
+    if (!container) return;
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const offset = firstDay === 0 ? 6 : firstDay - 1;
+    const cells = [];
+    for (let i = 0; i < offset; i++) cells.push('<div></div>');
+    for (let d = 1; d <= daysInMonth; d++) {
+      const date = new Date(year, month, d);
+      const dateStr = date.toLocaleDateString('en-GB');
+      const hasWorkout = !!(workoutHistory || []).find(w => w.date === dateStr);
+      const hasCardio = !!(cardioHistory || []).find(c => c.date === dateStr);
+      const done = hasWorkout || hasCardio;
+      const isToday = d === now.getDate();
+      cells.push(
+        `<div title="${dateStr}" style="width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;` +
+          `${done ? 'background:#f5c842;color:#111;' : 'background:var(--bg);color:var(--label-secondary);border:1px solid var(--border);'}` +
+          `${isToday ? 'box-shadow:0 0 0 2px rgba(245,200,66,0.35);' : ''}">` +
+          `${d}</div>`
+      );
+    }
+    container.innerHTML = cells.join('');
+  }// ══ PROFILE TAB HELPERS ══════════════════════════════════════
+
+function renderProfileTab() {
+    const s = settings || {};
+    const name = s.name || 'Athlete';
+    const goal = s.goal || 'fitness';
+    const goalLabels = { beginner:'Beginner', fatloss:'Fat Loss Athlete', muscle:'Muscle Builder', fitness:'Hybrid Athlete' };
+  
+    // Avatar initials
+    const avatarEl = document.getElementById('profile-hero-avatar');
+    if (avatarEl && name) {
+      const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
+      avatarEl.textContent = initials || 'PG';
+    }
+    setText('profile-hero-name', name);
+    setText('profile-hero-goal', goalLabels[goal] || 'Hybrid Athlete');
+  
+    // XP & Level
+    const workouts = (workoutHistory || []).length;
+    const cardios = (cardioHistory || []).length;
+    const pbs = Object.keys(personalBests || {}).length;
+    const xp = (workouts * 50) + (cardios * 30) + (pbs * 100);
+    const level = Math.floor(xp / 1000) + 1;
+    const xpInLevel = xp % 1000;
+    setText('profile-level-badge', `Level ${level}`);
+    setText('profile-level-num', level);
+    setText('profile-xp-label', `${xp.toLocaleString()} / ${(level * 1000).toLocaleString()} XP`);
+    const xpFill = document.getElementById('profile-xp-fill');
+    if (xpFill) xpFill.style.width = Math.min(100, (xpInLevel / 1000) * 100) + '%';
+  
+    // Status rank (simulated)
+    const consistency = Math.min(100, Math.round(workouts / 30 * 100));
+    const rank = consistency > 80 ? 'Top 5%' : consistency > 60 ? 'Top 14%' : consistency > 40 ? 'Top 30%' : 'Top 50%';
+    setText('profile-status-rank', rank);
+  
+    // Key stats
+    setText('profile-stat-workouts', workouts);
+    const totalCal = (workoutHistory || []).reduce((a, w) => a + (w.duration || 0) * 8, 0);
+    setText('profile-stat-calories', totalCal.toLocaleString());
+    const totalMins = (workoutHistory || []).reduce((a, w) => a + (w.duration || 0), 0);
+    setText('profile-stat-time', `${Math.round(totalMins / 60)}h`);
+    setText('profile-stat-achievements', pbs);
+  
+    // Account email
+    const emailEl = document.getElementById('account-email');
+    if (emailEl && PG?.state?.user?.email) emailEl.textContent = PG.state.user.email;
+  
+    renderProfileAchievements();
+    renderProfilePRs();
+  }
+  
+  function renderProfileAchievements() {
+    const container = document.getElementById('profile-hex-badges');
+    if (!container) return;
+    const workouts = (workoutHistory || []).length;
+    const cardios = (cardioHistory || []).length;
+    const achievements = [
+      { icon: '🔥', label: '7 Day\nStreak', unlocked: true },
+      { icon: '💪', label: '50\nWorkouts', unlocked: workouts >= 50 },
+      { icon: '🥗', label: 'Nutrition\nMaster', unlocked: false },
+      { icon: '⭐', label: 'Early\nRiser', unlocked: false },
+      { icon: '🏆', label: '100\nWorkouts', unlocked: workouts >= 100 },
+      { icon: '🏃', label: 'Cardio\nKing', unlocked: cardios >= 10 },
+    ];
+    container.innerHTML = achievements.map(a => `
+      <div style="flex-shrink:0;text-align:center;width:64px;">
+        <div style="width:52px;height:52px;border-radius:14px;background:${a.unlocked ? '#111' : 'var(--bg)'};border:2px solid ${a.unlocked ? '#f5c842' : 'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 6px;${a.unlocked ? '' : 'opacity:0.4;'}">
+          ${a.unlocked ? a.icon : '🔒'}
+        </div>
+        <div style="font-size:10px;color:${a.unlocked ? 'var(--text)' : 'var(--label-secondary)'};font-weight:${a.unlocked ? '700' : '500'};line-height:1.3;">${a.label.replace('\n','<br>')}</div>
+      </div>
+    `).join('');
+  }
+  
+  function renderProfilePRs() {
+    const container = document.getElementById('profile-prs-list');
+    if (!container) return;
+    const pbs = personalBests || {};
+    const keys = Object.keys(pbs).slice(0, 4);
+    if (keys.length === 0) {
+      container.innerHTML = '<p style="font-size:13px;color:var(--label-secondary);text-align:center;padding:12px 0;">Log workouts to track PRs.</p>';
+      return;
+    }
+    const units = (settings || {}).units || 'kg';
+    container.innerHTML = keys.map((name, idx) => {
+      const pb = pbs[name];
+      const isLast = idx === keys.length - 1;
+      return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;${isLast ? '' : 'border-bottom:1px solid var(--border);'}">
+        <div style="width:38px;height:38px;background:var(--bg);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">💪</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:700;color:var(--text);">${name}</div>
+          <div style="font-size:12px;color:var(--label-secondary);">${pb.weight} ${units}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="display:inline-block;background:rgba(245,200,66,0.15);color:#f5c842;font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;border:1px solid rgba(245,200,66,0.3);margin-bottom:2px;">PR</div>
+          <div style="font-size:11px;color:var(--label-secondary);">${pb.date || ''}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
