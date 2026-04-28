@@ -667,6 +667,9 @@ function supplementUnitSelectHtml(selectedUnit){
 function escapeHtmlText(str){
     return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
+function escapeJsSingleQuoteString(str){
+    return String(str).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+}
 function dedupeSupplementNamesOrdered(arr){
     const seen=new Set();
     const out=[];
@@ -1856,7 +1859,8 @@ async function renderSupplements() {
         const savedUnit=saved.unit&&supplementUnitValues.includes(saved.unit)?saved.unit:null;
         const unitVal=savedUnit||getDefaultSupplementUnit(s);
         const nameSafe=escapeHtmlText(s);
-        return `<div class="supplement-item"><div class="supplement-item-top"><div class="supplement-item-name">${nameSafe}</div><button type="button" class="supplement-row-remove" onclick="removeSupplementFromList(${i})">${t('removeFromList')}</button></div><div class="supplement-item-controls"><input type="number" class="supplement-qty" id="supp-qty-${i}" placeholder="Qty" inputmode="decimal" value="${quantityVal}"><select class="supplement-unit" id="supp-unit-${i}">${supplementUnitSelectHtml(unitVal)}</select><span class="supplement-taken-wrap"><input type="checkbox" class="supplement-checkbox" id="supp-taken-${i}" title="Taken" ${checked?'checked':''} onclick="saveSupplementByIndex(${i})"></span><button type="button" class="supplement-save" onclick="saveSupplementByIndex(${i})">${t('save')}</button></div></div>`;
+        const nameJsSafe=escapeJsSingleQuoteString(s);
+        return `<div class="supplement-item"><div class="supplement-item-top"><div class="supplement-item-name">${nameSafe}</div><button type="button" class="supplement-row-remove" onclick="removeSupplementFromList('${nameJsSafe}')">${t('removeFromList')}</button></div><div class="supplement-item-controls"><input type="number" class="supplement-qty" id="supp-qty-${i}" placeholder="Qty" inputmode="decimal" value="${quantityVal}"><select class="supplement-unit" id="supp-unit-${i}">${supplementUnitSelectHtml(unitVal)}</select><span class="supplement-taken-wrap"><input type="checkbox" class="supplement-checkbox" id="supp-taken-${i}" title="Taken" ${checked?'checked':''} onclick="saveSupplementByIndex(${i})"></span><button type="button" class="supplement-save" onclick="saveSupplementByIndex(${i})">${t('save')}</button></div></div>`;
     }).join('');
 }
 
@@ -1920,35 +1924,39 @@ async function addCustomSupplement() {
     showToast('Custom supplement added','success',1600);
 }
 
-async function deleteCustomSupplementByIndex(index){
-    if(!Array.isArray(renderedSupplements)||!renderedSupplements[index]) return;
-    const name=renderedSupplements[index];
-    const nameLower=String(name).toLowerCase();
-    const customs=Array.isArray(settings.custom_supplements)?[...settings.custom_supplements]:[];
-    if(!customs.some(c=>String(c).toLowerCase()===nameLower)) return;
-    const updated=customs.filter(c=>String(c).toLowerCase()!==nameLower);
+async function removeSupplementFromList(supplementName){
+    const name=String(supplementName||'').trim();
+    if(!name) return;
+    const nameLower=name.toLowerCase();
+
+    const catalog=Array.isArray(settings.supplements_catalog)?settings.supplements_catalog:[];
+    const nextCatalog=catalog.filter(s=>String(s).toLowerCase()!==nameLower);
+    const customSupplements=Array.isArray(settings.custom_supplements)?settings.custom_supplements:[];
+    const nextCustom=customSupplements.filter(s=>String(s).toLowerCase()!==nameLower);
+
+    const prof=await PG.profile.save({
+        supplements_catalog:nextCatalog,
+        custom_supplements:nextCustom
+    });
+    if(prof?.ok===false||prof?.error){
+        showToast('Failed to remove supplement','error');
+        return;
+    }
+
+    settings.supplements_catalog=nextCatalog;
+    settings.custom_supplements=nextCustom;
+
     const nutritionData=await PG.nutrition.getToday();
     const savedSupplements=Array.isArray(nutritionData?.supplements)?nutritionData.supplements:[];
-    const payload={custom_supplements:updated};
-    if(Array.isArray(settings.supplements_catalog)){
-        const nextCatalog=settings.supplements_catalog.filter(n=>n!==name);
-        settings.supplements_catalog=nextCatalog;
-        payload.supplements_catalog=nextCatalog;
-    }
-    settings.custom_supplements=updated;
-    const prof=await PG.profile.save(payload);
-    if(prof?.ok===false||prof?.error){
-        showToast('Save failed — please try again','error',3500);
-        return;
-    }
-    const supplements=savedSupplements.filter(s=>s&&s.name!==name);
-    const nut=await PG.nutrition.save({supplements});
+    const nextTodaySupplements=savedSupplements.filter(s=>s&&String(s.name).toLowerCase()!==nameLower);
+    const nut=await PG.nutrition.save({supplements:nextTodaySupplements});
     if(nut?.ok===false||nut?.error){
-        showToast('Save failed — please try again','error',3500);
+        showToast('Failed to remove supplement','error');
         return;
     }
+
     await renderSupplements();
-    showToast('Custom supplement removed','success',1400);
+    showToast('Supplement removed','success');
 }
 
 async function clearAllSupplements(){
