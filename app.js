@@ -2780,61 +2780,65 @@ async function saveToStorage(opts={}) {
 }
 
 async function loadFromStorage() {
-    const profile=await PG.profile.get()||{};
-    const isDark=profile.dark_mode===true||profile.darkMode==='dark'||profile.darkMode===true||profile.theme==='dark';
-    if(isDark){document.body.classList.add('dark');const t=document.getElementById('dark-toggle');if(t)t.classList.add('on');}
-    const workouts=await PG.workouts.getAll();
-    const cardio=await PG.cardio.getAll();
-    const routinesData=await PG.routines.getAll();
-    const progressData=await PG.progress.getAll();
-    const todayNutrition=await PG.nutrition.getToday();
-    console.log('[Storage Load] workouts rows:',workouts);
-    console.log('[Storage Load] cardio rows:',cardio);
-    console.log('[Storage Load] routines rows:',routinesData);
-    console.log('[Storage Load] progress rows:',progressData);
-    console.log('[Storage Load] today nutrition row:',todayNutrition);
-    workoutHistory=normalizeHistoryRows(workouts,'history');
-    cardioHistory=normalizeHistoryRows(cardio,'history');
-    const normalizedProgress=normalizeProgressRows(progressData);
-    checkinHistory=normalizedProgress.checkinHistory;
-    personalBests=normalizedProgress.personalBests;
-    meals=Array.isArray(todayNutrition?.meals)&&todayNutrition.meals.length>0
-        ? todayNutrition.meals
-        : normalizedProgress.meals;
-    console.log('[Storage Load] hydrated workoutHistory:',workoutHistory);
-    console.log('[Storage Load] hydrated meals:',meals);
-    phaseHistory=normalizedProgress.phaseHistory;
-    measurements=normalizedProgress.measurements;
-    const normalizedRoutines=normalizeRoutinesRows(routinesData);
-    savedRoutines=normalizedRoutines.savedRoutines;
-    customExercises=normalizedRoutines.customExercises;
-    settings={
-        ...profile,
-        weight:profile.weight_kg??profile.weight??0,
-        targetWeight:profile.target_weight_kg??profile.targetWeight??0,
-        height:profile.height_cm??profile.height??0,
-        environment:profile.training_env??profile.environment??'gym',
-        diet:profile.dietary_pref??profile.diet??'standard',
-        darkMode:isDark?'dark':'light',
-        activity:profile.activity_level??profile.activity??1.55,
-        calTarget:profile.calorie_target??profile.calTarget??2000,
-        proteinTarget:profile.protein_target??profile.proteinTarget??150,
-        stepsTarget:profile.steps_target??profile.stepsTarget??8000,
-        custom_supplements:Array.isArray(profile.custom_supplements)?profile.custom_supplements:[],
-        supplements_catalog:Array.isArray(profile.supplements_catalog)?profile.supplements_catalog:undefined
-    };
-    selectedLang=settings.language||'en';
-    if (profile.onboarded && (!isDevMode || window._suppressOnboardingOnce)) {
-        document.getElementById('onboarding').style.display = 'none';
-        window._suppressOnboardingOnce = false;
-    } else if (!profile.onboarded) {
-        // Show onboarding for new users
-        const onboarding = document.getElementById('onboarding');
-        if (onboarding) onboarding.style.display = 'flex';
+    try {
+        const profile = await PG.profile.get() || {};
+        const isDark=profile.dark_mode===true||profile.darkMode==='dark'||profile.darkMode===true||profile.theme==='dark';
+        if(isDark){document.body.classList.add('dark');const t=document.getElementById('dark-toggle');if(t)t.classList.add('on');}
+        const workouts=await PG.workouts.getAll();
+        const cardio=await PG.cardio.getAll();
+        const routinesData=await PG.routines.getAll();
+        const progressData=await PG.progress.getAll();
+        const todayNutrition=await PG.nutrition.getToday();
+        console.log('[Storage Load] workouts rows:',workouts);
+        console.log('[Storage Load] cardio rows:',cardio);
+        console.log('[Storage Load] routines rows:',routinesData);
+        console.log('[Storage Load] progress rows:',progressData);
+        console.log('[Storage Load] today nutrition row:',todayNutrition);
+        workoutHistory=normalizeHistoryRows(workouts,'history');
+        cardioHistory=normalizeHistoryRows(cardio,'history');
+        const normalizedProgress=normalizeProgressRows(progressData);
+        checkinHistory=normalizedProgress.checkinHistory;
+        personalBests=normalizedProgress.personalBests;
+        meals=Array.isArray(todayNutrition?.meals)&&todayNutrition.meals.length>0
+            ? todayNutrition.meals
+            : normalizedProgress.meals;
+        console.log('[Storage Load] hydrated workoutHistory:',workoutHistory);
+        console.log('[Storage Load] hydrated meals:',meals);
+        phaseHistory=normalizedProgress.phaseHistory;
+        measurements=normalizedProgress.measurements;
+        const normalizedRoutines=normalizeRoutinesRows(routinesData);
+        savedRoutines=normalizedRoutines.savedRoutines;
+        customExercises=normalizedRoutines.customExercises;
+        settings={
+            ...profile,
+            weight:profile.weight_kg??profile.weight??0,
+            targetWeight:profile.target_weight_kg??profile.targetWeight??0,
+            height:profile.height_cm??profile.height??0,
+            environment:profile.training_env??profile.environment??'gym',
+            diet:profile.dietary_pref??profile.diet??'standard',
+            darkMode:isDark?'dark':'light',
+            activity:profile.activity_level??profile.activity??1.55,
+            calTarget:profile.calorie_target??profile.calTarget??2000,
+            proteinTarget:profile.protein_target??profile.proteinTarget??150,
+            stepsTarget:profile.steps_target??profile.stepsTarget??8000,
+            custom_supplements:Array.isArray(profile.custom_supplements)?profile.custom_supplements:[],
+            supplements_catalog:Array.isArray(profile.supplements_catalog)?profile.supplements_catalog:undefined
+        };
+        selectedLang=settings.language||'en';
+        if (profile.onboarded && (!isDevMode || window._suppressOnboardingOnce)) {
+            document.getElementById('onboarding').style.display = 'none';
+            window._suppressOnboardingOnce = false;
+        } else if (!profile.onboarded) {
+            // Show onboarding for new users
+            const onboarding = document.getElementById('onboarding');
+            if (onboarding) onboarding.style.display = 'flex';
+        }
+        populateSettingsFields(settings);
+        applyTranslations();checkBadges();updateHome();
+        await renderSupplements();
+    } catch (err) {
+        console.error('[Storage Load] failed:', err);
     }
-    populateSettingsFields(settings);
-    applyTranslations();checkBadges();updateHome();
-    await renderSupplements();
 }
 // ===================== PROGRAMME TEMPLATES =====================
 const programmeTemplates = {
@@ -4618,7 +4622,14 @@ async function ob2Complete() {
     units: 'kg'
   };
 
-  await PG.profile.save(settings);
+  try {
+    const { data } = await PG.db.auth.getUser();
+    if (data?.user?.id) {
+      await PG.profile.save(settings);
+    }
+  } catch(e) {
+    console.log('No auth session — skipping save');
+  }
 
   // Update summary screen
   const goalLabels = { fatloss: 'Lose Fat', muscle: 'Build Muscle', hybrid: 'Hybrid / Recomposition', fitness: 'Improve Fitness' };
@@ -4632,10 +4643,10 @@ async function ob2Complete() {
 async function ob2Skip() {
   settings = {
     ...settings,
-    name: 'Athlete',
-    goal: 'fitness',
-    calTarget: 2000,
-    proteinTarget: 150,
+    name: settings.name || 'Athlete',
+    goal: settings.goal || 'fitness',
+    calTarget: settings.calTarget || 2000,
+    proteinTarget: settings.proteinTarget || 150,
     stepsTarget: 8000,
     trainingDays: 4,
     phaseName: 'Phase 1',
@@ -4647,8 +4658,15 @@ async function ob2Skip() {
     diet: 'standard',
     units: 'kg'
   };
-  await PG.profile.save(settings);
-  ob2GoToDashboard();
+  try {
+    const { data } = await PG.db.auth.getUser();
+    if (data?.user?.id) {
+      await PG.profile.save({ onboarded: true });
+    }
+  } catch(e) {
+    console.log('Save failed:', e);
+  }
+  await ob2GoToDashboard();
 }
 
 async function ob2GoToDashboard() {
@@ -4658,7 +4676,15 @@ async function ob2GoToDashboard() {
   // Temporarily suppress dev mode onboarding re-trigger
   const wasDevMode = isDevMode;
   window._suppressOnboardingOnce = true;
-  await loadFromStorage();
-  populateSettingsFields(settings);
+  try {
+    const { data } = await PG.db.auth.getUser();
+    if (data?.user?.id) {
+      await loadFromStorage();
+      populateSettingsFields(settings);
+    }
+  } catch(e) {
+    console.log('No auth session — loading with current settings');
+  }
   showScreen('screen-home');
+  window.scrollTo(0, 0);
 }
