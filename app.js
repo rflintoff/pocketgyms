@@ -1,6 +1,5 @@
 // ─── AUTH BOOT ────────────────────────────────────────────────────────────────
 function hapticTap(){ try{ navigator.vibrate(10); }catch(_){} }
-function hapticSuccess(){ try{ navigator.vibrate([10,50,10]); }catch(_){} }
 function hapticError(){ try{ navigator.vibrate(50); }catch(_){} }
 function hapticAchievement(){ try{ navigator.vibrate([30,20,30]); }catch(_){} }
 document.addEventListener('click',(e)=>{
