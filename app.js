@@ -2825,14 +2825,6 @@ async function loadFromStorage() {
             supplements_catalog:Array.isArray(profile.supplements_catalog)?profile.supplements_catalog:undefined
         };
         selectedLang=settings.language||'en';
-        if (profile.onboarded && (!isDevMode || window._suppressOnboardingOnce)) {
-            document.getElementById('onboarding').style.display = 'none';
-            window._suppressOnboardingOnce = false;
-        } else if (!profile.onboarded) {
-            // Show onboarding for new users
-            const onboarding = document.getElementById('onboarding');
-            if (onboarding) onboarding.style.display = 'flex';
-        }
         populateSettingsFields(settings);
         applyTranslations();checkBadges();updateHome();
         await renderSupplements();
