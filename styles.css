@@ -1234,3 +1234,21 @@ label { color: var(--label-secondary); font-size: 12px; font-weight: 600; text-t
 
 .filter-bar .filter-btn { transition: transform 0.1s ease; }
 .filter-bar .filter-btn:active { transform: scale(0.97); }
+
+
+.btn-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #fff;
+  color: #3c4043;
+  border: 1px solid #dadce0;
+  font-family: 'Google Sans', Roboto, sans-serif;
+  font-weight: 500;
+}
+
+.btn-google:hover {
+  background: #f8f9fa;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
