@@ -2824,8 +2824,9 @@ async function loadFromStorage() {
         supplements_catalog:Array.isArray(profile.supplements_catalog)?profile.supplements_catalog:undefined
     };
     selectedLang=settings.language||'en';
-    if (profile.onboarded && !isDevMode) {
+    if (profile.onboarded && (!isDevMode || window._suppressOnboardingOnce)) {
         document.getElementById('onboarding').style.display = 'none';
+        window._suppressOnboardingOnce = false;
     } else if (!profile.onboarded) {
         // Show onboarding for new users
         const onboarding = document.getElementById('onboarding');
@@ -4654,6 +4655,9 @@ async function ob2GoToDashboard() {
   const onboarding = document.getElementById('onboarding');
   if (onboarding) onboarding.style.display = 'none';
   document.querySelectorAll('.screen, .header, .nav').forEach(el => el.style.display = '');
+  // Temporarily suppress dev mode onboarding re-trigger
+  const wasDevMode = isDevMode;
+  window._suppressOnboardingOnce = true;
   await loadFromStorage();
   populateSettingsFields(settings);
   showScreen('screen-home');
