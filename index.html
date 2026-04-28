@@ -401,169 +401,336 @@
 
 <!-- TRAIN SCREEN -->
 <div class="screen" id="screen-train" style="display:none;">
-    <div class="card train-program-card">
-        <div class="train-program-head">
-            <h2 class="train-program-title" id="train-program-title">Program: Hybrid Athlete</h2>
+
+  <!-- TOP NAV -->
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-top:4px;">
+    <h1 style="font-size:22px;font-weight:800;color:var(--text);">TRAIN</h1>
+    <button onclick="showTrainSection('create')" style="width:36px;height:36px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+    </button>
+  </div>
+
+  <!-- TAB BAR -->
+  <div style="display:flex;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:16px;gap:2px;">
+    <button onclick="switchTrainTab('program')" id="train-tab-program" style="flex:1;padding:8px;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;background:#f5c842;color:#111;">Program</button>
+    <button onclick="switchTrainTab('exercises')" id="train-tab-exercises" style="flex:1;padding:8px;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">Exercises</button>
+    <button onclick="switchTrainTab('workouts')" id="train-tab-workouts" style="flex:1;padding:8px;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">Workouts</button>
+  </div>
+
+  <!-- ══ PROGRAM TAB ══ -->
+  <div id="train-panel-program">
+
+    <!-- Current Program Card -->
+    <div style="background:#111;border-radius:16px;padding:16px;margin-bottom:12px;">
+      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:#f5c842;margin-bottom:6px;">CURRENT PROGRAM</p>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <h2 style="font-size:20px;font-weight:800;color:#fff;margin-bottom:4px;" id="train-program-name">Hybrid Athlete</h2>
+          <p style="font-size:13px;color:#888;" id="train-program-phase-label">Phase 1 · Week 1 of 8</p>
         </div>
-        <div class="train-phase-tabs">
-            <span class="train-phase-tab" id="train-phase-tab-1">Phase 1</span>
-            <span class="train-phase-tab" id="train-phase-tab-2">Phase 2</span>
-            <span class="train-phase-tab" id="train-phase-tab-3">Phase 3</span>
+        <div style="position:relative;width:64px;height:64px;">
+          <svg width="64" height="64" viewBox="0 0 64 64" style="transform:rotate(-90deg);">
+            <circle cx="32" cy="32" r="26" fill="none" stroke="#333" stroke-width="6"/>
+            <circle cx="32" cy="32" r="26" fill="none" stroke="#f5c842" stroke-width="6" stroke-linecap="round" stroke-dasharray="163.36" id="train-prog-ring" stroke-dashoffset="163.36"/>
+          </svg>
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
+            <span style="font-size:13px;font-weight:800;color:#fff;" id="train-prog-pct">0%</span>
+            <span style="font-size:9px;color:#888;display:block;">Complete</span>
+          </div>
         </div>
-        <div class="train-week-progress-wrap">
-            <div class="train-week-progress-track"><div class="train-week-progress-fill" id="train-week-progress-fill"></div></div>
-            <p class="train-week-progress-label" id="train-week-progress-label">0% · Week 1 of 8</p>
+      </div>
+      <!-- Phase Pills -->
+      <div style="display:flex;gap:8px;margin-top:14px;">
+        <button onclick="selectPhase(1)" id="train-phase-1" style="padding:6px 16px;border-radius:20px;border:none;font-size:12px;font-weight:700;cursor:pointer;background:#f5c842;color:#111;">Phase 1</button>
+        <button onclick="selectPhase(2)" id="train-phase-2" style="padding:6px 16px;border-radius:20px;border:1.5px solid #333;font-size:12px;font-weight:700;cursor:pointer;background:transparent;color:#888;">Phase 2</button>
+        <button onclick="selectPhase(3)" id="train-phase-3" style="padding:6px 16px;border-radius:20px;border:1.5px solid #333;font-size:12px;font-weight:700;cursor:pointer;background:transparent;color:#888;">Phase 3</button>
+      </div>
+    </div>
+
+    <!-- This Week -->
+    <div class="card" style="margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">THIS WEEK</p>
+        <span style="font-size:12px;color:var(--label-secondary);" id="train-week-count">0 of 0 Workouts</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:12px;" id="train-week-dots"></div>
+      <div style="font-size:11px;color:var(--label-secondary);display:flex;gap:12px;">
+        <span>🟢 Completed</span>
+        <span>🟡 Today</span>
+        <span>⚪ Upcoming</span>
+      </div>
+    </div>
+
+    <!-- Today's Workout -->
+    <div class="card" style="margin-bottom:12px;padding:0;overflow:hidden;" id="train-today-card">
+      <div style="padding:14px 16px 0;">
+        <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:8px;">TODAY'S WORKOUT</p>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div>
+            <h3 style="font-size:22px;font-weight:800;color:var(--text);margin-bottom:6px;" id="train-today-title">Push Day</h3>
+            <span style="display:inline-block;background:#f5c842;color:#111;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:6px;" id="train-today-focus-tag">Primary</span>
+            <div style="font-size:12px;color:var(--label-secondary);display:flex;gap:12px;margin-top:4px;">
+              <span>⏱ 45–60 min</span>
+              <span>🔥 ~480 kcal</span>
+            </div>
+          </div>
+          <!-- CSS muscle diagram -->
+          <div id="train-muscle-svg" style="width:60px;height:80px;flex-shrink:0;">
+            <svg width="60" height="80" viewBox="0 0 60 80" fill="none">
+              <circle cx="30" cy="8" r="6" fill="var(--border)"/>
+              <rect x="22" y="15" width="16" height="20" rx="4" fill="var(--border)"/>
+              <!-- chest highlight -->
+              <rect x="18" y="16" width="10" height="10" rx="3" fill="#f5c842" opacity="0.8" id="train-muscle-chest"/>
+              <rect x="32" y="16" width="10" height="10" rx="3" fill="#f5c842" opacity="0.8" id="train-muscle-chest2"/>
+              <!-- shoulders -->
+              <ellipse cx="14" cy="18" rx="5" ry="6" fill="var(--border)" id="train-muscle-shoulder-l"/>
+              <ellipse cx="46" cy="18" rx="5" ry="6" fill="var(--border)" id="train-muscle-shoulder-r"/>
+              <!-- arms -->
+              <rect x="8" y="22" width="6" height="16" rx="3" fill="var(--border)"/>
+              <rect x="46" y="22" width="6" height="16" rx="3" fill="var(--border)"/>
+              <!-- legs -->
+              <rect x="22" y="37" width="7" height="22" rx="3" fill="var(--border)"/>
+              <rect x="31" y="37" width="7" height="22" rx="3" fill="var(--border)"/>
+              <rect x="22" y="60" width="7" height="18" rx="3" fill="var(--border)"/>
+              <rect x="31" y="60" width="7" height="18" rx="3" fill="var(--border)"/>
+            </svg>
+          </div>
         </div>
-        <div class="train-week-list" id="train-week-list"></div>
+      </div>
+      <!-- Focus -->
+      <div style="margin:12px 16px;padding:10px 12px;background:var(--bg);border-radius:10px;">
+        <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:4px;">FOCUS</p>
+        <p style="font-size:13px;color:var(--text);font-weight:600;" id="train-today-muscles">Chest, Shoulders, Triceps</p>
+      </div>
+      <!-- Exercise list preview -->
+      <div style="padding:0 16px;" id="train-exercise-preview"></div>
+      <!-- Buttons -->
+      <div style="padding:14px 16px;">
+        <button onclick="startTodayWorkout()" style="width:100%;background:#f5c842;border:none;border-radius:12px;padding:16px;font-size:15px;font-weight:800;color:#111;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">
+          <div style="width:30px;height:30px;background:#111;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="#f5c842"><polygon points="2,1 9,5 2,9"/></svg>
+          </div>
+          START WORKOUT
+        </button>
+      </div>
+    </div>
+
+    <!-- Up Next -->
+    <div class="card" style="margin-bottom:12px;">
+      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:12px;">UP NEXT</p>
+      <div id="train-up-next"></div>
+    </div>
+
+    <!-- Steps + Cardio quick access -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+      <div class="card" style="padding:14px;cursor:pointer;" onclick="showTrainSection('cardio')">
+        <div style="font-size:20px;margin-bottom:6px;">🏃</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text);">Cardio</div>
+        <div style="font-size:11px;color:var(--label-secondary);">Log a session</div>
+      </div>
+      <div class="card" style="padding:14px;" id="steps-quick-card">
+        <div style="font-size:20px;margin-bottom:6px;">👟</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text);">Steps</div>
+        <div style="font-size:11px;color:var(--label-secondary);" id="steps-quick-val">0 / 8,000</div>
+        <input type="number" id="input-steps-train" placeholder="Log steps" style="margin-top:8px;font-size:12px;padding:6px 8px;width:100%;">
+        <button onclick="saveStepsTrain()" style="width:100%;margin-top:6px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:6px;font-size:12px;font-weight:700;color:var(--text);cursor:pointer;">Save</button>
+      </div>
+    </div>
+
+    <button onclick="logRestDay()" style="width:100%;background:none;border:1.5px solid var(--border);border-radius:12px;padding:13px;font-size:13px;font-weight:700;color:var(--label-secondary);cursor:pointer;margin-bottom:12px;">LOG A REST DAY</button>
+
+  </div>
+
+  <!-- ══ EXERCISES TAB ══ -->
+  <div id="train-panel-exercises" style="display:none;">
+    <input type="text" id="exercise-search" placeholder="Search exercises..." oninput="filterExerciseLibrary()" style="margin-bottom:12px;">
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;" id="exercise-lib-filters"></div>
+    <div id="exercise-library-list"></div>
+  </div>
+
+  <!-- ══ WORKOUTS TAB ══ -->
+  <div id="train-panel-workouts" style="display:none;">
+    <button onclick="showTrainSection('create')" style="width:100%;background:#f5c842;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:800;color:#111;cursor:pointer;margin-bottom:14px;">+ Create New Workout</button>
+    <div style="display:flex;gap:8px;margin-bottom:14px;">
+      <button onclick="switchWorkoutsTab('my')" id="wt-tab-my" style="flex:1;padding:9px;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;background:#f5c842;color:#111;">My Workouts</button>
+      <button onclick="switchWorkoutsTab('templates')" id="wt-tab-templates" style="flex:1;padding:9px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">Templates</button>
+    </div>
+    <div id="train-panel-my-workouts">
+      <div id="routines-list"></div>
+      <p id="no-routines-msg" style="color:var(--label-secondary);font-size:13px;text-align:center;padding:20px 0;display:none;">No workouts yet. Create your first one above.</p>
+    </div>
+    <div id="train-panel-templates" style="display:none;">
+      <div id="workout-templates-list"></div>
+    </div>
+  </div>
+
+  <!-- ══ CREATE WORKOUT FLOW ══ -->
+  <div id="train-create" style="display:none;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+      <button onclick="showTrainSection('menu')" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text);">✕</button>
+      <h2 style="font-size:18px;font-weight:800;color:var(--text);flex:1;text-align:center;">New Workout</h2>
+      <div style="width:28px;"></div>
+    </div>
+    <div class="card" style="margin-bottom:12px;">
+      <label style="font-size:12px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:6px;">WORKOUT NAME</label>
+      <input type="text" id="routine-name" placeholder="e.g. Upper Body Strength" style="font-size:16px;font-weight:700;">
+      <label style="font-size:12px;font-weight:700;color:var(--label-secondary);display:block;margin:14px 0 8px;">MUSCLE FOCUS</label>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;" id="create-focus-grid">
+        <div onclick="selectCreateFocus('Push',this)" style="border:1.5px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+          <div style="font-size:20px;margin-bottom:4px;">💪</div><div style="font-size:12px;font-weight:700;color:var(--text);">Push</div>
+        </div>
+        <div onclick="selectCreateFocus('Pull',this)" style="border:1.5px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+          <div style="font-size:20px;margin-bottom:4px;">🏋️</div><div style="font-size:12px;font-weight:700;color:var(--text);">Pull</div>
+        </div>
+        <div onclick="selectCreateFocus('Legs',this)" style="border:1.5px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+          <div style="font-size:20px;margin-bottom:4px;">🦵</div><div style="font-size:12px;font-weight:700;color:var(--text);">Legs</div>
+        </div>
+        <div onclick="selectCreateFocus('Upper Body',this)" style="border:1.5px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+          <div style="font-size:20px;margin-bottom:4px;">🔝</div><div style="font-size:12px;font-weight:700;color:var(--text);">Upper Body</div>
+        </div>
+        <div onclick="selectCreateFocus('Lower Body',this)" style="border:1.5px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+          <div style="font-size:20px;margin-bottom:4px;">⬇️</div><div style="font-size:12px;font-weight:700;color:var(--text);">Lower Body</div>
+        </div>
+        <div onclick="selectCreateFocus('Full Body',this)" style="border:1.5px solid var(--border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;">
+          <div style="font-size:20px;margin-bottom:4px;">⚡</div><div style="font-size:12px;font-weight:700;color:var(--text);">Full Body</div>
+        </div>
+      </div>
+      <label style="font-size:12px;font-weight:700;color:var(--label-secondary);display:block;margin:14px 0 8px;">SCHEDULE DAYS</label>
+      <div style="display:flex;gap:6px;" id="create-schedule-days">
+        <button onclick="toggleScheduleDay(this,'Monday')" style="flex:1;padding:8px 0;border:1.5px solid var(--border);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">M</button>
+        <button onclick="toggleScheduleDay(this,'Tuesday')" style="flex:1;padding:8px 0;border:1.5px solid var(--border);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">T</button>
+        <button onclick="toggleScheduleDay(this,'Wednesday')" style="flex:1;padding:8px 0;border:1.5px solid var(--border);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">W</button>
+        <button onclick="toggleScheduleDay(this,'Thursday')" style="flex:1;padding:8px 0;border:1.5px solid var(--border);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">T</button>
+        <button onclick="toggleScheduleDay(this,'Friday')" style="flex:1;padding:8px 0;border:1.5px solid var(--border);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">F</button>
+        <button onclick="toggleScheduleDay(this,'Saturday')" style="flex:1;padding:8px 0;border:1.5px solid var(--border);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">S</button>
+        <button onclick="toggleScheduleDay(this,'Sunday')" style="flex:1;padding:8px 0;border:1.5px solid var(--border);border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;background:transparent;color:var(--label-secondary);">S</button>
+      </div>
+    </div>
+    <!-- Add Exercises -->
+    <div class="card" style="margin-bottom:12px;">
+      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:10px;">ADD EXERCISES</p>
+      <input type="text" id="create-ex-search" placeholder="Search exercises..." oninput="filterCreateExercises()" style="margin-bottom:10px;">
+      <div class="filter-bar" id="create-category-filter" style="margin-bottom:10px;"></div>
+      <div id="create-exercise-tags" style="margin-bottom:10px;"></div>
+      <label style="font-size:12px;font-weight:600;color:var(--label-secondary);display:block;margin-bottom:6px;">Custom exercise</label>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="create-custom-ex" placeholder="e.g. Hip Hinge" style="flex:1;">
+        <button onclick="addCustomToSelection()" style="background:#f5c842;border:none;border-radius:10px;padding:10px 14px;font-weight:700;font-size:13px;color:#111;cursor:pointer;">Add</button>
+      </div>
+    </div>
+    <!-- Selected exercises -->
+    <div class="card" style="margin-bottom:12px;" id="create-selection-card">
+      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:10px;">EXERCISES <span id="create-ex-count" style="color:#f5c842;">0</span></p>
+      <div id="routine-selection-list"></div>
+    </div>
+    <button onclick="saveRoutine()" style="width:100%;background:#f5c842;border:none;border-radius:12px;padding:16px;font-size:15px;font-weight:800;color:#111;cursor:pointer;margin-bottom:20px;">Save Workout</button>
+  </div>
+
+  <!-- ══ ACTIVE WORKOUT ══ -->
+  <div id="train-active" style="display:none;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <button onclick="confirmEndWorkout()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text);">←</button>
+      <h2 style="font-size:16px;font-weight:800;color:var(--text);" id="active-workout-title">PUSH DAY</h2>
+      <button onclick="saveWorkout()" style="background:none;border:none;font-size:14px;font-weight:700;color:#f5c842;cursor:pointer;">Finish</button>
+    </div>
+    <!-- Timer bar -->
+    <div style="background:#f5c842;border-radius:12px;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;" id="workout-timer-bar">
+      <span style="font-size:11px;font-weight:700;color:#111;">WORKOUT TIME</span>
+      <span style="font-size:18px;font-weight:800;color:#111;" id="workout-timer">00:00</span>
+    </div>
+    <!-- Rest timer -->
+    <div id="rest-timer" style="display:none;background:#111;border-radius:16px;padding:20px;text-align:center;margin-bottom:12px;position:relative;">
+      <button onclick="stopTimer()" style="position:absolute;top:12px;right:12px;background:none;border:none;color:#888;font-size:18px;cursor:pointer;">✕</button>
+      <p style="font-size:11px;font-weight:700;letter-spacing:1px;color:#888;margin-bottom:8px;">REST TIMER</p>
+      <div style="font-size:48px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums;" id="rest-count">60</div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:12px;">
+        <button onclick="adjustRestTimer(30)" style="background:#222;border:none;border-radius:8px;padding:8px 16px;color:#fff;font-weight:700;cursor:pointer;">+30s</button>
+        <button onclick="stopTimer()" style="background:#f5c842;border:none;border-radius:8px;padding:8px 16px;color:#111;font-weight:700;cursor:pointer;">Skip Rest</button>
+      </div>
+    </div>
+    <!-- Add exercise picker -->
+    <div class="card" id="exercise-picker" style="margin-bottom:12px;">
+      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:10px;">ADD EXERCISE</p>
+      <div class="filter-bar" id="active-category-filter" style="margin-bottom:8px;"></div>
+      <div id="exercise-tags" style="margin-bottom:8px;"></div>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="custom-exercise" placeholder="Custom exercise..." style="flex:1;">
+        <button onclick="addExercise()" style="background:#f5c842;border:none;border-radius:10px;padding:10px 14px;font-weight:700;font-size:13px;color:#111;cursor:pointer;">Add</button>
+      </div>
+    </div>
+    <div id="exercise-log" style="margin-bottom:80px;"></div>
+    <!-- Fixed bottom save -->
+    <div style="position:fixed;bottom:80px;left:0;right:0;padding:0 16px;display:none;" id="save-btn-wrap">
+      <button onclick="saveWorkout()" style="width:100%;background:#f5c842;border:none;border-radius:12px;padding:16px;font-size:15px;font-weight:800;color:#111;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">
+        <div style="width:28px;height:28px;background:#111;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="#f5c842"><polygon points="2,1 9,5 2,9"/></svg>
+        </div>
+        SAVE WORKOUT
+      </button>
+    </div>
+    <button id="save-btn" style="display:none;" onclick="saveWorkout()"></button>
+  </div>
+
+  <!-- ══ CARDIO ══ -->
+  <div id="train-cardio" style="display:none;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+      <button onclick="showTrainSection('menu')" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text);">←</button>
+      <h2 style="font-size:18px;font-weight:800;color:var(--text);">Cardiovascular</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px;">
+      <div onclick="startCardio('Running')" style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:16px;text-align:center;cursor:pointer;"><div style="font-size:28px;margin-bottom:6px;">🏃</div><div style="font-size:13px;font-weight:700;color:var(--text);">Running</div></div>
+      <div onclick="startCardio('Cycling')" style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:16px;text-align:center;cursor:pointer;"><div style="font-size:28px;margin-bottom:6px;">🚴</div><div style="font-size:13px;font-weight:700;color:var(--text);">Cycling</div></div>
+      <div onclick="startCardio('Walking')" style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:16px;text-align:center;cursor:pointer;"><div style="font-size:28px;margin-bottom:6px;">🚶</div><div style="font-size:13px;font-weight:700;color:var(--text);">Walking</div></div>
+      <div onclick="startCardio('Rowing')" style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:16px;text-align:center;cursor:pointer;"><div style="font-size:28px;margin-bottom:6px;">🚣</div><div style="font-size:13px;font-weight:700;color:var(--text);">Rowing</div></div>
+      <div onclick="startCardio('HIIT')" style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:16px;text-align:center;cursor:pointer;"><div style="font-size:28px;margin-bottom:6px;">⚡</div><div style="font-size:13px;font-weight:700;color:var(--text);">HIIT</div></div>
+      <div onclick="startCardio('Swimming')" style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:16px;text-align:center;cursor:pointer;"><div style="font-size:28px;margin-bottom:6px;">🏊</div><div style="font-size:13px;font-weight:700;color:var(--text);">Swimming</div></div>
+      <div onclick="startCardio('Fixed Bike')" style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:16px;text-align:center;cursor:pointer;"><div style="font-size:28px;margin-bottom:6px;">🏋️</div><div style="font-size:13px;font-weight:700;color:var(--text);">Fixed Bike</div></div>
+      <div onclick="startCardio('Other')" style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:16px;text-align:center;cursor:pointer;"><div style="font-size:28px;margin-bottom:6px;">🎯</div><div style="font-size:13px;font-weight:700;color:var(--text);">Other</div></div>
+    </div>
+  </div>
+
+  <!-- ══ CARDIO ACTIVE ══ -->
+  <div id="train-cardio-active" style="display:none;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+      <button onclick="showTrainSection('cardio')" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text);">←</button>
+      <h2 style="font-size:18px;font-weight:800;color:var(--text);" id="cardio-type-title">RUNNING</h2>
+    </div>
+    <div class="card" style="margin-bottom:12px;text-align:center;">
+      <button id="cardio-start-btn" onclick="startCardioTimer()" style="background:#f5c842;border:none;border-radius:12px;padding:14px 32px;font-size:15px;font-weight:800;color:#111;cursor:pointer;margin-bottom:12px;">▶ Start Session</button>
+      <div id="cardio-timer-bar" style="display:none;margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:700;color:var(--label-secondary);margin-bottom:4px;">SESSION TIME</div>
+        <div style="font-size:40px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;" id="cardio-timer">00:00</div>
+        <button onclick="stopCardioTimer()" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 20px;font-weight:700;cursor:pointer;margin-top:8px;color:var(--text);">Stop</button>
+      </div>
     </div>
     <div class="card">
-        <h2>STEPS TODAY</h2>
-        <div class="stat-row">
-            <span class="stat-label">Today</span>
-            <span class="stat-value" id="steps-display-train">0 / 8,000</span>
-        </div>
-        <div class="progress-bar-outer"><div class="progress-bar-inner" id="steps-bar-train"></div></div>
-        <input type="number" id="input-steps-train" placeholder="e.g. 8000" style="margin-top:10px;">
-        <button class="btn-outline" onclick="saveStepsTrain()">Save Steps</button>
+      <label style="font-size:12px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:6px;">DURATION (minutes)</label>
+      <input type="number" id="cardio-duration" placeholder="e.g. 30" style="margin-bottom:12px;">
+      <label style="font-size:12px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:6px;">DISTANCE (km)</label>
+      <input type="number" id="cardio-distance" placeholder="e.g. 5" style="margin-bottom:12px;">
+      <label style="font-size:12px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:6px;">INTENSITY</label>
+      <select id="cardio-intensity" style="margin-bottom:12px;">
+        <option value="easy">Easy</option>
+        <option value="moderate">Moderate</option>
+        <option value="hard">Hard</option>
+      </select>
+      <label style="font-size:12px;font-weight:700;color:var(--label-secondary);display:block;margin-bottom:6px;">NOTES</label>
+      <input type="text" id="cardio-notes" placeholder="How did it feel?" style="margin-bottom:16px;">
+      <button onclick="saveCardio()" style="width:100%;background:#f5c842;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:800;color:#111;cursor:pointer;">Save Cardio</button>
     </div>
-    <div id="train-menu">
-        <button type="button" class="btn" style="margin-bottom:12px;" onclick="logRestDay()">LOG A REST DAY</button>
-        <div class="section-title" id="txt-how-train">HOW DO YOU WANT TO TRAIN?</div>
-    <div class="routine-item" onclick="showTrainSection('routines')">
-            <div><div class="routine-name" id="txt-my-routines">My Routines</div><div class="routine-meta" id="txt-my-routines-sub">Start a saved workout</div></div>
-            <div class="routine-arrow">›</div>
-        </div>
-        <div class="routine-item" onclick="showTrainSection('quick')">
-            <div><div class="routine-name" id="txt-quick-workout">Quick Workout</div><div class="routine-meta" id="txt-quick-workout-sub">Pick a category and go</div></div>
-            <div class="routine-arrow">›</div>
-        </div>
-        <div class="routine-item" onclick="showTrainSection('create')">
-            <div><div class="routine-name" id="txt-create-routine">Create Routine</div><div class="routine-meta" id="txt-create-routine-sub">Build and save a new routine</div></div>
-            <div class="routine-arrow">›</div>
-        </div>
-        <div class="routine-item" onclick="showTrainSection('cardio')">
-            <div><div class="routine-name" id="txt-cardio">Cardiovascular</div><div class="routine-meta" id="txt-cardio-sub">Running, cycling, walking and more</div></div>
-            <div class="routine-arrow">›</div>
-        </div>
+  </div>
+
+  <!-- ══ QUICK WORKOUT (kept for compatibility) ══ -->
+  <div id="train-quick" style="display:none;">
+    <button onclick="showTrainSection('menu')" style="background:none;border:none;color:var(--text);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:16px;">← Back</button>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
+      <div onclick="startQuickWorkout('Push')" style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:16px;text-align:center;cursor:pointer;"><div style="font-size:13px;font-weight:700;color:var(--text);">PUSH</div></div>
+      <div onclick="startQuickWorkout('Pull')" style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:16px;text-align:center;cursor:pointer;"><div style="font-size:13px;font-weight:700;color:var(--text);">PULL</div></div>
+      <div onclick="startQuickWorkout('Legs')" style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:16px;text-align:center;cursor:pointer;"><div style="font-size:13px;font-weight:700;color:var(--text);">LEGS</div></div>
+      <div onclick="startQuickWorkout('Core')" style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:16px;text-align:center;cursor:pointer;"><div style="font-size:13px;font-weight:700;color:var(--text);">CORE</div></div>
     </div>
+  </div>
 
-    <div id="train-routines" style="display:none;">
-        <button class="btn-outline" onclick="showTrainSection('menu')" id="txt-back-1">← Back</button>
-        <div class="section-title" id="txt-my-routines-title">MY ROUTINES</div>
-        <div id="routines-list"></div>
-        <p style="color:var(--label-secondary); font-size:13px; display:none;" id="no-routines-msg">No routines yet. Create one first.</p>
-    </div>
-
-    <div id="train-quick" style="display:none;">
-        <button class="btn-outline" onclick="showTrainSection('menu')" id="txt-back-2">← Back</button>
-        <div class="section-title" id="txt-select-category">SELECT CATEGORY</div>
-        <div class="section-subtitle">PrivateGyms Method</div>
-        <div class="category-grid">
-            <div class="category-btn" onclick="startQuickWorkout('Push')">PUSH</div>
-            <div class="category-btn" onclick="startQuickWorkout('Pull')">PULL</div>
-            <div class="category-btn" onclick="startQuickWorkout('Legs')">LEGS</div>
-            <div class="category-btn" onclick="startQuickWorkout('Core')">CORE</div>
-        </div>
-        <div class="section-subtitle">Body Part</div>
-        <div class="category-grid">
-            <div class="category-btn" onclick="startQuickWorkout('Chest')">CHEST</div>
-            <div class="category-btn" onclick="startQuickWorkout('Back')">BACK</div>
-            <div class="category-btn" onclick="startQuickWorkout('Shoulders')">SHOULDERS</div>
-            <div class="category-btn" onclick="startQuickWorkout('Biceps')">BICEPS</div>
-            <div class="category-btn" onclick="startQuickWorkout('Triceps')">TRICEPS</div>
-            <div class="category-btn" onclick="startQuickWorkout('Quads')">QUADS</div>
-            <div class="category-btn" onclick="startQuickWorkout('Hamstrings')">HAMSTRINGS</div>
-            <div class="category-btn" onclick="startQuickWorkout('Glutes')">GLUTES</div>
-            <div class="category-btn" onclick="startQuickWorkout('Calves')">CALVES</div>
-            <div class="category-btn" onclick="startQuickWorkout('Abs')">ABS</div>
-        </div>
-    </div>
-
-    <div id="train-create" style="display:none;">
-        <button class="btn-outline" onclick="showTrainSection('menu')" id="txt-back-3">← Back</button>
-        <div class="section-title" id="txt-create-routine-title">CREATE ROUTINE</div>
-        <div class="card">
-            <label id="lbl-routine-name">Routine Name</label>
-            <input type="text" id="routine-name" placeholder="e.g. Chest & Biceps">
-            <label id="lbl-select-category">Select Category</label>
-            <div class="filter-bar" id="create-category-filter"></div>
-            <div id="create-exercise-tags"></div>
-            <button class="btn-outline" onclick="addToRoutineSelection()" style="margin-bottom:12px;">+ Add Selected to Routine</button>
-            <label id="lbl-custom-ex" style="margin-top:8px;">Add Custom Exercise</label>
-            <input type="text" id="create-custom-ex" placeholder="Type exercise name...">
-            <button class="btn-small" onclick="addCustomToSelection()" style="margin-bottom:12px;">+ Add Custom</button>
-            <div id="routine-selection-list" style="margin-bottom:12px;"></div>
-            <button class="btn" onclick="saveRoutine()" id="txt-save-routine">Save Routine</button>       
-        </div>
-
-    </div>
-
-    <div id="train-cardio" style="display:none;">
-        <button class="btn-outline" onclick="showTrainSection('menu')" id="txt-back-4">← Back</button>
-        <div class="section-title" id="txt-cardio-title">CARDIOVASCULAR</div>
-        <div class="category-grid">
-            <div class="category-btn" onclick="startCardio('Running')" id="txt-running">RUNNING</div>
-            <div class="category-btn" onclick="startCardio('Cycling')" id="txt-cycling">CYCLING</div>
-            <div class="category-btn" onclick="startCardio('Walking')" id="txt-walking">WALKING</div>
-            <div class="category-btn" onclick="startCardio('Rowing')" id="txt-rowing">ROWING</div>
-            <div class="category-btn" onclick="startCardio('Fixed Bike')" id="txt-fixedbike">FIXED BIKE</div>
-            <div class="category-btn" onclick="startCardio('HIIT')" id="txt-hiit">HIIT</div>
-            <div class="category-btn" onclick="startCardio('Swimming')" id="txt-swimming">SWIMMING</div>
-            <div class="category-btn" onclick="startCardio('Other')" id="txt-other">OTHER</div>
-        </div>
-    </div>
-
-    <div id="train-active" style="display:none;">
-        <button class="btn-outline" onclick="showTrainSection('menu')" id="txt-back-5">← Back</button>
-        <div id="previous-workout-summary" style="display:none;"></div>
-        <div class="workout-timer-bar" id="workout-timer-bar" style="display:none;">
-            <span class="workout-timer-label" id="txt-workout-time">WORKOUT TIME</span>
-            <span class="workout-timer-value" id="workout-timer">00:00</span>
-        </div>
-        <div class="rest-timer" id="rest-timer">
-            <button class="rest-timer-cancel" onclick="stopTimer()" aria-label="Cancel rest timer">✕</button>
-            <div style="color:var(--label-secondary); font-size:11px; font-weight:700; margin-bottom:4px;" id="txt-rest-timer">REST TIMER</div>
-            <div class="rest-timer-count" id="rest-count">60</div>
-            <button class="btn-small" onclick="stopTimer()" id="txt-stop">Stop</button>
-        </div>
-        <div id="previous-workout-summary" style="display:none;"></div>
-        <div class="card" id="exercise-picker">
-            <h2 id="txt-add-exercise">ADD EXERCISE</h2>
-            <div class="filter-bar" id="active-category-filter"></div>
-            <div id="exercise-tags"></div>
-            <input type="text" id="custom-exercise" placeholder="Add custom exercise...">
-            <button class="btn" onclick="addExercise()" id="txt-add-ex-btn">+ Add Exercise</button>
-        </div>
-        <div id="exercise-log"></div>
-        <button class="btn btn-accent-yellow" onclick="saveWorkout()" style="display:none;" id="save-btn">Save Workout</button>  
-    </div>
-
-
-    <div id="train-cardio-active" style="display:none;">
-        <button class="btn-outline" onclick="showTrainSection('menu')" id="txt-back-6">← Back</button>
-        <div class="card">
-            <h2 id="cardio-type-title">CARDIO LOG</h2>
-<button class="btn" id="cardio-start-btn" onclick="startCardioTimer()">▶ Start Session</button>
-<div class="workout-timer-bar" id="cardio-timer-bar" style="display:none;">
-    <span class="workout-timer-label" id="txt-session-time">SESSION TIME</span>
-    <span class="workout-timer-value" id="cardio-timer">00:00</span>
-    <button class="btn-small" onclick="stopCardioTimer()">Stop</button>
-</div>
-            <label id="lbl-duration">Duration (minutes)</label>
-            <input type="number" id="cardio-duration" placeholder="e.g. 30">
-            <label id="lbl-distance">Distance (km)</label>
-            <input type="number" id="cardio-distance" placeholder="e.g. 5">
-            <label id="lbl-intensity">Intensity</label>
-            <select id="cardio-intensity">
-                <option value="easy" id="opt-easy">Easy</option>
-                <option value="moderate" id="opt-moderate">Moderate</option>
-                <option value="hard" id="opt-hard">Hard</option>
-            </select>
-            <label id="lbl-notes">Notes</label>
-            <input type="text" id="cardio-notes" placeholder="How did it feel?">
-            <button class="btn" onclick="saveCardio()" id="txt-save-cardio">Save Cardio</button>
-        </div>
-    </div>
 </div>
 
 <!-- NUTRITION SCREEN -->

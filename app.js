@@ -1314,6 +1314,8 @@ function showCompletionScreen(muscle,duration,exs){
 }
 
 async function saveWorkout() {
+    const saveBtnWrap = document.getElementById('save-btn-wrap');
+    if (saveBtnWrap) saveBtnWrap.style.display = 'none';
     const now=new Date();
     const date=now.toLocaleDateString('en-GB');
     const isoDate=now.toISOString().split('T')[0];
@@ -3300,3 +3302,567 @@ function updateOverviewTiles(cals, steps, calTarget) {
     const el = document.getElementById(id);
     if (el) el.setAttribute('stroke-dashoffset', circ - Math.min(1, Math.max(0, pct || 0)) * circ);
   }
+// ══ TRAIN TAB ══════════════════════════════════════════════
+
+let createFocus = '';
+let createScheduledDays = [];
+
+function switchTrainTab(tab) {
+  ['program','exercises','workouts'].forEach(t => {
+    document.getElementById('train-panel-' + t).style.display = t === tab ? 'block' : 'none';
+    const btn = document.getElementById('train-tab-' + t);
+    if (btn) {
+      btn.style.background = t === tab ? '#f5c842' : 'transparent';
+      btn.style.color = t === tab ? '#111' : 'var(--label-secondary)';
+    }
+  });
+  if (tab === 'workouts') renderRoutinesList();
+  if (tab === 'exercises') renderExerciseLibrary();
+  if (tab === 'program') renderTrainProgram();
+}
+
+function switchWorkoutsTab(tab) {
+  document.getElementById('train-panel-my-workouts').style.display = tab === 'my' ? 'block' : 'none';
+  document.getElementById('train-panel-templates').style.display = tab === 'templates' ? 'block' : 'none';
+  const myBtn = document.getElementById('wt-tab-my');
+  const tplBtn = document.getElementById('wt-tab-templates');
+  if (myBtn) { myBtn.style.background = tab === 'my' ? '#f5c842' : 'transparent'; myBtn.style.color = tab === 'my' ? '#111' : 'var(--label-secondary)'; myBtn.style.border = tab === 'my' ? 'none' : '1.5px solid var(--border)'; }
+  if (tplBtn) { tplBtn.style.background = tab === 'templates' ? '#f5c842' : 'transparent'; tplBtn.style.color = tab === 'templates' ? '#111' : 'var(--label-secondary)'; tplBtn.style.border = tab === 'templates' ? 'none' : '1.5px solid var(--border)'; }
+  if (tab === 'templates') renderWorkoutTemplates();
+}
+
+function showTrainSection(section) {
+  const allSections = ['menu','routines','quick','create','cardio','active','cardio-active'];
+  allSections.forEach(s => {
+    const el = document.getElementById('train-' + s);
+    if (el) el.style.display = 'none';
+  });
+  // Also hide tab panels when going into a flow
+  const isFlow = ['create','active','cardio','cardio-active','quick'].includes(section);
+  ['train-panel-program','train-panel-exercises','train-panel-workouts'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = isFlow ? 'none' : 'none';
+  });
+  // Show main tab panels when going to menu
+  if (section === 'menu') {
+    switchTrainTab('program');
+    return;
+  }
+  const target = document.getElementById('train-' + section);
+  if (target) target.style.display = 'block';
+  if (section === 'create') {
+    buildCreateExercisePicker();
+    createFocus = '';
+    createScheduledDays = [];
+  }
+  if (section === 'active') buildActiveExercisePicker();
+}
+
+function renderTrainProgram() {
+  renderTrainWeek();
+  renderTodayWorkoutCard();
+  renderUpNext();
+}
+
+function renderTodayWorkoutCard() {
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const today = days[new Date().getDay()];
+  const routines = Array.isArray(savedRoutines) ? savedRoutines : [];
+  const scheduled = routines.find(r => r.scheduled_days && r.scheduled_days.includes(today));
+
+  const titleEl = document.getElementById('train-today-title');
+  const musclesEl = document.getElementById('train-today-muscles');
+  const focusTag = document.getElementById('train-today-focus-tag');
+
+  if (scheduled) {
+    if (titleEl) titleEl.textContent = scheduled.name;
+    const muscles = getWorkoutMuscles(scheduled.name || '');
+    if (musclesEl) musclesEl.textContent = muscles;
+    if (focusTag) focusTag.style.display = 'inline-block';
+    renderExercisePreview(scheduled);
+  } else {
+    if (titleEl) titleEl.textContent = 'No workout scheduled';
+    if (musclesEl) musclesEl.textContent = 'Set up your plan or start a quick workout';
+    if (focusTag) focusTag.style.display = 'none';
+  }
+}
+
+function renderExercisePreview(routine) {
+  const container = document.getElementById('train-exercise-preview');
+  if (!container || !routine) return;
+  const exercises = routine.exercises || [];
+  if (exercises.length === 0) { container.innerHTML = ''; return; }
+  const shown = exercises.slice(0, 4);
+  container.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">EXERCISES</p>
+      <span style="font-size:12px;color:var(--label-secondary);">${exercises.length} Exercises ›</span>
+    </div>
+    ${shown.map((ex, i) => {
+      const name = typeof ex === 'string' ? ex : ex.name;
+      const sets = ex.sets || 3;
+      const reps = ex.reps || '8–12';
+      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
+        <span style="width:18px;height:18px;background:var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--label-secondary);flex-shrink:0;">${i+1}</span>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:700;color:var(--text);">${name}</div>
+          <div style="font-size:11px;color:var(--label-secondary);">${sets} sets × ${reps} reps</div>
+        </div>
+        <div style="width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);"></div>
+      </div>`;
+    }).join('')}
+    ${exercises.length > 4 ? `<p style="font-size:12px;color:var(--label-secondary);text-align:center;padding:8px 0;">+ ${exercises.length - 4} more exercises</p>` : ''}
+  `;
+}
+
+function renderUpNext() {
+  const container = document.getElementById('train-up-next');
+  if (!container) return;
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const today = new Date();
+  const todayIdx = today.getDay();
+  const routines = Array.isArray(savedRoutines) ? savedRoutines : [];
+  const upcoming = [];
+
+  for (let i = 1; i <= 6; i++) {
+    const dayIdx = (todayIdx + i) % 7;
+    const dayName = days[dayIdx];
+    const date = new Date(today);
+    date.setDate(today.getDate() + i);
+    const scheduled = routines.filter(r => r.scheduled_days && r.scheduled_days.includes(dayName));
+    if (scheduled.length > 0) {
+      scheduled.forEach(r => upcoming.push({ name: r.name, date, dayName, daysAhead: i }));
+    }
+  }
+
+  if (upcoming.length === 0) {
+    container.innerHTML = '<p style="font-size:13px;color:var(--label-secondary);padding:8px 0;">Schedule workouts to see upcoming sessions.</p>';
+    return;
+  }
+
+  container.innerHTML = upcoming.slice(0, 3).map((item, idx) => {
+    const label = item.daysAhead === 1 ? 'Tomorrow' : item.date.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short' });
+    const isLast = idx === Math.min(upcoming.length, 3) - 1;
+    return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;${isLast ? '' : 'border-bottom:1px solid var(--border);'}cursor:pointer;" onclick="switchTrainTab('workouts')">
+      <div style="width:36px;height:36px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 14h.5a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-.5M9.5 14H9a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h.5M4 12h16M14.5 10v4M9.5 10v4"/></svg>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:700;color:var(--text);">${item.name}</div>
+        <div style="font-size:11px;color:var(--label-secondary);margin-top:1px;">${label}</div>
+      </div>
+      <div style="color:var(--label-secondary);font-size:18px;">›</div>
+    </div>`;
+  }).join('');
+}
+
+function renderTrainWeek() {
+  const container = document.getElementById('train-week-dots');
+  if (!container) return;
+  const labels = ['M','T','W','T','F','S','S'];
+  const now = new Date();
+  const dow = now.getDay();
+  const mondayOffset = dow === 0 ? -6 : 1 - dow;
+  let doneCount = 0;
+  const dots = labels.map((lbl, i) => {
+    const d = new Date(now);
+    d.setDate(now.getDate() + mondayOffset + i);
+    const ds = d.toLocaleDateString('en-GB');
+    const isToday = i === (dow === 0 ? 6 : dow - 1);
+    const done = !!(workoutHistory.find(w => w.date === ds) || cardioHistory.find(c => c.date === ds));
+    if (done) doneCount++;
+    const dotStyle = done
+      ? 'background:#22c55e;'
+      : isToday
+        ? 'background:#f5c842;'
+        : 'background:var(--border);';
+    return `<div style="text-align:center;">
+      <div style="font-size:10px;color:var(--label-secondary);margin-bottom:4px;font-weight:600;">${lbl}</div>
+      <div style="width:32px;height:32px;border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center;${dotStyle}">
+        ${done ? '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' : ''}
+      </div>
+    </div>`;
+  });
+  container.innerHTML = dots.join('');
+  const totalScheduled = (Array.isArray(savedRoutines) ? savedRoutines : [])
+    .reduce((acc, r) => acc + (r.scheduled_days ? r.scheduled_days.length : 0), 0);
+  const weekCount = document.getElementById('train-week-count');
+  if (weekCount) weekCount.textContent = `${doneCount} of ${Math.min(totalScheduled, 7)} Workouts`;
+
+  // Program ring
+  const totalDays = settings.phaseDuration || 56;
+  let daysIn = 0;
+  if (settings.phaseStartDate) {
+    const parts = settings.phaseStartDate.split('/');
+    const start = new Date(parts[2], parts[1]-1, parts[0]);
+    daysIn = Math.max(0, Math.floor((Date.now() - start) / 86400000));
+  }
+  const pct = Math.min(100, Math.round((daysIn / totalDays) * 100));
+  const ring = document.getElementById('train-prog-ring');
+  if (ring) ring.setAttribute('stroke-dashoffset', 163.36 - (pct / 100) * 163.36);
+  setText('train-prog-pct', pct + '%');
+  const weekTotal = Math.max(1, Math.ceil(totalDays / 7));
+  const curWeek = Math.min(weekTotal, Math.max(1, Math.floor(daysIn / 7) + 1));
+  setText('train-program-phase-label', `Phase 1 · Week ${curWeek} of ${weekTotal}`);
+  setText('train-program-name', settings.phaseName || 'Hybrid Athlete');
+}
+
+function startTodayWorkout() {
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const today = days[new Date().getDay()];
+  const routines = Array.isArray(savedRoutines) ? savedRoutines : [];
+  const scheduled = routines.find(r => r.scheduled_days && r.scheduled_days.includes(today));
+  if (scheduled) {
+    startRoutineWorkout(scheduled);
+  } else {
+    showTrainSection('quick');
+  }
+}
+
+function startRoutineWorkout(routine) {
+  selectedMuscle = routine.name || 'Workout';
+  exercises = (routine.exercises || []).map(ex => {
+    const name = typeof ex === 'string' ? ex : ex.name;
+    return { name, sets: [{reps: ex.reps || '', weight: ex.weight || ''}] };
+  });
+  firstSetLogged = false;
+  showTrainSection('active');
+  document.getElementById('active-workout-title').textContent = (routine.name || 'WORKOUT').toUpperCase();
+  const saveBtnWrap = document.getElementById('save-btn-wrap');
+  if (saveBtnWrap) saveBtnWrap.style.display = exercises.length > 0 ? 'block' : 'none';
+  document.getElementById('save-btn').style.display = 'none';
+  workoutStartTime = Date.now();
+  const timerBar = document.getElementById('workout-timer-bar');
+  if (timerBar) timerBar.style.display = 'flex';
+  if (workoutTimerInterval) clearInterval(workoutTimerInterval);
+  workoutTimerInterval = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - workoutStartTime) / 1000);
+    const m = Math.floor(elapsed / 60).toString().padStart(2,'0');
+    const s = (elapsed % 60).toString().padStart(2,'0');
+    setText('workout-timer', m + ':' + s);
+  }, 1000);
+  buildActiveExercisePicker();
+  renderExercises();
+}
+
+function confirmEndWorkout() {
+  if (exercises.length > 0) {
+    if (confirm('End workout without saving?')) {
+      exercises = []; selectedMuscle = '';
+      clearInterval(workoutTimerInterval);
+      showTrainSection('menu');
+    }
+  } else {
+    showTrainSection('menu');
+  }
+}
+
+function selectPhase(n) {
+  [1,2,3].forEach(p => {
+    const btn = document.getElementById('train-phase-' + p);
+    if (!btn) return;
+    btn.style.background = p === n ? '#f5c842' : 'transparent';
+    btn.style.color = p === n ? '#111' : '#888';
+    btn.style.border = p === n ? 'none' : '1.5px solid #333';
+  });
+}
+
+function selectCreateFocus(focus, el) {
+  createFocus = focus;
+  document.querySelectorAll('#create-focus-grid > div').forEach(d => {
+    d.style.border = '1.5px solid var(--border)';
+    d.style.background = 'transparent';
+  });
+  el.style.border = '1.5px solid #f5c842';
+  el.style.background = 'rgba(245,200,66,0.1)';
+  buildCreateExercisePicker();
+}
+
+function toggleScheduleDay(btn, day) {
+  const idx = createScheduledDays.indexOf(day);
+  if (idx > -1) {
+    createScheduledDays.splice(idx, 1);
+    btn.style.background = 'transparent';
+    btn.style.color = 'var(--label-secondary)';
+    btn.style.border = '1.5px solid var(--border)';
+  } else {
+    createScheduledDays.push(day);
+    btn.style.background = '#f5c842';
+    btn.style.color = '#111';
+    btn.style.border = 'none';
+  }
+}
+
+function saveRoutine() {
+  const name = document.getElementById('routine-name').value.trim();
+  if (!name) { alert('Please name your workout'); return; }
+  if (routineSelection.length === 0) { alert('Please add at least one exercise'); return; }
+  const routine = {
+    name,
+    focus: createFocus,
+    exercises: routineSelection,
+    scheduled_days: [...createScheduledDays],
+    created: new Date().toLocaleDateString('en-GB')
+  };
+  savedRoutines.push(routine);
+  routineSelection = [];
+  createScheduledDays = [];
+  saveToStorage();
+  document.getElementById('routine-name').value = '';
+  document.getElementById('create-custom-ex').value = '';
+  renderRoutineSelectionList();
+  showTrainSection('menu');
+  showToast('Workout saved!', 'success', 2000);
+}
+
+function renderRoutinesList() {
+  const container = document.getElementById('routines-list');
+  const empty = document.getElementById('no-routines-msg');
+  if (!container) return;
+  const routines = Array.isArray(savedRoutines) ? savedRoutines : [];
+  if (routines.length === 0) {
+    container.innerHTML = '';
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  container.innerHTML = routines.map((r, i) => {
+    const muscles = getWorkoutMuscles(r.name || '');
+    const lastDone = workoutHistory.find(w => w.muscle === r.name);
+    const lastStr = lastDone ? `Last done: ${lastDone.date}` : 'Not done yet';
+    return `<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;" onclick="startRoutineWorkout(${JSON.stringify(r).replace(/"/g,'&quot;')})">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div style="flex:1;">
+          <div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:3px;">${r.name}</div>
+          <div style="font-size:12px;color:var(--label-secondary);margin-bottom:4px;">${muscles}</div>
+          <div style="font-size:11px;color:var(--label-secondary);">${r.exercises ? r.exercises.length : 0} exercises · ${lastStr}</div>
+          ${r.scheduled_days && r.scheduled_days.length > 0 ? `<div style="font-size:11px;color:#f5c842;font-weight:600;margin-top:4px;">${r.scheduled_days.join(', ')}</div>` : ''}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
+          <button onclick="event.stopPropagation();deleteRoutine(${i})" style="background:none;border:none;color:var(--label-secondary);font-size:16px;cursor:pointer;padding:2px;">🗑</button>
+          <div style="color:var(--label-secondary);font-size:18px;">›</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function deleteRoutine(idx) {
+  if (confirm('Delete this workout?')) {
+    savedRoutines.splice(idx, 1);
+    saveToStorage();
+    renderRoutinesList();
+  }
+}
+
+function renderExerciseLibrary() {
+  const container = document.getElementById('exercise-library-list');
+  const filterContainer = document.getElementById('exercise-lib-filters');
+  if (!container) return;
+  const cats = ['All','Chest','Back','Shoulders','Biceps','Triceps','Legs','Core','Cardio'];
+  if (filterContainer && !filterContainer.hasChildNodes()) {
+    filterContainer.innerHTML = cats.map((c, i) =>
+      `<button onclick="filterExerciseLib('${c}',this)" style="padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);font-size:12px;font-weight:700;cursor:pointer;background:${i===0?'#f5c842':'transparent'};color:${i===0?'#111':'var(--label-secondary)'};">${c}</button>`
+    ).join('');
+  }
+  renderExerciseLibraryItems('All');
+}
+
+function filterExerciseLib(cat, btn) {
+  document.querySelectorAll('#exercise-lib-filters button').forEach(b => {
+    b.style.background = 'transparent'; b.style.color = 'var(--label-secondary)';
+  });
+  btn.style.background = '#f5c842'; btn.style.color = '#111';
+  renderExerciseLibraryItems(cat);
+}
+
+function filterExerciseLibrary() {
+  const q = (document.getElementById('exercise-search')?.value || '').toLowerCase();
+  const container = document.getElementById('exercise-library-list');
+  if (!container) return;
+  const allEx = getAllExercises();
+  const filtered = allEx.filter(ex => ex.name.toLowerCase().includes(q));
+  container.innerHTML = filtered.map(ex => `
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);">
+      <div style="width:40px;height:40px;background:var(--bg);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">💪</div>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:700;color:var(--text);">${ex.name}</div>
+        <div style="font-size:11px;color:var(--label-secondary);">${ex.cat}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderExerciseLibraryItems(cat) {
+  const container = document.getElementById('exercise-library-list');
+  if (!container) return;
+  const allEx = getAllExercises();
+  const filtered = cat === 'All' ? allEx : allEx.filter(ex => ex.cat === cat);
+  container.innerHTML = filtered.map(ex => `
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);">
+      <div style="width:40px;height:40px;background:var(--bg);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">💪</div>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:700;color:var(--text);">${ex.name}</div>
+        <div style="font-size:11px;color:var(--label-secondary);">${ex.cat}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function getAllExercises() {
+  const lib = {
+    'Chest': ['Barbell Bench Press','Incline Dumbbell Press','Cable Fly','Machine Chest Press','Push Up','Dips'],
+    'Back': ['Barbell Row','Pull Up','Lat Pulldown','Cable Row','Dumbbell Row','Face Pull'],
+    'Shoulders': ['Overhead Press','Lateral Raises','Front Raises','Machine Shoulder Press','Arnold Press'],
+    'Biceps': ['Barbell Curl','Dumbbell Curl','Hammer Curl','Cable Curl','Preacher Curl'],
+    'Triceps': ['Tricep Pushdown','Skull Crushers','Overhead Tricep Extension','Cable Tricep Extension','Dips'],
+    'Legs': ['Barbell Squat','Romanian Deadlift','Leg Press','Walking Lunges','Leg Curl','Leg Extension','Hip Hinge','Glute Bridge'],
+    'Core': ['Plank','Crunch','Russian Twist','Dead Bug','Cable Crunch','Hanging Leg Raise'],
+    'Cardio': ['Running','Cycling','Rowing','HIIT','Swimming','Walking']
+  };
+  const result = [];
+  Object.entries(lib).forEach(([cat, exs]) => exs.forEach(name => result.push({ name, cat })));
+  // Add custom exercises
+  if (typeof customExercises === 'object') {
+    Object.entries(customExercises).forEach(([cat, exs]) => (exs||[]).forEach(name => {
+      if (!result.find(e => e.name === name)) result.push({ name, cat });
+    }));
+  }
+  return result;
+}
+
+function renderWorkoutTemplates() {
+  const container = document.getElementById('workout-templates-list');
+  if (!container) return;
+  const templates = [
+    { name: 'Push Day', focus: 'Push', exercises: ['Barbell Bench Press','Incline Dumbbell Press','Cable Fly','Machine Shoulder Press','Lateral Raises','Tricep Pushdown','Overhead Tricep Extension'] },
+    { name: 'Pull Day', focus: 'Pull', exercises: ['Barbell Row','Pull Up','Lat Pulldown','Cable Row','Face Pull','Barbell Curl','Hammer Curl'] },
+    { name: 'Leg Day', focus: 'Legs', exercises: ['Barbell Squat','Romanian Deadlift','Leg Press','Walking Lunges','Leg Curl','Leg Extension'] },
+    { name: 'Upper Body', focus: 'Upper Body', exercises: ['Barbell Bench Press','Barbell Row','Overhead Press','Pull Up','Lateral Raises','Barbell Curl','Tricep Pushdown'] },
+    { name: 'Full Body', focus: 'Full Body', exercises: ['Barbell Squat','Barbell Bench Press','Barbell Row','Overhead Press','Romanian Deadlift'] },
+  ];
+  container.innerHTML = templates.map(t => `
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div style="font-size:15px;font-weight:800;color:var(--text);">${t.name}</div>
+        <button onclick="useTemplate(${JSON.stringify(t).replace(/"/g,'&quot;')})" style="background:#f5c842;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;color:#111;cursor:pointer;">Use</button>
+      </div>
+      <div style="font-size:12px;color:var(--label-secondary);">${t.exercises.length} exercises</div>
+      <div style="font-size:12px;color:var(--label-secondary);margin-top:2px;">${t.exercises.slice(0,3).join(', ')}${t.exercises.length > 3 ? '...' : ''}</div>
+    </div>
+  `).join('');
+}
+
+function useTemplate(template) {
+  showTrainSection('create');
+  setTimeout(() => {
+    const nameEl = document.getElementById('routine-name');
+    if (nameEl) nameEl.value = template.name;
+    createFocus = template.focus;
+    routineSelection = template.exercises.map(name => ({ name, sets: 3, reps: '8–12', rest: 90 }));
+    renderRoutineSelectionList();
+    updateCreateExCount();
+  }, 100);
+}
+
+function filterCreateExercises() {
+  buildCreateExercisePicker();
+}
+
+function buildCreateExercisePicker() {
+  const catFilter = document.getElementById('create-category-filter');
+  const tagsContainer = document.getElementById('create-exercise-tags');
+  if (!catFilter || !tagsContainer) return;
+  const cats = ['Chest','Back','Shoulders','Biceps','Triceps','Legs','Core'];
+  if (!catFilter.hasChildNodes()) {
+    catFilter.innerHTML = cats.map((c, i) =>
+      `<button class="filter-btn${i===0?' active':''}" onclick="selectCreateCat('${c}',this)">${c}</button>`
+    ).join('');
+  }
+  const activeCat = catFilter.querySelector('.filter-btn.active')?.textContent || cats[0];
+  const allEx = getAllExercises().filter(e => e.cat === activeCat);
+  const q = (document.getElementById('create-ex-search')?.value || '').toLowerCase();
+  const filtered = q ? allEx.filter(e => e.name.toLowerCase().includes(q)) : allEx;
+  tagsContainer.innerHTML = filtered.map(ex =>
+    `<span class="tag" onclick="this.classList.toggle('selected');addTaggedExToSelection('${ex.name}')" style="margin:3px;display:inline-block;padding:6px 12px;border-radius:20px;border:1.5px solid var(--border);font-size:12px;font-weight:600;cursor:pointer;color:var(--text);">${ex.name}</span>`
+  ).join('');
+}
+
+function selectCreateCat(cat, btn) {
+  document.querySelectorAll('#create-category-filter .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  buildCreateExercisePicker();
+}
+
+function addTaggedExToSelection(name) {
+  if (!routineSelection.find(e => (typeof e === 'string' ? e : e.name) === name)) {
+    routineSelection.push({ name, sets: 3, reps: '8–12', rest: 90 });
+    renderRoutineSelectionList();
+    updateCreateExCount();
+  }
+}
+
+function addCustomToSelection() {
+  const input = document.getElementById('create-custom-ex');
+  const name = input?.value.trim();
+  if (!name) return;
+  if (!routineSelection.find(e => (typeof e === 'string' ? e : e.name) === name)) {
+    routineSelection.push({ name, sets: 3, reps: '8–12', rest: 90 });
+    if (!customExercises) window.customExercises = {};
+    const cat = createFocus || 'Custom';
+    if (!customExercises[cat]) customExercises[cat] = [];
+    if (!customExercises[cat].includes(name)) customExercises[cat].push(name);
+    saveToStorage();
+  }
+  if (input) input.value = '';
+  renderRoutineSelectionList();
+  updateCreateExCount();
+}
+
+function renderRoutineSelectionList() {
+  const container = document.getElementById('routine-selection-list');
+  if (!container) return;
+  container.innerHTML = (routineSelection || []).map((ex, i) => {
+    const name = typeof ex === 'string' ? ex : ex.name;
+    const sets = ex.sets || 3;
+    const reps = ex.reps || '8–12';
+    return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:700;color:var(--text);">${name}</div>
+        <div style="display:flex;gap:8px;margin-top:6px;">
+          <select onchange="updateExDetail(${i},'sets',this.value)" style="flex:1;font-size:12px;padding:4px 6px;">
+            ${[1,2,3,4,5].map(n=>`<option value="${n}" ${sets==n?'selected':''}>${n} sets</option>`).join('')}
+          </select>
+          <select onchange="updateExDetail(${i},'reps',this.value)" style="flex:1;font-size:12px;padding:4px 6px;">
+            ${['6–8','8–10','8–12','10–12','12–15','15–20'].map(r=>`<option value="${r}" ${reps==r?'selected':''}>${r} reps</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <button onclick="removeFromSelection(${i})" style="background:none;border:none;color:var(--label-secondary);font-size:18px;cursor:pointer;">✕</button>
+    </div>`;
+  }).join('');
+  updateCreateExCount();
+}
+
+function updateExDetail(idx, field, val) {
+  if (routineSelection[idx]) routineSelection[idx][field] = field === 'sets' ? parseInt(val) : val;
+}
+
+function removeFromSelection(idx) {
+  routineSelection.splice(idx, 1);
+  renderRoutineSelectionList();
+}
+
+function updateCreateExCount() {
+  const el = document.getElementById('create-ex-count');
+  if (el) el.textContent = (routineSelection || []).length;
+}
+
+function adjustRestTimer(seconds) {
+  // adds seconds to current rest timer
+  const el = document.getElementById('rest-count');
+  if (el) {
+    const current = parseInt(el.textContent) || 0;
+    el.textContent = current + seconds;
+  }
+}
