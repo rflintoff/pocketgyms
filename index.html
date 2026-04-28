@@ -35,7 +35,7 @@
       <input type="email" id="auth-email" placeholder="Email address">
       <input type="password" id="auth-password" placeholder="Password">
   
-      <button onclick="handleEmailAuth()" class="btn-primary" id="auth-submit-btn">Sign In</button>
+      <button onclick="handleEmailAuth()" class="btn-primary" id="auth-submit-btn" style="background:#f5c842;color:#111;">Sign In</button>
       <button onclick="toggleAuthMode()" class="btn-ghost" id="auth-toggle-btn">
         No account? Sign up
       </button>
@@ -832,7 +832,7 @@
   <!-- Meals -->
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
     <p style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">MEALS</p>
-    <button onclick="addMeal()" style="background:none;border:none;font-size:13px;font-weight:700;color:#f5c842;cursor:pointer;">+ Add Meal</button>
+    <button onclick="addMeal()" style="background:#f5c842;border:none;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:700;color:#111;cursor:pointer;">+ Add Meal</button>
   </div>
   <div id="meals-container" class="meals-container" style="margin-bottom:12px;"></div>
 
@@ -942,7 +942,7 @@
     <label>Portion (g or ml)</label>
     <input type="number" id="food-portion-amount" placeholder="e.g. 150" value="100" oninput="updatePortionPreview()" inputmode="numeric">
     <div id="food-portion-preview" style="color:var(--label-secondary); font-size:13px; margin-bottom:12px; background:var(--bg); padding:8px; border-radius:8px; border:1px solid var(--border);"></div>
-    <button class="btn" onclick="addFoodEntry()">Add to Meal</button>
+    <button class="btn btn-accent-yellow" onclick="addFoodEntry()">Add to Meal</button>
     <button class="btn-outline" onclick="document.getElementById('food-portion').style.display='none'">Cancel</button>
   </div>
 </div>

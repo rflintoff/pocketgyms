@@ -2042,12 +2042,35 @@ async function addCatalogSupplementToListByIndex(idx){
 }
 
 // New home tab UI
+async function updateHome() {
+    const calTarget=settings.calTarget||2000;
+    const proteinTarget=settings.proteinTarget||150;
+    const today=new Date().toLocaleDateString('en-GB');
+    const todayMeals=(Array.isArray(meals)?meals:[]).filter(m=>m&&m.date===today);
+    let cals=0,protein=0,carbs=0,fats=0;
+    todayMeals.forEach(meal=>{
+        (meal?.foods||[]).forEach(f=>{
+            cals+=Number(f?.cal)||0;
+            protein+=Number(f?.protein)||0;
+            carbs+=Number(f?.carbs)||0;
+            fats+=Number(f?.fat)||0;
+        });
+    });
+
+    const nd=await PG.nutrition.getToday()||{steps:0,water:0,water_litres:0};
+    if(!PG.state)PG.state={};
+    PG.state.todayNutrition=nd;
+
+    const steps=parseInt(nd.steps,10)||0;
+    const water=getWaterLitres(nd);
+
     updateOverviewTiles(cals, steps, calTarget);
     updateHabitRings(water, cals, calTarget, steps, nd);
     updateNutritionSummary(cals, protein, carbs, fats, calTarget, proteinTarget);
     updateStreakSection();
     updateUpcoming();
     updateNutritionTab(cals, protein, carbs, fats, calTarget, proteinTarget);
+}
 // ===================== PROGRESS =====================
 async function renderProgressTab() {
     const s=settings;
