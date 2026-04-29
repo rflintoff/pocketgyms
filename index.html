@@ -279,22 +279,18 @@
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;">
       <!-- Workout -->
       <div style="text-align:center;padding:8px 4px;" onclick="showScreen('screen-train')" style="cursor:pointer;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 4px;display:block;color:var(--text);opacity:0.7;">
-  <path d="M4 12h2M18 12h2"/>
-  <path d="M6 12h12"/>
-  <path d="M6 8.5v7M18 8.5v7"/>
-  <path d="M3 10v4M21 10v4"/>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M6.5 6.5v11M17.5 6.5v11M6.5 12h11M3 9.5v5M21 9.5v5"/>
 </svg>
         <div style="font-size:9px;font-weight:700;letter-spacing:0.5px;color:var(--label-secondary);text-transform:uppercase;">WORKOUT</div>
         <div style="font-size:11px;font-weight:700;color:#22c55e;margin-top:1px;" id="home-chip-workout">—</div>
       </div>
       <!-- Steps -->
       <div style="text-align:center;padding:8px 4px;" onclick="showScreen('screen-train')" style="cursor:pointer;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 4px;display:block;color:var(--text);opacity:0.7;">
-  <path d="M13 4a1 1 0 1 0 2 0 1 1 0 0 0-2 0"/>
-  <path d="M7 20a1 1 0 1 0 2 0 1 1 0 0 0-2 0"/>
-  <path d="M14 5l-3 5h4l-4 9"/>
-  <path d="M9 15l-2 2"/>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="13" y="2" width="5" height="7" rx="1.5"/>
+  <rect x="6" y="10" width="5" height="7" rx="1.5"/>
+  <path d="M13 9v3M18 9v10M6 17v5"/>
 </svg>
         <div style="font-size:9px;font-weight:700;letter-spacing:0.5px;color:var(--label-secondary);text-transform:uppercase;">STEPS</div>
         <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:1px;" id="home-chip-steps">0</div>
@@ -302,9 +298,9 @@
       </div>
       <!-- Protein -->
       <div style="text-align:center;padding:8px 4px;" onclick="showScreen('screen-calories')" style="cursor:pointer;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 4px;display:block;color:var(--text);opacity:0.7;">
-  <path d="M12 2a5 5 0 0 1 5 5c0 6-5 9-5 9S7 13 7 7a5 5 0 0 1 5-5z"/>
-  <path d="M12 22v-6"/>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M6 3v12a6 6 0 0 0 12 0V3"/>
+  <path d="M6 8h12"/>
 </svg>
         <div style="font-size:9px;font-weight:700;letter-spacing:0.5px;color:var(--label-secondary);text-transform:uppercase;">PROTEIN</div>
         <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:1px;" id="home-chip-protein">0g</div>
@@ -1548,10 +1544,7 @@
     <div class="nav-item" onclick="showScreen('screen-train')" id="nav-train">
       <span class="nav-item-icon-wrap">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M4 12h2M18 12h2"/>
-  <path d="M6 12h12"/>
-  <path d="M6 8v8M18 8v8"/>
-  <path d="M3 9v6M21 9v6"/>
+  <path d="M6.5 6.5v11M17.5 6.5v11M6.5 12h11M3 9.5v5M21 9.5v5"/>
 </svg>
       </span>
       <span id="nav-txt-train">Train</span>
@@ -1559,10 +1552,10 @@
     <div class="nav-item" onclick="showScreen('screen-calories')" id="nav-calories">
       <span class="nav-item-icon-wrap">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M11 12a4 4 0 0 1 8 0c0 3-2 5-4 6-2-1-4-3-4-6z"/>
-  <path d="M11 12V3"/>
-  <path d="M5 3v6c0 1.1.9 2 2 2h0a2 2 0 0 0 2-2V3"/>
-  <path d="M7 11v10"/>
+  <path d="M3 3h3v9a3 3 0 0 0 6 0V3h3"/>
+  <path d="M9 3v9"/>
+  <path d="M19 3v18"/>
+  <path d="M16 7h6"/>
 </svg>
       </span>
       <span id="nav-txt-nutrition">Nutrition</span>
