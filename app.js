@@ -7,6 +7,234 @@ if (new URLSearchParams(window.location.search).get('dev') === 'true') {
   localStorage.setItem('devMode', 'true');
 }
 const isDevMode = localStorage.getItem('devMode') === 'true';
+const PROGRAM_TEMPLATES = [
+  {
+    id: 'beginner',
+    name: 'Beginner Gym Plan',
+    goal: 'fitness',
+    durationWeeks: 6,
+    workoutsPerWeek: 3,
+    difficulty: 'Beginner',
+    description: 'Perfect starting point. Full body focus, 3 days a week.',
+    workouts: [
+      {
+        id: 'full_body_a',
+        name: 'Full Body A',
+        focus: 'Full Body',
+        duration: 45,
+        calories: 320,
+        scheduledDays: ['Monday', 'Wednesday', 'Friday'],
+        exercises: [
+          { name: 'Barbell Squat', sets: 3, repsRange: '8-10', muscleGroup: 'Legs', equipment: 'Barbell' },
+          { name: 'Bench Press', sets: 3, repsRange: '8-10', muscleGroup: 'Chest', equipment: 'Barbell' },
+          { name: 'Bent Over Row', sets: 3, repsRange: '8-10', muscleGroup: 'Back', equipment: 'Barbell' },
+          { name: 'Overhead Press', sets: 3, repsRange: '8-10', muscleGroup: 'Shoulders', equipment: 'Barbell' },
+          { name: 'Romanian Deadlift', sets: 3, repsRange: '10-12', muscleGroup: 'Legs', equipment: 'Barbell' },
+          { name: 'Plank', sets: 3, repsRange: '30-60s', muscleGroup: 'Core', equipment: 'Bodyweight' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'fat_loss',
+    name: '6 Week Cut',
+    goal: 'fatloss',
+    durationWeeks: 6,
+    workoutsPerWeek: 4,
+    difficulty: 'Intermediate',
+    description: 'High intensity 4 day programme focused on fat loss.',
+    workouts: [
+      {
+        id: 'upper_a',
+        name: 'Upper A',
+        focus: 'Chest, Shoulders, Triceps',
+        duration: 50,
+        calories: 420,
+        scheduledDays: ['Monday', 'Thursday'],
+        exercises: [
+          { name: 'Bench Press', sets: 4, repsRange: '8-12', muscleGroup: 'Chest', equipment: 'Barbell' },
+          { name: 'Incline Dumbbell Press', sets: 3, repsRange: '10-12', muscleGroup: 'Chest', equipment: 'Dumbbell' },
+          { name: 'Lateral Raise', sets: 3, repsRange: '12-15', muscleGroup: 'Shoulders', equipment: 'Dumbbell' },
+          { name: 'Tricep Pushdown', sets: 3, repsRange: '12-15', muscleGroup: 'Arms', equipment: 'Cable' },
+          { name: 'Overhead Tricep Extension', sets: 3, repsRange: '12-15', muscleGroup: 'Arms', equipment: 'Dumbbell' }
+        ]
+      },
+      {
+        id: 'lower_a',
+        name: 'Lower A',
+        focus: 'Quads, Hamstrings, Glutes',
+        duration: 55,
+        calories: 460,
+        scheduledDays: ['Tuesday', 'Friday'],
+        exercises: [
+          { name: 'Barbell Squat', sets: 4, repsRange: '8-12', muscleGroup: 'Legs', equipment: 'Barbell' },
+          { name: 'Romanian Deadlift', sets: 3, repsRange: '10-12', muscleGroup: 'Legs', equipment: 'Barbell' },
+          { name: 'Leg Press', sets: 3, repsRange: '12-15', muscleGroup: 'Legs', equipment: 'Machine' },
+          { name: 'Leg Curl', sets: 3, repsRange: '12-15', muscleGroup: 'Legs', equipment: 'Machine' },
+          { name: 'Calf Raise', sets: 4, repsRange: '15-20', muscleGroup: 'Legs', equipment: 'Machine' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'muscle',
+    name: '8 Week Muscle Builder',
+    goal: 'muscle',
+    durationWeeks: 8,
+    workoutsPerWeek: 4,
+    difficulty: 'Intermediate',
+    description: 'Upper/lower split focused on hypertrophy and strength.',
+    workouts: [
+      {
+        id: 'push',
+        name: 'Push Day',
+        focus: 'Chest, Shoulders, Triceps',
+        duration: 55,
+        calories: 480,
+        scheduledDays: ['Monday', 'Thursday'],
+        exercises: [
+          { name: 'Barbell Bench Press', sets: 4, repsRange: '6-8', muscleGroup: 'Chest', equipment: 'Barbell' },
+          { name: 'Incline Dumbbell Press', sets: 3, repsRange: '8-10', muscleGroup: 'Chest', equipment: 'Dumbbell' },
+          { name: 'Machine Shoulder Press', sets: 3, repsRange: '8-10', muscleGroup: 'Shoulders', equipment: 'Machine' },
+          { name: 'Cable Fly', sets: 3, repsRange: '10-12', muscleGroup: 'Chest', equipment: 'Cable' },
+          { name: 'Tricep Pushdown', sets: 3, repsRange: '10-12', muscleGroup: 'Arms', equipment: 'Cable' },
+          { name: 'Overhead Tricep Extension', sets: 3, repsRange: '10-12', muscleGroup: 'Arms', equipment: 'Dumbbell' }
+        ]
+      },
+      {
+        id: 'pull',
+        name: 'Pull Day',
+        focus: 'Back, Biceps',
+        duration: 55,
+        calories: 460,
+        scheduledDays: ['Tuesday', 'Friday'],
+        exercises: [
+          { name: 'Deadlift', sets: 4, repsRange: '4-6', muscleGroup: 'Back', equipment: 'Barbell' },
+          { name: 'Pull Up', sets: 3, repsRange: '6-10', muscleGroup: 'Back', equipment: 'Bodyweight' },
+          { name: 'Barbell Row', sets: 3, repsRange: '8-10', muscleGroup: 'Back', equipment: 'Barbell' },
+          { name: 'Cable Row', sets: 3, repsRange: '10-12', muscleGroup: 'Back', equipment: 'Cable' },
+          { name: 'Barbell Curl', sets: 3, repsRange: '10-12', muscleGroup: 'Arms', equipment: 'Barbell' },
+          { name: 'Hammer Curl', sets: 3, repsRange: '10-12', muscleGroup: 'Arms', equipment: 'Dumbbell' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'hybrid',
+    name: 'Hybrid Athlete',
+    goal: 'hybrid',
+    durationWeeks: 8,
+    workoutsPerWeek: 5,
+    difficulty: 'Advanced',
+    description: 'Strength and conditioning combined. 5 days a week.',
+    workouts: [
+      {
+        id: 'push',
+        name: 'Push Day',
+        focus: 'Chest, Shoulders, Triceps',
+        duration: 55,
+        calories: 480,
+        scheduledDays: ['Monday'],
+        exercises: [
+          { name: 'Barbell Bench Press', sets: 4, repsRange: '6-8', muscleGroup: 'Chest', equipment: 'Barbell' },
+          { name: 'Incline Dumbbell Press', sets: 3, repsRange: '8-10', muscleGroup: 'Chest', equipment: 'Dumbbell' },
+          { name: 'Overhead Press', sets: 3, repsRange: '8-10', muscleGroup: 'Shoulders', equipment: 'Barbell' },
+          { name: 'Lateral Raise', sets: 3, repsRange: '12-15', muscleGroup: 'Shoulders', equipment: 'Dumbbell' },
+          { name: 'Tricep Pushdown', sets: 3, repsRange: '10-12', muscleGroup: 'Arms', equipment: 'Cable' }
+        ]
+      },
+      {
+        id: 'pull',
+        name: 'Pull Day',
+        focus: 'Back, Biceps',
+        duration: 55,
+        calories: 460,
+        scheduledDays: ['Tuesday'],
+        exercises: [
+          { name: 'Deadlift', sets: 4, repsRange: '4-6', muscleGroup: 'Back', equipment: 'Barbell' },
+          { name: 'Pull Up', sets: 3, repsRange: '6-10', muscleGroup: 'Back', equipment: 'Bodyweight' },
+          { name: 'Barbell Row', sets: 3, repsRange: '8-10', muscleGroup: 'Back', equipment: 'Barbell' },
+          { name: 'Barbell Curl', sets: 3, repsRange: '10-12', muscleGroup: 'Arms', equipment: 'Barbell' },
+          { name: 'Hammer Curl', sets: 3, repsRange: '10-12', muscleGroup: 'Arms', equipment: 'Dumbbell' }
+        ]
+      },
+      {
+        id: 'legs',
+        name: 'Leg Day',
+        focus: 'Quads, Hamstrings, Glutes',
+        duration: 60,
+        calories: 520,
+        scheduledDays: ['Wednesday'],
+        exercises: [
+          { name: 'Barbell Squat', sets: 4, repsRange: '6-8', muscleGroup: 'Legs', equipment: 'Barbell' },
+          { name: 'Romanian Deadlift', sets: 3, repsRange: '8-10', muscleGroup: 'Legs', equipment: 'Barbell' },
+          { name: 'Leg Press', sets: 3, repsRange: '10-12', muscleGroup: 'Legs', equipment: 'Machine' },
+          { name: 'Leg Curl', sets: 3, repsRange: '12-15', muscleGroup: 'Legs', equipment: 'Machine' },
+          { name: 'Calf Raise', sets: 4, repsRange: '15-20', muscleGroup: 'Legs', equipment: 'Machine' }
+        ]
+      },
+      {
+        id: 'upper',
+        name: 'Upper Day',
+        focus: 'Chest, Back, Shoulders',
+        duration: 60,
+        calories: 500,
+        scheduledDays: ['Thursday'],
+        exercises: [
+          { name: 'Bench Press', sets: 4, repsRange: '6-8', muscleGroup: 'Chest', equipment: 'Barbell' },
+          { name: 'Barbell Row', sets: 4, repsRange: '6-8', muscleGroup: 'Back', equipment: 'Barbell' },
+          { name: 'Overhead Press', sets: 3, repsRange: '8-10', muscleGroup: 'Shoulders', equipment: 'Barbell' },
+          { name: 'Pull Up', sets: 3, repsRange: '6-10', muscleGroup: 'Back', equipment: 'Bodyweight' },
+          { name: 'Lateral Raise', sets: 3, repsRange: '12-15', muscleGroup: 'Shoulders', equipment: 'Dumbbell' }
+        ]
+      },
+      {
+        id: 'conditioning',
+        name: 'Conditioning',
+        focus: 'Cardio, Core',
+        duration: 40,
+        calories: 380,
+        scheduledDays: ['Friday'],
+        exercises: [
+          { name: 'Assault Bike', sets: 5, repsRange: '60s on/30s off', muscleGroup: 'Cardio', equipment: 'Machine' },
+          { name: 'Plank', sets: 3, repsRange: '45-60s', muscleGroup: 'Core', equipment: 'Bodyweight' },
+          { name: 'Mountain Climbers', sets: 3, repsRange: '30s', muscleGroup: 'Core', equipment: 'Bodyweight' },
+          { name: 'Burpees', sets: 3, repsRange: '10-15', muscleGroup: 'Cardio', equipment: 'Bodyweight' }
+        ]
+      }
+    ]
+  }
+];
+const EXERCISE_LIBRARY = [
+  { name: 'Barbell Bench Press', muscleGroup: 'Chest', equipment: 'Barbell', instructions: 'Lie on bench, grip bar shoulder-width, lower to chest, press up.' },
+  { name: 'Incline Dumbbell Press', muscleGroup: 'Chest', equipment: 'Dumbbell', instructions: 'Set bench to 30-45°, press dumbbells up from chest level.' },
+  { name: 'Cable Fly', muscleGroup: 'Chest', equipment: 'Cable', instructions: 'Set cables high, bring hands together in arc motion.' },
+  { name: 'Push Up', muscleGroup: 'Chest', equipment: 'Bodyweight', instructions: 'Hands shoulder-width, lower chest to floor, push up.' },
+  { name: 'Deadlift', muscleGroup: 'Back', equipment: 'Barbell', instructions: 'Hip-width stance, hinge at hips, drive through heels to stand.' },
+  { name: 'Pull Up', muscleGroup: 'Back', equipment: 'Bodyweight', instructions: 'Hang from bar, pull chest to bar, lower with control.' },
+  { name: 'Barbell Row', muscleGroup: 'Back', equipment: 'Barbell', instructions: 'Hinge forward, row bar to lower chest, squeeze shoulder blades.' },
+  { name: 'Cable Row', muscleGroup: 'Back', equipment: 'Cable', instructions: 'Sit at cable row, pull handle to abdomen, hold briefly.' },
+  { name: 'Lat Pulldown', muscleGroup: 'Back', equipment: 'Machine', instructions: 'Pull bar to upper chest, control the return.' },
+  { name: 'Barbell Squat', muscleGroup: 'Legs', equipment: 'Barbell', instructions: 'Bar on upper back, squat until thighs parallel, drive up.' },
+  { name: 'Romanian Deadlift', muscleGroup: 'Legs', equipment: 'Barbell', instructions: 'Hinge at hips keeping back flat, feel hamstring stretch, return.' },
+  { name: 'Leg Press', muscleGroup: 'Legs', equipment: 'Machine', instructions: 'Press platform away, lower until 90° knee angle.' },
+  { name: 'Leg Curl', muscleGroup: 'Legs', equipment: 'Machine', instructions: 'Curl weight toward glutes, lower with control.' },
+  { name: 'Calf Raise', muscleGroup: 'Legs', equipment: 'Machine', instructions: 'Rise onto toes, hold at top, lower slowly.' },
+  { name: 'Overhead Press', muscleGroup: 'Shoulders', equipment: 'Barbell', instructions: 'Press bar overhead from shoulder height, lock out at top.' },
+  { name: 'Lateral Raise', muscleGroup: 'Shoulders', equipment: 'Dumbbell', instructions: 'Raise arms to sides until parallel to floor.' },
+  { name: 'Machine Shoulder Press', muscleGroup: 'Shoulders', equipment: 'Machine', instructions: 'Press handles overhead, return with control.' },
+  { name: 'Face Pull', muscleGroup: 'Shoulders', equipment: 'Cable', instructions: 'Pull rope to face, elbows high, squeeze rear delts.' },
+  { name: 'Barbell Curl', muscleGroup: 'Arms', equipment: 'Barbell', instructions: 'Curl bar to shoulder height, squeeze bicep, lower slowly.' },
+  { name: 'Hammer Curl', muscleGroup: 'Arms', equipment: 'Dumbbell', instructions: 'Neutral grip curl, targets brachialis and forearms.' },
+  { name: 'Tricep Pushdown', muscleGroup: 'Arms', equipment: 'Cable', instructions: 'Push bar down to full extension, control the return.' },
+  { name: 'Overhead Tricep Extension', muscleGroup: 'Arms', equipment: 'Dumbbell', instructions: 'Lower weight behind head, extend arms fully overhead.' },
+  { name: 'Plank', muscleGroup: 'Core', equipment: 'Bodyweight', instructions: 'Hold straight body position on forearms, brace core throughout.' },
+  { name: 'Mountain Climbers', muscleGroup: 'Core', equipment: 'Bodyweight', instructions: 'Drive knees to chest alternately in plank position.' },
+  { name: 'Cable Crunch', muscleGroup: 'Core', equipment: 'Cable', instructions: 'Kneel, crunch down against cable resistance.' },
+  { name: 'Assault Bike', muscleGroup: 'Cardio', equipment: 'Machine', instructions: 'Push/pull handles while pedalling for full body cardio.' },
+  { name: 'Treadmill Run', muscleGroup: 'Cardio', equipment: 'Machine', instructions: 'Set pace and incline, maintain consistent cadence.' },
+  { name: 'Burpees', muscleGroup: 'Cardio', equipment: 'Bodyweight', instructions: 'Drop to floor, push up, jump up with arms overhead.' }
+];
 document.addEventListener('click',(e)=>{
     const el=e.target.closest('button,.nav-item,.routine-item,.category-btn,.meal-action-btn,.filter-btn,.tag,.btn-oauth,.supplement-picker-add,.supplement-picker-close,.lang-btn,.path-btn,.unit-btn,.food-entry-delete,.exercise-block .remove-set');
     if(el)hapticTap();
@@ -703,6 +931,8 @@ const mealPresets = ['Breakfast','Lunch','Dinner','Snack','Pre-Workout','Post-Wo
 let selectedMuscle='', exercises=[], workoutHistory=[], cardioHistory=[], checkinHistory=[];
 let personalBests={}, settings={}, savedRoutines=[], customExercises={}, meals=[], phaseHistory=[], measurements={};
 let nutritionDateOffset=0;
+let selectedNutritionDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+let todayNutrition = { calories: 0, protein: 0, carbs: 0, fats: 0, water_litres: 0, meals: [], supplements: [] };
 let progressChartRange='1M';
 let timerInterval=null, workoutTimerInterval=null, workoutStartTime=null, cardioTimerInterval=null;
 let currentCardioType='', selectedFood=null, foodFilter='all', currentMealIndex=null;
@@ -1011,16 +1241,21 @@ function showScreen(id) {
     const navMap={'screen-home':'nav-home','screen-train':'nav-train','screen-calories':'nav-calories','screen-progress':'nav-progress','screen-profile':'nav-profile'};
     if(navMap[id])document.getElementById(navMap[id]).classList.add('active');
     if(id==='screen-home')updateHome();
-    if(id==='screen-calories'){loadNutrition();renderSupplements();renderMeals();}
+    if (id === 'screen-calories') {
+      selectedNutritionDate = new Date().toISOString().split('T')[0];
+      renderNutritionTab();
+    }
     if(id==='screen-progress')renderProgressTab();
     if(id==='screen-profile'){
         void loadSettings();
         globalThis.renderProfileTab?.();
         if (isDevMode) renderDevPanel();
     }
-    if(id==='screen-train'){showTrainSection('menu');renderRoutinesList();updateStepsDisplay();renderTrainWeek();}
     if (id === 'screen-train') {
-      renderProgramTab();
+      const activeTab = window._activeTrainTab || 'program';
+      if (activeTab === 'program') renderProgramTab();
+      else if (activeTab === 'exercises') renderExercisesTab();
+      else if (activeTab === 'workouts') renderWorkoutsTab();
     }
 }
 
@@ -1485,6 +1720,533 @@ async function persistNutritionState(reason, overrides={}) {
 function getWaterLitres(nutritionRow={}) {
     return Math.round((parseFloat(nutritionRow?.water_litres ?? nutritionRow?.water ?? 0) || 0) * 100) / 100;
 }
+
+function calculateNutritionTargets() {
+  const w = parseFloat(settings.weight) || 75;
+  const h = parseFloat(settings.height) || 175;
+  const age = parseInt(settings.age) || 25;
+  const gender = settings.gender || 'male';
+  const goal = settings.goal || 'fitness';
+  const activityLevel = settings.trainingDays >= 5 ? 1.725 : settings.trainingDays >= 3 ? 1.55 : 1.375;
+
+  let bmr = gender === 'male'
+    ? (10 * w) + (6.25 * h) - (5 * age) + 5
+    : (10 * w) + (6.25 * h) - (5 * age) - 161;
+
+  const tdee = Math.round(bmr * activityLevel);
+  const goalMap = { fatloss: tdee - 500, muscle: tdee + 300, hybrid: tdee - 200, fitness: tdee };
+  const calTarget = goalMap[goal] || tdee || 2000;
+  const proteinTarget = Math.round(w * 2);
+  const fatsTarget = Math.round((calTarget * 0.25) / 9);
+  const carbsTarget = Math.round((calTarget - (proteinTarget * 4) - (fatsTarget * 9)) / 4);
+
+  return {
+    calTarget: calTarget || 2000,
+    proteinTarget: proteinTarget || 150,
+    carbsTarget: carbsTarget || 250,
+    fatsTarget: fatsTarget || 70,
+    waterTarget: 3000
+  };
+}
+
+async function loadNutritionForDate(dateISO) {
+  try {
+    const { data, error } = await PG.db
+      .from('nutrition_logs')
+      .select('*')
+      .eq('user_id', (await PG.db.auth.getUser()).data.user.id)
+      .eq('logged_at', dateISO)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    if (data) {
+      todayNutrition = {
+        calories: data.total_calories || 0,
+        protein: parseFloat(data.total_protein_g) || 0,
+        carbs: parseFloat(data.total_carbs_g) || 0,
+        fats: parseFloat(data.total_fat_g) || 0,
+        water_litres: parseFloat(data.water_litres) || 0,
+        meals: data.meals || [],
+        supplements: data.supplements || [],
+        sleep_hours: parseFloat(data.sleep_hours) || 0
+      };
+    } else {
+      todayNutrition = { calories: 0, protein: 0, carbs: 0, fats: 0, water_litres: 0, meals: [], supplements: [], sleep_hours: 0 };
+    }
+  } catch(e) {
+    console.error('loadNutritionForDate error:', e);
+    todayNutrition = { calories: 0, protein: 0, carbs: 0, fats: 0, water_litres: 0, meals: [], supplements: [], sleep_hours: 0 };
+  }
+}
+
+async function saveNutritionForDate(dateISO) {
+  try {
+    const userId = (await PG.db.auth.getUser()).data.user.id;
+    const totals = todayNutrition.meals.reduce((acc, meal) => {
+      (meal.foods || []).forEach(f => {
+        acc.calories += f.calories || 0;
+        acc.protein += f.protein || 0;
+        acc.carbs += f.carbs || 0;
+        acc.fats += f.fats || 0;
+      });
+      return acc;
+    }, { calories: 0, protein: 0, carbs: 0, fats: 0 });
+
+    todayNutrition.calories = totals.calories;
+    todayNutrition.protein = totals.protein;
+    todayNutrition.carbs = totals.carbs;
+    todayNutrition.fats = totals.fats;
+
+    const { error } = await PG.db
+      .from('nutrition_logs')
+      .upsert({
+        user_id: userId,
+        logged_at: dateISO,
+        total_calories: Math.round(totals.calories),
+        total_protein_g: totals.protein,
+        total_carbs_g: totals.carbs,
+        total_fat_g: totals.fats,
+        water_litres: todayNutrition.water_litres,
+        meals: todayNutrition.meals,
+        supplements: todayNutrition.supplements,
+        sleep_hours: todayNutrition.sleep_hours || 0
+      }, { onConflict: 'user_id,logged_at' });
+
+    if (error) throw error;
+    if (typeof updateHome === 'function') updateHome();
+  } catch(e) {
+    console.error('saveNutritionForDate error:', e);
+    showToast('Save failed', 'error', 2000);
+  }
+}
+
+function formatDateUK(isoDate) {
+  const [y, m, d] = isoDate.split('-');
+  const today = new Date().toISOString().split('T')[0];
+  if (isoDate === today) return 'Today';
+  return `${d}/${m}/${y}`;
+}
+
+async function renderNutritionTab() {
+  const container = document.getElementById('nutrition-tab-content');
+  if (!container) return;
+
+  await loadNutritionForDate(selectedNutritionDate);
+  const targets = calculateNutritionTargets();
+  const nd = todayNutrition;
+
+  const calPct = Math.min(100, Math.round((nd.calories / targets.calTarget) * 100));
+  const protPct = Math.min(100, Math.round((nd.protein / targets.proteinTarget) * 100));
+  const carbPct = Math.min(100, Math.round((nd.carbs / targets.carbsTarget) * 100));
+  const fatPct = Math.min(100, Math.round((nd.fats / targets.fatsTarget) * 100));
+  const calRemaining = Math.max(0, targets.calTarget - nd.calories);
+  const waterLitres = nd.water_litres || 0;
+  const waterTargetL = (targets.waterTarget / 1000);
+
+  const mealTypes = ['Breakfast', 'Lunch', 'Dinner', 'Snacks'];
+
+  container.innerHTML = `
+    <div style="padding:16px;display:flex;flex-direction:column;gap:14px;">
+
+      <!-- DATE SELECTOR -->
+      <div style="display:flex;align-items:center;justify-content:space-between;background:var(--card);border-radius:14px;padding:12px 16px;">
+        <button onclick="changeNutritionDate(-1)" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text);">‹</button>
+        <p style="font-size:14px;font-weight:700;color:var(--text);">${formatDateUK(selectedNutritionDate)}</p>
+        <button onclick="changeNutritionDate(1)" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text);">›</button>
+      </div>
+
+      <!-- CALORIES CARD -->
+      <div style="background:var(--card);border-radius:20px;padding:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
+          <div>
+            <p style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:4px;">CALORIES</p>
+            <p style="font-size:32px;font-weight:800;color:var(--text);">${Math.round(nd.calories)}<span style="font-size:16px;color:var(--label-secondary);font-weight:500;"> / ${targets.calTarget}</span></p>
+            <p style="font-size:13px;color:var(--label-secondary);">${calRemaining > 0 ? calRemaining + ' kcal remaining' : 'Goal reached! 🎉'}</p>
+          </div>
+          <div style="position:relative;width:64px;height:64px;">
+            <svg width="64" height="64" viewBox="0 0 64 64">
+              <circle cx="32" cy="32" r="28" fill="none" stroke="var(--border)" stroke-width="6"/>
+              <circle cx="32" cy="32" r="28" fill="none" stroke="#FFD60A" stroke-width="6"
+                stroke-dasharray="${Math.round(calPct * 1.759)} 175.9"
+                stroke-dashoffset="44" stroke-linecap="round" transform="rotate(-90 32 32)"/>
+            </svg>
+            <p style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--text);">${calPct}%</p>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+              <span style="font-size:11px;font-weight:700;color:#6366F1;">PROTEIN</span>
+              <span style="font-size:11px;color:var(--label-secondary);">${Math.round(nd.protein)}g</span>
+            </div>
+            <div style="background:var(--border);border-radius:4px;height:4px;">
+              <div style="background:#6366F1;height:4px;border-radius:4px;width:${protPct}%;"></div>
+            </div>
+            <p style="font-size:10px;color:var(--label-secondary);margin-top:2px;">/ ${targets.proteinTarget}g</p>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+              <span style="font-size:11px;font-weight:700;color:#22C55E;">CARBS</span>
+              <span style="font-size:11px;color:var(--label-secondary);">${Math.round(nd.carbs)}g</span>
+            </div>
+            <div style="background:var(--border);border-radius:4px;height:4px;">
+              <div style="background:#22C55E;height:4px;border-radius:4px;width:${carbPct}%;"></div>
+            </div>
+            <p style="font-size:10px;color:var(--label-secondary);margin-top:2px;">/ ${targets.carbsTarget}g</p>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+              <span style="font-size:11px;font-weight:700;color:#FF9F0A;">FATS</span>
+              <span style="font-size:11px;color:var(--label-secondary);">${Math.round(nd.fats)}g</span>
+            </div>
+            <div style="background:var(--border);border-radius:4px;height:4px;">
+              <div style="background:#FF9F0A;height:4px;border-radius:4px;width:${fatPct}%;"></div>
+            </div>
+            <p style="font-size:10px;color:var(--label-secondary);margin-top:2px;">/ ${targets.fatsTarget}g</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- MEALS -->
+      <div style="background:var(--card);border-radius:20px;padding:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <p style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">MEALS</p>
+          <button onclick="openAddMealModal()" style="background:#FFD60A;border:none;border-radius:10px;padding:6px 14px;font-size:12px;font-weight:800;color:#111;cursor:pointer;">+ Add Food</button>
+        </div>
+        ${mealTypes.map(mealType => {
+          const meal = nd.meals.find(m => m.name === mealType);
+          const foods = meal?.foods || [];
+          const mealCals = foods.reduce((a, f) => a + (f.calories || 0), 0);
+          return `
+            <div style="margin-bottom:16px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <p style="font-size:14px;font-weight:700;color:var(--text);">${mealType}</p>
+                <p style="font-size:12px;color:var(--label-secondary);">${foods.length > 0 ? Math.round(mealCals) + ' kcal' : ''}</p>
+              </div>
+              ${foods.length === 0
+                ? `<p style="font-size:12px;color:var(--label-secondary);padding:8px 0;">No foods logged</p>`
+                : foods.map((f, fi) => `
+                  <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">
+                    <div>
+                      <p style="font-size:13px;font-weight:600;color:var(--text);">${f.name}</p>
+                      <p style="font-size:11px;color:var(--label-secondary);">${Math.round(f.calories)} kcal · P:${Math.round(f.protein)}g C:${Math.round(f.carbs)}g F:${Math.round(f.fats)}g</p>
+                    </div>
+                    <button onclick="deleteFoodItem('${mealType}', ${fi})" style="background:none;border:none;font-size:16px;cursor:pointer;color:var(--label-secondary);">×</button>
+                  </div>
+                `).join('')
+              }
+            </div>
+          `;
+        }).join('')}
+        ${nd.meals.length === 0 && !nd.meals.some(m => m.foods?.length > 0)
+          ? '' : ''}
+      </div>
+
+      <!-- WATER -->
+      <div style="background:var(--card);border-radius:20px;padding:20px;">
+        <p style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:12px;">WATER</p>
+        <p style="font-size:28px;font-weight:800;color:var(--text);margin-bottom:4px;">${waterLitres.toFixed(1)}L <span style="font-size:14px;color:var(--label-secondary);font-weight:500;">/ ${waterTargetL}L</span></p>
+        <div style="background:var(--border);border-radius:8px;height:8px;margin-bottom:16px;">
+          <div style="background:#38BDF8;height:8px;border-radius:8px;width:${Math.min(100, Math.round((waterLitres / waterTargetL) * 100))}%;transition:width 0.3s;"></div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button onclick="addWaterNutrition(250)" style="flex:1;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:12px;font-size:13px;font-weight:700;color:var(--text);cursor:pointer;">+250ml</button>
+          <button onclick="addWaterNutrition(500)" style="flex:1;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:12px;font-size:13px;font-weight:700;color:var(--text);cursor:pointer;">+500ml</button>
+          <button onclick="addWaterNutrition(1000)" style="flex:1;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:12px;font-size:13px;font-weight:700;color:var(--text);cursor:pointer;">+1L</button>
+        </div>
+      </div>
+
+      <!-- SUPPLEMENTS -->
+      <div style="background:var(--card);border-radius:20px;padding:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <p style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);">SUPPLEMENTS</p>
+          <button onclick="openAddSupplementModal()" style="background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:6px 14px;font-size:12px;font-weight:700;color:var(--text);cursor:pointer;">+ Add</button>
+        </div>
+        <div id="supplements-list">
+          ${renderSupplementsList()}
+        </div>
+      </div>
+
+      <!-- MEAL IDEAS -->
+      <div style="background:var(--card);border-radius:20px;padding:20px;">
+        <p style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:12px;">MEAL IDEAS</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          ${MEAL_IDEAS.map(idea => `
+            <div onclick="prefillMealIdea('${idea.name}')" style="display:flex;justify-content:space-between;align-items:center;background:var(--bg);border-radius:14px;padding:14px;cursor:pointer;">
+              <div>
+                <p style="font-size:14px;font-weight:700;color:var(--text);">${idea.name}</p>
+                <p style="font-size:12px;color:var(--label-secondary);">${idea.calories} kcal · P:${idea.protein}g C:${idea.carbs}g F:${idea.fats}g</p>
+              </div>
+              <span style="color:var(--label-secondary);">›</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+    </div>
+  `;
+}
+
+const MEAL_IDEAS = [
+  { name: 'High Protein Chicken Bowl', calories: 520, protein: 48, carbs: 45, fats: 12 },
+  { name: 'Salmon & Rice Bowl', calories: 580, protein: 42, carbs: 52, fats: 16 },
+  { name: 'Protein Smoothie', calories: 380, protein: 35, carbs: 38, fats: 8 },
+  { name: 'Greek Omelette', calories: 340, protein: 28, carbs: 8, fats: 22 },
+  { name: 'Tuna Pasta', calories: 490, protein: 38, carbs: 58, fats: 9 }
+];
+
+window.changeNutritionDate = async function(direction) {
+  const date = new Date(selectedNutritionDate);
+  date.setDate(date.getDate() + direction);
+  const today = new Date();
+  today.setHours(23,59,59,999);
+  if (date > today) return;
+  selectedNutritionDate = date.toISOString().split('T')[0];
+  await renderNutritionTab();
+};
+
+window.openAddMealModal = function(prefill) {
+  const existing = document.getElementById('add-meal-modal');
+  if (existing) existing.remove();
+  
+  const modal = document.createElement('div');
+  modal.id = 'add-meal-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:60000;display:flex;align-items:flex-end;justify-content:center;';
+  modal.innerHTML = `
+    <div style="background:var(--card);border-radius:24px 24px 0 0;padding:28px 24px 40px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;">
+      <h3 style="font-size:18px;font-weight:800;margin-bottom:20px;">Add Food</h3>
+      
+      <p style="font-size:12px;font-weight:700;color:var(--label-secondary);margin-bottom:8px;">MEAL</p>
+      <select id="meal-type-select" style="width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:12px;font-size:14px;color:var(--text);margin-bottom:14px;box-sizing:border-box;">
+        <option>Breakfast</option>
+        <option>Lunch</option>
+        <option>Dinner</option>
+        <option>Snacks</option>
+      </select>
+
+      <input id="food-name" type="text" placeholder="Food name" value="${prefill?.name || ''}"
+        style="width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:12px;font-size:14px;color:var(--text);margin-bottom:14px;box-sizing:border-box;">
+
+      <p style="font-size:12px;font-weight:700;color:var(--label-secondary);margin-bottom:8px;">ENTRY TYPE</p>
+      <div style="display:flex;gap:8px;margin-bottom:14px;">
+        <button onclick="setEntryType('serving', this)" id="type-serving" style="flex:1;background:#FFD60A;color:#111;border:none;border-radius:10px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;">Per Serving</button>
+        <button onclick="setEntryType('100g', this)" id="type-100g" style="flex:1;background:var(--bg);color:var(--text);border:1.5px solid var(--border);border-radius:10px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;">Per 100g</button>
+      </div>
+
+      <div id="grams-row" style="display:none;margin-bottom:14px;">
+        <p style="font-size:12px;font-weight:700;color:var(--label-secondary);margin-bottom:8px;">GRAMS EATEN</p>
+        <input id="food-grams" type="number" placeholder="e.g. 150" oninput="recalcPer100g()"
+          style="width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:12px;font-size:14px;color:var(--text);box-sizing:border-box;">
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
+        <div>
+          <p style="font-size:11px;font-weight:700;color:var(--label-secondary);margin-bottom:6px;">CALORIES</p>
+          <input id="food-calories" type="number" placeholder="0" value="${prefill?.calories || ''}"
+            style="width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:12px;font-size:14px;color:var(--text);box-sizing:border-box;">
+        </div>
+        <div>
+          <p style="font-size:11px;font-weight:700;color:#6366F1;margin-bottom:6px;">PROTEIN (g)</p>
+          <input id="food-protein" type="number" placeholder="0" value="${prefill?.protein || ''}"
+            style="width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:12px;font-size:14px;color:var(--text);box-sizing:border-box;">
+        </div>
+        <div>
+          <p style="font-size:11px;font-weight:700;color:#22C55E;margin-bottom:6px;">CARBS (g)</p>
+          <input id="food-carbs" type="number" placeholder="0" value="${prefill?.carbs || ''}"
+            style="width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:12px;font-size:14px;color:var(--text);box-sizing:border-box;">
+        </div>
+        <div>
+          <p style="font-size:11px;font-weight:700;color:#FF9F0A;margin-bottom:6px;">FATS (g)</p>
+          <input id="food-fats" type="number" placeholder="0" value="${prefill?.fats || ''}"
+            style="width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:12px;font-size:14px;color:var(--text);box-sizing:border-box;">
+        </div>
+      </div>
+
+      <button onclick="saveFoodItem()" style="width:100%;background:#FFD60A;border:none;border-radius:14px;padding:16px;font-size:15px;font-weight:800;color:#111;cursor:pointer;margin-bottom:8px;">Save Food</button>
+      <button onclick="document.getElementById('add-meal-modal').remove()" style="width:100%;background:none;border:none;padding:12px;font-size:14px;color:var(--label-secondary);cursor:pointer;">Cancel</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  window._entryType = 'serving';
+};
+
+window.setEntryType = function(type, el) {
+  window._entryType = type;
+  document.getElementById('type-serving').style.background = type === 'serving' ? '#FFD60A' : 'var(--bg)';
+  document.getElementById('type-serving').style.color = type === 'serving' ? '#111' : 'var(--text)';
+  document.getElementById('type-100g').style.background = type === '100g' ? '#FFD60A' : 'var(--bg)';
+  document.getElementById('type-100g').style.color = type === '100g' ? '#111' : 'var(--text)';
+  document.getElementById('grams-row').style.display = type === '100g' ? 'block' : 'none';
+};
+
+window.recalcPer100g = function() {
+  const grams = parseFloat(document.getElementById('food-grams')?.value) || 0;
+  const factor = grams / 100;
+  const cals = parseFloat(document.getElementById('food-calories')?.value) || 0;
+  const prot = parseFloat(document.getElementById('food-protein')?.value) || 0;
+  const carbs = parseFloat(document.getElementById('food-carbs')?.value) || 0;
+  const fats = parseFloat(document.getElementById('food-fats')?.value) || 0;
+  if (factor > 0) {
+    document.getElementById('food-calories').value = Math.round(cals * factor);
+    document.getElementById('food-protein').value = Math.round(prot * factor * 10) / 10;
+    document.getElementById('food-carbs').value = Math.round(carbs * factor * 10) / 10;
+    document.getElementById('food-fats').value = Math.round(fats * factor * 10) / 10;
+  }
+};
+
+window.saveFoodItem = async function() {
+  const name = document.getElementById('food-name')?.value?.trim();
+  const calories = parseFloat(document.getElementById('food-calories')?.value) || 0;
+  const protein = parseFloat(document.getElementById('food-protein')?.value) || 0;
+  const carbs = parseFloat(document.getElementById('food-carbs')?.value) || 0;
+  const fats = parseFloat(document.getElementById('food-fats')?.value) || 0;
+  const mealType = document.getElementById('meal-type-select')?.value || 'Breakfast';
+
+  if (!name) { showToast('Enter food name', 'error', 2000); return; }
+
+  const food = { name, calories, protein, carbs, fats };
+  let meal = todayNutrition.meals.find(m => m.name === mealType);
+  if (!meal) {
+    meal = { id: Date.now(), name: mealType, foods: [] };
+    todayNutrition.meals.push(meal);
+  }
+  meal.foods.push(food);
+
+  await saveNutritionForDate(selectedNutritionDate);
+  document.getElementById('add-meal-modal').remove();
+  showToast('Food logged!', 'success', 1500);
+  await renderNutritionTab();
+};
+
+window.deleteFoodItem = async function(mealType, foodIndex) {
+  const meal = todayNutrition.meals.find(m => m.name === mealType);
+  if (!meal) return;
+  meal.foods.splice(foodIndex, 1);
+  if (meal.foods.length === 0) {
+    todayNutrition.meals = todayNutrition.meals.filter(m => m.name !== mealType);
+  }
+  await saveNutritionForDate(selectedNutritionDate);
+  await renderNutritionTab();
+};
+
+window.addWaterNutrition = async function(ml) {
+  const addLitres = ml / 1000;
+  todayNutrition.water_litres = Math.round(((todayNutrition.water_litres || 0) + addLitres) * 100) / 100;
+  await saveNutritionForDate(selectedNutritionDate);
+  await renderNutritionTab();
+  showToast(`+${ml}ml added`, 'success', 1200);
+};
+
+window.prefillMealIdea = function(name) {
+  const idea = MEAL_IDEAS.find(m => m.name === name);
+  if (!idea) return;
+  openAddMealModal(idea);
+};
+
+const DEFAULT_SUPPLEMENTS = [
+  { id: 's1', name: 'Creatine', dose: '5g' },
+  { id: 's2', name: 'Whey Protein', dose: '1 scoop' },
+  { id: 's3', name: 'Omega 3', dose: '1 capsule' },
+  { id: 's4', name: 'Vitamin D', dose: '1 capsule' }
+];
+
+function getUserSupplements() {
+  return settings.userSupplements || DEFAULT_SUPPLEMENTS;
+}
+
+function getTodaySupplementLog() {
+  return todayNutrition.supplements || [];
+}
+
+function renderSupplementsList() {
+  const supplements = getUserSupplements();
+  const log = getTodaySupplementLog();
+  if (supplements.length === 0) {
+    return `<p style="font-size:13px;color:var(--label-secondary);">No supplements added yet.</p>`;
+  }
+  return supplements.map(s => {
+    const taken = log.find(l => l.supplementId === s.id)?.taken || false;
+    return `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);">
+        <div>
+          <p style="font-size:14px;font-weight:${taken ? '700' : '600'};color:${taken ? 'var(--text)' : 'var(--label-secondary)'};">${s.name}</p>
+          <p style="font-size:12px;color:var(--label-secondary);">${s.dose}</p>
+        </div>
+        <button onclick="toggleSupplement('${s.id}')" style="
+          background:${taken ? '#30D158' : 'var(--bg)'};
+          border:1.5px solid ${taken ? '#30D158' : 'var(--border)'};
+          border-radius:20px;
+          padding:6px 16px;
+          font-size:12px;
+          font-weight:700;
+          color:${taken ? '#fff' : 'var(--label-secondary)'};
+          cursor:pointer;
+          transition:all 0.2s;
+        ">${taken ? '✓ Taken' : 'Take'}</button>
+      </div>
+    `;
+  }).join('');
+}
+
+window.toggleSupplement = async function(supplementId) {
+  let log = todayNutrition.supplements || [];
+  const existing = log.find(l => l.supplementId === supplementId);
+  if (existing) {
+    existing.taken = !existing.taken;
+    existing.timeTaken = existing.taken ? new Date().toISOString() : null;
+  } else {
+    log.push({ supplementId, taken: true, timeTaken: new Date().toISOString() });
+  }
+  todayNutrition.supplements = log;
+  await saveNutritionForDate(selectedNutritionDate);
+  const container = document.getElementById('supplements-list');
+  if (container) container.innerHTML = renderSupplementsList();
+};
+
+window.openAddSupplementModal = function() {
+  const existing = document.getElementById('add-supplement-modal');
+  if (existing) existing.remove();
+  const modal = document.createElement('div');
+  modal.id = 'add-supplement-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:60000;display:flex;align-items:flex-end;justify-content:center;';
+  modal.innerHTML = `
+    <div style="background:var(--card);border-radius:24px 24px 0 0;padding:28px 24px 40px;width:100%;max-width:480px;">
+      <h3 style="font-size:18px;font-weight:800;margin-bottom:20px;">Add Supplement</h3>
+      <input id="supp-name" type="text" placeholder="Supplement name"
+        style="width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:12px;font-size:14px;color:var(--text);margin-bottom:12px;box-sizing:border-box;">
+      <div style="display:flex;gap:10px;margin-bottom:20px;">
+        <input id="supp-dose" type="text" placeholder="Dose (e.g. 5)"
+          style="flex:1;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:12px;font-size:14px;color:var(--text);box-sizing:border-box;">
+        <select id="supp-unit" style="flex:1;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:12px;font-size:14px;color:var(--text);">
+          <option>g</option>
+          <option>mg</option>
+          <option>capsule</option>
+          <option>scoop</option>
+          <option>tablet</option>
+        </select>
+      </div>
+      <button onclick="saveNewSupplement()" style="width:100%;background:#FFD60A;border:none;border-radius:14px;padding:16px;font-size:15px;font-weight:800;color:#111;cursor:pointer;margin-bottom:8px;">Add Supplement</button>
+      <button onclick="document.getElementById('add-supplement-modal').remove()" style="width:100%;background:none;border:none;padding:12px;font-size:14px;color:var(--label-secondary);cursor:pointer;">Cancel</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+};
+
+window.saveNewSupplement = async function() {
+  const name = document.getElementById('supp-name')?.value?.trim();
+  const dose = document.getElementById('supp-dose')?.value?.trim();
+  const unit = document.getElementById('supp-unit')?.value || 'g';
+  if (!name || !dose) { showToast('Fill in all fields', 'error', 2000); return; }
+  const newSupp = { id: 'supp_' + Date.now(), name, dose: dose + ' ' + unit };
+  if (!settings.userSupplements) settings.userSupplements = [...DEFAULT_SUPPLEMENTS];
+  settings.userSupplements.push(newSupp);
+  await PG.profile.save(settings);
+  document.getElementById('add-supplement-modal').remove();
+  showToast('Supplement added', 'success', 1500);
+  const container = document.getElementById('supplements-list');
+  if (container) container.innerHTML = renderSupplementsList();
+};
 
 function getNutritionViewDateStr(){
     const d=new Date();
@@ -2106,8 +2868,10 @@ async function updateHome() {
     if (subEl) subEl.textContent = greetSub;
 
     // Daily Score (Workout 25 + Cals 25 + Steps 25 + Protein 25)
-    const todayWorkoutDone = workoutHistory.some(w => w.date === new Date().toLocaleDateString('en-GB') && w.type !== 'rest');
-    const workoutScore = todayWorkoutDone ? 25 : 0;
+    const todayStr = new Date().toLocaleDateString('en-GB');
+    const todayWorkoutDone = workoutHistory.some(w => w.date === todayStr && w.type !== 'rest');
+    const todayCardio = (Array.isArray(cardioHistory) ? cardioHistory : []).some(c => c.date === todayStr);
+    const workoutScore = todayWorkoutDone ? 25 : todayCardio ? 15 : 0;
     const calsScore = cals >= calTarget * 0.8 ? 25 : Math.round((cals / calTarget) * 25);
     const stepsScore = steps >= (settings.stepsTarget || 8000) ? 25 : Math.round((steps / (settings.stepsTarget || 8000)) * 25);
     const proteinScore = protein >= proteinTarget * 0.8 ? 25 : Math.round((protein / proteinTarget) * 25);
@@ -2202,40 +2966,47 @@ async function updateHome() {
         d2.setDate(now2.getDate() + mondayOffset2 + i);
         const ds2 = d2.toLocaleDateString('en-GB');
         const isToday2 = i === (dow2 === 0 ? 6 : dow2 - 1);
+        const isPast = d2 < new Date(now2.setHours(0,0,0,0));
 
-        const isRestDay = !!(workoutHistory.find(w => w.date === ds2 && w.type === 'rest'));
-        const isWorkoutDone = !!(
-          workoutHistory.find(w => w.date === ds2 && w.type !== 'rest') ||
-          cardioHistory.find(c => c.date === ds2)
-        );
+        const isWorkoutDone = workoutHistory.some(w => w.date === ds2 && w.type !== 'rest');
+        const isRestDay = workoutHistory.some(w => w.date === ds2 && w.type === 'rest');
+        const isScheduled = (Array.isArray(savedRoutines) ? savedRoutines : [])
+          .some(r => r.scheduled_days && r.scheduled_days.includes(
+            ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d2.getDay()]
+          ));
+        const isMissed = isPast && isScheduled && !isWorkoutDone && !isRestDay && !isToday2;
 
         if (isWorkoutDone) weekDone++;
 
-        const h = isWorkoutDone ? 40 : isRestDay ? 20 : isToday2 ? 24 : 12;
+        const h = isWorkoutDone ? 40 : isRestDay ? 32 : isToday2 ? 28 : isMissed ? 20 : 16;
         const color = isWorkoutDone
-          ? '#22c55e'
+          ? '#30D158'
           : isRestDay
-            ? '#6E6E73'
+            ? '#A855F7'
             : isToday2
               ? '#FFD60A'
-              : 'var(--border)';
+              : isMissed
+                ? 'rgba(239,68,68,0.35)'
+                : 'var(--border)';
 
-        bars.push(`<div style="flex:1;height:${h}px;background:${color};border-radius:4px;align-self:flex-end;"></div>`);
+        const label = isRestDay ? '🌙' : '';
+        bars.push(`
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px;">
+        <span style="font-size:9px;">${label}</span>
+        <div style="width:100%;height:${h}px;background:${color};border-radius:4px;"></div>
+      </div>
+    `);
       }
       homeWeeklyBars.innerHTML = bars.join('');
 
-      const denominator = (() => {
-        const planned = (Array.isArray(savedRoutines) ? savedRoutines : [])
-          .reduce((a, r) => a + (r.scheduled_days ? r.scheduled_days.length : 0), 0);
-        return planned > 0 ? Math.min(planned, 7) : 7;
-      })();
-      const consistency2 = denominator > 0 
-        ? Math.round((weekDone / denominator) * 100) 
-        : 0;
+      const totalPlanned = (Array.isArray(savedRoutines) ? savedRoutines : [])
+        .reduce((a, r) => a + (r.scheduled_days ? r.scheduled_days.length : 0), 0);
+      const denominator = totalPlanned > 0 ? Math.min(totalPlanned, 7) : 7;
+      const consistency2 = Math.round((weekDone / denominator) * 100);
       setText('home-weekly-consistency', consistency2 + '%');
-      setText('home-weekly-text', weekDone > 0 
+      setText('home-weekly-text', totalPlanned > 0
         ? `${weekDone} of ${denominator} workouts completed`
-        : `Set up your plan in the Train tab`);
+        : 'Set up your plan in the Train tab');
     }
 
     // Home today's plan card
@@ -2922,6 +3693,12 @@ async function loadFromStorage() {
             custom_supplements:Array.isArray(profile.custom_supplements)?profile.custom_supplements:[],
             supplements_catalog:Array.isArray(profile.supplements_catalog)?profile.supplements_catalog:undefined
         };
+        if (settings.activeProgram && settings.activeProgram.workouts) {
+          savedRoutines = settings.activeProgram.workouts.map(w => ({
+            ...w,
+            scheduled_days: w.scheduledDays || w.scheduled_days || []
+          }));
+        }
         selectedLang=settings.language||'en';
         populateSettingsFields(settings);
         applyTranslations();checkBadges();updateHome();
@@ -3777,7 +4554,597 @@ async function saveCardioLog() {
   }
 }
 
-function showChooseProgram() { showScreen('screen-train'); }
+function showChooseProgram() {
+  const existing = document.getElementById('program-select-modal');
+  if (existing) { existing.remove(); }
+  
+  let selectedGoal = '';
+  let selectedProgram = null;
+  
+  const modal = document.createElement('div');
+  modal.id = 'program-select-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:var(--bg);z-index:60000;overflow-y:auto;padding:24px;box-sizing:border-box;';
+  
+  modal.innerHTML = `
+    <div style="max-width:480px;margin:0 auto;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px;">
+        <button onclick="document.getElementById('program-select-modal').remove()" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--text);">←</button>
+        <h2 style="font-size:22px;font-weight:800;margin:0;">Choose Program</h2>
+      </div>
+
+      <p style="font-size:13px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:12px;">YOUR GOAL</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;" id="goal-grid">
+        ${[
+          { id: 'fatloss', label: 'Fat Loss', icon: '🔥' },
+          { id: 'muscle', label: 'Build Muscle', icon: '💪' },
+          { id: 'hybrid', label: 'Hybrid', icon: '⚡' },
+          { id: 'fitness', label: 'Beginner', icon: '🌱' }
+        ].map(g => `
+          <div onclick="selectProgramGoal('${g.id}', this)" style="background:var(--card);border:2px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;text-align:center;">
+            <div style="font-size:24px;margin-bottom:6px;">${g.icon}</div>
+            <div style="font-size:13px;font-weight:700;color:var(--text);">${g.label}</div>
+          </div>
+        `).join('')}
+      </div>
+
+      <p style="font-size:13px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:12px;">PROGRAMS</p>
+      <div id="program-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
+        ${PROGRAM_TEMPLATES.map(p => `
+          <div onclick="selectProgram('${p.id}', this)" id="prog-card-${p.id}" style="background:var(--card);border:2px solid var(--border);border-radius:16px;padding:16px;cursor:pointer;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+              <div>
+                <p style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;">${p.name}</p>
+                <p style="font-size:12px;color:var(--label-secondary);margin-bottom:8px;">${p.description}</p>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                  <span style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:3px 8px;font-size:11px;font-weight:600;color:var(--label-secondary);">${p.durationWeeks} weeks</span>
+                  <span style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:3px 8px;font-size:11px;font-weight:600;color:var(--label-secondary);">${p.workoutsPerWeek}x/week</span>
+                  <span style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:3px 8px;font-size:11px;font-weight:600;color:var(--label-secondary);">${p.difficulty}</span>
+                </div>
+              </div>
+              <span id="prog-check-${p.id}" style="font-size:18px;color:#FFD60A;opacity:0;">✓</span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <button onclick="confirmProgramSelection()" id="start-program-btn" style="width:100%;background:#FFD60A;border:none;border-radius:16px;padding:18px;font-size:16px;font-weight:800;color:#111;cursor:pointer;opacity:0.4;pointer-events:none;">
+        Start Program
+      </button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
+window.selectProgramGoal = function(goalId, el) {
+  document.querySelectorAll('#goal-grid > div').forEach(d => {
+    d.style.borderColor = 'var(--border)';
+    d.style.background = 'var(--card)';
+  });
+  el.style.borderColor = '#FFD60A';
+  el.style.background = 'rgba(255,214,10,0.08)';
+  
+  // Filter programs
+  const list = document.getElementById('program-list');
+  PROGRAM_TEMPLATES.forEach(p => {
+    const card = document.getElementById('prog-card-' + p.id);
+    if (card) {
+      card.style.display = (goalId === 'fitness' && p.goal === 'fitness') ||
+        (goalId !== 'fitness' && p.goal === goalId) ||
+        goalId === '' ? 'block' : 'none';
+    }
+  });
+};
+
+window.selectProgram = function(programId, el) {
+  document.querySelectorAll('#program-list > div').forEach(d => {
+    d.style.borderColor = 'var(--border)';
+  });
+  el.style.borderColor = '#FFD60A';
+  document.querySelectorAll('[id^="prog-check-"]').forEach(c => c.style.opacity = '0');
+  const check = document.getElementById('prog-check-' + programId);
+  if (check) check.style.opacity = '1';
+  
+  window._selectedProgramId = programId;
+  const btn = document.getElementById('start-program-btn');
+  if (btn) { btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; }
+};
+
+async function confirmProgramSelection() {
+  const programId = window._selectedProgramId;
+  if (!programId) return;
+  const template = PROGRAM_TEMPLATES.find(p => p.id === programId);
+  if (!template) return;
+
+  settings.activeProgram = {
+    ...template,
+    currentWeek: 1,
+    startDate: new Date().toLocaleDateString('en-GB'),
+    completedWorkouts: []
+  };
+
+  // Also update savedRoutines for Home compatibility
+  savedRoutines = template.workouts.map(w => ({
+    ...w,
+    scheduled_days: w.scheduledDays
+  }));
+
+  await PG.profile.save(settings);
+  document.getElementById('program-select-modal').remove();
+  showToast(`${template.name} started!`, 'success', 2500);
+  renderProgramTab();
+  if (typeof updateHome === 'function') updateHome();
+}
+
+function renderExercisesTab() {
+  const container = document.getElementById('exercises-tab-content');
+  if (!container) return;
+
+  const muscles = ['All', 'Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core', 'Cardio'];
+  
+  container.innerHTML = `
+    <div style="padding:16px;">
+      <input 
+        id="exercise-search" 
+        type="text" 
+        placeholder="Search exercises..." 
+        oninput="filterExercises()"
+        style="width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:12px 16px;font-size:14px;color:var(--text);box-sizing:border-box;margin-bottom:16px;"
+      >
+      <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:12px;margin-bottom:16px;scrollbar-width:none;" id="muscle-filter-row">
+        ${muscles.map(m => `
+          <button 
+            onclick="setMuscleFilter('${m}', this)" 
+            class="muscle-filter-btn"
+            style="flex-shrink:0;background:${m === 'All' ? '#FFD60A' : 'var(--card)'};color:${m === 'All' ? '#111' : 'var(--text)'};border:1.5px solid ${m === 'All' ? '#FFD60A' : 'var(--border)'};border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">
+            ${m}
+          </button>
+        `).join('')}
+      </div>
+      <div id="exercise-list-container" style="display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+  `;
+  
+  window._muscleFilter = 'All';
+  renderExerciseList();
+}
+
+window.setMuscleFilter = function(muscle, el) {
+  document.querySelectorAll('.muscle-filter-btn').forEach(b => {
+    b.style.background = 'var(--card)';
+    b.style.color = 'var(--text)';
+    b.style.borderColor = 'var(--border)';
+  });
+  el.style.background = '#FFD60A';
+  el.style.color = '#111';
+  el.style.borderColor = '#FFD60A';
+  window._muscleFilter = muscle;
+  renderExerciseList();
+};
+
+window.filterExercises = function() {
+  renderExerciseList();
+};
+
+function renderExerciseList() {
+  const container = document.getElementById('exercise-list-container');
+  if (!container) return;
+  const search = (document.getElementById('exercise-search')?.value || '').toLowerCase();
+  const muscle = window._muscleFilter || 'All';
+  
+  const filtered = EXERCISE_LIBRARY.filter(e => {
+    const matchMuscle = muscle === 'All' || e.muscleGroup === muscle;
+    const matchSearch = !search || e.name.toLowerCase().includes(search) || e.muscleGroup.toLowerCase().includes(search);
+    return matchMuscle && matchSearch;
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<p style="text-align:center;color:var(--label-secondary);padding:32px 0;">No exercises found</p>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map(e => `
+    <div onclick="openExerciseDetail('${e.name}')" style="background:var(--card);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:14px;">
+      <div style="width:44px;height:44px;background:var(--bg);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;">
+        ${getExerciseIcon(e.muscleGroup)}
+      </div>
+      <div style="flex:1;min-width:0;">
+        <p style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:2px;">${e.name}</p>
+        <p style="font-size:12px;color:var(--label-secondary);">${e.muscleGroup} · ${e.equipment}</p>
+      </div>
+      <span style="color:var(--label-secondary);font-size:16px;">›</span>
+    </div>
+  `).join('');
+}
+
+function getExerciseIcon(muscleGroup) {
+  const icons = {
+    'Chest': '🫁', 'Back': '🔙', 'Legs': '🦵',
+    'Shoulders': '💪', 'Arms': '💪', 'Core': '⬡',
+    'Cardio': '❤️'
+  };
+  return icons[muscleGroup] || '💪';
+}
+
+window.openExerciseDetail = function(name) {
+  const exercise = EXERCISE_LIBRARY.find(e => e.name === name);
+  if (!exercise) return;
+  
+  const modal = document.createElement('div');
+  modal.id = 'exercise-detail-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:var(--bg);z-index:70000;overflow-y:auto;padding:24px;box-sizing:border-box;';
+  modal.innerHTML = `
+    <div style="max-width:480px;margin:0 auto;">
+      <button onclick="document.getElementById('exercise-detail-modal').remove()" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--text);margin-bottom:20px;display:block;">←</button>
+      <div style="background:var(--card);border-radius:20px;padding:24px;margin-bottom:16px;text-align:center;">
+        <div style="font-size:48px;margin-bottom:12px;">${getExerciseIcon(exercise.muscleGroup)}</div>
+        <h2 style="font-size:22px;font-weight:800;margin-bottom:8px;">${exercise.name}</h2>
+        <div style="display:flex;justify-content:center;gap:8px;">
+          <span style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:600;color:var(--label-secondary);">${exercise.muscleGroup}</span>
+          <span style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:600;color:var(--label-secondary);">${exercise.equipment}</span>
+        </div>
+      </div>
+      <div style="background:var(--card);border-radius:20px;padding:24px;margin-bottom:16px;">
+        <p style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:10px;">HOW TO DO IT</p>
+        <p style="font-size:15px;line-height:1.6;color:var(--text);">${exercise.instructions}</p>
+      </div>
+      <button onclick="document.getElementById('exercise-detail-modal').remove()" style="width:100%;background:#FFD60A;border:none;border-radius:16px;padding:16px;font-size:15px;font-weight:800;color:#111;cursor:pointer;">
+        Got it
+      </button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+};
+
+function renderWorkoutsTab() {
+  const container = document.getElementById('workouts-tab-content');
+  if (!container) return;
+
+  const routines = Array.isArray(savedRoutines) ? savedRoutines : [];
+  const program = settings.activeProgram;
+  const strengthHistory = (Array.isArray(workoutHistory) ? workoutHistory : []).filter(w => w.type !== 'rest' && w.type !== 'cardio');
+  const cardioHist = Array.isArray(cardioHistory) ? cardioHistory : [];
+  const units = settings.units || 'kg';
+
+  container.innerHTML = `
+    <div style="padding:16px;display:flex;flex-direction:column;gap:16px;">
+
+      ${program ? `
+      <div>
+        <p style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:10px;">PROGRAM WORKOUTS</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          ${program.workouts.map(w => `
+            <div style="background:var(--card);border-radius:16px;padding:16px;cursor:pointer;" onclick="openWorkoutDetail('${w.id}')">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                  <p style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:2px;">${w.name}</p>
+                  <p style="font-size:12px;color:var(--label-secondary);">${w.exercises.length} exercises · ${w.duration} min · ~${w.calories} kcal</p>
+                </div>
+                <button onclick="event.stopPropagation();startWorkoutSession(settings.activeProgram.workouts.find(x=>x.id==='${w.id}'))" style="background:#FFD60A;border:none;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:800;color:#111;cursor:pointer;">Start</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      ` : ''}
+
+      <div>
+        <p style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:10px;">QUICK WORKOUTS</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div onclick="showQuickWorkout()" style="background:var(--card);border-radius:16px;padding:16px;cursor:pointer;display:flex;align-items:center;gap:12px;">
+            <span style="font-size:24px;">💪</span>
+            <div><p style="font-size:14px;font-weight:700;color:var(--text);">Strength</p><p style="font-size:12px;color:var(--label-secondary);">Custom workout</p></div>
+          </div>
+          <div onclick="showCardioLog()" style="background:var(--card);border-radius:16px;padding:16px;cursor:pointer;display:flex;align-items:center;gap:12px;">
+            <span style="font-size:24px;">🏃</span>
+            <div><p style="font-size:14px;font-weight:700;color:var(--text);">Cardio</p><p style="font-size:12px;color:var(--label-secondary);">Log cardio session</p></div>
+          </div>
+          <div onclick="startQuickMobility()" style="background:var(--card);border-radius:16px;padding:16px;cursor:pointer;display:flex;align-items:center;gap:12px;">
+            <span style="font-size:24px;">🧘</span>
+            <div><p style="font-size:14px;font-weight:700;color:var(--text);">Mobility</p><p style="font-size:12px;color:var(--label-secondary);">Stretch and recover</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <p style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:10px;">STRENGTH HISTORY</p>
+        ${strengthHistory.length === 0 
+          ? `<p style="color:var(--label-secondary);font-size:13px;text-align:center;padding:20px 0;">Complete your first workout to see history</p>`
+          : strengthHistory.slice(0, 10).map(w => `
+            <div style="background:var(--card);border-radius:14px;padding:14px 16px;margin-bottom:8px;">
+              <div style="display:flex;justify-content:space-between;">
+                <p style="font-size:14px;font-weight:700;color:var(--text);">${w.name || 'Workout'}</p>
+                <p style="font-size:12px;color:var(--label-secondary);">${w.date}</p>
+              </div>
+              <p style="font-size:12px;color:var(--label-secondary);">${w.duration ? w.duration + ' min' : ''} ${w.totalSets ? '· ' + w.totalSets + ' sets' : ''}</p>
+            </div>
+          `).join('')
+        }
+      </div>
+
+      <div>
+        <p style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:10px;">CARDIO HISTORY</p>
+        ${cardioHist.length === 0
+          ? `<p style="color:var(--label-secondary);font-size:13px;text-align:center;padding:20px 0;">No cardio sessions logged yet</p>`
+          : cardioHist.slice(0, 10).map(c => `
+            <div style="background:var(--card);border-radius:14px;padding:14px 16px;margin-bottom:8px;">
+              <div style="display:flex;justify-content:space-between;">
+                <p style="font-size:14px;font-weight:700;color:var(--text);">${c.name || c.cardio_type || 'Cardio'}</p>
+                <p style="font-size:12px;color:var(--label-secondary);">${c.date}</p>
+              </div>
+              <p style="font-size:12px;color:var(--label-secondary);">
+                ${c.duration ? c.duration + ' min' : ''}
+                ${c.distance ? '· ' + c.distance + ' km' : ''}
+                ${c.calories ? '· ' + c.calories + ' kcal' : ''}
+              </p>
+            </div>
+          `).join('')
+        }
+      </div>
+    </div>
+  `;
+}
+
+window.openWorkoutDetail = function(workoutId) {
+  const program = settings.activeProgram;
+  if (!program) return;
+  const workout = program.workouts.find(w => w.id === workoutId);
+  if (!workout) return;
+
+  const modal = document.createElement('div');
+  modal.id = 'workout-detail-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:var(--bg);z-index:70000;overflow-y:auto;box-sizing:border-box;';
+  modal.innerHTML = `
+    <div style="max-width:480px;margin:0 auto;padding:24px;">
+      <button onclick="document.getElementById('workout-detail-modal').remove()" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--text);margin-bottom:20px;display:block;">←</button>
+      <div style="background:var(--card);border-radius:20px;padding:20px;margin-bottom:16px;">
+        <h2 style="font-size:22px;font-weight:800;margin-bottom:4px;">${workout.name}</h2>
+        <p style="font-size:13px;color:var(--label-secondary);margin-bottom:12px;">${workout.focus}</p>
+        <div style="display:flex;gap:12px;">
+          <span style="font-size:13px;color:var(--label-secondary);">⏱ ${workout.duration} min</span>
+          <span style="font-size:13px;color:var(--label-secondary);">🔥 ~${workout.calories} kcal</span>
+        </div>
+      </div>
+      <p style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:10px;">EXERCISES</p>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;">
+        ${workout.exercises.map((e, i) => {
+          const lastPerf = getLastPerformance(e.name);
+          return `
+            <div style="background:var(--card);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px;">
+              <span style="font-size:16px;font-weight:800;color:var(--label-secondary);width:20px;">${i+1}</span>
+              <div style="flex:1;">
+                <p style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:2px;">${e.name}</p>
+                <p style="font-size:12px;color:var(--label-secondary);">${e.sets} sets × ${e.repsRange}</p>
+                <p style="font-size:11px;color:${lastPerf ? '#FFD60A' : 'var(--label-secondary)'};">${lastPerf ? 'Last: ' + lastPerf : 'First time'}</p>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+      <button onclick="document.getElementById('workout-detail-modal').remove();startWorkoutSession(settings.activeProgram.workouts.find(w=>w.id==='${workout.id}'))" style="width:100%;background:#FFD60A;border:none;border-radius:16px;padding:18px;font-size:16px;font-weight:800;color:#111;cursor:pointer;">
+        Start Workout
+      </button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+};
+
+function getLastPerformance(exerciseName) {
+  const logs = JSON.parse(localStorage.getItem('exerciseLogs') || '[]');
+  const last = logs.filter(l => l.name === exerciseName).sort((a,b) => new Date(b.date) - new Date(a.date))[0];
+  if (!last) return null;
+  const units = settings.units || 'kg';
+  return `${last.weight}${units} × ${last.reps}`;
+}
+
+window.startWorkoutSession = function(workout) {
+  if (!workout) { showQuickWorkout(); return; }
+  
+  const units = settings.units || 'kg';
+  let currentExerciseIndex = 0;
+  let currentSetIndex = 0;
+  let completedSets = [];
+  let sessionStart = Date.now();
+  let restTimerInterval = null;
+
+  const modal = document.createElement('div');
+  modal.id = 'workout-session-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:var(--bg);z-index:80000;overflow-y:auto;box-sizing:border-box;';
+  document.body.appendChild(modal);
+
+  // Hide nav
+  document.querySelector('.nav').style.display = 'none';
+
+  function renderSession() {
+    const exercise = workout.exercises[currentExerciseIndex];
+    const totalSets = exercise.sets;
+    const setsLeft = totalSets - currentSetIndex;
+    const progress = Math.round(((currentExerciseIndex) / workout.exercises.length) * 100);
+    const lastPerf = getLastPerformance(exercise.name);
+
+    modal.innerHTML = `
+      <div style="max-width:480px;margin:0 auto;padding:24px;min-height:100vh;display:flex;flex-direction:column;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <button onclick="confirmEndSession()" style="background:none;border:none;font-size:14px;font-weight:700;color:var(--label-secondary);cursor:pointer;">End</button>
+          <p style="font-size:13px;font-weight:700;color:var(--label-secondary);">${currentExerciseIndex + 1} of ${workout.exercises.length}</p>
+          <p style="font-size:13px;font-weight:700;color:var(--label-secondary);">Set ${currentSetIndex + 1} of ${totalSets}</p>
+        </div>
+
+        <div style="background:var(--card);border-radius:4px;height:4px;margin-bottom:28px;">
+          <div style="background:#FFD60A;height:4px;border-radius:4px;width:${progress}%;transition:width 0.3s;"></div>
+        </div>
+
+        <h2 style="font-size:26px;font-weight:800;margin-bottom:6px;">${exercise.name}</h2>
+        <p style="font-size:14px;color:var(--label-secondary);margin-bottom:6px;">${exercise.muscleGroup} · ${exercise.equipment}</p>
+        <p style="font-size:13px;color:#FFD60A;font-weight:700;margin-bottom:28px;">${lastPerf ? 'Last: ' + lastPerf : 'First time'}</p>
+
+        <div style="background:var(--card);border-radius:20px;padding:24px;margin-bottom:20px;">
+          <p style="font-size:13px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:16px;">TARGET: ${exercise.sets} × ${exercise.repsRange}</p>
+          
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+            <div>
+              <p style="font-size:12px;color:var(--label-secondary);margin-bottom:6px;">WEIGHT (${units})</p>
+              <input id="set-weight" type="number" placeholder="0" style="width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:14px;font-size:20px;font-weight:700;color:var(--text);text-align:center;box-sizing:border-box;">
+            </div>
+            <div>
+              <p style="font-size:12px;color:var(--label-secondary);margin-bottom:6px;">REPS</p>
+              <input id="set-reps" type="number" placeholder="0" style="width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:14px;font-size:20px;font-weight:700;color:var(--text);text-align:center;box-sizing:border-box;">
+            </div>
+          </div>
+
+          <button onclick="completeSet()" style="width:100%;background:#FFD60A;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:800;color:#111;cursor:pointer;">
+            ✓ Complete Set ${currentSetIndex + 1}
+          </button>
+        </div>
+
+        ${completedSets.filter(s => s.exerciseIndex === currentExerciseIndex).length > 0 ? `
+        <div style="background:var(--card);border-radius:16px;padding:16px;">
+          <p style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:10px;">COMPLETED SETS</p>
+          ${completedSets.filter(s => s.exerciseIndex === currentExerciseIndex).map((s, i) => `
+            <p style="font-size:13px;color:var(--text);margin-bottom:4px;">Set ${i+1}: ${s.weight}${units} × ${s.reps} reps ✓</p>
+          `).join('')}
+        </div>
+        ` : ''}
+      </div>
+    `;
+  }
+
+  window.completeSet = function() {
+    const weight = parseFloat(document.getElementById('set-weight')?.value) || 0;
+    const reps = parseInt(document.getElementById('set-reps')?.value) || 0;
+    if (!reps) { showToast('Enter reps', 'error', 1500); return; }
+    
+    const exercise = workout.exercises[currentExerciseIndex];
+    
+    // Save to exercise logs
+    const logs = JSON.parse(localStorage.getItem('exerciseLogs') || '[]');
+    logs.push({ name: exercise.name, weight, reps, date: new Date().toISOString() });
+    localStorage.setItem('exerciseLogs', JSON.stringify(logs));
+    
+    completedSets.push({ exerciseIndex: currentExerciseIndex, weight, reps });
+    currentSetIndex++;
+
+    if (currentSetIndex >= exercise.sets) {
+      // Exercise complete
+      currentExerciseIndex++;
+      currentSetIndex = 0;
+      if (currentExerciseIndex >= workout.exercises.length) {
+        finishWorkout();
+        return;
+      }
+    }
+    
+    // Show rest timer
+    showRestTimer();
+  };
+
+  function showRestTimer() {
+    let seconds = 90;
+    modal.innerHTML = `
+      <div style="max-width:480px;margin:0 auto;padding:24px;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <p style="font-size:14px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:20px;">REST</p>
+        <div style="font-size:72px;font-weight:800;color:var(--text);margin-bottom:32px;" id="rest-countdown">${seconds}s</div>
+        <div style="display:flex;gap:12px;margin-bottom:32px;">
+          <button onclick="addRestTime(30)" style="background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:12px 20px;font-size:14px;font-weight:700;color:var(--text);cursor:pointer;">+30s</button>
+          <button onclick="skipRest()" style="background:#FFD60A;border:none;border-radius:12px;padding:12px 20px;font-size:14px;font-weight:800;color:#111;cursor:pointer;">Skip Rest</button>
+        </div>
+        <p style="font-size:13px;color:var(--label-secondary);">
+          ${currentExerciseIndex < workout.exercises.length 
+            ? 'Next: ' + workout.exercises[currentExerciseIndex].name
+            : 'Workout Complete!'}
+        </p>
+      </div>
+    `;
+
+    restTimerInterval = setInterval(() => {
+      seconds--;
+      const el = document.getElementById('rest-countdown');
+      if (el) el.textContent = seconds + 's';
+      if (seconds <= 0) {
+        clearInterval(restTimerInterval);
+        renderSession();
+      }
+    }, 1000);
+
+    window.addRestTime = function(s) { seconds += s; };
+    window.skipRest = function() {
+      clearInterval(restTimerInterval);
+      renderSession();
+    };
+  }
+
+  async function finishWorkout() {
+    const duration = Math.round((Date.now() - sessionStart) / 60000);
+    const totalSets = completedSets.length;
+    const calories = Math.round(duration * 8);
+
+    modal.innerHTML = `
+      <div style="max-width:480px;margin:0 auto;padding:24px;min-height:100vh;display:flex;flex-direction:column;">
+        <h2 style="font-size:28px;font-weight:800;margin-bottom:8px;">Workout Complete! 🎉</h2>
+        <p style="font-size:14px;color:var(--label-secondary);margin-bottom:32px;">Great session, ${settings.name || 'Athlete'}.</p>
+        
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:24px;">
+          <div style="background:var(--card);border-radius:16px;padding:16px;text-align:center;">
+            <p style="font-size:24px;font-weight:800;color:var(--text);">${duration}</p>
+            <p style="font-size:11px;color:var(--label-secondary);">minutes</p>
+          </div>
+          <div style="background:var(--card);border-radius:16px;padding:16px;text-align:center;">
+            <p style="font-size:24px;font-weight:800;color:var(--text);">${totalSets}</p>
+            <p style="font-size:11px;color:var(--label-secondary);">sets</p>
+          </div>
+          <div style="background:var(--card);border-radius:16px;padding:16px;text-align:center;">
+            <p style="font-size:24px;font-weight:800;color:var(--text);">${calories}</p>
+            <p style="font-size:11px;color:var(--label-secondary);">kcal</p>
+          </div>
+        </div>
+
+        <div style="background:var(--card);border-radius:16px;padding:16px;margin-bottom:24px;">
+          <p style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:10px;">EXERCISES</p>
+          ${workout.exercises.map(e => `
+            <p style="font-size:13px;color:var(--text);margin-bottom:6px;">✓ ${e.name} — ${e.sets} sets</p>
+          `).join('')}
+        </div>
+
+        <button onclick="saveCompletedWorkout(${duration}, ${totalSets}, ${calories})" style="width:100%;background:#FFD60A;border:none;border-radius:16px;padding:18px;font-size:16px;font-weight:800;color:#111;cursor:pointer;">
+          Save Workout
+        </button>
+      </div>
+    `;
+  }
+
+  window.saveCompletedWorkout = async function(duration, totalSets, calories) {
+    const todayStr = new Date().toLocaleDateString('en-GB');
+    const entry = {
+      date: todayStr,
+      type: 'strength',
+      name: workout.name,
+      duration,
+      totalSets,
+      calories,
+      exercisesCompleted: workout.exercises.length
+    };
+    try {
+      await PG.workouts.save(entry);
+      workoutHistory.unshift(entry);
+    } catch(e) { console.error(e); }
+    
+    document.getElementById('workout-session-modal').remove();
+    document.querySelector('.nav').style.display = '';
+    showToast('Workout saved! 💪', 'success', 2500);
+    if (typeof updateHome === 'function') updateHome();
+    renderProgramTab();
+    renderWorkoutsTab();
+  };
+
+  window.confirmEndSession = function() {
+    if (confirm('End workout? Progress will not be saved.')) {
+      clearInterval(restTimerInterval);
+      document.getElementById('workout-session-modal').remove();
+      document.querySelector('.nav').style.display = '';
+    }
+  };
+
+  renderSession();
+};
 function startQuickStrength() { showToast('Coming soon', 'success', 2000); }
 function startQuickMobility() { showToast('Coming soon', 'success', 2000); }
   
@@ -3801,19 +5168,35 @@ function startQuickMobility() { showToast('Coming soon', 'success', 2000); }
 
 let createFocus = '';
 let createScheduledDays = [];
+let activeTrainTab = 'program';
 
-function switchTrainTab(tab) {
-  ['program','exercises','workouts'].forEach(t => {
-    document.getElementById('train-panel-' + t).style.display = t === tab ? 'block' : 'none';
-    const btn = document.getElementById('train-tab-' + t);
-    if (btn) {
-      btn.style.background = t === tab ? '#f5c842' : 'transparent';
-      btn.style.color = t === tab ? '#111' : 'var(--label-secondary)';
-    }
+window.switchTrainTab = function(tab, el) {
+  window._activeTrainTab = tab;
+  document.querySelectorAll('.train-tab-btn').forEach(b => {
+    b.style.background = 'transparent';
+    b.style.color = 'var(--label-secondary)';
   });
-  if (tab === 'workouts') renderRoutinesList();
-  if (tab === 'exercises') renderExerciseLibrary();
+  if (!el) {
+    el = document.querySelector(`.train-tab-btn[onclick*="'${tab}'"]`);
+  }
+  if (el) {
+    el.style.background = '#FFD60A';
+    el.style.color = '#111';
+  }
+
+  document.getElementById('train-program-card').style.display = tab === 'program' ? '' : 'none';
+  document.getElementById('train-today-card').style.display = tab === 'program' ? '' : 'none';
+  document.getElementById('train-weekly-card').style.display = tab === 'program' ? '' : 'none';
+  document.getElementById('exercises-tab-content').style.display = tab === 'exercises' ? '' : 'none';
+  document.getElementById('workouts-tab-content').style.display = tab === 'workouts' ? '' : 'none';
+
   if (tab === 'program') renderProgramTab();
+  else if (tab === 'exercises') renderExercisesTab();
+  else if (tab === 'workouts') renderWorkoutsTab();
+};
+
+function switchTrainTab(tab, el) {
+  return window.switchTrainTab(tab, el);
 }
 
 function switchWorkoutsTab(tab) {
