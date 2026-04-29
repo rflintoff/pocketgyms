@@ -1019,6 +1019,9 @@ function showScreen(id) {
         if (isDevMode) renderDevPanel();
     }
     if(id==='screen-train'){showTrainSection('menu');renderRoutinesList();updateStepsDisplay();renderTrainWeek();}
+    if (id === 'screen-train') {
+      renderProgramTab();
+    }
 }
 
 // ===================== TRAIN =====================
@@ -3201,6 +3204,8 @@ async function logRestDay() {
     showToast('Rest day logged', 'success', 2000);
     await updateHome();
     updateTodayPlanButtons();
+    renderProgramTab();
+    if (typeof updateHome === 'function') updateHome();
   } catch(e) {
     showToast('Failed to save', 'error', 3000);
   }
@@ -3593,6 +3598,188 @@ function updateUpcoming() {
       </button>`;
   }
 }
+
+function renderProgramTab() {
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const todayName = days[new Date().getDay()];
+  const todayStr = new Date().toLocaleDateString('en-GB');
+  const routines = Array.isArray(savedRoutines) ? savedRoutines : [];
+
+  const programCard = document.getElementById('train-program-card');
+  const todayCard = document.getElementById('train-today-card');
+  const weeklyCard = document.getElementById('train-weekly-card');
+
+  // NO PROGRAM STATE
+  if (routines.length === 0) {
+    if (programCard) programCard.innerHTML = `
+      <p style="font-size:16px;font-weight:700;margin-bottom:4px;">No program selected</p>
+      <p style="font-size:13px;color:var(--label-secondary);margin-bottom:16px;">Choose a program or start a quick workout.</p>
+      <button onclick="showChooseProgram()" style="width:100%;background:#FFD60A;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:800;color:#111;cursor:pointer;margin-bottom:8px;">Choose Program</button>
+      <button onclick="showQuickWorkout()" style="width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:14px;font-size:14px;font-weight:700;color:var(--text);cursor:pointer;">Start Quick Workout</button>
+    `;
+    if (todayCard) todayCard.innerHTML = `
+      <p style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:8px;">TODAY</p>
+      <p style="font-size:16px;font-weight:700;margin-bottom:4px;">No workout scheduled</p>
+      <p style="font-size:13px;color:var(--label-secondary);margin-bottom:16px;">Set up a plan to see your daily workouts.</p>
+      <button onclick="showQuickWorkout()" style="width:100%;background:#FFD60A;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:800;color:#111;cursor:pointer;margin-bottom:8px;">Start Quick Workout</button>
+      <button onclick="showChooseProgram()" style="width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:14px;font-size:14px;font-weight:700;color:var(--text);cursor:pointer;">Set Up Plan</button>
+    `;
+    if (weeklyCard) weeklyCard.innerHTML = `
+      <p style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:8px;">WEEKLY SUMMARY</p>
+      <p style="font-size:13px;color:var(--label-secondary);">Set up a plan to track weekly training.</p>
+    `;
+    return;
+  }
+
+  // PROGRAM EXISTS
+  const todayRoutine = routines.find(r => r.scheduled_days && r.scheduled_days.includes(todayName));
+  const workoutDoneToday = workoutHistory.some(w => w.date === todayStr && w.type !== 'rest');
+  const restDoneToday = workoutHistory.some(w => w.date === todayStr && w.type === 'rest');
+
+  // Program card
+  if (programCard) {
+    const totalDays = routines.reduce((a, r) => a + (r.scheduled_days?.length || 0), 0);
+    programCard.innerHTML = `
+      <p style="font-size:16px;font-weight:700;margin-bottom:4px;">${settings.phaseName || 'My Program'}</p>
+      <p style="font-size:13px;color:var(--label-secondary);">${totalDays} days/week · ${routines.length} workouts</p>
+    `;
+  }
+
+  // Today card
+  if (todayCard) {
+    if (workoutDoneToday) {
+      todayCard.innerHTML = `
+        <p style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:8px;">TODAY</p>
+        <p style="font-size:16px;font-weight:700;color:#22c55e;margin-bottom:4px;">✓ Workout Completed</p>
+        <p style="font-size:13px;color:var(--label-secondary);">Great work — rest up and recover.</p>
+      `;
+    } else if (restDoneToday) {
+      todayCard.innerHTML = `
+        <p style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:8px;">TODAY</p>
+        <p style="font-size:16px;font-weight:700;color:#6E6E73;margin-bottom:4px;">🌙 Rest Day</p>
+        <p style="font-size:13px;color:var(--label-secondary);">Recovery is part of the programme.</p>
+      `;
+    } else if (todayRoutine) {
+      todayCard.innerHTML = `
+        <p style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:8px;">TODAY</p>
+        <p style="font-size:16px;font-weight:700;margin-bottom:4px;">${todayRoutine.name}</p>
+        <p style="font-size:13px;color:var(--label-secondary);margin-bottom:16px;">${getWorkoutMuscles(todayRoutine.name)}</p>
+        <button onclick="startWorkoutSession && startWorkoutSession(savedRoutines.find(r=>r.name==='${todayRoutine.name}'))" style="width:100%;background:#FFD60A;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:800;color:#111;cursor:pointer;margin-bottom:8px;">Start Workout</button>
+        <div style="display:flex;gap:8px;">
+          <button onclick="showScreen('screen-train')" style="flex:1;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:12px;font-size:13px;font-weight:700;color:var(--text);cursor:pointer;">View Workout</button>
+          <button onclick="logRestDay()" style="flex:1;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:12px;font-size:13px;font-weight:700;color:var(--text);cursor:pointer;">🌙 Rest Day</button>
+        </div>
+      `;
+    } else {
+      todayCard.innerHTML = `
+        <p style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:8px;">TODAY</p>
+        <p style="font-size:16px;font-weight:700;margin-bottom:4px;">No workout scheduled</p>
+        <p style="font-size:13px;color:var(--label-secondary);margin-bottom:16px;">Rest day or start a quick workout.</p>
+        <button onclick="showQuickWorkout()" style="width:100%;background:#FFD60A;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:800;color:#111;cursor:pointer;">Start Quick Workout</button>
+      `;
+    }
+  }
+
+  // Weekly card
+  if (weeklyCard) {
+    const now = new Date();
+    const dow = now.getDay();
+    const mondayOffset = dow === 0 ? -6 : 1 - dow;
+    let weekDone = 0;
+    const planned = routines.reduce((a, r) => a + (r.scheduled_days?.length || 0), 0);
+    const denominator = planned > 0 ? Math.min(planned, 7) : 7;
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(now);
+      d.setDate(now.getDate() + mondayOffset + i);
+      const ds = d.toLocaleDateString('en-GB');
+      const done = workoutHistory.some(w => w.date === ds && w.type !== 'rest');
+      if (done) weekDone++;
+    }
+    const pct = Math.round((weekDone / denominator) * 100);
+    weeklyCard.innerHTML = `
+      <p style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:8px;">WEEKLY SUMMARY</p>
+      <p style="font-size:24px;font-weight:800;margin-bottom:2px;">${pct}%</p>
+      <p style="font-size:13px;color:var(--label-secondary);">${weekDone} of ${denominator} workouts completed</p>
+    `;
+  }
+}
+
+function showQuickWorkout() {
+  const existing = document.getElementById('quick-workout-modal');
+  if (existing) { existing.style.display = 'flex'; return; }
+  const modal = document.createElement('div');
+  modal.id = 'quick-workout-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:50000;display:flex;align-items:flex-end;justify-content:center;';
+  modal.innerHTML = `
+    <div style="background:var(--card);border-radius:24px 24px 0 0;padding:28px 24px 40px;width:100%;max-width:480px;">
+      <h3 style="font-size:18px;font-weight:800;margin-bottom:20px;">Quick Workout</h3>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <button onclick="startQuickStrength();document.getElementById('quick-workout-modal').style.display='none'" style="background:var(--bg);border:1.5px solid var(--border);border-radius:14px;padding:16px;font-size:15px;font-weight:700;color:var(--text);cursor:pointer;text-align:left;">💪 Strength</button>
+        <button onclick="showCardioLog();document.getElementById('quick-workout-modal').style.display='none'" style="background:var(--bg);border:1.5px solid var(--border);border-radius:14px;padding:16px;font-size:15px;font-weight:700;color:var(--text);cursor:pointer;text-align:left;">🏃 Cardio</button>
+        <button onclick="startQuickMobility();document.getElementById('quick-workout-modal').style.display='none'" style="background:var(--bg);border:1.5px solid var(--border);border-radius:14px;padding:16px;font-size:15px;font-weight:700;color:var(--text);cursor:pointer;text-align:left;">🧘 Mobility</button>
+      </div>
+      <button onclick="document.getElementById('quick-workout-modal').style.display='none'" style="width:100%;background:none;border:none;padding:16px;font-size:14px;color:var(--label-secondary);cursor:pointer;margin-top:8px;">Cancel</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
+function showCardioLog() {
+  const existing = document.getElementById('cardio-log-modal');
+  if (existing) { existing.style.display = 'flex'; return; }
+  const modal = document.createElement('div');
+  modal.id = 'cardio-log-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:50000;display:flex;align-items:flex-end;justify-content:center;';
+  modal.innerHTML = `
+    <div style="background:var(--card);border-radius:24px 24px 0 0;padding:28px 24px 40px;width:100%;max-width:480px;">
+      <h3 style="font-size:18px;font-weight:800;margin-bottom:20px;">Log Cardio</h3>
+      <select id="cardio-type" style="width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:12px;font-size:14px;color:var(--text);margin-bottom:12px;">
+        <option value="treadmill">Treadmill</option>
+        <option value="bike">Bike</option>
+        <option value="rower">Rower</option>
+        <option value="assault_bike">Assault Bike</option>
+        <option value="other">Other</option>
+      </select>
+      <input id="cardio-duration" type="number" placeholder="Duration (mins)" style="width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:12px;font-size:14px;color:var(--text);margin-bottom:12px;box-sizing:border-box;">
+      <input id="cardio-distance" type="number" placeholder="Distance (km) optional" style="width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:12px;font-size:14px;color:var(--text);margin-bottom:12px;box-sizing:border-box;">
+      <input id="cardio-calories" type="number" placeholder="Calories burned (optional)" style="width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:12px;font-size:14px;color:var(--text);margin-bottom:16px;box-sizing:border-box;">
+      <button onclick="saveCardioLog()" style="width:100%;background:#FFD60A;border:none;border-radius:12px;padding:16px;font-size:15px;font-weight:800;color:#111;cursor:pointer;margin-bottom:8px;">Save Cardio</button>
+      <button onclick="document.getElementById('cardio-log-modal').style.display='none'" style="width:100%;background:none;border:none;padding:12px;font-size:14px;color:var(--label-secondary);cursor:pointer;">Cancel</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
+async function saveCardioLog() {
+  const type = document.getElementById('cardio-type')?.value || 'other';
+  const duration = parseInt(document.getElementById('cardio-duration')?.value) || 0;
+  const distance = parseFloat(document.getElementById('cardio-distance')?.value) || 0;
+  const calories = parseInt(document.getElementById('cardio-calories')?.value) || 0;
+  if (!duration) { showToast('Enter duration', 'error', 2000); return; }
+  const entry = {
+    date: new Date().toLocaleDateString('en-GB'),
+    type: 'cardio',
+    name: type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' '),
+    duration,
+    distance,
+    calories,
+    cardio_type: type
+  };
+  try {
+    await PG.workouts.save(entry);
+    cardioHistory.unshift(entry);
+    document.getElementById('cardio-log-modal').style.display = 'none';
+    showToast('Cardio logged!', 'success', 2000);
+    if (typeof updateHome === 'function') updateHome();
+    renderProgramTab();
+  } catch(e) {
+    showToast('Failed to save', 'error', 3000);
+  }
+}
+
+function showChooseProgram() { showScreen('screen-train'); }
+function startQuickStrength() { showToast('Coming soon', 'success', 2000); }
+function startQuickMobility() { showToast('Coming soon', 'success', 2000); }
   
   // ── SHARED UTILITIES ─────────────────────────────────────────
   function setText(id, val) {
@@ -3626,7 +3813,7 @@ function switchTrainTab(tab) {
   });
   if (tab === 'workouts') renderRoutinesList();
   if (tab === 'exercises') renderExerciseLibrary();
-  if (tab === 'program') renderTrainProgram();
+  if (tab === 'program') renderProgramTab();
 }
 
 function switchWorkoutsTab(tab) {
