@@ -1474,6 +1474,7 @@ async function persistNutritionState(reason, overrides={}) {
     };
     console.log(`[Nutrition Save] ${reason} payload:`,payload);
     const saveResult=await PG.nutrition.save(payload);
+    if (typeof updateHome === 'function') updateHome();
     console.log(`[Nutrition Save] ${reason} result:`,saveResult);
     return saveResult;
 }
@@ -1742,6 +1743,7 @@ async function addWaterQuick(){
         const currentWater=getWaterLitres(nutritionToday);
         const nextWater=Math.round((currentWater+0.25)*100)/100;
         const saveResult=await PG.nutrition.save({water_litres:nextWater});
+        if (typeof updateHome === 'function') updateHome();
         if(saveResult?.ok===false||saveResult?.error){
             throw saveResult.error||new Error('Water save failed');
         }
@@ -1768,6 +1770,7 @@ async function saveWater() {
         const savePayload={water_litres:nextWater};
         console.log('[Water Save] payload:',savePayload);
         const saveResult=await PG.nutrition.save(savePayload);
+        if (typeof updateHome === 'function') updateHome();
         console.log('[Water Save] result:',saveResult);
         if(saveResult?.ok===false||saveResult?.error){
             throw saveResult.error||new Error('Water save failed');
@@ -1896,6 +1899,7 @@ async function saveSupplementByIndex(index){
         next.push({name,taken:true,quantity:qty,unit});
     });
     const saveResult=await PG.nutrition.save({supplements:next});
+    if (typeof updateHome === 'function') updateHome();
     if(saveResult?.ok===false||saveResult?.error){
         showToast('Save failed — please try again','error',3500);
         return;
@@ -1962,6 +1966,7 @@ async function removeSupplementFromList(supplementName){
     const savedSupplements=Array.isArray(nutritionData?.supplements)?nutritionData.supplements:[];
     const nextTodaySupplements=savedSupplements.filter(s=>s&&String(s.name).toLowerCase()!==nameLower);
     const nut=await PG.nutrition.save({supplements:nextTodaySupplements});
+    if (typeof updateHome === 'function') updateHome();
     if(nut?.ok===false||nut?.error){
         showToast('Failed to remove supplement','error');
         return;
@@ -1981,6 +1986,7 @@ async function clearAllSupplements(){
         return;
     }
     const nut=await PG.nutrition.save({supplements:[]});
+    if (typeof updateHome === 'function') updateHome();
     if(nut?.ok===false||nut?.error){
         showToast('Save failed — please try again','error',3500);
         return;
@@ -2247,6 +2253,70 @@ async function updateHome() {
 
     // Home Up Next
     updateUpcoming();
+    updateTodayPlanButtons();
+}
+
+function updateTodayPlanButtons() {
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const today = days[new Date().getDay()];
+  const todayStr = new Date().toLocaleDateString('en-GB');
+  
+  const workoutDone = workoutHistory.some(w => w.date === todayStr && w.type !== 'rest');
+  const restDone = workoutHistory.some(w => w.date === todayStr && w.type === 'rest');
+  
+  const startBtn = document.getElementById('home-start-workout-btn');
+  const restBtn = document.getElementById('home-log-rest-btn');
+  const viewBtn = document.getElementById('home-view-plan-btn');
+
+  if (workoutDone) {
+    // Workout completed — disable rest, show completed state
+    if (startBtn) {
+      startBtn.textContent = '✓ Workout Completed';
+      startBtn.style.opacity = '0.6';
+      startBtn.style.cursor = 'default';
+      startBtn.onclick = null;
+    }
+    if (restBtn) restBtn.style.display = 'none';
+  } else if (restDone) {
+    // Rest logged — replace rest button, disable start
+    if (startBtn) {
+      startBtn.textContent = 'Start Workout';
+      startBtn.style.opacity = '0.4';
+      startBtn.style.cursor = 'default';
+      startBtn.onclick = null;
+    }
+    if (restBtn) {
+      restBtn.textContent = '✓ Rest Day Logged';
+      restBtn.style.opacity = '0.6';
+      restBtn.style.cursor = 'default';
+      restBtn.onclick = null;
+    }
+  } else {
+    // Nothing logged yet — normal state
+    const scheduledToday = (Array.isArray(savedRoutines) ? savedRoutines : [])
+      .find(r => r.scheduled_days && r.scheduled_days.includes(today));
+    
+    if (startBtn) {
+      startBtn.textContent = 'Start Workout';
+      startBtn.style.opacity = '1';
+      startBtn.style.cursor = 'pointer';
+      startBtn.onclick = scheduledToday 
+        ? () => startWorkoutSession(scheduledToday)
+        : () => showScreen('screen-train');
+    }
+    if (restBtn) {
+      restBtn.style.display = '';
+      restBtn.textContent = '🌙 Log Rest Day';
+      restBtn.style.opacity = '1';
+      restBtn.style.cursor = 'pointer';
+      restBtn.onclick = logRestDay;
+    }
+    if (viewBtn) {
+      viewBtn.onclick = scheduledToday
+        ? () => showScreen('screen-train')
+        : () => showScreen('screen-train');
+    }
+  }
 }
 // ===================== PROGRESS =====================
 async function renderProgressTab() {
@@ -3112,32 +3182,28 @@ async function unlockProgramme() {
     renderRoutinesList();
 }
 async function logRestDay() {
-    const today=new Date().toLocaleDateString('en-GB');
-    let data=await PG.nutrition.getToday()||{steps:0,water:0};
-    if(data.restDay){
-        alert('Rest day already logged for today 😴');
-        return;
-    }
-    data.restDay=true;
-    data.restDayTime=new Date().toLocaleTimeString('en-GB');
-    await PG.nutrition.save(data);
-    // Add to workout history as a rest day entry
-    const alreadyLogged=workoutHistory.find(w=>w.date===today&&w.type==='rest');
-    if(!alreadyLogged){
-        workoutHistory.unshift({
-            type:'rest',
-            muscle:'Rest Day',
-            date:today,
-            duration:0,
-            exercises:[]
-        });
-        await saveToStorage();
-    }
-    checkBadges();
-    updateHome();
-    updateStepsDisplay();
-    if(document.getElementById('screen-progress').classList.contains('active')) updateProgress();
-    alert('😴 Rest day logged! Focus on hitting your nutrition and steps today.');
+  const todayStr = new Date().toLocaleDateString('en-GB');
+  const alreadyDone = workoutHistory.some(w => w.date === todayStr);
+  if (alreadyDone) {
+    showToast('Already logged today', 'error', 2000);
+    return;
+  }
+  const restEntry = {
+    date: todayStr,
+    type: 'rest',
+    name: 'Rest Day',
+    duration: 0,
+    calories: 0
+  };
+  try {
+    await PG.workouts.save(restEntry);
+    workoutHistory.unshift(restEntry);
+    showToast('Rest day logged', 'success', 2000);
+    await updateHome();
+    updateTodayPlanButtons();
+  } catch(e) {
+    showToast('Failed to save', 'error', 3000);
+  }
 }
 
 
@@ -3160,6 +3226,7 @@ async function saveStepsTrain() {
         const savePayload={steps:totalSteps};
         console.log('[Steps Save] payload:',savePayload);
         const saveResult=await PG.nutrition.save(savePayload);
+        if (typeof updateHome === 'function') updateHome();
         console.log('[Steps Save] result:',saveResult);
         if(saveResult?.ok===false||saveResult?.error){
             throw saveResult.error||new Error('Steps save failed');
@@ -3454,50 +3521,78 @@ function updateOverviewTiles(cals, steps, calTarget) {
     }).join('');
   }
   
-  function updateUpcoming() {
-    const container = document.getElementById('upcoming-list');
-    if (!container) return;
-    const routines = Array.isArray(savedRoutines) ? savedRoutines : [];
-    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    const today = new Date();
-    const todayIdx = today.getDay();
-    const upcoming = [];
-  
-    for (let i = 1; i <= 6; i++) {
-      const dayIdx = (todayIdx + i) % 7;
-      const dayName = days[dayIdx];
-      const date = new Date(today);
-      date.setDate(today.getDate() + i);
-      const scheduled = routines.filter(r => r.scheduled_days && r.scheduled_days.includes(dayName));
-      if (scheduled.length > 0) {
-        scheduled.forEach(r => upcoming.push({ name: r.name, date, dayName, daysAhead: i }));
-      } else {
-        upcoming.push({ name: 'Rest Day', date, dayName, daysAhead: i, rest: true });
-      }
-    }
-  
-    const shown = upcoming.slice(0, 3);
-    if (shown.every(s => s.rest)) {
-      container.innerHTML = '<p style="font-size:13px;color:var(--label-secondary);text-align:center;padding:12px 0;">No routines scheduled yet. Set up your plan in the Train tab.</p>';
-      return;
-    }
-  
-    container.innerHTML = shown.map((item, idx) => {
-      const label = item.daysAhead === 1 ? 'Tomorrow' : item.date.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short' });
-      const icon = item.rest
-        ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.75" stroke-linecap="round"><path d="M18 12H6M6 12l4-4M6 12l4 4"/></svg>`
-        : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 14h.5a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-.5M9.5 14H9a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h.5M4 12h16M14.5 10v4M9.5 10v4"/></svg>`;
-      const border = idx < shown.length - 1 ? 'border-bottom:1px solid var(--border);' : '';
-      return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;${border}cursor:pointer;" onclick="showScreen('screen-train')">
-        <div style="width:36px;height:36px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;">${icon}</div>
-        <div style="flex:1;">
-          <div style="font-size:13px;font-weight:700;color:var(--text);">${item.name}</div>
-          <div style="font-size:11px;color:var(--label-secondary);margin-top:1px;">${label}</div>
-        </div>
-        <div style="color:var(--label-secondary);font-size:18px;">›</div>
-      </div>`;
-    }).join('');
+function updateUpcoming() {
+  const upNextCard = document.getElementById('home-up-next-card');
+  if (!upNextCard) return;
+
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const todayStr = new Date().toLocaleDateString('en-GB');
+  const todayName = days[new Date().getDay()];
+
+  const routines = Array.isArray(savedRoutines) ? savedRoutines : [];
+  const workoutDoneToday = workoutHistory.some(w => w.date === todayStr && w.type !== 'rest');
+
+  // No program set up
+  if (routines.length === 0) {
+    upNextCard.innerHTML = `
+      <p style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:8px;">UP NEXT</p>
+      <p style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:12px;">No plan set up yet</p>
+      <p style="font-size:13px;color:var(--label-secondary);margin-bottom:12px;">Set up your plan to see upcoming sessions.</p>
+      <button onclick="showScreen('screen-train')" style="background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:10px 16px;font-size:13px;font-weight:700;color:var(--text);cursor:pointer;">
+        Go to Train →
+      </button>`;
+    return;
   }
+
+  // Find today's workout
+  const todayRoutine = routines.find(r => r.scheduled_days && r.scheduled_days.includes(todayName));
+
+  // If today not done, show today
+  if (todayRoutine && !workoutDoneToday) {
+    upNextCard.innerHTML = `
+      <p style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:8px;">UP NEXT</p>
+      <p style="font-size:11px;color:#FFD60A;font-weight:700;margin-bottom:4px;">TODAY</p>
+      <p style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;">${todayRoutine.name}</p>
+      <p style="font-size:13px;color:var(--label-secondary);margin-bottom:12px;">${getWorkoutMuscles(todayRoutine.name)}</p>
+      <button onclick="showScreen('screen-train')" style="background:#FFD60A;border:none;border-radius:12px;padding:10px 16px;font-size:13px;font-weight:800;color:#111;cursor:pointer;">
+        Start Now →
+      </button>`;
+    return;
+  }
+
+  // Find next scheduled workout after today
+  const todayIndex = new Date().getDay(); // 0=Sun
+  let nextRoutine = null;
+  let nextDayLabel = '';
+
+  for (let i = 1; i <= 7; i++) {
+    const nextDay = days[(todayIndex + i) % 7];
+    const found = routines.find(r => r.scheduled_days && r.scheduled_days.includes(nextDay));
+    if (found) {
+      nextRoutine = found;
+      nextDayLabel = i === 1 ? 'Tomorrow' : nextDay;
+      break;
+    }
+  }
+
+  if (nextRoutine) {
+    upNextCard.innerHTML = `
+      <p style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:8px;">UP NEXT</p>
+      <p style="font-size:11px;color:var(--label-secondary);font-weight:700;margin-bottom:4px;">${nextDayLabel.toUpperCase()}</p>
+      <p style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;">${nextRoutine.name}</p>
+      <p style="font-size:13px;color:var(--label-secondary);margin-bottom:12px;">${getWorkoutMuscles(nextRoutine.name)}</p>
+      <button onclick="showScreen('screen-train')" style="background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:10px 16px;font-size:13px;font-weight:700;color:var(--text);cursor:pointer;">
+        View Plan →
+      </button>`;
+  } else {
+    upNextCard.innerHTML = `
+      <p style="font-size:12px;font-weight:700;letter-spacing:1px;color:var(--label-secondary);margin-bottom:8px;">UP NEXT</p>
+      <p style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px;">No upcoming sessions</p>
+      <button onclick="showScreen('screen-train')" style="background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:10px 16px;font-size:13px;font-weight:700;color:var(--text);cursor:pointer;">
+        Go to Train →
+      </button>`;
+  }
+}
   
   // ── SHARED UTILITIES ─────────────────────────────────────────
   function setText(id, val) {
