@@ -2090,11 +2090,11 @@ async function updateHome() {
     updateUpcoming();
     updateNutritionTab(cals, protein, carbs, fats, calTarget, proteinTarget);
 
-    const greeting = getGreeting(settings.name || 'Athlete');
+    const { title: greetTitle, subtitle: greetSub } = getGreeting(settings.name || 'Athlete');
     const greetingEl = document.getElementById('home-hero-title');
-    if (greetingEl) greetingEl.textContent = greeting.title;
+    if (greetingEl) greetingEl.textContent = greetTitle;
     const subEl = document.getElementById('home-hero-sub');
-    if (subEl) subEl.textContent = greeting.subtitle;
+    if (subEl) subEl.textContent = greetSub;
 
     // Daily Score (Workout 25 + Cals 25 + Steps 25 + Protein 25)
     const todayWorkoutDone = workoutHistory.some(w => w.date === new Date().toLocaleDateString('en-GB') && w.type !== 'rest');
@@ -2139,6 +2139,13 @@ async function updateHome() {
     const kcalLeft = Math.max(0, calTarget - cals);
     setText('home-kcal-left', kcalLeft > 0 ? `${Math.round(kcalLeft)} kcal left` : 'Goal reached! 🎉');
     setText('home-kcal-left-label', kcalLeft > 0 ? `${Math.round(kcalLeft)}` : '🎉');
+    // Macros empty state
+    if (cals === 0 && protein === 0 && carbs === 0 && fats === 0) {
+      setText('home-kcal-left', `${calTarget} kcal remaining`);
+      setText('home-macro-p-val', '0g');
+      setText('home-macro-c-val', '0g');
+      setText('home-macro-f-val', '0g');
+    }
 
     // Steps ring
     const stepsTarget2 = settings.stepsTarget || 8000;
@@ -2149,6 +2156,10 @@ async function updateHome() {
     setText('home-steps-big-goal', `/${stepsTarget2.toLocaleString()} steps`);
     setBar('home-steps-bar', stepsPct * 100);
     setText('home-steps-left', steps >= stepsTarget2 ? '✓ Goal reached!' : `${(stepsTarget2 - steps).toLocaleString()} steps to go`);
+    // Steps empty state
+    if (steps === 0) {
+      setText('home-steps-left', 'Log your steps');
+    }
 
     // Recovery ring (simulated from sleep)
     const sleepRaw2 = nd2.sleep_hours ? parseFloat(nd2.sleep_hours) : 0;
@@ -2160,6 +2171,14 @@ async function updateHome() {
     setText('home-recovery-label', recoveryScore >= 80 ? 'Great recovery' : recoveryScore >= 60 ? 'Good recovery' : 'Rest up tonight');
     setText('home-recovery-sub', recoveryScore >= 80 ? 'Your body is ready to perform.' : 'Prioritise sleep and hydration.');
     setText('home-recovery-sleep', sleepRaw2 > 0 ? `${sleepRaw2}h` : '—');
+    // Sleep empty state
+    const sleepEl = document.getElementById('home-chip-sleep');
+    if (sleepEl && (!sleepRaw2 || sleepRaw2 === 0)) {
+      sleepEl.textContent = 'Log sleep';
+      sleepEl.style.color = '#FFD60A';
+      sleepEl.style.cursor = 'pointer';
+      sleepEl.onclick = openSleepModal;
+    }
 
     // Weekly summary bars
     const homeWeeklyBars = document.getElementById('home-weekly-bars');
@@ -2196,12 +2215,18 @@ async function updateHome() {
       }
       homeWeeklyBars.innerHTML = bars.join('');
 
-      const totalPlanned = (Array.isArray(savedRoutines) ? savedRoutines : [])
-        .reduce((a, r) => a + (r.scheduled_days ? r.scheduled_days.length : 0), 0);
-      const denominator = totalPlanned > 0 ? Math.min(totalPlanned, 7) : 7;
-      const consistency2 = Math.round((weekDone / denominator) * 100);
+      const denominator = (() => {
+        const planned = (Array.isArray(savedRoutines) ? savedRoutines : [])
+          .reduce((a, r) => a + (r.scheduled_days ? r.scheduled_days.length : 0), 0);
+        return planned > 0 ? Math.min(planned, 7) : 7;
+      })();
+      const consistency2 = denominator > 0 
+        ? Math.round((weekDone / denominator) * 100) 
+        : 0;
       setText('home-weekly-consistency', consistency2 + '%');
-      setText('home-weekly-text', `${weekDone} of ${denominator} workouts completed`);
+      setText('home-weekly-text', weekDone > 0 
+        ? `${weekDone} of ${denominator} workouts completed`
+        : `Set up your plan in the Train tab`);
     }
 
     // Home today's plan card
